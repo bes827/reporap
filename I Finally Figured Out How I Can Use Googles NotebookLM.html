@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>I Finally Figured Out How I Can Use Google’s NotebookLM</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>I Finally Figured Out How I Can Use Google’s NotebookLM</strong></summary>
+            <div>
+                <ul><li>Article by Aivaras A Grauzinis.</li><li>Published in Let There Be Prompt (Medium).</li><li>Publication Date: Sep 19, 2025.</li><li>Read Time: 7 min.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary AI model powering Google&#x27;s NotebookLM?</li><li>2. What is a key limitation of NotebookLM when adding numerous sources, even if related to the same topic?</li><li>3. Which NotebookLM feature helps users find relevant, respected external information sources based on a description?</li><li>4. Beyond summarizing and answering questions, what are two specific output formats NotebookLM can generate for learning?</li><li>5. When consolidating brainstorming from multiple chatbots, what specific detail from DeepSeek does the author find particularly valuable to include as a source in NotebookLM?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>NotebookLM Overview</strong></summary>
+            <div>
+                <ul><li>Research/note-taking tool by Google Labs.</li><li>Publicly released in 2023.</li><li>← Google&#x27;s Gemini AI models.</li></ul>
+                
+        <details>
+            <summary><strong>Core Functionality</strong></summary>
+            <div>
+                <ul><li>↑ user&#x27;s own content (PDFs, Google Docs, YouTube videos, slides, websites).</li><li>→ summarize, answer questions, explore relationships.</li><li>→ generate various formats (study guides, audio/podcast-style overviews).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Author&#x27;s Initial Hesitation</strong></summary>
+            <div>
+                <ul><li>Preference for chaotic organization; memory-based.</li><li>Organized notes → out of active memory → ↓ ideation.</li><li>Aging memory → need for new tools/organization.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Use Cases</strong></summary>
+            <div>
+                <ul><li>NotebookLM offers diverse applications for information management and content creation.</li></ul>
+                
+        <details>
+            <summary><strong>Obvious Use: Course Material Organization</strong></summary>
+            <div>
+                <ul><li>Organizing articles for AI classes (e.g., Midjourney).</li><li>Created notebooks + added articles based on specific topics (e.g., photographic techniques, styles).</li></ul>
+                
+        <details>
+            <summary><strong>Best Practices</strong></summary>
+            <div>
+                <ul><li>NotebookLM bases answers on provided sources, not generic internet info.</li><li>Avoid dropping all articles (e.g., 250 Midjourney articles) as sources.</li><li>Reason: Source limit + information dilution → generic output.</li><li>Recommendation: Use well-chosen, topic-specific sources per notebook.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Quickly find relevant info.</li><li>Sort w/ helpful reports, outlines, explainers.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Less Obvious Use: Complex Course Development</strong></summary>
+            <div>
+                <ul><li>Developing courses w/ nuanced topics (e.g., communicating w/ AI).</li><li>Initial student problem: lack of communication skills, goal formulation, cognitive linguistics basics.</li><li>NotebookLM helped structure complex, interesting course material.</li></ul>
+                
+        <details>
+            <summary><strong>Key Feature: &#x27;Discover Sources&#x27;</strong></summary>
+            <div>
+                <ul><li>Button to describe desired info (e.g., logic, philosophy, rhetoric).</li><li>Google searches for relevant, respected sources.</li><li>Sources can be added to notebook.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Output Formats for Learning</strong></summary>
+            <div>
+                <ul><li>Can create mindmaps, reports, flashcards, quizzes.</li><li>Useful for making learning material more engaging.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Limitations</strong></summary>
+            <div>
+                <ul><li>Not for actual organizing or writing final materials.</li><li>Serves as an intermediate step to ease work.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Least Obvious Use: Consolidating Multi-Bot Brainstorming</strong></summary>
+            <div>
+                <ul><li>Used for brainstorming/fleshing out ideas w/ multiple chatbots (ChatGPT, Claude, Gemini, DeepSeek).</li><li>Goal: squeeze out all angles, cover all aspects, avoid hallucinations/confirmation bias.</li><li>Each bot has strengths: DeepSeek (thought process), ChatGPT (knowledge of author&#x27;s work), Gemini (deep search).</li></ul>
+                
+        <details>
+            <summary><strong>Process</strong></summary>
+            <div>
+                <ul><li>Copy complete discussions (questions, answers, DeepSeek&#x27;s chain of reasoning).</li><li>Paste as sources into a NotebookLM notebook.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>All info in one place.</li><li>Can query NotebookLM about answers/questions.</li><li>Follow ideation process w/ mindmap, overviews, reports.</li><li>Easier to find, correlate, evaluate small details.</li><li>Facilitates conversion of discussions into tangible outputs (articles, mini-ebooks, YouTube videos).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Video Overviews Feature</strong></summary>
+            <div>
+                <ul><li>NotebookLM can generate video overviews.</li><li>Graphics: horrible.</li><li>Narration/scripting: good.</li><li>Potential: Overlay w/ decent graphics/text/clips → very effective.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>NotebookLM: good, simple-to-use tool w/ many features.</li><li>Helps organize scattered ideas into tangible outputs.</li><li>Supreme power: collects source material, finds key elements/connections.</li><li>Unusually good @ finding non-obvious bridges.</li><li>Helps discover unseen connections + achieve new outcomes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
