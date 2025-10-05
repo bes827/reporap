@@ -7,20 +7,42 @@
       (async () => {
         const response = await fetch('https://api.github.com/repos/bes827/reporap/contents/');
         const data = await response.json();
+
+        // Sort files by last commit date descending
+        const filesWithDates = await Promise.all(
+          data.map(async (file) => {
+            const commitResponse = await fetch(`https://api.github.com/repos/bes827/reporap/commits?path=${file.path}&per_page=1`);
+            const commits = await commitResponse.json();
+            const date = commits[0]?.commit?.committer?.date || "1970-01-01T00:00:00Z";
+            return { ...file, lastModified: new Date(date) };
+          })
+        );
+
+        // Sort newest first
+        filesWithDates.sort((a, b) => b.lastModified - a.lastModified);
+
         let tableString = '<table><tbody>';
 
-        for (let file of data) {
-            if (file.name !== 'upload.html' && file.name !== 'README.md' && file.name !== 'index.html') {
-            tableString += `<tr><td><a href="${file.path}" target="_blank">${file.path}</a>   <a href="https://via.hypothes.is/https://bes827.github.io/reporap/${file.path}" target="_blank"> &#128220;&#128220; </a></td></tr>`;
+        for (let file of filesWithDates) {
+          if (file.name !== 'upload.html' && file.name !== 'README.md' && file.name !== 'index.html') {
+            // Remove extension from displayed title
+            const fileTitle = file.name.replace(/\.[^/.]+$/, "");
+            tableString += `
+              <tr>
+                <td>
+                  <a href="${file.path}" target="_blank">${fileTitle}</a>
+                  <a href="https://via.hypothes.is/https://bes827.github.io/reporap/${file.path}" target="_blank"> 📜📜 </a>
+                </td>
+              </tr>`;
           }
         }
 
         tableString += '</tbody></table>';
         let uploadLink = '<a href="upload.html" target="_blank"><h3>UPLOAD</h3></a>';
         document.getElementsByTagName('body')[0].innerHTML = `
-          <br>  <h2>Guidelines and Relevant Articles&nbsp;</h2> <hr /> <br>  
+          <br><h2>Guidelines and Relevant Articles&nbsp;</h2><hr/><br>
           ${uploadLink}
-          <hr> <br>
+          <hr><br>
           <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for files...">
           ${tableString}
         `;
@@ -39,11 +61,7 @@
         let link = rows[i].getElementsByTagName("a")[0];
         if (link) {
           let text = link.textContent || link.innerText;
-          if (text.toUpperCase().indexOf(filter) > -1) {
-            rows[i].style.display = "";
-          } else {
-            rows[i].style.display = "none";
-          }
+          rows[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
         }
       }
     }
