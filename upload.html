@@ -1,8 +1,27 @@
-<<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <title>Upload Files to GitHub</title>
+    <style>
+      #dropZone {
+        border: 2px dashed #aaa;
+        border-radius: 8px;
+        padding: 32px;
+        text-align: center;
+        color: #666;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
+      #dropZone.dragover {
+        background: #e0e0e0;
+        border-color: #2196f3;
+        color: #2196f3;
+      }
+      #progress.active {
+        /* spinner or highlight, optional */
+      }
+    </style>
   </head>
   <body>
      <br> <br> <br>
@@ -15,76 +34,107 @@
       <input type="password" id="passwordInput" name="password"><br>
       <button type="submit">Upload Files</button>
     </form>
-    <div id="progress"></div>
 
+    <!-- Drag & drop zone -->
+    <div id="dropZone">
+      <strong>Or drag and drop files here</strong>
+    </div>
+
+    <div id="progress"></div>
     <div id="message"></div>
 
     <script>
     const uploadForm = document.querySelector('#uploadForm');
-const fileInput = document.querySelector('#fileInput');
-const accessToken = 'github_pat_11AORCIUQ01c1q6ltdf5Wf_tC60pyVjWOqNYbYKdIimitwaQh9i6Cv6OhDd**y7eWSJ4IW37Vtar0vUu';
-let paswed;
-const messageDiv = document.querySelector('#message');
-const progressDiv = document.querySelector('#progress');
+    const fileInput = document.querySelector('#fileInput');
+    const dropZone = document.querySelector('#dropZone');
+    const accessToken = 'github_pat_11AORCIUQ01c1q6ltdf5Wf_tC60pyVjWOqNYbYKdIimitwaQh9i6Cv6OhDd**y7eWSJ4IW37Vtar0vUu';
+    let paswed;
+    const messageDiv = document.querySelector('#message');
+    const progressDiv = document.querySelector('#progress');
+    let droppedFiles = [];
 
-// Listen for form submission
-uploadForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  paswed = document.querySelector('#passwordInput').value; // Get the password input value
-
-  // Concatenate password input value with access token
-  const accessToken2 = accessToken.replace("**", paswed);
-
-  // Loop through selected files and upload each one
-  const files = fileInput.files;
-  let numFiles = files.length;
-  let numUploaded = 0;
-  progressDiv.style.width = 0; // Reset progress bar width to 0
-  progressDiv.innerText = ''; // Clear progress bar text
-  progressDiv.classList.add('active'); // Add "active" class to show spinner
-
-  for (let i = 0; i < numFiles; i++) {
-    const file = files[i];
-    const reader = new FileReader();
-    reader.addEventListener('load', (event) => {
-      const content = event.target.result;
-      const encodedContent = btoa(content); // Encode file content as base64
-      const filename = file.name;
-      const url = `https://api.github.com/repos/bes827/reporap/contents/${filename}`;
-      const options = {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${accessToken2}`, // Use the concatenated access token
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: `Add ${filename}`,
-          content: encodedContent
-        })
-      };
-      fetch(url, options)
-        .then(response => {
-          if (response.ok) {
-            numUploaded++;
-            const progress = (numUploaded / numFiles) * 100;
-            progressDiv.style.width = `${progress}%`; // Update progress bar width
-            progressDiv.innerText = `${progress}%`; // Update progress bar text
-            if (numUploaded === numFiles) {
-              progressDiv.classList.remove('active'); // Remove "active" class to hide spinner
-              messageDiv.innerText = 'All files uploaded successfully.';
-            }
-          } else {
-            throw new Error(`Error uploading file ${filename}: ${response.statusText}`);
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          messageDiv.innerText = `Error uploading file ${filename}: ${error}`;
-        });
+    // Drag & Drop Events
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dropZone.classList.add('dragover');
     });
-    reader.readAsBinaryString(file);
-  }
-});
+
+    dropZone.addEventListener('dragleave', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('dragover');
+      droppedFiles = Array.from(event.dataTransfer.files);
+      messageDiv.innerText = `${droppedFiles.length} file(s) ready to upload. Click 'Upload Files' to proceed.`;
+    });
+
+    // Listen for form submission
+    uploadForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      paswed = document.querySelector('#passwordInput').value;
+
+      // Concatenate password input value with access token
+      const accessToken2 = accessToken.replace("**", paswed);
+
+      // Use dropped files if present, else use file input
+      const files = droppedFiles.length ? droppedFiles : fileInput.files;
+      if (files.length === 0) {
+        messageDiv.innerText = "No files selected.";
+        return;
+      }
+
+      let numFiles = files.length;
+      let numUploaded = 0;
+      progressDiv.style.width = 0;
+      progressDiv.innerText = '';
+      progressDiv.classList.add('active');
+
+      for (let i = 0; i < numFiles; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+          const content = event.target.result;
+          const encodedContent = btoa(content); // Encode file content as base64
+          const filename = file.name;
+          const url = `https://api.github.com/repos/bes827/reporap/contents/${filename}`;
+          const options = {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${accessToken2}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Add ${filename}`,
+              content: encodedContent
+            })
+          };
+          fetch(url, options)
+            .then(response => {
+              if (response.ok) {
+                numUploaded++;
+                const progress = (numUploaded / numFiles) * 100;
+                progressDiv.style.width = `${progress}%`;
+                progressDiv.innerText = `${progress}%`;
+                if (numUploaded === numFiles) {
+                  progressDiv.classList.remove('active');
+                  messageDiv.innerText = 'All files uploaded successfully.';
+                  droppedFiles = []; // Reset dropped files after upload
+                }
+              } else {
+                throw new Error(`Error uploading file ${filename}: ${response.statusText}`);
+              }
+            })
+            .catch(error => {
+              console.error(error);
+              messageDiv.innerText = `Error uploading file ${filename}: ${error}`;
+            });
+        });
+        reader.readAsBinaryString(file);
+      }
+    });
     </script>
   </body>
 </html>
