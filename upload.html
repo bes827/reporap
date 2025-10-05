@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Upload Files to GitHub</title>
+    <title>Upload and Delete Files on GitHub</title>
     <style>
       #dropZone {
         border: 2px dashed #aaa;
@@ -19,13 +19,34 @@
         color: #2196f3;
       }
       #progress.active {
-        /* spinner or highlight, optional */
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #2196f3;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      table {
+        border-collapse: collapse;
+        margin-top: 10px;
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
       }
     </style>
   </head>
   <body>
-     <br> <br> <br>
-    <h2>Upload </h2>
+    <br><br><br>
+    <h2>Upload</h2>
     <hr>
     <form id="uploadForm">
       <label for="fileInput">Select one or more files to upload:</label><br>
@@ -35,7 +56,6 @@
       <button type="submit">Upload Files</button>
     </form>
 
-    <!-- Drag & drop zone -->
     <div id="dropZone">
       <strong>Or drag and drop files here</strong>
     </div>
@@ -43,98 +63,128 @@
     <div id="progress"></div>
     <div id="message"></div>
 
+    <h2>Delete</h2>
+    <hr>
+    <input type="password" id="deletePassword" placeholder="Enter Key to Delete"><br><br>
+    <div id="fileList">Loading file list...</div>
+    <button id="deleteButton">Delete Selected Files</button>
+    <div id="deleteMessage"></div>
+
     <script>
-    const uploadForm = document.querySelector('#uploadForm');
-    const fileInput = document.querySelector('#fileInput');
-    const dropZone = document.querySelector('#dropZone');
-    const accessToken = 'github_pat_11AORCIUQ01c1q6ltdf5Wf_tC60pyVjWOqNYbYKdIimitwaQh9i6Cv6OhDd**y7eWSJ4IW37Vtar0vUu';
-    let paswed;
-    const messageDiv = document.querySelector('#message');
-    const progressDiv = document.querySelector('#progress');
-    let droppedFiles = [];
+      const uploadForm = document.querySelector('#uploadForm');
+      const fileInput = document.querySelector('#fileInput');
+      const dropZone = document.querySelector('#dropZone');
+      const accessToken = 'github_pat_11AORCIUQ01c1q6ltdf5Wf_tC60pyVjWOqNYbYKdIimitwaQh9i6Cv6OhDd**y7eWSJ4IW37Vtar0vUu';
+      const messageDiv = document.querySelector('#message');
+      const progressDiv = document.querySelector('#progress');
+      const fileListDiv = document.querySelector('#fileList');
+      const deleteButton = document.querySelector('#deleteButton');
+      const deleteMessage = document.querySelector('#deleteMessage');
+      let droppedFiles = [];
 
-    // Drag & Drop Events
-    dropZone.addEventListener('dragover', (event) => {
-      event.preventDefault();
-      dropZone.classList.add('dragover');
-    });
+      // Drag & Drop Upload
+      dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+      dropZone.addEventListener('dragleave', e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault(); dropZone.classList.remove('dragover');
+        droppedFiles = Array.from(e.dataTransfer.files);
+        messageDiv.innerText = `${droppedFiles.length} file(s) ready to upload.`;
+      });
 
-    dropZone.addEventListener('dragleave', (event) => {
-      event.preventDefault();
-      dropZone.classList.remove('dragover');
-    });
+      uploadForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const paswed = document.querySelector('#passwordInput').value;
+        const accessToken2 = accessToken.replace("**", paswed);
+        const files = droppedFiles.length ? droppedFiles : fileInput.files;
+        if (!files.length) return messageDiv.innerText = "No files selected.";
 
-    dropZone.addEventListener('drop', (event) => {
-      event.preventDefault();
-      dropZone.classList.remove('dragover');
-      droppedFiles = Array.from(event.dataTransfer.files);
-      messageDiv.innerText = `${droppedFiles.length} file(s) ready to upload. Click 'Upload Files' to proceed.`;
-    });
-
-    // Listen for form submission
-    uploadForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      paswed = document.querySelector('#passwordInput').value;
-
-      // Concatenate password input value with access token
-      const accessToken2 = accessToken.replace("**", paswed);
-
-      // Use dropped files if present, else use file input
-      const files = droppedFiles.length ? droppedFiles : fileInput.files;
-      if (files.length === 0) {
-        messageDiv.innerText = "No files selected.";
-        return;
-      }
-
-      let numFiles = files.length;
-      let numUploaded = 0;
-      progressDiv.style.width = 0;
-      progressDiv.innerText = '';
-      progressDiv.classList.add('active');
-
-      for (let i = 0; i < numFiles; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.addEventListener('load', (event) => {
-          const content = event.target.result;
-          const encodedContent = btoa(content); // Encode file content as base64
-          const filename = file.name;
-          const url = `https://api.github.com/repos/bes827/reporap/contents/${filename}`;
+        let numUploaded = 0;
+        progressDiv.classList.add('active');
+        for (let file of files) {
+          const content = await file.text();
+          const encodedContent = btoa(content);
+          const url = `https://api.github.com/repos/bes827/reporap/contents/${file.name}`;
           const options = {
             method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${accessToken2}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Add ${filename}`,
-              content: encodedContent
-            })
+            headers: { 'Authorization': `Bearer ${accessToken2}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `Add ${file.name}`, content: encodedContent })
           };
-          fetch(url, options)
-            .then(response => {
-              if (response.ok) {
-                numUploaded++;
-                const progress = (numUploaded / numFiles) * 100;
-                progressDiv.style.width = `${progress}%`;
-                progressDiv.innerText = `${progress}%`;
-                if (numUploaded === numFiles) {
-                  progressDiv.classList.remove('active');
-                  messageDiv.innerText = 'All files uploaded successfully.';
-                  droppedFiles = []; // Reset dropped files after upload
-                }
-              } else {
-                throw new Error(`Error uploading file ${filename}: ${response.statusText}`);
-              }
-            })
-            .catch(error => {
-              console.error(error);
-              messageDiv.innerText = `Error uploading file ${filename}: ${error}`;
-            });
-        });
-        reader.readAsBinaryString(file);
+          try {
+            const res = await fetch(url, options);
+            if (!res.ok) throw new Error(res.statusText);
+            numUploaded++;
+            messageDiv.innerText = `Uploaded ${numUploaded}/${files.length}`;
+          } catch (err) {
+            console.error(err);
+            messageDiv.innerText = `Error uploading ${file.name}`;
+          }
+        }
+        progressDiv.classList.remove('active');
+        messageDiv.innerText = 'Upload complete.';
+        droppedFiles = [];
+        loadFiles(); // Refresh file list
+      });
+
+      // Load repo file list
+      async function loadFiles() {
+        fileListDiv.innerHTML = "Loading...";
+        const response = await fetch('https://api.github.com/repos/bes827/reporap/contents/');
+        const data = await response.json();
+
+        // Fetch last modification time for sorting
+        const filesWithDates = await Promise.all(data.map(async (file) => {
+          const r = await fetch(`https://api.github.com/repos/bes827/reporap/commits?path=${file.path}&per_page=1`);
+          const c = await r.json();
+          const date = c[0]?.commit?.committer?.date || "1970-01-01T00:00:00Z";
+          return { ...file, lastModified: new Date(date) };
+        }));
+
+        filesWithDates.sort((a, b) => b.lastModified - a.lastModified);
+        let html = '<table><tr><th></th><th>File</th><th>Last Modified</th></tr>';
+        for (let f of filesWithDates) {
+          if (!['README.md','upload.html','index.html'].includes(f.name)) {
+            html += `<tr><td><input type="checkbox" value="${f.path}"></td>
+            <td>${f.name}</td><td>${f.lastModified.toLocaleString()}</td></tr>`;
+          }
+        }
+        html += '</table>';
+        fileListDiv.innerHTML = html;
       }
-    });
+
+      // Delete selected files
+      deleteButton.addEventListener('click', async () => {
+        const paswed = document.querySelector('#deletePassword').value;
+        if (!paswed) return deleteMessage.innerText = "Enter password.";
+        const accessToken2 = accessToken.replace("**", paswed);
+
+        const checked = [...document.querySelectorAll('#fileList input[type=checkbox]:checked')];
+        if (checked.length === 0) return deleteMessage.innerText = "No files selected.";
+        let count = 0;
+        for (let cb of checked) {
+          try {
+            const getUrl = `https://api.github.com/repos/bes827/reporap/contents/${cb.value}`;
+            const res = await fetch(getUrl, { headers: { 'Authorization': `Bearer ${accessToken2}` }});
+            const data = await res.json();
+            const sha = data.sha;
+            const delOpts = {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${accessToken2}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: `Delete ${cb.value}`, sha })
+            };
+            const delRes = await fetch(getUrl, delOpts);
+            if (!delRes.ok) throw new Error(delRes.statusText);
+            count++;
+          } catch (err) {
+            console.error(err);
+            deleteMessage.innerText = `Error deleting ${cb.value}`;
+          }
+        }
+        deleteMessage.innerText = `Deleted ${count} file(s) successfully.`;
+        loadFiles(); // refresh list
+      });
+
+      // Initial file list load
+      loadFiles();
     </script>
   </body>
 </html>
