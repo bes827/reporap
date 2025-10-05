@@ -1,0 +1,51 @@
+<body>
+  <script>
+    const password = "test";
+    let enteredPassword = prompt("Enter the password:");
+
+    if (enteredPassword === password) {
+      (async () => {
+        const response = await fetch('https://api.github.com/repos/bes827/reporap/contents/');
+        const data = await response.json();
+        let tableString = '<table><tbody>';
+
+        for (let file of data) {
+          if (file.name !== 'index.html' && file.name !== '0_upload.html') {
+            tableString += `<tr><td><a href="${file.path}" target="_blank">${file.path}</a>   <a href="https://via.hypothes.is/https://bes827.github.io/reporap/${file.path}" target="_blank"> &#128220;&#128220; </a></td></tr>`;
+          }
+        }
+
+        tableString += '</tbody></table>';
+        let uploadLink = '<a href="0_upload.html" target="_blank"><h3>UPLOAD</h3></a>';
+        document.getElementsByTagName('body')[0].innerHTML = `
+          <br>  <h2>Guidelines and Relevant Articles&nbsp;</h2> <hr /> <br>  
+          ${uploadLink}
+          <hr> <br>
+          <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for files...">
+          ${tableString}
+        `;
+      })();
+    } else {
+      document.getElementsByTagName('body')[0].innerHTML = "Incorrect password. Please try again.";
+    }
+
+    function filterTable() {
+      let input = document.getElementById("searchInput");
+      let filter = input.value.toUpperCase();
+      let table = document.getElementsByTagName("table")[0];
+      let rows = table.getElementsByTagName("tr");
+
+      for (let i = 0; i < rows.length; i++) {
+        let link = rows[i].getElementsByTagName("a")[0];
+        if (link) {
+          let text = link.textContent || link.innerText;
+          if (text.toUpperCase().indexOf(filter) > -1) {
+            rows[i].style.display = "";
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+      }
+    }
+  </script>
+</body>
