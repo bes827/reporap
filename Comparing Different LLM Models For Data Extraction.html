@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comparing Different LLM Models For Data Extraction</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Comparing Different LLM Models For Data Extraction</strong></summary>
+            <div>
+                <ul><li>Author: Lucas McGregor</li><li>Publication Date: May 13, 2025</li><li>Read Time: 7 min read</li><li>Platform: Medium</li><li>This article explores the performance of various Large Language Models (LLMs) and embedding models in a realistic data extraction scenario, highlighting the complexities and architectural challenges of integrating AI into automated data processing.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What does RAG stand for, and what problem does it solve for LLMs?</li><li>2. Which specific embedding model was found to produce the best overall results in this study?</li><li>3. For the Qwen series, at what parameter size did performance plateau, with larger models only increasing runtime without improving accuracy?</li><li>4. How did switching the embedding model from BAAI/bge-base-en-v1.5 to nomic-embed-text impact Gemma3&#x27;s ability to produce valid JSON?</li><li>5. What is the primary architectural shift predicted for future agent-based systems compared to traditional enterprise software?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>LLMs for Data Extraction: Overview</strong></summary>
+            <div>
+                <ul><li>LLMs offer a solution for automating data extraction @ scale from unstructured human text and documents.</li><li>Many processes defy automation due to a &#x27;long tail&#x27; of unstructured data, human text, and print-designed documents.</li><li>AI/LLMs → potential for fully automated data extraction, handling large document volumes + diverse formats w/o pre-building for all options.</li></ul>
+                
+        <details>
+            <summary><strong>Challenges of LLM Evolution</strong></summary>
+            <div>
+                <ul><li>LLM models evolve rapidly, making it difficult for teams to keep systems updated.</li><li>Major versions: released several times/year.</li><li>Minor iterations: every couple of weeks.</li><li>Community evolution (HuggingFace, LlamaHub) → constant updates needed to avoid falling behind.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Architectural Implications</strong></summary>
+            <div>
+                <ul><li>Current AI coding: models, views, widgets, config, localization often coded together (like early UI dev).</li><li>Frameworks (LlamaIndex, LangChain): AI/model-agnostic, but developers still embed models + prompts into code.</li><li>DSPy: aims for modularity, separating business logic, prompts, AI agents.</li><li>Future: LLMs introduce new software architecture challenges; established understanding of maintenance/updates is lacking.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>The Experiment: Comparing Multiple Models</strong></summary>
+            <div>
+                <ul><li>Goal: Test LLM performance in a realistic scenario: read a resume, answer questions about candidate, return answers in well-defined format.</li><li>Methodology: Series of LLMs + models tested on same task; results compared against known values.</li><li>Scoring: Based on a) # questions answered + b) accuracy of answers.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrieval Augmented Generation (RAG)</strong></summary>
+            <div>
+                <ul><li>LLMs know nothing beyond their training data; e.g., ChatGPT 3.0 (2020) cannot answer questions about post-2020 events.</li><li>RAG solves LLM&#x27;s limited knowledge by providing necessary information.</li><li>Option 1: Put resume into request prompt (less scalable).</li><li>Option 2: Use a second model to convert resume → searchable database (scales better for complexity + performance).</li></ul>
+                
+        <details>
+            <summary><strong>RAG Mechanism: Embedding Models</strong></summary>
+            <div>
+                <ul><li>RAG introduces a second model: an embedding model.</li><li>LLMs work w/ tokens (snippets of text), not human language; they model token interaction.</li><li>New human text → tokens → vectors (mapping tokens into a coordinate system).</li><li>Query: LLM creates query (tokens) → uses vector coordinates to find &#x27;closest&#x27; entries in database.</li></ul>
+                
+        <details>
+            <summary><strong>Model Interaction Complexity</strong></summary>
+            <div>
+                <ul><li>Different LLM models interact differently w/ different embedding models.</li><li>Focus often on optimizing a single model, overlooking interactions between models + data formats.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scoring Process Details</strong></summary>
+            <div>
+                <ul><li>Framework: LlamaIndex used for invoking models.</li><li>Local Execution: Models run locally using Ollama.</li><li>Output Format: Pydantic defined the output schema + described data for LLMs to extract.</li><li>Testing: Each combination of embedding + LLM model run 10 times; average + total score taken for accuracy + consistency.</li></ul>
+                
+        <details>
+            <summary><strong>Combinations Tested</strong></summary>
+            <div>
+                <ul><li>3 embedding models.</li><li>13 LLM models.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scoring Logic</strong></summary>
+            <div>
+                <ul><li>Points added: Accurate information extraction from resume.</li><li>Points deducted:</li><li>- Couldn&#x27;t extract mandatory fact (e.g., name).</li><li>- Inaccurate fact (e.g., hallucinating a skill, misinterpreting employer as a role).</li><li>FAIL: LLM produced output unmappable to Pydantic schema → unvalidatable programmatically.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Structures (Pydantic Models)</strong></summary>
+            <div>
+                <ul><li>Designed to be structured but not rigid; most fields could be null or accept open structures (list of strings/dicts).</li><li>Validation: Compared responses to known answers, not rigid schema.</li><li>Common Pitfall: Many LLMs return poorly formatted JSON; checked + corrected before parsing.</li><li>Test Complexity: Included a nested field (`work_experience`) to simulate real-world scenarios.</li></ul>
+                
+        <details>
+            <summary><strong>ResumeData Model</strong></summary>
+            <div>
+                <ul><li>Fields: `full_name`, `email`, `phone`, `summary`, `education`, `languages`, `linkedin_url`, `skills`, `work_experience`.</li><li>Type flexibility: `str|None` for single values; `List[str]|List[dict]|None` for lists.</li><li>`work_experience`: `List[&#x27;WorkExperience&#x27;]|None` for nested structure.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>WorkExperience Model</strong></summary>
+            <div>
+                <ul><li>Fields: `title`, `organization`, `start_date`, `end_date`, `details`.</li><li>`details`: `Any|Any` w/ `default_factory=dict` for flexible additional info.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Results of the Comparison</strong></summary>
+            <div>
+                <ul><li>Overall: Most models performed better w/ BAAI/bge-base-en-v1.5 embedding model.</li><li>This embedding produced best averages, best totals, + least failures.</li><li>Smaller models can outperform larger ones: Qwen3 (4B params) + Gemma3 (4B params) beat Llama3.3 (70.6B params).</li></ul>
+                
+        <details>
+            <summary><strong>Performance of Smaller Models</strong></summary>
+            <div>
+                <ul><li>Qwen3 + Gemma3: Distilled from larger models; possess hybrid language + reasoning modes.</li><li>Hybrid modes: designed to analyze prompt, strategize how to answer, + examine results → helped w/ complex reasoning + extraction tasks.</li><li>Inflection point for Qwen series: @ 4B parameters for this challenge.</li><li>- Smaller Qwen models: performed poorly.</li><li>- Qwen &gt; 4B: ran slower but did not improve results.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Unpredictable Model Interactions</strong></summary>
+            <div>
+                <ul><li>Gemma3: Top scorer when paired w/ BAAI/bge-base-en-v1.5.</li><li>Gemma3: Failed to produce legal JSON results when embedding switched to nomic-embed-text.</li><li>This highlights unexpected interactions between models, even in simple RAG setups.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusions &amp; Future Outlook</strong></summary>
+            <div>
+                <ul><li>Embedding model: Greatly impacts LLM performance.</li><li>Model size/vectors: Bigger models or larger vectors cost more to run, but do not always return improved results.</li><li>Model interactions: Not always straightforward to predict or understand.</li></ul>
+                
+        <details>
+            <summary><strong>Future of Agent-Based Systems</strong></summary>
+            <div>
+                <ul><li>Agent-based systems will involve multiple AIs + models, each retrainable, upgradable, or swappable.</li><li>Each interaction point becomes a source of instability.</li><li>Traditional software patterns (modularity, stability, scalability, security) may not apply.</li><li>Complexity shifts from design patterns → black box AIs.</li><li>New patterns needed to maintain enterprise-level reliability + safety.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Shift in Software Architecture</strong></summary>
+            <div>
+                <ul><li>Software architecture will need to develop new patterns + approaches.</li><li>Focus shifts from designing around data exchanges + formats → AI interaction points.</li><li>These AI interaction points are the &#x27;new APIs&#x27; of future systems.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
