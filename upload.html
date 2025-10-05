@@ -10,93 +10,76 @@
     <hr>
     <form id="uploadForm">
       <label for="fileInput">Select one or more files to upload:</label><br>
-      <input type="file" id="fileInput" name="files[]" multiple><br><br>
-      <label for="passwordInput">Key:</label><br>
-      <input type="password" id="passwordInput" name="password"><br><br>
+      <input type="file" id="fileInput" name="files[]" multiple><br>
       <button type="submit">Upload Files</button>
     </form>
     <div id="progress"></div>
     <div id="message"></div>
 
     <script>
-    const uploadForm = document.querySelector('#uploadForm');
-    const fileInput = document.querySelector('#fileInput');
-    const messageDiv = document.querySelector('#message');
-    const progressDiv = document.querySelector('#progress');
+      const uploadForm = document.querySelector('#uploadForm');
+      const fileInput = document.querySelector('#fileInput');
+      const accessToken = "YOUR_GITHUB_ACCESS_TOKEN"; // Replace with your actual GitHub token
+      const messageDiv = document.querySelector('#message');
+      const progressDiv = document.querySelector('#progress');
 
-    // Replace with your actual token prefix
-    const tokenPrefix = "dxc"; 
+      uploadForm.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-    uploadForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const enteredPassword = document.querySelector('#passwordInput').value.trim();
+        const files = fileInput.files;
+        const numFiles = files.length;
+        let numUploaded = 0;
+        progressDiv.style.width = '0';
+        progressDiv.innerText = '';
+        progressDiv.classList.add('active');
 
-      // Require correct password
-      if (enteredPassword !== "test") {
-        messageDiv.innerText = "Incorrect password. Please try again.";
-        return;
-      }
+        for (let i = 0; i < numFiles; i++) {
+          const file = files[i];
+          const reader = new FileReader();
 
-      const fullToken = tokenPrefix + enteredPassword;
-      const files = fileInput.files;
+          reader.addEventListener('load', (event) => {
+            const content = event.target.result;
+            const encodedContent = btoa(content);
+            const filename = file.name;
+            const url = `https://api.github.com/repos/bes827/reporap/contents/${filename}`;
 
-      if (files.length === 0) {
-        messageDiv.innerText = "Please select file(s) to upload.";
-        return;
-      }
+            const options = {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: `Add ${filename}`,
+                content: encodedContent
+              })
+            };
 
-      let numFiles = files.length;
-      let numUploaded = 0;
-      progressDiv.style.width = 0;
-      progressDiv.innerText = '';
-      progressDiv.classList.add('active');
+            fetch(url, options)
+              .then(response => {
+                if (response.ok) {
+                  numUploaded++;
+                  const progress = (numUploaded / numFiles) * 100;
+                  progressDiv.style.width = `${progress}%`;
+                  progressDiv.innerText = `${progress}%`;
 
-      for (let i = 0; i < numFiles; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-
-        reader.addEventListener('load', (event) => {
-          const content = event.target.result;
-          const encodedContent = btoa(content);
-          const filename = file.name;
-          const url = `https://api.github.com/repos/bes827/reporap/contents/${filename}`;
-
-          const options = {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${fullToken}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              message: `Add ${filename}`,
-              content: encodedContent
-            })
-          };
-
-          fetch(url, options)
-            .then(response => {
-              if (response.ok) {
-                numUploaded++;
-                const progress = Math.round((numUploaded / numFiles) * 100);
-                progressDiv.style.width = `${progress}%`;
-                progressDiv.innerText = `${progress}%`;
-                if (numUploaded === numFiles) {
-                  progressDiv.classList.remove('active');
-                  messageDiv.innerText = "Thank you! All files uploaded successfully.";
+                  if (numUploaded === numFiles) {
+                    progressDiv.classList.remove('active');
+                    messageDiv.innerText = 'All files uploaded successfully.';
+                  }
+                } else {
+                  throw new Error(`Error uploading file ${filename}: ${response.statusText}`);
                 }
-              } else {
-                throw new Error(`Error uploading file ${filename}: ${response.statusText}`);
-              }
-            })
-            .catch(error => {
-              console.error(error);
-              messageDiv.innerText = `Error uploading file ${filename}: ${error}`;
-            });
-        });
+              })
+              .catch(error => {
+                console.error(error);
+                messageDiv.innerText = `Error uploading file ${filename}: ${error}`;
+              });
+          });
 
-        reader.readAsBinaryString(file);
-      }
-    });
+          reader.readAsBinaryString(file);
+        }
+      });
     </script>
   </body>
 </html>
