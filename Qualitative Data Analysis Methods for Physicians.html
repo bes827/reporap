@@ -1,0 +1,625 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Qualitative Data Analysis Methods for Physicians</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Qualitative Data Analysis Methods for Physicians</strong></summary>
+            <div>
+                <ul><li>Source: Provided text on Qualitative Data Analysis.</li><li>Target Audience: Physicians.</li><li>Focus: Understanding qualitative research methodologies for clinical application and interpretation.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>Test your understanding of qualitative data analysis:</li><li>1. What is the primary difference in code derivation between Conventional and Directed Content Analysis?</li><li>2. Which qualitative analysis method is specifically designed for applied or policy-relevant research and combines inductive and deductive elements?</li><li>3. In Summative Content Analysis, what is the initial step before interpreting underlying meaning?</li><li>4. What is the purpose of &#x27;deviant or negative cases&#x27; in the analytical induction process?</li><li>5. Which content analysis approach risks strong bias due to its reliance on existing theory?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>General Principles of Qualitative Data Analysis</strong></summary>
+            <div>
+                <ul><li>Systematic, rigorous, time-consuming process.</li><li>Involves sifting + interpreting large amounts of textual data (e.g., transcripts, fieldnotes).</li><li>Goal: make sense of findings.</li></ul>
+                
+        <details>
+            <summary><strong>Analytical Process Timing</strong></summary>
+            <div>
+                <ul><li>Often begins *during* data collection (sequential/interim analysis).</li><li>Allows researcher to refine questions + pursue emerging avenues.</li></ul>
+                
+        <details>
+            <summary><strong>Deviant / Negative Cases</strong></summary>
+            <div>
+                <ul><li>Cases running counter to emerging hypotheses.</li><li>Used to refine propositions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Quantification vs. Categorization</strong></summary>
+            <div>
+                <ul><li>Generally avoids quantifying data for statistical representativeness.</li><li>Uses analytical categories → describe + explain phenomena.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Category Derivation</strong></summary>
+            <div>
+                <ul><li>Categories may be derived inductively or deductively.</li></ul>
+                
+        <details>
+            <summary><strong>Inductive Derivation</strong></summary>
+            <div>
+                <ul><li>Categories emerge from the data.</li><li>Described as Grounded Theory.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Deductive Derivation</strong></summary>
+            <div>
+                <ul><li>Categories based on existing theory or pre-set objectives.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Qualitative Content Analysis</strong></summary>
+            <div>
+                <ul><li>Widely used method for analyzing text data.</li><li>Three distinct approaches: Conventional, Directed, Summative.</li></ul>
+                
+        <details>
+            <summary><strong>Conventional Content Analysis</strong></summary>
+            <div>
+                <ul><li>Codes + categories derived directly from the data.</li><li>Consistent w/ qualitative descriptive approach.</li><li>Used in studies reporting participant experience (e.g., clinicians&#x27; perspectives on SICP).</li></ul>
+                
+        <details>
+            <summary><strong>Study Goal</strong></summary>
+            <div>
+                <ul><li>To describe a phenomenon.</li><li>When existing theory/research literature is limited.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Process: Inductive Category Development</strong></summary>
+            <div>
+                <ul><li>Researchers immerse themselves in data; read repeatedly → gain sense of whole.</li><li>Data read word by word → derive codes by highlighting key concepts.</li><li>Codes sorted into categories (meaningful clusters, ideally 10-15) → often directly from text.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Codes Source</strong></summary>
+            <div>
+                <ul><li>Derived directly from the data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pros</strong></summary>
+            <div>
+                <ul><li>Gains direct information from study participants.</li><li>W/o imposing preconceived categories/theoretical perspectives.</li><li>Knowledge generated based on participants&#x27; unique perspectives; grounded in actual data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cons / Challenges</strong></summary>
+            <div>
+                <ul><li>Risk of incomplete understanding of context → findings may not accurately represent data (threat to credibility).</li><li>Can be confused w/ other methods (e.g., Grounded Theory, Phenomenology).</li><li>Limited in theory development compared to GTM.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Directed Content Analysis</strong></summary>
+            <div>
+                <ul><li>Begins w/ existing theory/framework.</li><li>Uses theory to guide the analysis.</li></ul>
+                
+        <details>
+            <summary><strong>Study Goal</strong></summary>
+            <div>
+                <ul><li>To validate or extend conceptually a theoretical framework or theory.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Process: Deductive Category Application</strong></summary>
+            <div>
+                <ul><li>Researchers identify key concepts/variables from existing theory as initial coding categories.</li><li>Develop operational definitions.</li><li>Data coded using these predetermined codes.</li><li>Text not codable w/ initial scheme → new code / identify subcategories.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Codes Source</strong></summary>
+            <div>
+                <ul><li>Derived from theory or relevant research findings.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pros</strong></summary>
+            <div>
+                <ul><li>Existing theory can be efficiently supported + extended.</li><li>Acknowledges researchers unlikely to be working from a naive perspective.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cons / Challenges</strong></summary>
+            <div>
+                <ul><li>Use of theory inherently creates strong bias → researchers more likely to find evidence supportive of theory.</li><li>Risk: participants may receive cues from targeted questions → ↓ neutrality.</li><li>Overemphasis on theory can blind researchers to important contextual aspects of phenomenon.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Summative Content Analysis</strong></summary>
+            <div>
+                <ul><li>Characterized by counting specific content.</li><li>Counting occurs *before* moving to interpretation of meaning.</li></ul>
+                
+        <details>
+            <summary><strong>Study Goal</strong></summary>
+            <div>
+                <ul><li>Identify + quantify certain words/content (manifest content analysis).</li><li>Followed by interpretation of underlying context (latent content analysis).</li><li>Goal: understand contextual use of words.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Process</strong></summary>
+            <div>
+                <ul><li>Analysis begins w/ searches + frequency counts of identified keywords/content (often computer-assisted).</li><li>Quantification step followed by interpretation (latent content analysis).</li><li>Goal: discover underlying meanings + explore word usage.</li><li>Counting used to identify patterns + contextualize codes.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Codes Source</strong></summary>
+            <div>
+                <ul><li>Keywords derived from researcher interest or a review of literature.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pros</strong></summary>
+            <div>
+                <ul><li>Unobtrusive + nonreactive way to study phenomenon of interest.</li><li>Can provide basic insights into how words are actually used.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cons / Challenges</strong></summary>
+            <div>
+                <ul><li>Findings may be limited by inattention to broader meanings present in data.</li><li>Initial phase is essentially quantitative.</li><li>Interpretation must proceed to latent content analysis for qualitative classification.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Other Systematic Qualitative Analysis Methods</strong></summary>
+            <div>
+                <ul><li>Beyond content analysis, other structured approaches exist.</li></ul>
+                
+        <details>
+            <summary><strong>The Framework Approach</strong></summary>
+            <div>
+                <ul><li>Developed specifically for applied or policy-relevant qualitative research.</li><li>Combines inductive + deductive elements.</li></ul>
+                
+        <details>
+            <summary><strong>Process</strong></summary>
+            <div>
+                <ul><li>Analysis is more explicit + systematic.</li><li>Often informed by *a priori* reasoning (deductive) derived from study aims.</li><li>Still reflects grounded, inductive accounts of participants.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Five Stages of Analysis</strong></summary>
+            <div>
+                <ul><li>Structured, sequential steps for rigorous analysis.</li></ul>
+                
+        <details>
+            <summary><strong>1. Familiarisation</strong></summary>
+            <div>
+                <ul><li>Immersion in the raw data (tapes, transcripts, notes).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>2. Identifying a Thematic Framework</strong></summary>
+            <div>
+                <ul><li>Creating a detailed index of key issues, concepts, + themes.</li><li>Based on *a priori* questions + recurrent issues raised by respondents.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>3. Indexing</strong></summary>
+            <div>
+                <ul><li>Systematically applying the thematic framework (numerical codes) to all textual data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>4. Charting</strong></summary>
+            <div>
+                <ul><li>Rearranging the data according to the framework.</li><li>Typically by creating charts containing distilled summaries (abstraction + synthesis) of views + experiences.</li><li>≠ simple cut-and-paste methods.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>5. Mapping and Interpretation</strong></summary>
+            <div>
+                <ul><li>Using the charts to define concepts, create typologies, find associations, + provide explanations for findings.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pros</strong></summary>
+            <div>
+                <ul><li>Systematic + rigorous.</li><li>Analysis designed to be viewed + assessed by people other than primary analyst.</li><li>Useful for linking findings w/ quantitative data.</li><li>Works well under short timescales.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cons / Challenges</strong></summary>
+            <div>
+                <ul><li>Data collection tends to be more structured than normal for other qualitative research.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Grounded Theory and Analytic Induction</strong></summary>
+            <div>
+                <ul><li>General processes describing how categories + theories are developed.</li></ul>
+                
+        <details>
+            <summary><strong>Grounded Theory (GTM)</strong></summary>
+            <div>
+                <ul><li>Inductive process of identifying analytical categories as they emerge from the data.</li><li>Aim: develop theory &#x27;from the ground or research field upwards&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Analytic Induction</strong></summary>
+            <div>
+                <ul><li>Involves iterative testing + retesting of theoretical ideas using the data.</li><li>Researcher examines cases → develops hypotheses/constructs.</li><li>Examines further cases → tests these propositions.</li><li>Crucial for handling deviant/negative cases → refine propositions.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Constant Comparison</strong></summary>
+            <div>
+                <ul><li>Key technique used in inductive analysis.</li><li>Each item of data checked/compared w/ rest of data → establish coherent + systematic analytical categories.</li><li>Inclusive process → aims to reflect many nuances in data, ≠ reducing data to few numerical codes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
