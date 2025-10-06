@@ -1,0 +1,585 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Three Approaches to Qualitative Content Analysis</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Three Approaches to Qualitative Content Analysis</strong></summary>
+            <div>
+                <ul><li>Journal: Qualitative Health Research</li><li>Publication Date: November 2005</li><li>DOI: 10.1177/1049732305276687</li><li>Focus: Delineates 3 distinct qualitative content analysis approaches: conventional, directed, summative.</li><li>Goal: Interpret meaning from text data; adheres to naturalistic paradigm.</li><li>Key differences: coding schemes, origins of codes, threats to trustworthiness.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary distinction between conventional and directed content analysis regarding code development?</li><li>2. Which content analysis approach typically begins with identifying and quantifying specific words or content?</li><li>3. What is a key challenge of the conventional content analysis approach related to context?</li><li>4. In directed content analysis, what is a potential bias related to using existing theory?</li><li>5. How many classic steps are generally involved in content analysis, regardless of the approach?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Qualitative Content Analysis: Overview</strong></summary>
+            <div>
+                <ul><li>Widely used qualitative research technique in health studies.</li><li>Flexible method for analyzing text data.</li><li>Focuses on language characteristics as communication w/ attention to content/contextual meaning.</li></ul>
+                
+        <details>
+            <summary><strong>Definition &amp; Purpose</strong></summary>
+            <div>
+                <ul><li>Research method for subjective interpretation of text data.</li><li>Achieved via systematic classification: coding + identifying themes/patterns.</li><li>Goal: Provide knowledge + understanding of phenomenon under study.</li></ul>
+                
+        <details>
+            <summary><strong>Data Sources</strong></summary>
+            <div>
+                <ul><li>Text data: verbal, print, electronic forms.</li><li>Obtained from: narrative responses, open-ended survey questions, interviews, focus groups, observations, print media (articles, books, manuals).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Beyond Word Counts</strong></summary>
+            <div>
+                <ul><li>Goes beyond merely counting words.</li><li>Examines language intensely to classify large text amounts into efficient categories.</li><li>Categories represent: explicit communication / inferred communication.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Historical Context</strong></summary>
+            <div>
+                <ul><li>Long history in research; dates back to 18th century (Scandinavia).</li><li>Early 20th century (US): used as qualitative / quantitative method.</li><li>Later: primarily quantitative (text coded into explicit categories, described statistically).</li><li>More recently: recognized for qualitative analysis in health research → ↑ application + popularity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Comparison to Other Qualitative Methods</strong></summary>
+            <div>
+                <ul><li>One of numerous methods for text data analysis.</li><li>Other methods: ethnography, grounded theory (GTM), phenomenology, historical research.</li><li>Shares similar initial analytical approach w/ GTM/phenomenology.</li><li>Differs: GTM/phenomenology go beyond to develop theory / nuanced understanding of lived experience.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>End-of-Life (EOL) Research Example</strong></summary>
+            <div>
+                <ul><li>Hypothetical studies drawn from EOL research illustrate applications.</li><li>EOL care: area of ↑ emphasis.</li><li>Included as one of 5 research themes by NINR (2003).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Three Approaches to Qualitative Content Analysis</strong></summary>
+            <div>
+                <ul><li>Current applications show 3 distinct approaches: conventional, directed, summative.</li><li>All interpret meaning from text data; adhere to naturalistic paradigm.</li><li>Major differences: coding schemes, origins of codes, threats to trustworthiness.</li></ul>
+                
+        <details>
+            <summary><strong>Conventional Content Analysis</strong></summary>
+            <div>
+                <ul><li>Aim: Describe a phenomenon.</li><li>Appropriate when existing theory/research literature is limited.</li><li>Avoids preconceived categories; categories + names flow directly from data.</li></ul>
+                
+        <details>
+            <summary><strong>Study Design &amp; Data Collection</strong></summary>
+            <div>
+                <ul><li>Researcher X example: Emotional reactions of hospice patients.</li><li>Research question: &quot;What are the emotional reactions of terminally ill patients who are receiving hospice care?&quot;</li><li>Data collection: Individual interviews w/ open-ended questions (e.g., &quot;What has it been like to be in hospice care?&quot;).</li><li>Probes: Open-ended / specific to participant&#x27;s comments (e.g., &quot;Can you tell me more about that?&quot;).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Analysis Process</strong></summary>
+            <div>
+                <ul><li>1. Read all data repeatedly: achieve immersion, obtain sense of whole.</li><li>2. Read word by word: derive codes.</li><li>3. Highlight exact words capturing key thoughts/concepts.</li><li>4. Make notes of first impressions, thoughts, initial analysis.</li><li>5. Labels for codes emerge (often directly from text) → initial coding scheme.</li><li>6. Sort codes into categories: based on relationships/links.</li><li>7. Emergent categories organize/group codes into meaningful clusters.</li></ul>
+                
+        <details>
+            <summary><strong>Category Refinement</strong></summary>
+            <div>
+                <ul><li>Ideal # clusters: 10-15 (broad enough for many codes).</li><li>Combine/organize subcategories into fewer categories based on relationships.</li><li>Develop tree diagram: organize categories into hierarchical structure.</li><li>Develop definitions for each category, subcategory, code.</li><li>Identify exemplars for each code/category from data.</li><li>Further identify relationships between categories/subcategories: concurrence, antecedents, consequences.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Gains direct information from participants.</li><li>Avoids imposing preconceived categories/theoretical perspectives.</li><li>Knowledge generated: based on participants&#x27; unique perspectives, grounded in actual data.</li><li>Sampling (e.g., stratified): maximizes diversity of reactions.</li><li>Analysis: structured to capture complexity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Challenges &amp; Limitations</strong></summary>
+            <div>
+                <ul><li>Failing to develop complete understanding of context → failure to identify key categories.</li><li>Results in findings that do not accurately represent data.</li><li>Limited in theory development + description of lived experience.</li><li>Sampling/analysis procedures: make theoretical relationship between concepts difficult to infer.</li><li>Result: at most, concept development / model building.</li></ul>
+                
+        <details>
+            <summary><strong>Trustworthiness: Credibility</strong></summary>
+            <div>
+                <ul><li>Credibility (naturalistic paradigm) ↔ internal validity (reliability/validity paradigm).</li><li>Established via: peer debriefing, prolonged engagement, persistent observation, triangulation, negative case analysis, referential adequacy, member checks.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Confusion with Other Methods</strong></summary>
+            <div>
+                <ul><li>Easily confused w/ grounded theory (GTM) or phenomenology.</li><li>These methods share initial analytical approach but go beyond content analysis.</li><li>GTM/phenomenology aim: develop theory / nuanced understanding of lived experience.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Directed Content Analysis</strong></summary>
+            <div>
+                <ul><li>Used when existing theory/prior research is incomplete or needs further description.</li><li>Goal: Validate or extend conceptually a theoretical framework/theory.</li><li>Existing theory/research: helps focus research question, provides predictions for variables/relationships.</li></ul>
+                
+        <details>
+            <summary><strong>Study Design &amp; Data Collection</strong></summary>
+            <div>
+                <ul><li>Researcher Y example: How well Kübler-Ross&#x27;s (1969) theory describes emotional passages of terminally ill patients.</li><li>Research question: &quot;How well does Kübler-Ross’s model describe the emotional passages or journeys of patients who have been diagnosed with a terminal illness?&quot;</li><li>Initial framework: Kübler-Ross&#x27;s five stages of grief (denial, anger, bargaining, depression, acceptance).</li><li>Data collection: Interviews w/ open-ended questions (e.g., &quot;What has your emotional journey been since being diagnosed with this illness?&quot;).</li><li>Probes: Targeted questions about predetermined categories (e.g., &quot;Have you felt angry since your diagnosis?&quot;).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Analysis Process</strong></summary>
+            <div>
+                <ul><li>More structured process than conventional approach.</li><li>1. Identify key concepts/variables as initial coding categories from existing theory/research.</li><li>2. Determine operational definitions for each category using the theory.</li><li>3. Coding strategies:</li><li>- Strategy A: Read transcript, highlight all text appearing to represent phenomenon (e.g., emotional reaction). Then, code highlighted passages using predetermined codes. New codes for uncategorized text.</li><li>- Strategy B: Begin coding immediately with predetermined codes. Identify/analyze uncoded data later for new categories/subcategories.</li><li>Choice of strategy depends on data + researcher goals.</li></ul>
+                
+        <details>
+            <summary><strong>Category Refinement &amp; Reporting</strong></summary>
+            <div>
+                <ul><li>Identify subcategories if needed (e.g., anger toward self, doctors, spiritual being).</li><li>Reexamine data not coded into initial categories to describe different emotional reactions.</li><li>Findings: offer supporting/nonsupporting evidence for theory.</li><li>Presentation: codes w/ exemplars, descriptive evidence.</li><li>Use rank order comparisons of frequency of codes (e.g., incidence of Kübler-Ross categories vs. newly identified reactions).</li><li>Report percent of supporting vs. nonsupporting codes per participant/total sample.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Existing theory can be supported + extended.</li><li>Explicitly acknowledges researchers are not working from a naive perspective.</li><li>Efficiently extends or refines existing theory.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Challenges &amp; Limitations</strong></summary>
+            <div>
+                <ul><li>Researchers approach data w/ informed but strong bias → more likely to find supportive evidence.</li><li>Participants might give desired answers to please researchers (e.g., agree w/ suggested emotional stages).</li><li>Overemphasis on theory can blind researchers to contextual aspects (e.g., cross-sectional design overemphasizing current reactions).</li></ul>
+                
+        <details>
+            <summary><strong>Trustworthiness: Confirmability</strong></summary>
+            <div>
+                <ul><li>Related to neutrality / confirmability (naturalistic paradigm) ↔ objectivity.</li><li>Achieved via: audit trail + audit process.</li><li>Example: Auditor review of operational definitions before study ↑ accuracy of predetermined categories.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Summative Content Analysis</strong></summary>
+            <div>
+                <ul><li>Starts w/ identifying + quantifying certain words/content in text.</li><li>Purpose: Understand contextual use of words/content.</li><li>Quantification: explores usage, not to infer meaning initially.</li></ul>
+                
+        <details>
+            <summary><strong>Manifest vs. Latent Content Analysis</strong></summary>
+            <div>
+                <ul><li>Manifest content analysis: analyzing for appearance of particular word/content (quantitative, focuses on frequency).</li><li>Summative approach goes beyond word counts to include latent content analysis.</li><li>Latent content analysis: interpretation of content, discovering underlying meanings of words/content.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Study Design &amp; Data Collection</strong></summary>
+            <div>
+                <ul><li>Researcher Z example: How terms &quot;die, dying, death&quot; vs. euphemisms are used in clinician-patient communication about hospice care.</li><li>Research question: &quot;How are the terms die, dying, and death used in clinician-patient communication when discussing hospice care, and what alternative terms are used?&quot;</li><li>Sampling: Maximize diversity around clinician/patient/family demographics (gender, age, diagnosis, ethnic background, discipline, specialization).</li><li>Communication events sampled: Discharge teaching for hospitalized patients transferring to EOL care; clinician-patient/family conferences for EOL care planning.</li><li>Sample size: 50 separate communication events (50 clinicians + patient/family pairs).</li><li>Data collection: Audiotape-recorded + verbatim transcribed conversations.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Analysis Process</strong></summary>
+            <div>
+                <ul><li>1. Computer-assisted searches for occurrences of identified words (e.g., &quot;die,&quot; &quot;death,&quot; &quot;dying&quot;).</li><li>2. Calculate word frequency counts for each term; identify source/speaker (e.g., physician, nurse, patient, family member).</li><li>3. Identify alternative/euphemistic terms; count occurrences.</li><li>4. Compare frequencies of euphemisms vs. direct terms by speaker type, clinician/patient demographics, communication event, total sample.</li><li>Counting: identifies patterns in data, contextualizes codes.</li><li>Explores word usage / discovers range of meanings in normal use.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Unobtrusive + nonreactive way to study phenomenon.</li><li>Provides basic insights into how words are actually used.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Challenges &amp; Limitations</strong></summary>
+            <div>
+                <ul><li>Findings limited by inattention to broader meanings in data.</li></ul>
+                
+        <details>
+            <summary><strong>Trustworthiness: Credibility</strong></summary>
+            <div>
+                <ul><li>Relies on credibility (internal consistency).</li><li>Mechanism: show textual evidence consistent w/ interpretation.</li><li>Example: Validation by content experts on replacement terms for &quot;death&quot; terms.</li><li>Alternatively: member check w/ participants for intended meaning.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Key Aspects &amp; Conclusion</strong></summary>
+            <div>
+                <ul><li>All qualitative content analysis approaches require 7 classic steps.</li><li>Success depends greatly on coding process.</li><li>Important for health researchers to delineate specific approach before data analysis.</li></ul>
+                
+        <details>
+            <summary><strong>Seven Classic Steps</strong></summary>
+            <div>
+                <ul><li>1. Formulating research questions.</li><li>2. Selecting sample to be analyzed.</li><li>3. Defining categories to be applied.</li><li>4. Outlining coding process + coder training.</li><li>5. Implementing coding process.</li><li>6. Determining trustworthiness.</li><li>7. Analyzing results of coding process.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>The Coding Process</strong></summary>
+            <div>
+                <ul><li>Organizes large quantities of text into fewer content categories.</li><li>Categories: patterns/themes directly expressed or derived through analysis.</li><li>Identifies relationships among categories.</li></ul>
+                
+        <details>
+            <summary><strong>Coding Scheme Development</strong></summary>
+            <div>
+                <ul><li>Researchers create/develop coding scheme to guide coders.</li><li>Scheme includes: process + rules of data analysis (systematic, logical, scientific).</li><li>Good coding scheme: central to trustworthiness.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Major Coding Differences</strong></summary>
+            <div>
+                <ul><li>Key differences center on how initial codes are developed.</li><li>Conventional: Study starts w/ observation; codes defined during data analysis; codes derived from data.</li><li>Directed: Study starts w/ theory; codes defined before + during data analysis; codes derived from theory/relevant research findings.</li><li>Summative: Study starts w/ keywords; keywords identified before + during data analysis; keywords derived from researcher interest/literature review.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recommendations for Health Researchers</strong></summary>
+            <div>
+                <ul><li>Match specific research purpose + state of science to appropriate analysis technique.</li><li>Delineate specific approach to content analysis before data analysis.</li><li>Creating + adhering to analytic procedure/coding scheme ↑ trustworthiness/validity.</li><li>Careful description of approach: provides universal language, strengthens method&#x27;s scientific base.</li><li>Content analysis: flexible, pragmatic method for developing/extending knowledge of human experience of health/illness.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
