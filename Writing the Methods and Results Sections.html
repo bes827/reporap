@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the Methods and Results Sections</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Writing the Methods and Results Sections</strong></summary>
+            <div>
+                <ul><li>This document provides guidelines for writing the Methods and Results sections of scientific articles.</li><li>It covers purpose, content, structure, verb tense, use of figures/tables, and highlighting findings.</li><li>Target audience: physicians.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What verb tense is primarily used in the Methods and Results sections?</li><li>2. What is the primary purpose of the Methods section in a scientific article?</li><li>3. What key elements should be included in the Methods section of a prospective clinical study, according to the CONSORT statement?</li><li>4. When is it appropriate to use the phrase &#x27;data not shown&#x27; in the Results section?</li><li>5. What is the recommended strategy for writing the Results section?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Methods Section</strong></summary>
+            <div>
+                <ul><li>Explains precisely what was done to answer the research question.</li><li>Provides enough detail for replication.</li><li>Common problem: lack of sufficient detail.</li></ul>
+                
+        <details>
+            <summary><strong>Purpose and Content</strong></summary>
+            <div>
+                <ul><li>Explain what you did to answer your research question.</li><li>Provide enough detail that a reader in your field could repeat your study.</li><li>Explain why each experiment, intervention, or analysis was performed.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Suggested Structure</strong></summary>
+            <div>
+                <ul><li>Use subheadings to organize material.</li><li>Basic science: Materials, Cell Lines/Cultures, Human Subjects, Animals, Experiments, Statistical Tests.</li><li>Retrospective clinical: Subjects, Selection criteria, Data reviewed, Subgroups, # of patients, Approval, Evaluations/interventions, Outcome measures, Statistical methods.</li><li>Prospective clinical: Participants, Interventions, Outcome measures, Sample size, Randomization, Blinding, Statistical methods.</li></ul>
+                
+        <details>
+            <summary><strong>Basic Science Studies</strong></summary>
+            <div>
+                <ul><li>Materials: Generic drug names, concentrations, doses, reagent grades, supplier locations.</li><li>Cell Lines/Cultures: Supplier info, preparation methods.</li><li>Human Subjects: Approval, consent, source, inclusion/exclusion, sample collection, # samples.</li><li>Animals: Standards of care, supplier, # animals, procedures, method of killing.</li><li>Experiments: Description, rationale, procedure. Chronological order usually best.</li><li>Statistical Tests: Identify tests, what they evaluate, significance values (e.g., P &lt; 0.05).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrospective Clinical Studies</strong></summary>
+            <div>
+                <ul><li>Subjects: Source (chart review, database).</li><li>Selection criteria: Inclusion/exclusion, dates.</li><li>Data reviewed: Types of data extracted.</li><li>Subgroups: How defined.</li><li># Patients: Total and per subgroup (may be in Results).</li><li>Approval: IRB and consent (or waiver).</li><li>Evaluations/Interventions: Pretreatment, treatments, follow-up. Report numbers receiving each if variations affect outcome.</li><li>Outcome Measures: Measures and clinically important differences.</li><li>Statistical Methods: Detailed for replication.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prospective Clinical Studies (CONSORT)</strong></summary>
+            <div>
+                <ul><li>Participants: Eligibility criteria, settings, locations.</li><li>Interventions: Precise details, administration.</li><li>Outcome measures: Primary/secondary, quality enhancement methods.</li><li>Sample size: Determination, interim analyses, stopping rules.</li><li>Randomization: Sequence generation (blocking, stratification), allocation concealment (numbered containers, central telephone), implementation (who generated/enrolled/assigned).</li><li>Blinding (Masking): Participants, administrators, assessors. How success evaluated.</li><li>Statistical methods: Group comparisons, subgroup/adjusted analyses.</li><li>Ethical conduct: IRB approval, informed consent.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Tailoring to Journal</strong></summary>
+            <div>
+                <ul><li>Location: Varies (after Intro, before Results, or last). Check journal.</li><li>Detail: Broad readership → more detail. Specialized → less detail for known methods.</li><li>Cite previously published techniques; briefly describe + modifications.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Verb Tense</strong></summary>
+            <div>
+                <ul><li>Use past tense. E.g., &#x27;Tissue specimens were examined...&#x27;</li><li>Past perfect for events before the study. E.g., &#x27;...interferon-alfa therapy had failed.&#x27;</li><li>Avoid present tense.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Results Section</strong></summary>
+            <div>
+                <ul><li>Provides a straightforward account of findings.</li><li>Avoids methods details (already in Methods).</li><li>Avoids in-depth interpretation (belongs in Discussion).</li></ul>
+                
+        <details>
+            <summary><strong>Purpose and Content</strong></summary>
+            <div>
+                <ul><li>Present findings clearly and concisely.</li><li>Methods: Mention type of experiment, intervention, or analysis performed.</li><li>Interpretation: Limited, can include phrases or sentences.</li></ul>
+                
+        <details>
+            <summary><strong>Interpretation Examples</strong></summary>
+            <div>
+                <ul><li>Example 1: Use interpretive phrases (e.g., contrasting finding, conflicting result, interesting finding) to guide the reader.</li><li>Example 2: Brief speculation about specific findings is acceptable.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Suggested Structure</strong></summary>
+            <div>
+                <ul><li>Order: Same as experiments in Methods.</li><li>Subheadings: Useful for organization; can mirror Methods subheadings.</li><li>Basic science: Remind readers of experiment, describe findings (refer to figures/tables), state most important aspect of data.</li><li>Clinical: Similar, but omit opening reminder sentence.</li></ul>
+                
+        <details>
+            <summary><strong>Example Structure</strong></summary>
+            <div>
+                <ul><li>1. Remind readers of the experiment/analysis performed.</li><li>2. Describe the findings, referencing figures and tables.</li><li>3. Conclude with the most important aspect of the data.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Verb Tense</strong></summary>
+            <div>
+                <ul><li>Use past tense. E.g., &#x27;Serum levels correlated...&#x27;</li><li>Avoid present tense (reserved for established facts and general conclusions).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Figures and Tables</strong></summary>
+            <div>
+                <ul><li>Present most data in figures/tables.</li><li>First mention belongs in Results.</li><li>Forces data organization/analysis.</li><li>See &#x27;Effective Figures and Tables&#x27; chapter.</li></ul>
+                
+        <details>
+            <summary><strong>Text vs. Figure vs. Table</strong></summary>
+            <div>
+                <ul><li>1-2 sentences in text is best.</li><li>More than 2 sentences → table/figure.</li><li>Tables of raw data may obscure trends; summarize data for clarity.</li><li>Graphs effectively show trends/relationships.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Limiting Numbers</strong></summary>
+            <div>
+                <ul><li>Adhere to journal limits.</li><li>Too many figures reduce impact.</li><li>Multiple panels per figure should be closely related.</li><li>Combine tables if possible.</li><li>Show representative results + note similarity in text/legend.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Minimizing Repetition</strong></summary>
+            <div>
+                <ul><li>Avoid repeating table/figure data in text.</li><li>Summarize instead of repeating.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Consistency and Accuracy</strong></summary>
+            <div>
+                <ul><li>Double-check all numbers and percentages.</li><li>Ensure data match across Abstract, Results, Discussion, tables, figures.</li><li>Follow journal guidelines for figures/tables.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Use of &#x27;Data Not Shown&#x27;</strong></summary>
+            <div>
+                <ul><li>Indicates absence of data was not an oversight.</li><li>Use sparingly.</li><li>Limit to: unimportant numbers, findings similar to presented data, routine assays.</li><li>≠ &#x27;unpublished results&#x27; (from other studies).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Highlighting Important Findings</strong></summary>
+            <div>
+                <ul><li>Summary statement before/after detailed results.</li><li>Subheadings (if permitted) can highlight importance.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategy for Writing</strong></summary>
+            <div>
+                <ul><li>1. Construct figures/tables.</li><li>2. Outline Results with subheadings.</li><li>3. List figures/tables under each subheading.</li><li>4. Write text for each subheading, referring to figures/tables.</li><li>5. Ensure a result for each method in Methods.</li><li>6. Verify data consistency between text, figures, tables.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Worksheets</strong></summary>
+            <div>
+                <ul><li>Methods and Results worksheets for prospective, retrospective, and basic science studies.</li></ul>
+                
+        <details>
+            <summary><strong>Prospective Studies Worksheet</strong></summary>
+            <div>
+                <ul><li>Methods: Patient recruitment (eligibility, setting), sample size, ethical considerations (IRB, consent), interventions, outcome measures, randomization, blinding, treatment complications, statistical methods.</li><li>Results: Number of patients per subgroup, past tense, no data duplication, summarize data, no repeated methods, limit speculation, highlight findings.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Basic Science Studies Worksheet</strong></summary>
+            <div>
+                <ul><li>Methods: Materials, cell lines/cultures, human subjects (IRB, consent, source, criteria, collection), animals (care, supplier, #, treatment), experiments (header, what/why), statistical tests.</li><li>Results: Past tense, no data duplication, summarize findings, no repeated methods, limit speculation, highlight findings.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrospective Studies Worksheet</strong></summary>
+            <div>
+                <ul><li>Methods: Study subjects (source, criteria, setting), ethical considerations (IRB, consent), study design (data types, subgroups, # patients), evaluations/interventions, outcome measures, statistical methods.</li><li>Results: Past tense, no data duplication, summarize findings, no repeated methods, limit speculation, highlight findings.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
