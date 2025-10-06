@@ -95,34 +95,55 @@
         event.preventDefault();
         const paswed = document.querySelector('#passwordInput').value;
         const accessToken2 = accessToken.replace("**", paswed);
+      
         const files = droppedFiles.length ? droppedFiles : fileInput.files;
-        if (!files.length) return messageDiv.innerText = "No files selected.";
-
+        if (!files.length) {
+          messageDiv.innerText = "No files selected.";
+          return;
+        }
+      
         let numUploaded = 0;
         progressDiv.classList.add('active');
+      
         for (let file of files) {
-          const content = await file.text();
-          const encodedContent = btoa(content);
-          const url = `https://api.github.com/repos/bes827/reporap/contents/${file.name}`;
-          const options = {
-            method: 'PUT',
-            headers: { 'Authorization': `Bearer ${accessToken2}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: `Add ${file.name}`, content: encodedContent })
-          };
           try {
+            // Read file as ArrayBuffer → then base64
+            const arrayBuffer = await file.arrayBuffer();
+            const binary = new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '');
+            const encodedContent = btoa(binary);
+      
+            const url = `https://api.github.com/repos/bes827/reporap/contents/${file.name}`;
+            const options = {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${accessToken2}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: `Add ${file.name}`,
+                content: encodedContent
+              })
+            };
+      
             const res = await fetch(url, options);
-            if (!res.ok) throw new Error(res.statusText);
+            if (!res.ok) {
+              throw new Error(`Error uploading ${file.name}: ${res.statusText}`);
+            }
+      
             numUploaded++;
-            messageDiv.innerText = `Uploaded ${numUploaded}/${files.length}`;
+            const progress = (numUploaded / files.length) * 100;
+            progressDiv.innerText = `${progress.toFixed(0)}%`;
+      
           } catch (err) {
             console.error(err);
-            messageDiv.innerText = `Error uploading ${file.name}`;
+            messageDiv.innerText = `Error uploading ${file.name}: ${err.message}`;
           }
         }
+      
         progressDiv.classList.remove('active');
-        messageDiv.innerText = 'Upload complete.';
+        messageDiv.innerText = 'All files uploaded successfully.';
         droppedFiles = [];
-        loadFiles(); // Refresh file list
+        loadFiles(); // Refresh after upload
       });
 
       // Load repo file list
