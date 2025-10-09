@@ -1,0 +1,593 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Management of Homozygous Hemochromatosis and *HFE* Gene Variants</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Management of Homozygous Hemochromatosis and *HFE* Gene Variants</strong></summary>
+            <div>
+                <ul><li>This document outlines the primary treatment strategies and management considerations for homozygous hemochromatosis, particularly focusing on individuals with the C282Y variant in the *HFE* gene.</li><li>It also addresses the management of heterozygous individuals and compound heterozygotes.</li><li>Information regarding authors, journal, and publication date was not provided in the source text.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary and most effective treatment for homozygous hemochromatosis?</li><li>2. What serum ferritin level in a C282Y homozygote necessitates urgent treatment initiation?</li><li>3. How much elemental iron is typically removed with each 500 mL phlebotomy session?</li><li>4. What is the recommended target serum ferritin range during the maintenance phase of phlebotomy?</li><li>5. For C282Y heterozygotes with elevated ferritin, what are the primary factors to investigate before considering hemochromatosis diagnosis?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Homozygous Hemochromatosis (C282Y Variant) Management</strong></summary>
+            <div>
+                <ul><li>Primary treatment for homozygous hemochromatosis, especially C282Y homozygotes, is therapeutic phlebotomy.</li><li>This method ↓ body&#x27;s iron stores; considered safe &amp; cost-effective.</li><li>Goal: prevent organ dysfunction ← excess iron / improve organ function if damage occurred.</li></ul>
+                
+        <details>
+            <summary><strong>Indications for Treatment (Phlebotomy)</strong></summary>
+            <div>
+                <ul><li>C282Y homozygote w/ ↑ serum ferritin → assumed iron overload; phlebotomy indicated.</li><li>Treatment initiated urgently in symptomatic patients / significant iron overload.</li></ul>
+                
+        <details>
+            <summary><strong>Evidence of Iron Overload</strong></summary>
+            <div>
+                <ul><li>Ferritin &gt;300 ng/mL (males) / &gt;200 ng/mL (females); especially if ≥1000 ng/mL.</li><li>Tissue injury: ↑ hepatic transaminase, ↓ hormone levels, ↓ cardiac ejection fraction.</li><li>↑ tissue iron: identified by MRI, other imaging, or tissue biopsy.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Urgency &amp; Benefit</strong></summary>
+            <div>
+                <ul><li>Symptomatic patients / serum ferritin &gt;1000 mg/L (or &gt;1000 ng/mL) → urgent treatment.</li><li>Mildly ↑ iron stores (e.g., ferritin 300–500 mg/L) also benefit.</li><li>Benefits: ↓ cardiovascular disease, ↓ extra-hepatic malignancies.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Phlebotomy Procedure (Depletion Phase)</strong></summary>
+            <div>
+                <ul><li>Involves weekly phlebotomy sessions by experienced team.</li><li>Goal: gradually ↓ iron stores until target ferritin reached.</li></ul>
+                
+        <details>
+            <summary><strong>Volume &amp; Frequency</strong></summary>
+            <div>
+                <ul><li>Volume: Typically 500 mL blood/session.</li><li>Some individuals (e.g., &lt;50 kg, older, cardiopulmonary disease) may tolerate 250 mL better.</li><li>Frequency: Initial once-weekly phlebotomy recommended.</li><li>Severe iron overload / organ injury: twice-weekly possible if tolerated &amp; hemoglobin &gt;11 g/dL.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Monitoring &amp; Duration</strong></summary>
+            <div>
+                <ul><li>Monitoring: CBC, hemoglobin/hematocrit checked monthly / @ each phlebotomy.</li><li>Serum ferritin monitored monthly; every two weeks as target approaches.</li><li>Duration: Depends on accumulated iron load.</li><li>Each 500 mL unit removes ≈ 200-250 mg elemental iron.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Target Ferritin &amp; Maintenance Therapy</strong></summary>
+            <div>
+                <ul><li>Phlebotomy continues until iron stores reduced to low normal range.</li><li>Maintenance phase prevents iron reaccumulation.</li></ul>
+                
+        <details>
+            <summary><strong>Target Ferritin Level</strong></summary>
+            <div>
+                <ul><li>Many studies suggest target serum ferritin of 50 mg/L (or 50 ng/mL).</li><li>Other experts: maintain between 50 and 150 ng/mL.</li><li>Advised to avoid inducing iron deficiency.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Maintenance Phase</strong></summary>
+            <div>
+                <ul><li>Once target ferritin reached, maintenance phlebotomies performed periodically.</li><li>Typically: one unit of blood removed ≈ 3-6 times/year (once every 2-4 months).</li><li>Voluntary blood donation encouraged; ideal solution, transfusion services often accept.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Personalization</strong></summary>
+            <div>
+                <ul><li>Maintenance therapy personalized.</li><li>Required interval varies based on patient&#x27;s age, sex, initial ferritin presentation.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Management for Non-Expressing Homozygotes</strong></summary>
+            <div>
+                <ul><li>C282Y homozygotes w/ normal serum ferritin &amp; transferrin saturation are &#x27;non-expressing&#x27;.</li><li>These individuals need observation, not treatment.</li><li>Adults w/ normal ferritin @ diagnosis unlikely to develop iron overload later.</li></ul>
+                
+        <details>
+            <summary><strong>Monitoring &amp; Advice</strong></summary>
+            <div>
+                <ul><li>Periodic screening of ferritin recommended (minimum every few years).</li><li>Voluntary blood donation encouraged for this group.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Other Management Considerations</strong></summary>
+            <div>
+                <ul><li>Beyond phlebotomy, lifestyle modifications &amp; screening for complications are crucial.</li><li>These measures aim to mitigate risks associated w/ iron overload.</li></ul>
+                
+        <details>
+            <summary><strong>Alcohol and Diet</strong></summary>
+            <div>
+                <ul><li>Alcohol intake: major risk factor for liver disease in HH; limit, especially until iron removed.</li><li>Iron overload potentiates alcoholic liver disease.</li><li>Diet: balanced, healthy diet w/o specific restrictions (e.g., red meat).</li></ul>
+                
+        <details>
+            <summary><strong>Avoidances</strong></summary>
+            <div>
+                <ul><li>Avoid vitamins/supplements containing extra iron.</li><li>Avoid uncooked seafood until iron overload treated → ↑ risk of infection from siderophilic organisms (e.g., *Vibrio vulnificus*).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Screening for Complications</strong></summary>
+            <div>
+                <ul><li>All HH patients screened for liver fibrosis.</li><li>Established cirrhosis → mandatory screening for hepatocellular carcinoma (HCC).</li></ul>
+                
+        <details>
+            <summary><strong>Liver Disease Screening</strong></summary>
+            <div>
+                <ul><li>HCC screening: 6-monthly ultrasound + alpha-fetoprotein levels.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cardiac Disease Screening</strong></summary>
+            <div>
+                <ul><li>Cardiac testing reserved for severe iron overload / dyspnea.</li><li>Assessment (echocardiogram / axial imaging) warranted in young patients w/ severe iron overload / ferritin &gt;2000 mg/L.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Arthropathy/Bone Screening</strong></summary>
+            <div>
+                <ul><li>Consider baseline bone density DEXA scan in C282Y homozygote adults &gt;40 years.</li><li>X-rays of hands considered for symptomatic arthropathy.</li><li>Note: arthritis least likely HH manifestation to improve w/ iron removal.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Family Screening</strong></summary>
+            <div>
+                <ul><li>Patients advised to notify siblings &amp; adult children for hemochromatosis testing.</li><li>Newly diagnosed C282Y homozygote → family history; siblings &amp; parents request *HFE* (C282Y) genetic test.</li><li>Screening of non-adult children not recommended.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Alternatives to Phlebotomy</strong></summary>
+            <div>
+                <ul><li>For rare individuals intolerant to phlebotomy, other options exist.</li><li>Generally not preferred due to efficiency or side effect profiles.</li></ul>
+                
+        <details>
+            <summary><strong>Erythrocytapheresis</strong></summary>
+            <div>
+                <ul><li>Automated red blood cell exchange.</li><li>Removes up to 800 mL blood/procedure.</li><li>Removes 2.3x amount of iron vs. 500 mL phlebotomy.</li><li>Efficient iron removal w/ maintained blood volume.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Iron Chelation</strong></summary>
+            <div>
+                <ul><li>Oral iron chelator Deferasirox studied in HH but NOT approved for treatment.</li><li>Reserved for iron overload + anemia / in combination w/ phlebotomy in life-threatening cardiac dysfunction.</li><li>Less efficient than phlebotomy; frequent adverse effects reported.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Management of *HFE* Gene Heterozygosity</strong></summary>
+            <div>
+                <ul><li>Heterozygosity for common *HFE* variants (C282Y/wild type or H63D/wild type) → low risk of iron overload.</li><li>Requires observation &amp; addressing associated risk factors, not active phlebotomy.</li></ul>
+                
+        <details>
+            <summary><strong>Risk and Clinical Significance</strong></summary>
+            <div>
+                <ul><li>Heterozygous individuals rarely develop iron overload.</li><li>C282Y heterozygosity generally produces an unaffected carrier state.</li></ul>
+                
+        <details>
+            <summary><strong>Biochemical Findings</strong></summary>
+            <div>
+                <ul><li>Mild ↑ serum ferritin / transferrin saturation (TSAT) in ≈10% of C282Y heterozygotes.</li><li>Usually not clinically significant.</li><li>Elevations almost always associated w/ other risk factors (e.g., metabolic syndrome, obesity w/ fatty liver, daily alcohol).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Significant Iron Overload</strong></summary>
+            <div>
+                <ul><li>If heterozygous individual develops significant iron overload, evaluate for other contributing factors.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Management Approach for Heterozygotes</strong></summary>
+            <div>
+                <ul><li>Focus on monitoring, risk factor modification, &amp; selective testing if iron overload suspected/established.</li><li>Iron studies generally not required unless indicated for another reason.</li></ul>
+                
+        <details>
+            <summary><strong>Monitoring and General Advice</strong></summary>
+            <div>
+                <ul><li>Most pragmatic approach: treat other metabolic risk factors.</li><li>Address comorbidities: alcohol-related / metabolic liver disease.</li><li>Abstinence from alcohol use counseled, especially w/ liver disease.</li><li>Voluntary blood donation recommended to potentially normalize iron stores.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Dealing with High Ferritin</strong></summary>
+            <div>
+                <ul><li>If high ferritin present in heterozygote, look for concomitant liver disease / other causes.</li><li>Often due to inflammation / metabolic issues, not hemochromatosis itself.</li><li>If high ferritin due to other liver disease (e.g., viral hepatitis, NAFLD, alcohol) → patient NOT diagnosed w/ HH.</li><li>Treatment directed @ underlying condition.</li></ul>
+                
+        <details>
+            <summary><strong>Assessment for Iron Overload</strong></summary>
+            <div>
+                <ul><li>Uncertainty re: degree of iron overload (e.g., ferritin above normal but &lt;1000 ng/mL) → MRI liver / ultrasound-based hepatic elastography.</li><li>Determines presence of iron deposition / fibrosis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Phlebotomy (Rarely Indicated)</strong></summary>
+            <div>
+                <ul><li>Phlebotomy generally NOT required for heterozygous individuals.</li><li>If serious iron overload (TSAT &gt;45%; ferritin &gt;1000 ng/mL; tissue iron on MRI/biopsy) → investigate for compound heterozygosity (common + rare *HFE* variant) / pathogenic variant in non-*HFE* gene.</li><li>If severe iron overload confirmed, treatment (phlebotomy) warranted; additional genetic analyses may be performed.</li><li>Venesection not proven beneficial in most heterozygous patients.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Compound Heterozygotes (C282Y/H63D)</strong></summary>
+            <div>
+                <ul><li>Inheritance of both C282Y and H63D variants.</li><li>Rarely leads to severe disease; warrants slightly more attention.</li></ul>
+                
+        <details>
+            <summary><strong>Risk</strong></summary>
+            <div>
+                <ul><li>Rarely develop iron overload / clinical symptoms.</li><li>Mild biochemical iron overload seen in ≈10% of cases.</li><li>Risk of iron overload lower than for C282Y homozygotes.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>If iron overload present, generally less severe than C282Y homozygotes.</li><li>Accurately investigate &amp; treat other causes of liver disease.</li><li>Complications typically develop only w/ excess alcohol use / other comorbidity (e.g., diabetes, hepatic steatosis).</li><li>If iron overload persists, manage w/ monitoring &amp; controlled phlebotomy if justified by severe accumulation.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Counseling Relatives</strong></summary>
+            <div>
+                <ul><li>Appropriate for C282Y heterozygotes to inform first-degree relatives.</li><li>Inform about risk of inheriting variant &amp; possibility of iron overload.</li><li>Facilitates shared decision-making re: genetic testing / iron studies for relatives.</li><li>First-degree relatives of *HFE* heterozygote have 50% chance of carrying variant.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
