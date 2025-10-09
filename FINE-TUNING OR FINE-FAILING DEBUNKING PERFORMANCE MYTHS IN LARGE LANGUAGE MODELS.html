@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FINE-TUNING OR FINE-FAILING? DEBUNKING PERFORMANCE MYTHS IN LARGE LANGUAGE MODELS</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>FINE-TUNING OR FINE-FAILING? DEBUNKING PERFORMANCE MYTHS IN LARGE LANGUAGE MODELS</strong></summary>
+            <div>
+                <ul><li>Journal: arXiv (Preprint)</li><li>Publication Date: June 30, 2024</li><li>Focus: Examines fine-tuning effects on LLM performance within Retrieval-Augmented Generation (RAG) pipelines.</li><li>Key Finding: Fine-tuning LLMs in RAG often ↓ performance vs. baseline, contrary to common belief.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary phenomenon LLMs suffer from when asked domain-specific questions, leading to plausible but irrelevant information?</li><li>2. What is the main purpose of Retrieval-Augmented Generation (RAG) in enhancing LLM responses?</li><li>3. According to this study, how did fine-tuning LLMs within a RAG pipeline generally affect their accuracy and completeness compared to baseline models?</li><li>4. Which dataset in this study showed a significant decline in performance (accuracy ↓ &gt;1 point, completeness ↓ 2 points) for fine-tuned models?</li><li>5. What was the observed relationship between increasing fine-tuning sample size (200 to 1000) and model performance on the Qasper dataset?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction to LLMs &amp; RAG</strong></summary>
+            <div>
+                <ul><li>LLMs: comprehend + generate human-like text from queries; GPT, Mixtral, Gemini examples.</li><li>Proficiency: sentiment analysis, text generation, conversational agents.</li><li>Generalization: apply learned knowledge to new contexts w/o additional training data.</li></ul>
+                
+        <details>
+            <summary><strong>LLM Limitations</strong></summary>
+            <div>
+                <ul><li>Hallucination: generate plausible-sounding but irrelevant/nonsensical info for domain-specific queries.</li><li>Inaccuracy: due to training data limitations / inherent biases.</li><li>Concern: particularly in fields where accuracy is paramount.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrieval-Augmented Generation (RAG)</strong></summary>
+            <div>
+                <ul><li>Solution: merges retrieval mechanisms w/ LLM generative capabilities.</li><li>Purpose: synthesize contextually relevant, accurate, up-to-date information.</li><li>Mechanism: leverages domain-specific knowledge bases / datasets → ↑ accuracy + relevance.</li><li>Benefit: ↓ development time; no extensive knowledge graph creation / detailed data curation needed.</li><li>Challenge: often falls short in complex query scenarios.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Fine-tuning LLMs</strong></summary>
+            <div>
+                <ul><li>Process: training existing pre-trained LLMs on domain-specific curated data.</li><li>Mechanism: adjusts model&#x27;s parameter weights → optimizes performance for target task.</li><li>Benefit: adapts pre-trained LLMs to new tasks/domains w/o complete retraining → ↑ cost efficiency, ↓ computational overhead.</li></ul>
+                
+        <details>
+            <summary><strong>Traditional View: Projected Benefits</strong></summary>
+            <div>
+                <ul><li>Lower cost.</li><li>Better representation of domain technology.</li><li>Improved instruction following.</li><li>Improved accuracy.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples of Fine-tuned LLMs (Traditional Successes)</strong></summary>
+            <div>
+                <ul><li>Med-PaLM (Google): surpasses generalized LLMs in medical Q&amp;A; better scientific consensus, comprehension, reasoning, completeness.</li><li>Weaver: fine-tuned for creative writing; better style, relevance, creativity.</li><li>ChatLaw: legal domain; ↓ hallucination vs. generalized LLMs, ↑ ELO score.</li><li>RoBERTa (finance): better tone classification, sentiment analysis, named entity recognition.</li><li>LLaMA7B (recommendation): TALLRec framework, 100 examples → exceeded GPT-4 in movie/book recommendations.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Study&#x27;s Research Questions</strong></summary>
+            <div>
+                <ul><li>1. How do fine-tuned models compare to baseline counterparts in a RAG pipeline?</li><li>2. Does training dataset size impact fine-tuning effectiveness?</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experimental Setup</strong></summary>
+            <div>
+                <ul><li>Objective: investigate how fine-tuning influences RAG-based LLM performance for accurate/relevant responses.</li><li>Approach: extensive evaluation across different fields for diverse understanding.</li></ul>
+                
+        <details>
+            <summary><strong>Datasets</strong></summary>
+            <div>
+                <ul><li>Three open-source question-answering datasets used.</li><li>RAG Prompt: top 5 relevant chunks from vector store (semantic similarity) concatenated → augmented context for GPT-4.</li></ul>
+                
+        <details>
+            <summary><strong>BioASQ</strong></summary>
+            <div>
+                <ul><li>Biomedical dataset.</li><li>Content: 15,000 documents, 1,000 Q&amp;A pairs.</li><li>Source: constructed by biomedical experts.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Natural Questions (NQ)</strong></summary>
+            <div>
+                <ul><li>Large-scale dataset for open-ended Q&amp;A.</li><li>Content: Google search queries from real users + corresponding answers from Wikipedia pages.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Qasper</strong></summary>
+            <div>
+                <ul><li>Content: 5,049 questions from 1,585 published Natural Language Processing (NLP) papers.</li><li>Question Formulation: by NLP practitioner w/ access to title + abstract only.</li><li>Answer Provision: by other NLP practitioners w/ supporting evidence.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Models &amp; Fine-tuning Process</strong></summary>
+            <div>
+                <ul><li>Models used: Mistral [20], Llama2 [21] (open-source), GPT-4 [22] (proprietary).</li><li>Fine-tuning: Mistral &amp; Llama2 fine-tuned on sets of 200, 500, and 1000 Q&amp;A pairs from each dataset.</li><li>Purpose: explore training size effect on performance.</li><li>Benchmarks: base versions of all three models (w/o fine-tuning).</li><li>Integration: all tested models (base + fine-tuned) integrated within RAG pipeline.</li><li>RAG Data: utilized dataset (excluding fine-tuning data) reserved for fine-tuning → fair assessment.</li></ul>
+                
+        <details>
+            <summary><strong>Hardware for Fine-tuning</strong></summary>
+            <div>
+                <ul><li>Processors: Intel Xeon Platinum 8452Y.</li><li>GPUs: up to 4 NVIDIA H100 or 8 A100 GPUs.</li><li>Memory: 500GB.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Key Fine-tuning Configurations Tested</strong></summary>
+            <div>
+                <ul><li>Number of Epochs: variations to find optimal duration for model convergence.</li><li>Effective Batch Size: adjustments in batch size + gradient accumulation steps → balance training efficiency &amp; computational resource usage.</li><li>Efficiency Techniques: LoRa vs. QLoRa evaluation → superior model efficiency w/o compromising output quality.</li><li>LoRa Hyperparameters: tuning of rank + alpha parameters → refine adaptation process.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluation Methodology</strong></summary>
+            <div>
+                <ul><li>Framework: custom G-Evals framework [23] (LLMs w/ chain-of-thought (CoT) approach + form-filling paradigm).</li><li>Judge LLM: Mistral utilized for assessing baseline + fine-tuned models.</li><li>Assessment: compares text output quality against human judgments based on defined metrics.</li><li>Scoring: 5-point system for both metrics.</li></ul>
+                
+        <details>
+            <summary><strong>Evaluation Metrics</strong></summary>
+            <div>
+                <ul><li>Accuracy: assesses how well answer addresses question, relevance, sufficiency of supporting evidence, absence of irrelevant/misleading info.</li><li>Completeness: evaluates extent to which answer covers topics + details posed by question.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scoring Details</strong></summary>
+            <div>
+                <ul><li>Accuracy: 1=&#x27;Poor Accuracy&#x27;, 5=&#x27;Excellent Accuracy&#x27;.</li><li>Completeness: 1=&#x27;Incomplete or Irrelevant&#x27;, 5=&#x27;Complete and Comprehensive&#x27;.</li><li>Mitigation of Variance: evaluation repeated 10 times; final score = average of results → consistent, reliable evaluation.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Results</strong></summary>
+            <div>
+                <ul><li>Evaluated fine-tuning models using accuracy + completeness metrics.</li></ul>
+                
+        <details>
+            <summary><strong>Accuracy Findings</strong></summary>
+            <div>
+                <ul><li>Baseline Mixtral &amp; Llama2 (w/o fine-tuning) outperformed fine-tuned counterparts across all datasets, except NQ.</li><li>NQ Dataset Exception: Mixtral fine-tuned w/ 500 samples performed identically to baseline (accuracy score: 4.87).</li><li>Baseline GPT-4: performed better than any fine-tuned models across all datasets.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Completeness Findings</strong></summary>
+            <div>
+                <ul><li>Baseline Llama2 &amp; Mixtral (w/o fine-tuning) outperformed fine-tuned counterparts across all datasets.</li><li>Baseline GPT-4: achieved higher completeness score than any fine-tuned models.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Discussion</strong></summary>
+            <div>
+                <ul><li>Baseline Mixtral &amp; Llama2 models surpassed their fine-tuned iterations across all datasets.</li><li>Performance Gap: marginal for certain models/datasets (e.g., BioASQ accuracy for both fine-tuned Mixtral &amp; Llama2, Mixtral on NQ).</li><li>Fine-tuned Mixtral: performed marginally worse than baseline.</li></ul>
+                
+        <details>
+            <summary><strong>Significant Performance Decline</strong></summary>
+            <div>
+                <ul><li>Qasper Dataset: accuracy score ↓ &gt;1 point for both models.</li><li>Llama2 Models: all fine-tuned Llama2 models + Mixtral fine-tuned @ 500 level saw accuracy ↓ &gt;1 score point.</li><li>Completeness: several fine-tuned models exhibited ↓ 2 score points → significant impact.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Model-Specific Decline</strong></summary>
+            <div>
+                <ul><li>Llama2: fine-tuning resulted in more significant performance decline vs. Mixtral.</li><li>Llama2 Example: accuracy ↓ from 4.38 to 3.14; completeness ↓ from 4.55 to 2.35 on 200-sample fine-tuned dataset (lowest score).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Impact of Sample Size</strong></summary>
+            <div>
+                <ul><li>Contrary to expectations: fine-tuned models often performed worse than baseline.</li><li>Increased Sample Size: in some cases, larger sample size deteriorated accuracy + completeness.</li><li>Qasper Dataset Example: increasing sample size from 200 to 500 to 1000 samples → ↓ performance metrics.</li><li>Mixtral Qasper (500 to 1000 samples): accuracy ↓ from 4.04 to 3.28; completeness ↓ from 3.75 to 2.58.</li><li>Other Instances: no significant relationship between sample size + fine-tuned model performance.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion on Fine-tuning in RAG</strong></summary>
+            <div>
+                <ul><li>Fine-tuning does not equate to better accuracy or completeness in RAG.</li><li>Large Domain-Specific Datasets: fine-tuning on these harms LLMs&#x27; ability to provide accurate/complete answers when integrated w/ RAG.</li><li>Alignment w/ Other Research: findings align w/ studies [24, 25, 13] observing poorer performance on fine-tuned models (even w/o RAG).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Limitations</strong></summary>
+            <div>
+                <ul><li>Dataset Size: fairly small training dataset size; larger dataset might yield different results.</li><li>Hyperparameter Configurations: limited number explored due to hardware constraints.</li><li>Training Environment: performed on single nodes → smaller batch sizes → could affect results.</li><li>Evaluation Method: LLM-based G-Evals considered less reliable than human evaluation.</li><li>RAG System Variables: different prompts + retrieval mechanisms used → influenced fine-tuned model performance.</li><li>Context Size: limited to 5 chunks of 1,500 characters → may inflate smaller models&#x27; performance (better handling of smaller contexts).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>Evaluated effectiveness of fine-tuning (&lt;1000 samples) on public datasets for answer generation.</li><li>Replication: experiments replicated from internal private telecommunication dataset.</li><li>Key Finding: fine-tuning LLMs within a RAG pipeline negatively impacts their performance in answer generation.</li><li>Implication: fine-tuning not universally advantageous; can enhance performance in specific scenarios but not always.</li><li>Contribution: presents instances where fine-tuning does not lead to expected improvements, contrasting with majority of studies.</li><li>Future Research: explore fine-tuning w/ increased sample sizes (&gt;1000) to validate findings.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
