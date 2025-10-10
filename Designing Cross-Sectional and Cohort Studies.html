@@ -1,0 +1,857 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Designing Cross-Sectional and Cohort Studies</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Designing Cross-Sectional and Cohort Studies</strong></summary>
+            <div>
+                <ul><li>This chapter outlines the design, strengths, and weaknesses of cross-sectional and cohort observational studies.</li><li>It distinguishes designs based on measurement timing: cross-sectional captures data @ single point for prevalence; cohort follows participants longitudinally for incidence.</li><li>Explores prospective/retrospective cohort designs, incidence rate measurement (person-time @ risk), and importance of minimizing loss to follow-up.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary metric measured in a cross-sectional study, and how does it differ from the metric measured in a cohort study?</li><li>2. What is &#x27;immortal time bias&#x27; and in which type of observational study is it a significant concern, particularly when evaluating treatments?</li><li>3. When analyzing cohort studies, why are &#x27;prevalent users&#x27; of a medication problematic, and what is the approximate pooled odds ratio for mortality among good adherers to placebo?</li><li>4. What is the key advantage of a nested double-cohort study over a double-cohort study where participants are sampled from entirely separate populations?</li><li>5. In the context of cohort studies, what is the primary purpose of calculating &#x27;person-time at risk&#x27; in the denominator for incidence rates?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Observational Study Overview</strong></summary>
+            <div>
+                <ul><li>Observational studies serve two main purposes: descriptive and analytic.</li><li>Descriptive: examines variable distributions in a population.</li><li>Analytic: examines associations among variables.</li></ul>
+                
+        <details>
+            <summary><strong>Categorization Basis</strong></summary>
+            <div>
+                <ul><li>Studies categorized by time frame for making measurements.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cross-Sectional Studies</strong></summary>
+            <div>
+                <ul><li>All measurements made @ single occasion / within short time.</li><li>Investigator samples population, examines variable distributions.</li><li>Predictors/outcomes designated based on biologic plausibility, historical info, research hypotheses.</li></ul>
+                
+        <details>
+            <summary><strong>Basic Design</strong></summary>
+            <div>
+                <ul><li>No follow-up period.</li><li>Steps: Sample participants (meeting inclusion criteria), exclude (exclusion criteria / no consent), measure current predictor/outcome values (w/ historical info).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Key Metric: Prevalence</strong></summary>
+            <div>
+                <ul><li>Proportion who HAVE a disease / condition @ one point in time.</li><li>Unlike cohort studies, cannot estimate incidence (proportion who develop disease over time).</li></ul>
+                
+        <details>
+            <summary><strong>Prevalence Ratio</strong></summary>
+            <div>
+                <ul><li>Compares outcome prevalence in exposed vs. unexposed.</li><li>Cross-sectional equivalent of risk ratio.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Clinical Utility</strong></summary>
+            <div>
+                <ul><li>Help clinicians estimate likelihood of disease (prior probability).</li><li>Useful for health planners: quantify people w/ diseases for resource allocation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Age &amp; &#x27;Ever Having&#x27; Variables</strong></summary>
+            <div>
+                <ul><li>Older age → ↑ opportunity for exposure/disease.</li><li>Age / factors associated w/ greater opportunity (e.g., duration of employment) must be accounted for in analyses.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strengths</strong></summary>
+            <div>
+                <ul><li>Fast &amp; inexpensive: no waiting for outcome.</li><li>Avoids loss to follow-up.</li><li>Can be 1st step in cohort study / clinical trial (low/no added cost).</li></ul>
+                
+        <details>
+            <summary><strong>Additional Strengths</strong></summary>
+            <div>
+                <ul><li>Defines baseline demographic/clinical characteristics.</li><li>Allows exclusion of those w/ outcome from longitudinal studies.</li><li>Reveals cross-sectional associations.</li><li>Useful for diagnostic test studies (Chapter 13).</li><li>Best for associations where characteristics influence each other within short periods (e.g., sleep patterns &amp; cognition).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Weaknesses</strong></summary>
+            <div>
+                <ul><li>Difficult to establish causal relationships.</li><li>Measures prevalence, not incidence → caution w/ inferences about causes, prognosis, natural history.</li><li>Factor associated w/ prevalence could be cause OR associated w/ disease duration (mortality / resolution).</li></ul>
+                
+        <details>
+            <summary><strong>Example: Obesity &amp; CKD</strong></summary>
+            <div>
+                <ul><li>Prevalence of chronic kidney disease (CKD) affected by incidence + survival.</li><li>Obesity associated w/ greater survival among dialysis patients (9).</li><li>Cross-sectional study of CKD predictors would overestimate association between obesity &amp; CKD incidence.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Serial Surveys</strong></summary>
+            <div>
+                <ul><li>Repeated cross-sectional surveys in same population (e.g., every 5 years).</li><li>Used to infer changing patterns over time (e.g., NHANES).</li></ul>
+                
+        <details>
+            <summary><strong>Distinction from Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Not cohort studies: new sample drawn each time.</li><li>Cannot assess changes within individuals.</li><li>Findings influenced by people entering/leaving population (births, deaths, migration).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: E-cigarette Use</strong></summary>
+            <div>
+                <ul><li>McMillen et al. (10) reported e-cigarette prevalence ↑ from 0% to 14.2% in young adults (18-24 years) between 2010-2013 using annual cross-sectional surveys.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Movie Smoking Exposure</strong></summary>
+            <div>
+                <ul><li>Sargent et al. (4) studied association between movie smoking exposure &amp; smoking initiation in 6522 US children (10-14 years).</li><li>Prevalence of &#x27;ever tried smoking&#x27; varied from 2% (lowest quartile exposure) to 22% (highest quartile).</li><li>After adjusting for age &amp; confounders, differences were significant.</li><li>Estimated 38% of smoking initiation attributable to movie smoking exposure.</li><li>Confirmed by subsequent studies (5-7).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cohort Studies</strong></summary>
+            <div>
+                <ul><li>A group of participants (&#x27;cohort&#x27;) specified @ outset &amp; followed over time.</li><li>Defining characteristic: assembled @ outset &amp; followed longitudinally.</li><li>No structural difference between predictor of interest (exposure/treatment) &amp; other predictors (covariates).</li></ul>
+                
+        <details>
+            <summary><strong>Prospective Versus Retrospective</strong></summary>
+            <div>
+                <ul><li>Often classified as prospective (looking forward) or retrospective (looking backward).</li><li>Definitions vary; not a sharp dichotomy; continuum exists.</li><li>Terms best applied to aspects of a study, not all-or-nothing phenomena.</li></ul>
+                
+        <details>
+            <summary><strong>Prospective Features</strong></summary>
+            <div>
+                <ul><li>Studies w/ many prospective features are less subject to bias.</li><li>Tend to be more difficult &amp; expensive; impractical for new investigators.</li><li>New investigators can use data/specimens from ongoing/completed cohort studies (Chapter 16).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Increasing Validity (Table 8.2)</strong></summary>
+            <div>
+                <ul><li>Investigators recruit eligible participants → + control over enrollment criteria; - expense.</li><li>Check for outcome @ baseline &amp; exclude → + avoids outcome preceding exposure; - expense of screening.</li><li>Measure exposures/covariates (not relying on previous) → + maximize accuracy/precision, minimize missing data; - time/expense.</li><li>Exposures measured before outcomes → + prevents outcome affecting exposure measurement.</li><li>Outcomes measured as they occur/end of follow-up (not relying on previous) → + prevents outcome affecting exposure, greater control over ascertainment, may reduce missing data; - time consuming, expensive.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ambidirectional Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Can look forward @ some variables &amp; backward @ others (12).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Nurses’ Health Study (Mostly Prospective)</strong></summary>
+            <div>
+                <ul><li>NHS-II (began 1989, 116,429 female US RNs 25-42 years) studied menstrual cycle regularity &amp; risk of death before 70 years (Wang et al., 2020).</li><li>Predictor: Menstrual cycle characteristics (recalled @ 14-17, 18-22 years; current @ 29-46 years).</li><li>Outcome: Mortality ascertained from vital statistics, death index, next of kin.</li><li>Finding: Women w/ usual cycle length ≥40 days ↑ likely to die before 70 years (adjusted HR 1.34 [95% CI, 1.06-1.69] for 18-22 years; 1.40 [95% CI, 1.17-1.68] for 29-46 years).</li><li>Comment: Recall of past cycles was retrospective, current cycles prospective. Outcome (total mortality) low bias risk.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Door-to-Needle Time (Mostly Retrospective)</strong></summary>
+            <div>
+                <ul><li>Man et al. (14) studied door-to-needle time &amp; 1-year mortality in 61,426 Medicare patients (≥65 years) w/ acute ischemic stroke receiving tPA.</li><li>Cohort: Medicare beneficiaries @ GTWG-Stroke program.</li><li>Exposure: Door-to-needle time &amp; covariates collected by hospital personnel.</li><li>Outcome: Deaths/hospital admissions linked to Medicare claims.</li><li>Finding: Dose-response relationship: adjusted HR 1.04 (95% CI, 1.02-1.05) per 15-minute ↑ in door-to-needle time.</li><li>Comment: Causal inference depends on adequate adjustment for measured/unmeasured confounders. Exposure measurement was rigorous. If research team measured &amp; patients consented, might be called prospective.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prospective Study Details</strong></summary>
+            <div>
+                <ul><li>Identifies participants @ risk (excluding those w/ outcome), defines/measures predictors @ baseline.</li><li>Follows participants w/ strict ascertainment protocol for new occurrence / change in outcome.</li><li>Example: Blood cadmium levels &amp; peripheral neuropathy development.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrospective Predictors in Prospective Studies</strong></summary>
+            <div>
+                <ul><li>Nearly all prospective studies measure predictors that occurred before study began (e.g., prior binge drinking history).</li><li>Though measured retrospectively, measurement @ study onset means outcome knowledge/occurrence could not affect its occurrence/measurement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>New Questions in Prospective Studies</strong></summary>
+            <div>
+                <ul><li>Data from prospective studies often used for research questions not considered initially.</li><li>Example: Study of Osteoporotic Fractures (SOF) studied bone density &amp; stroke risk (15). Bone density measured strictly @ baseline, but strokes not originally adjudicated. Required subsequent validation via medical record review (less rigorous).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prospective Features in Case-Control Studies</strong></summary>
+            <div>
+                <ul><li>Even case-control studies (outcomes occur before study) can have prospective features.</li><li>Investigators can create rigorous case definition &amp; enroll cases as they occur.</li><li>Predictors (e.g., driving records) may have been measured before outcomes.</li><li>↑ validity: prevents outcome affecting predictor / its measurement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Defining &#x27;Study Begins&#x27;</strong></summary>
+            <div>
+                <ul><li>What matters most: when key predictors &amp; outcomes occur, and if/when investigator starts to measure them rigorously.</li><li>Example: Insomnia &amp; balance. If insomnia not major interest @ baseline, may not be rigorously measured. Absence of baseline balance info → uncertainty if insomnia preceded balance difficulty.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Range of Complexity (Table 8.3)</strong></summary>
+            <div>
+                <ul><li>Cohort studies vary from simple to most complex, impacting measurement, follow-up, and analysis.</li></ul>
+                
+        <details>
+            <summary><strong>Simple Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Measurement of Exposure/Covariates: At baseline only.</li><li>Measurement of Outcomes: At end of study.</li><li>Loss to Follow-up: Must be minimal for validity; sensitivity analyses.</li><li>Measure of Incidence: Cumulative incidence; incidence proportion (e.g., cases per 100 at risk).</li><li>Measures of Association: Risk ratio, odds ratio.</li><li>Multivariable Analysis: Logistic regression.</li><li>Example: Predictors of survival to hospital discharge in early COVID-19 pandemic (16).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Moderately Complex Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Measurement of Exposure/Covariates: At baseline only.</li><li>Measurement of Outcomes: As they occur or determined periodically.</li><li>Loss to Follow-up: Participants censored when lost to follow-up (f/u); sensitivity analyses.</li><li>Measure of Incidence: Incidence rate (e.g., cases per 100 person-years at risk).</li><li>Measures of Association: Incidence rate ratio or hazard ratio.</li><li>Multivariable Analysis: Poisson or Cox regression.</li><li>Accounts for differential follow-up time &amp; loss to follow-up by using person-time @ risk.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Complex Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Measurement of Exposure/Covariates: At baseline w/ periodic updating; exposure &amp; covariate levels may change over time, but covariates not affected by exposure of interest.</li><li>Measurement of Outcomes: As they occur or determined periodically.</li><li>Loss to Follow-up: Patients censored when lost to f/u; sensitivity analyses.</li><li>Measure of Incidence: Incidence rate (e.g., cases per 100 person-years at risk).</li><li>Measures of Association: Hazard ratio.</li><li>Multivariable Analysis: Cox model w/ time-dependent covariates.</li><li>Analysis compares risk of events in exposed vs. unexposed person-time. Challenging if exposure effects delayed.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Costly Error (Hormone Therapy)</strong></summary>
+            <div>
+                <ul><li>NHS study on postmenopausal hormone therapy &amp; longevity (17).</li><li>Issue: Compared prevalent users to nonusers.</li><li>Error: Exposure updated every 2 years. Events in 1st year of hormone use misclassified as non-user events.</li><li>Misclassification was intentional to maintain &#x27;prospective&#x27; nature (exposure precedes outcome).</li><li>Problem: Hormone use ↑ coronary events mainly in 1st year/two.</li><li>Resolution: Re-analysis (like target trials) comparing initiators vs. non-initiators revealed early adverse effect (19).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Most Complex Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Measurement of Exposure/Covariates: At baseline w/ periodic updating; exposure &amp; covariate levels may change over time, AND covariates may be affected by exposure of interest.</li><li>Measurement of Outcomes: As they occur or determined periodically.</li><li>Loss to Follow-up: Patients censored when lost to f/u; sensitivity analyses.</li><li>Measure of Incidence: Incidence rate (e.g., cases per 100 person-years at risk).</li><li>Measures of Association: Hazard ratio.</li><li>Multivariable Analysis: Advanced (and difficult) methods such as marginal structural models.</li><li>Consider simpler design if possible.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Double-Cohort &amp; Multiple-Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Involve two or more separate cohorts w/ different levels of exposure.</li><li>May be sampled from different populations or (preferably) same population (nested).</li></ul>
+                
+        <details>
+            <summary><strong>Double-Cohort Design</strong></summary>
+            <div>
+                <ul><li>Steps: Select two cohorts from populations w/ different exposure levels (but same inclusion/exclusion criteria).</li><li>Measure other predictors @ baseline.</li><li>Measure outcome variables as they occur / @ end of follow-up.</li><li>Can oversample unexposed for power (e.g., 2:1 or 3:1 ratio).</li><li>Matching on variables (age, sex) sometimes done.</li><li>Exposure level defines follow-up groups → generally simple/moderately complex; no repeated covariate measures needed.</li><li>Not to be confused w/ case-control: cohort groups chosen by exposure, case-control by outcome.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multiple-Cohort Design</strong></summary>
+            <div>
+                <ul><li>Similar to double-cohort but &gt;2 cohorts.</li><li>Allows same exposed cohort vs. ≥2 unexposed, or &gt;1 exposed vs. single unexposed.</li><li>Variation: Compare outcome rate in exposed cohorts w/ external controls (census, registry, vital statistics data).</li></ul>
+                
+        <details>
+            <summary><strong>Example: Jaundice &amp; Infant Feeding (JIFee)</strong></summary>
+            <div>
+                <ul><li>Nested triple-cohort study (UCSF &amp; KPNC) on neonatal jaundice/dehydration &amp; neurodevelopment (21, 22).</li><li>Cohorts: Max total serum bilirubin ≥25 mg/dL (N=147), readmitted for dehydration (N=197), randomly selected controls (N=428).</li><li>Outcomes: Neurologic disorder diagnoses from databases, neurodevelopmental exams @ age 5 (blinded).</li><li>Finding: Neither hyperbilirubinemia nor dehydration associated w/ subtle adverse outcomes.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Physician Suicide Rates</strong></summary>
+            <div>
+                <ul><li>Studies compared suicide rates of male/female physicians to general population.</li><li>Female physician suicide rates ↑, male physician suicide rates ↓ vs. general population (23).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strengths &amp; Weaknesses</strong></summary>
+            <div>
+                <ul><li>Strengths: Only feasible approach for rare exposures (occupational/environmental hazards).</li><li>External controls (census/registry) are population-based &amp; economical.</li><li>Nested multicohort studies (exposed/unexposed from same population) are more desirable → ↓ selection bias risk.</li><li>Efficient for rare exposures if outcome ascertainment difficult/expensive.</li></ul>
+                
+        <details>
+            <summary><strong>Concern: Selection Bias</strong></summary>
+            <div>
+                <ul><li>If cohorts from separate populations, ↑ risk of selection bias.</li><li>Cohorts may differ in important ways (beyond exposure) that influence outcomes.</li><li>Differences (age, race) can be matched/adjusted, but other differences (geographic location) may make groups incomparable.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Azithromycin &amp; Cardiac Death (Nested Double-Cohort)</strong></summary>
+            <div>
+                <ul><li>Zaroff et al. (20) investigated azithromycin &amp; sudden cardiac death risk vs. amoxicillin.</li><li>Cohort: Patients in Kaiser Permanente (1998-2014) w/ electronic medical records.</li><li>Exposure: Outpatient prescriptions for azithromycin (~1.7M) or amoxicillin (~6.1M). Excluded those w/ serious underlying conditions.</li><li>Outcomes: Cardiovascular death 0-5 days &amp; 6-10 days from prescription (adjudicated by cardiologists).</li><li>Finding: Azithromycin ↑ risk of cardiovascular death within 5 days (adjusted HR 1.82; 95% CI, 1.23-2.67), but not 6-10 days.</li><li>Caution: Similar association w/ noncardiovascular mortality (adjusted HR 2.17; 95% CI, 1.44-3.26) → causality unclear.</li><li>Comment: Retrospective design captured rare events from large population over 16 years, providing power. Exposure/outcome likely accurate.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cohort Studies of Treatments / Interventions</strong></summary>
+            <div>
+                <ul><li>Fundamental structure same as risk factor studies, but key differences exist.</li><li>Treatments generally should be studied w/ randomized trials.</li><li>Cohort studies (especially retrospective) still have secondary role if trials unethical/infeasible.</li></ul>
+                
+        <details>
+            <summary><strong>Emulating a Target Trial</strong></summary>
+            <div>
+                <ul><li>Helpful to design cohort study to emulate a randomized trial (&#x27;target trial&#x27;) (25).</li><li>Consider inclusion/exclusion criteria of target trial: if unethical to randomize, exclude from cohort study.</li><li>Clear starting point for follow-up: date of randomization in trial. In cohort, a &#x27;triggering event&#x27; can serve as starting point (e.g., seizure, 2nd high A1c).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Avoiding Bias</strong></summary>
+            <div>
+                <ul><li>Once eligibility established, subsequent events should not alter defined exposure groups (&#x27;Once randomized, always analyzed&#x27;).</li><li>Example: Antibiotics &amp; hospital stay for asthma (26). Initial design allowed antibiotic start after admission &amp; required ≥2 days treatment. Patients discharged before 2 days excluded from antibiotic group.</li><li>Result: Antibiotics associated w/ 1-day longer median stay.</li><li>Bias: Patients in exposed group &#x27;immortal&#x27; to discharge until ≥2 days treatment.</li><li>Re-analysis (antibiotics started day 1, no min duration) eliminated difference (28).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Immortal Time Bias</strong></summary>
+            <div>
+                <ul><li>Bias where exposed participants credited for surviving periods when study design made death impossible (27, 29, 30, 31).</li><li>Target trial framework helps identify &amp; prevent this and &#x27;other self-inflicted injuries&#x27; (32).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Problems with Prevalent Users</strong></summary>
+            <div>
+                <ul><li>People already receiving treatment @ study onset are problematic (33-36).</li><li>1. Adherence bias: Adherent individuals overrepresented. Good adherers to placebo have more favorable outcomes (pooled OR for mortality 0.56 [95% CI, 0.43-0.74]) (37, 38). → Makes any medication look beneficial.</li><li>2. &#x27;Healthy user&#x27; effect: Participants may receive treatment for unmeasured reasons (interest in prevention, close clinician relationship) that also affect outcome risk.</li><li>Example: Osteoporosis drug users have 25-60% ↓ overall mortality vs. untreated, but no such benefit in RCTs (39).</li><li>3. Misses early adverse effects: Important if adverse effects (including deaths) occur early (e.g., hormone replacement therapy ↑ cardiovascular disease mainly in 1st year) (19, 40).</li><li>4. Complicates confounding control: Confounding variable values may already be affected by treatment @ study start.</li><li>Example: Statin study controlling for LDL-C. Baseline LDL-C already affected by statin → some treatment benefit hidden.</li><li>5. No target trial mapping: Cannot map prevalent user comparison to a target trial. Target trials compare initiators vs. non-initiators, or continuers vs. stoppers.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strengths</strong></summary>
+            <div>
+                <ul><li>Allows calculation of incidence (rate/proportion developing condition over time).</li><li>Longitudinal approach: examines changes in continuous outcomes (e.g., blood pressure) over time.</li><li>Establishes time sequence (predictor before outcome) → strengthens causal inference.</li></ul>
+                
+        <details>
+            <summary><strong>Additional Strengths</strong></summary>
+            <div>
+                <ul><li>May be only feasible way to estimate efficacy of some treatments (e.g., rare condition, strong belief in efficacy w/ few/no other options).</li><li>Some argue &#x27;real world&#x27; evidence from cohort studies (including those ineligible for trials) provides better info on effectiveness/safety, particularly for adverse effects in older/comorbid patients.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrospective Cohort Strengths</strong></summary>
+            <div>
+                <ul><li>Much less costly &amp; time consuming.</li><li>Participants already assembled, baseline measurements made, follow-up completed.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Weaknesses</strong></summary>
+            <div>
+                <ul><li>Causal inference challenging; interpretation muddied by confounding variables (Chapter 10).</li><li>Prospective: Expensive &amp; inefficient for studying rare outcomes (requires large N, long follow-up).</li><li>More efficient for common/immediate dichotomous outcomes &amp; continuous outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Retrospective Cohort Weaknesses</strong></summary>
+            <div>
+                <ul><li>Limited investigator control over sampling, follow-up, nature/quality of measurements.</li><li>Existing data may be incomplete, inaccurate, or not ideal for research question.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Caution on &#x27;Real World&#x27; Evidence</strong></summary>
+            <div>
+                <ul><li>Favorable reports of effectiveness in &#x27;real world&#x27; cohort studies prone to many biases → must be considered w/ skepticism.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Approach to Analyzing Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Involves measures of outcome frequency and measures of association.</li></ul>
+                
+        <details>
+            <summary><strong>Measures of Outcome Frequency</strong></summary>
+            <div>
+                <ul><li>Estimates of dichotomous outcome frequency in followed participants.</li><li>Share same numerator: # participants developing outcome.</li><li>Implicit concept: &#x27;at risk&#x27; (did not have outcome @ study start).</li></ul>
+                
+        <details>
+            <summary><strong>Risk</strong></summary>
+            <div>
+                <ul><li># people outcome occurred / # at risk.</li><li>Easiest to understand (everyday familiarity).</li><li>Example: 100/1000 = 10% risk of lung cancer in 2 years.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Odds</strong></summary>
+            <div>
+                <ul><li># people outcome occurred / # people outcome did not occur.</li><li>Also: risk / (1 – risk).</li><li>Harder to grasp intuitively.</li><li>Similar to risk for rare outcomes.</li><li>Example: 100/900 = 0.111 odds of lung cancer.</li><li>10% risk is upper limit for similarity between risk &amp; odds.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence Rate</strong></summary>
+            <div>
+                <ul><li># outcomes / sum of person-time at risk.</li><li>Accounts for loss to follow-up, deaths, or events precluding outcome ascertainment.</li><li>Person-time: time each participant contributes from entry until outcome / censored (loss to follow-up / death).</li><li>Example: 100 cases / 1900 person-years = 5.3% per year.</li><li>Rate can ↑ over time if cases constant &amp; people at risk ↓.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multiple Outcomes</strong></summary>
+            <div>
+                <ul><li>If most participants have 0 or 1 outcome: dichotomous variable (0 vs. ≥1 episode) gains simplicity.</li><li>If many participants have multiple outcomes: calculate average count of outcomes per person</li><li>, or average counts divided by person-time at risk.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Measures of Association</strong></summary>
+            <div>
+                <ul><li>Quantify the relationship between exposure and outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Difference</strong></summary>
+            <div>
+                <ul><li>Difference in risk between groups.</li><li>Customarily: risk in exposed group – risk in unexposed group.</li><li>If exposure prevents outcome: negative risk difference; absolute value called absolute risk reduction.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Risk Ratio (Relative Risk, RR)</strong></summary>
+            <div>
+                <ul><li>Quotient of risks in two groups.</li><li>Customarily: risk in exposed / risk in unexposed.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Odds Ratio (OR)</strong></summary>
+            <div>
+                <ul><li>Ratio of odds of outcome in exposed to odds in unexposed.</li><li>Similar to risk ratio when outcome is rare.</li><li>Best avoided in cohort study analysis (odds confusing), EXCEPT when using logistic regression (quantifies associations via ORs).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Rate Ratio</strong></summary>
+            <div>
+                <ul><li>Quotient of rates in people w/ and w/o a risk factor.</li><li>Cox proportional hazard model: multivariable analysis for &#x27;time to event&#x27; data; estimates hazard ratios (similar to rate ratios), commonly used in cohort studies.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Maximizing Follow-Up</strong></summary>
+            <div>
+                <ul><li>Crucial for validity; prospective studies should take steps to achieve high follow-up (Table 8.5).</li><li>Good relationships between investigators, staff, participants are essential.</li><li>Positive, engaging study visits improve retention.</li></ul>
+                
+        <details>
+            <summary><strong>Strategies During Enrollment</strong></summary>
+            <div>
+                <ul><li>Build relationships: Make baseline/follow-up visits interesting, enjoyable, engaging.</li><li>Exclude those likely to be lost: Planning to move, uncertainty about willingness to return, ill health/fatal disease unrelated to research question.</li><li>Obtain tracking info: Address, phone (mobile useful), email of participant; SSN/Medicare # (w/ permission); name/contact of close friends/relatives (non-cohabiting); physician contact.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategies During Follow-up</strong></summary>
+            <div>
+                <ul><li>Periodic contact: Collect info, provide results, be supportive.</li><li>Methods: Telephone (evenings/weekends), mail (repeated mailings, stamped/self-addressed cards), newsletters, birthday cards, token gifts.</li><li>For unreached: Contact friends/relatives/physicians. Request forwarding addresses (postal service). Seek addresses via public sources (directories, internet, credit bureau search w/ permission).</li><li>Medicare participants: Collect hospital discharge data from Social Security Administration.</li><li>Determine vital status: State health department or National Death Index.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>General Principle</strong></summary>
+            <div>
+                <ul><li>Treat participants w/ appreciation, kindness, respect. Help them understand research question to foster partnership.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Sensitivity Analyses for Loss to Follow-up</strong></summary>
+            <div>
+                <ul><li>If follow-up &lt;100%, examine if conclusions are sensitive to assumptions about outcomes of those lost.</li><li>Example: Redo analyses assuming none of exposed &amp; all of unexposed lost to follow-up had outcome, or vice versa.</li><li>If conclusions are not sensitive, study is more convincing.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Tools to Assess Risk of Bias</strong></summary>
+            <div>
+                <ul><li>Proposed for cohort studies of exposures (41) and interventions (24).</li><li>Investigators should review these tools during design phase to address easily remedied threats to validity.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
