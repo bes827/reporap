@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Enhancing Reliability of AI-Extracted Medical Information</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Enhancing Reliability of AI-Extracted Medical Information</strong></summary>
+            <div>
+                <ul><li>This document outlines strategies to improve the accuracy and trustworthiness of information extracted from clinical texts by Large Language Models (LLMs).</li><li>Focus: Mitigating LLM overconfidence via structured uncertainty proxies.</li><li>Goal: Provide physicians w/ more reliable, context-aware data from AI tools.</li><li>Benefit: ↓ risk of misinterpretation from AI-generated summaries/extractions.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. Why are raw numeric confidence scores from LLMs often unreliable in medical text extraction?</li><li>2. What is the primary benefit of using categorical evidence strength (e.g., &#x27;explicit,&#x27; &#x27;implied,&#x27; &#x27;absent&#x27;) over a numerical confidence score?</li><li>3. Which section of a medical report (e.g., &#x27;Impression,&#x27; &#x27;Findings&#x27;) is generally considered to yield more reliable extractions?</li><li>4. What is &#x27;hedging language&#x27; in a medical report, and why is capturing it important for AI extraction?</li><li>5. What is the simplest method to flag problematic AI extractions for human review?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Challenges w/ LLM Confidence Scores</strong></summary>
+            <div>
+                <ul><li>Numeric confidence scores from LLMs are often unreliable.</li><li>Self-reported probabilities are frequently miscalibrated + overconfident.</li><li>Same score can mean Δ things across prompts/models.</li></ul>
+                
+        <details>
+            <summary><strong>Why Numeric Confidence Fails</strong></summary>
+            <div>
+                <ul><li>LLMs poorly calibrate raw numeric confidence.</li><li>Without calibration, numbers do not correlate w/ correctness.</li><li>Can lead to hallucinated certainty.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Structured Proxies for Extraction Quality</strong></summary>
+            <div>
+                <ul><li>Instead of raw &#x27;confidence&#x27; numbers, add structured uncertainty proxies per variable.</li><li>These proxies are reliably filled by LLMs + scorable downstream.</li><li>Provide objective quality signals for extracted data.</li></ul>
+                
+        <details>
+            <summary><strong>Evidence Type Classification</strong></summary>
+            <div>
+                <ul><li>Categorical field: `_evidence_type`.</li><li>LLMs classify how info was extracted, not subjective confidence.</li><li>Provides objective quality signal.</li></ul>
+                
+        <details>
+            <summary><strong>Values for Evidence Type</strong></summary>
+            <div>
+                <ul><li>Explicit: Direct mention w/ unambiguous wording (e.g., &#x27;Los Angeles grade B esophagitis&#x27;).</li><li>Inferred: Implied but not directly stated (e.g., describing erosions w/o &#x27;esophagitis&#x27;).</li><li>Absent: Not mentioned (for False/None values).</li><li>Ambiguous: Conflicting / unclear wording in report.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Hedging Language Capture</strong></summary>
+            <div>
+                <ul><li>Extracts uncertainty modifiers from source text: `_qualifier` field.</li><li>Medical reports contain natural confidence indicators.</li><li>Physician&#x27;s own hedging language is more meaningful than LLM self-assessment.</li></ul>
+                
+        <details>
+            <summary><strong>Values for Hedging Language</strong></summary>
+            <div>
+                <ul><li>Definite, probable, suspected, possible, ruled out, not mentioned.</li><li>Example: If report says &#x27;possible esophagitis&#x27;, capture &#x27;possible&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Binary Review Flag</strong></summary>
+            <div>
+                <ul><li>Boolean field: `_needs_review`.</li><li>LLM sets to True when multiple interpretations possible / terminology non-standard.</li><li>Simpler than confidence scores; focuses on actionable uncertainty.</li></ul>
+                
+        <details>
+            <summary><strong>Criteria for `_needs_review`</strong></summary>
+            <div>
+                <ul><li>Multiple interpretations possible.</li><li>Terminology is non-standard.</li><li>Information scattered across sections.</li><li>Contradictory statements exist.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evidence Strength Scale</strong></summary>
+            <div>
+                <ul><li>Literal field w/ discrete categories: &#x27;strong&#x27;, &#x27;moderate&#x27;, &#x27;weak&#x27;, &#x27;none&#x27;.</li><li>More granular than binary but still categorical.</li><li>Avoids arbitrary numeric scores.</li></ul>
+                
+        <details>
+            <summary><strong>Definitions for Evidence Strength</strong></summary>
+            <div>
+                <ul><li>Strong: Exact clinical term used explicitly.</li><li>Moderate: Synonymous term / clear implication.</li><li>Weak: Vague description requiring interpretation.</li><li>None: Absent from report.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Source Location Indicator</strong></summary>
+            <div>
+                <ul><li>Field: `_source_section`.</li><li>Shows where info was found: &#x27;impression&#x27;, &#x27;procedure&#x27;, &#x27;indication&#x27;, &#x27;recommendation&#x27;, &#x27;multiple&#x27;, &#x27;absent&#x27;.</li><li>Extractions from &#x27;Impression&#x27; typically more reliable than scattered mentions.</li><li>Gives structural context for quality assessment.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recommended Strategies for Implementation</strong></summary>
+            <div>
+                <ul><li>Practical suggestions for capturing confidence/certainty w/o arbitrary numeric scores.</li><li>Focus on structured, interpretable metadata.</li><li>Aligns w/ clinical documentation standards.</li></ul>
+                
+        <details>
+            <summary><strong>Top Recommendation: Combine Evidence Type + Hedging Language</strong></summary>
+            <div>
+                <ul><li>Dual approach captures both structural clarity of evidence + physician&#x27;s certainty level.</li><li>`_evidence_type`: How clear the extraction basis was.</li><li>`_qualifier`: Any uncertainty language from original physician&#x27;s report.</li><li>Provides interpretable quality metrics w/o relying on LLM overconfidence.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Categorical Confidence via Enum</strong></summary>
+            <div>
+                <ul><li>Define shared Enum for confidence levels (e.g., `ConfidenceLevel`).</li><li>Add per-variable field: `esophagitis_presence_confidence: ConfidenceLevel`.</li><li>Encourages LLM to evaluate based on explicit rules in docstring.</li></ul>
+                
+        <details>
+            <summary><strong>Suggested Enum Values</strong></summary>
+            <div>
+                <ul><li>High: Direct evidence quoted in justification (e.g., &#x27;esophagitis present&#x27;).</li><li>Medium: Inferred from context but not explicit (e.g., &#x27;erythema suggestive of mild inflammation&#x27;).</li><li>Low: Uncertain, absent, or potentially conflicting info (e.g., &#x27;no clear reference, assumed false&#x27;).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Integration Suggestion</strong></summary>
+            <div>
+                <ul><li>Append to docstring: &#x27;For each variable, add a &#x27;_confidence&#x27; field using ConfidenceLevel: &#x27;high&#x27; for direct quotes, &#x27;medium&#x27; for reasonable inference, &#x27;low&#x27; for absence or ambiguity. Base it solely on the justification evidence.&#x27;</li><li>Group all `_confidence` fields at the end.</li><li>Benefit: Makes confidence meaningful; discrete + linked to justification; ↓ overconfidence.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evidence-Based Confidence in Justification</strong></summary>
+            <div>
+                <ul><li>Embed confidence directly into existing `_justification` string.</li><li>Requires prefix/suffix (e.g., &#x27;Justification: [text]. Confidence: high/medium/low because [brief reason]&#x27;).</li><li>Avoids adding fields (saving tokens) while extracting confidence implicitly.</li><li>Can be parsed post-extraction for analysis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Binary or Threshold-Based Flags</strong></summary>
+            <div>
+                <ul><li>For simpler cases, add boolean per variable: `esophagitis_presence_uncertain: bool`.</li><li>`True` flags &#x27;low confidence due to ambiguity&#x27;.</li><li>Docstring rule: &#x27;Set &#x27;_uncertain&#x27; to True only if justification notes conflicting or vague language; otherwise False.&#x27;</li><li>Less granular but directly addresses overconfidence w/o enums.</li><li>Group as `_uncertain` fields at the end.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Minimal Addition for Impact</strong></summary>
+            <div>
+                <ul><li>Assertion status + evidence level give biggest lift w/ minimal schema bloat.</li><li>`_needs_review` provides immediate workflow hook for QA.</li><li>`_source_section` helps weight evidence w/o asking model for probabilities.</li></ul>
+                
+        <details>
+            <summary><strong>Assertion Status</strong></summary>
+            <div>
+                <ul><li>Categorical field: Present, Absent, Possible, Historical, Hypothetical, Family-history.</li><li>Captures ConText-style affirmation vs uncertainty vs negation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evidence Level</strong></summary>
+            <div>
+                <ul><li>Categorical field: Explicit-quote, Direct-statement, Inferred, Ambiguous, Not-mentioned.</li><li>Ties to how strong the evidence is in the text.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optional Pipeline Calibration</strong></summary>
+            <div>
+                <ul><li>Methods to further refine and validate extraction quality.</li></ul>
+                
+        <details>
+            <summary><strong>Self-Consistency</strong></summary>
+            <div>
+                <ul><li>Run k parallel extractions; compute agreement rate as `consensus_fraction`.</li><li>Indirect confidence proxy based on model agreement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Heuristic Scorer</strong></summary>
+            <div>
+                <ul><li>Upweight &#x27;Explicit-quote&#x27; in &#x27;Impression&#x27;.</li><li>Downweight &#x27;Inferred&#x27; w/ `uncertainty_markers` present.</li><li>Auto-set `_needs_review` when `conflict_flag` is True or `evidence_level` is Ambiguous/Not-mentioned.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Potential Drawbacks &amp; Mitigations</strong></summary>
+            <div>
+                <ul><li>LLMs can still be inconsistent.</li><li>Test w/ varied reports to calibrate prompts.</li><li>Mitigation: &#x27;Be conservative: default to &#x27;low&#x27; unless direct evidence exists.&#x27;</li><li>If past attempts failed, start w/ Enum option: more structured + easier to validate/filter downstream.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
