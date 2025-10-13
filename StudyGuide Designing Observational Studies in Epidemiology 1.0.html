@@ -1,0 +1,585 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StudyGuide: Designing Observational Studies in Epidemiology 1.0</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>StudyGuide: Designing Observational Studies in Epidemiology 1.0</strong></summary>
+            <div>
+                <ul><li>Comprehensive guide for physicians on observational study designs.</li><li>Focuses on foundational concepts, key measures, specific designs, and common biases.</li><li>Aids in interpreting and critiquing epidemiological research.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>Test your understanding of key epidemiological concepts.</li><li>These questions are designed to stimulate curiosity and reinforce learning.</li><li>Answers are found within the study guide content.</li></ul>
+                
+        <details>
+            <summary><strong>Trivia Questions</strong></summary>
+            <div>
+                <ul><li>1. In a case-control study, if the outcome of interest is rare (e.g., ≤ 10% prevalence), which measure of association can reliably approximate the risk ratio?</li><li>2. A study finds that 22% of children in the highest quartile of movie smoking exposure have tried smoking, compared to 2% in the lowest quartile. Is this a measure of incidence or prevalence?</li><li>3. What specific type of bias can arise in cohort studies of treatments when a period exists where an outcome cannot occur because a person must survive to initiate treatment, leading to misclassification of exposure time?</li><li>4. Which advanced study design allows each participant to serve as their own control, making it particularly useful for investigating the short-term effects of intermittent exposures like mobile phone use before a car crash?</li><li>5. When designing a nested case-control study, what is a key advantage regarding bias mitigation, especially if exposure data was collected prospectively within the original cohort?</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Key Concepts &amp; Definitions</strong></summary>
+            <div>
+                <ul><li>Firm grasp of core terminology is essential for epidemiological research.</li><li>These concepts are fundamental building blocks for understanding study strengths/limitations.</li><li>Mastering these terms enables evaluation of validity &amp; appropriate design selection.</li></ul>
+                
+        <details>
+            <summary><strong>Cross-Sectional Study</strong></summary>
+            <div>
+                <ul><li>All measurements (predictors + outcomes) made @ single occasion/short period.</li><li>No follow-up involved.</li><li>Provides snapshot of prevalence.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>NHANES: US population health/habits @ specific time.</li><li>Study associating childhood obesity → hours spent watching television.</li><li>Study on movie smoking exposure → smoking initiation: prevalence of ever trying smoking was 22% (highest quartile) vs 2% (lowest).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cohort Study</strong></summary>
+            <div>
+                <ul><li>Group of participants (cohort) assembled @ outset, followed longitudinally.</li><li>Estimates incidence of an outcome among exposed/unexposed.</li><li>Tracks disease development over time.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Nurses&#x27; Health Studies (NHS): examining diseases in women since 1976.</li><li>Study on menstrual cycle regularity → risk of death (NHS-II).</li><li>Study on &#x27;door-to-needle time&#x27; for stroke treatment → 1-year mortality in Medicare patients.</li><li>Study on effect of postmenopausal hormone therapy → heart disease.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Investigator starts w/ sample of people w/ outcome (cases) &amp; w/o outcome (controls).</li><li>Looks backward to measure/compare previous exposures in both groups.</li><li>Efficient for studying rare outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Comparing previous exposure to arc welding in ocular melanoma cases vs. healthy controls.</li><li>Study of Hepatitis A outbreak: comparing consumption of frozen pomegranate arils between cases/controls.</li><li>Study linking maternal diethylstilbestrol use → vaginal cancer in daughters.</li><li>Study linking prone sleeping position → SIDS.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prevalence</strong></summary>
+            <div>
+                <ul><li>Proportion of people who have a disease/condition @ one point in time.</li><li>Snapshot of existing cases.</li><li>Calculated as: # people w/ disease / # people @ risk.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Prevalence of smoking in various demographic groups (NHANES).</li><li>In a study of children and movie smoking exposure, prevalence of ever having tried smoking was the outcome.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence</strong></summary>
+            <div>
+                <ul><li>Proportion of people who get a disease/condition over a given period of time.</li><li>Measures new cases.</li><li>Two main types: Cumulative Incidence &amp; Incidence Rate.</li></ul>
+                
+        <details>
+            <summary><strong>Cumulative Incidence</strong></summary>
+            <div>
+                <ul><li># who get disease / # @ risk.</li><li>Represents the average risk of developing the disease over a specified period.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence Rate</strong></summary>
+            <div>
+                <ul><li># who get disease / person-time @ risk.</li><li>Accounts for varying follow-up times among individuals.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Incidence of death before age 70 in the Nurses’ Health Study II.</li><li>Incidence of 1-year mortality after stroke (Man et al. study).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Odds Ratio (OR)</strong></summary>
+            <div>
+                <ul><li>Measure of association: compares odds of exposure in cases to odds of exposure in controls.</li><li>Approximates Risk Ratio (RR) when outcome is rare (≈ 10% or less).</li><li>Commonly used in case-control studies.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Hepatitis A outbreak study: OR for consumption of frozen pomegranate arils was 45.0.</li><li>Opiate overdose deaths: opiate agonist treatment associated w/ OR of 0.09.</li><li>Case-crossover study (mobile phone use/car crashes): OR was 4.5 (calculated as 27 discordant pairs w/ phone before crash vs. 6 w/o).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Risk Ratio (RR)</strong></summary>
+            <div>
+                <ul><li>Quotient of risks in two groups.</li><li>Risk in exposed group / Risk in unexposed group.</li><li>Also known as Relative Risk.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Nurses&#x27; Health Study: RR of major coronary heart disease for women taking estrogen w/ progestin was reported as 0.39.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Selection Bias</strong></summary>
+            <div>
+                <ul><li>Bias arising in case-control studies from separate sampling of cases/controls.</li><li>Occurs when selected cases ≠ all cases (wrt exposure) OR selected controls ≠ population that produced cases.</li><li>Threatens internal validity.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Study of vasectomy and prostate cancer: cases may over-represent men who received more medical care (e.g., those who had a vasectomy).</li><li>Hepatitis A study: using controls w/ other infectious diseases could be problematic if exposure of interest related to general food/water safety.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recall Bias (Differential Misclassification)</strong></summary>
+            <div>
+                <ul><li>Type of measurement bias.</li><li>Being diagnosed w/ disease → cases remember/report past exposures differently from controls.</li><li>Differential reporting based on outcome status.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Study of sun exposure and melanoma: cases might recall sun exposure history differently due to publicity about the link.</li><li>A twin study found evidence of this when the twin w/ melanoma was asked which twin sunbathed more as a child.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nested Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Case-control study &#x27;nested&#x27; within a defined cohort.</li><li>Cases are incident cases that occur within the cohort.</li><li>Controls sampled from remaining members of the same cohort.</li></ul>
+                
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Reduces recall bias by using prospectively collected exposure data from the cohort.</li><li>More efficient than full cohort analysis for rare outcomes.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Study of malignant melanoma nested within a cohort that had collected sun exposure data years earlier.</li><li>Used to directly test for recall bias.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nested Case-Cohort Study</strong></summary>
+            <div>
+                <ul><li>Design similar to a nested case-control study.</li><li>Control group: random sample of all cohort members @ baseline.</li><li>Controls selected regardless of whether they later develop the outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Single random &#x27;subcohort&#x27; can serve as the control group for multiple outcomes.</li><li>More flexible for studying multiple outcomes than nested case-control.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Plasma ACE2 study used the PURE study cohort to see if ACE2 levels predicted death/cardiometabolic diseases.</li><li>A single random &#x27;subcohort&#x27; served as the control group for multiple outcomes (death, MI, stroke, etc.).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence-Density Design</strong></summary>
+            <div>
+                <ul><li>Nested case-control design.</li><li>Controls sampled from &#x27;risk sets&#x27; for each case as it occurs.</li><li>Risk set: cohort members followed for same length of time as case, but not yet a case.</li></ul>
+                
+        <details>
+            <summary><strong>Purpose</strong></summary>
+            <div>
+                <ul><li>Accounts for changes over time in exposure status or risk factors.</li><li>Ensures controls are truly &#x27;at risk&#x27; at the time the case developed the outcome.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Italian study of opiate overdose deaths.</li><li>Sampled controls who were still alive on the date of each case&#x27;s death, matching on follow-up time.</li><li>Accounts for variations in treatment status over time.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Crossover Study</strong></summary>
+            <div>
+                <ul><li>Each case serves as their own control.</li><li>Compares exposures @/just before outcome occurred vs. exposures of same cases @ other points in time.</li><li>Used for studying short-term effects of intermittent exposures.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Study on mobile phone use and car crashes.</li><li>Compared phone usage in 10 minutes before a crash to usage at other times (e.g., 24 hours or 7 days before) for the same individual.</li><li>The OR was 4.5 (calculated as 27 discordant pairs where driver used phone before crash vs. 6 where they did not).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Immortal Time Bias</strong></summary>
+            <div>
+                <ul><li>Bias in cohort studies of treatments.</li><li>Can occur when exposure time is misclassified.</li><li>Results from study design making it impossible for an event to occur during a period classified as &#x27;unexposed&#x27; but actually &#x27;exposed&#x27;.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>A period of &#x27;immortal time&#x27; exists where an outcome cannot occur because the person must survive to initiate treatment or be classified as exposed.</li><li>This artificially inflates the protective effect of the exposure.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Postmenopausal hormone therapy studies.</li><li>A woman starting hormones in 1981 but not reporting it until a 1982 questionnaire would be counted as a &#x27;non-user&#x27; in 1981.</li><li>If she had a heart attack in that first year, it would be misattributed to the &#x27;non-user&#x27; group, biasing results.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
