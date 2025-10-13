@@ -1,0 +1,873 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Study Guide: Designing Observational Studies in Epidemiology</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Study Guide: Designing Observational Studies in Epidemiology</strong></summary>
+            <div>
+                <ul><li>This guide provides a comprehensive overview of observational study designs in epidemiology.</li><li>It focuses on core concepts, design principles, strengths, weaknesses, and bias mitigation strategies.</li><li>Target audience: physicians seeking to design, interpret, and critique epidemiological research.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>Test your understanding of key epidemiological concepts:</li><li>1. What is the primary metric generated by a cross-sectional study, and how does it fundamentally differ from a cohort study&#x27;s primary metric?</li><li>2. In what specific scenario is a case-crossover study considered the ideal design?</li><li>3. What is &#x27;immortal time bias&#x27; and why is it problematic in cohort studies of treatments?</li><li>4. Name two primary strategies to mitigate recall bias in case-control studies.</li><li>5. What is the key advantage of a nested case-cohort study over a standard nested case-control design regarding multiple outcomes?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Epidemiological Concepts</strong></summary>
+            <div>
+                <ul><li>A firm grasp of core terminology is essential for designing, interpreting, and critiquing epidemiological research.</li><li>These concepts are fundamental building blocks for understanding study strengths and limitations.</li><li>Mastering these terms enables evaluation of study validity and selection of appropriate designs.</li></ul>
+                
+        <details>
+            <summary><strong>Cross-Sectional Study</strong></summary>
+            <div>
+                <ul><li>All measurements (predictors + outcomes) made on a single occasion / short period.</li><li>No follow-up involved.</li><li>Provides a &#x27;snapshot&#x27; of health/habits @ a specific time.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>NHANES: info on US population health/habits @ specific time.</li><li>Study: childhood obesity ↔ hours watching television.</li><li>Study: movie smoking exposure ↔ smoking initiation in children; prevalence of ever trying smoking was 22% (highest quartile movie smoking) vs. 2% (lowest).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cohort Study</strong></summary>
+            <div>
+                <ul><li>Participants (cohort) assembled @ outset, followed longitudinally over time.</li><li>Estimates outcome incidence among exposed / unexposed groups.</li><li>Forward-looking approach: observes how exposures relate to future disease development.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Nurses&#x27; Health Studies (NHS): examining diseases in women since 1976.</li><li>Study: menstrual cycle regularity ↔ risk of death (NHS-II).</li><li>Study: &#x27;door-to-needle time&#x27; for stroke treatment ↔ 1-year mortality in Medicare patients.</li><li>Study: postmenopausal hormone therapy ↔ heart disease.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Investigator starts w/ sample of people w/ outcome (cases) + sample w/o outcome (controls).</li><li>Looks backward to measure + compare previous exposures in both groups.</li><li>Efficient for rare diseases / long latent periods.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Comparing previous exposure to arc welding in ocular melanoma cases vs. healthy controls.</li><li>Study: Hepatitis A outbreak in Australia; comparing frozen pomegranate arils consumption between cases + controls.</li><li>Study: maternal diethylstilbestrol use ↔ vaginal cancer in daughters.</li><li>Study: prone sleeping position ↔ SIDS.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prevalence</strong></summary>
+            <div>
+                <ul><li>Proportion of people w/ disease / condition @ one point in time.</li><li>Calculated as: # people w/ disease / # people @ risk.</li><li>Primary metric for cross-sectional studies.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Prevalence of smoking in demographic groups (NHANES).</li><li>Prevalence of ever trying smoking as outcome in children + movie smoking exposure study.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence (Cumulative Incidence &amp; Incidence Rate)</strong></summary>
+            <div>
+                <ul><li>Proportion of people who get a disease / condition over a given period.</li><li>Cumulative incidence: # who get disease / # @ risk.</li><li>Incidence rate: # who get disease / person-time @ risk.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Incidence of death before age 70 in Nurses’ Health Study II.</li><li>Incidence of 1-year mortality after stroke (Man et al. study).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Odds Ratio (OR)</strong></summary>
+            <div>
+                <ul><li>Measure of association: compares odds of exposure in cases to odds of exposure in controls.</li><li>Approximates risk ratio when outcome is rare (≤ 10%).</li><li>Primary measure of association in case-control studies.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Hepatitis A outbreak study: OR for consumption of frozen pomegranate arils was 45.0.</li><li>Opiate overdose deaths study: opiate agonist treatment associated w/ OR of 0.09.</li><li>Case-crossover study: mobile phone use + car crashes, OR was 4.5 (27 discordant pairs phone use before crash vs. 6 w/o).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Risk Ratio (RR)</strong></summary>
+            <div>
+                <ul><li>Quotient of risks in two groups: risk in exposed group / risk in unexposed group.</li><li>Also known as relative risk.</li><li>Primary measure of association in cohort studies.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Nurses&#x27; Health Study: RR of major coronary heart disease for women taking estrogen w/ progestin was 0.39.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Selection Bias</strong></summary>
+            <div>
+                <ul><li>Bias arising from separate sampling of cases + controls in case-control studies.</li><li>Occurs when selected cases ≠ representative of all cases (wrt exposure).</li><li>Or when selected controls ≠ representative of population that produced cases.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Vasectomy + prostate cancer study: cases may over-represent men w/ more medical care (e.g., vasectomy), leading to bias.</li><li>Hepatitis A study: using controls w/ other infectious diseases problematic if exposure related to general food/water safety.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recall Bias (Differential Misclassification)</strong></summary>
+            <div>
+                <ul><li>Type of measurement bias.</li><li>Being diagnosed w/ disease → cases remember/report past exposures differently from controls.</li><li>Cases may be sensitized to potential causes.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Sun exposure + melanoma study: cases might recall sun exposure history differently than controls.</li><li>Twin study: twin w/ melanoma asked which twin sunbathed more as child, OR 2.2; healthy co-twin asked same, OR 0.8.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nested Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Case-control study &#x27;nested&#x27; within a defined cohort.</li><li>Cases are incident cases occurring within the cohort.</li><li>Controls sampled from remaining members of the same cohort.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Malignant melanoma study nested within a cohort that collected sun exposure data years earlier.</li><li>Used to directly test for recall bias.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nested Case-Cohort Study</strong></summary>
+            <div>
+                <ul><li>Similar to nested case-control, but &#x27;control&#x27; group is random sample of all cohort members @ baseline.</li><li>Includes individuals who may later develop the outcome.</li><li>Single random &#x27;subcohort&#x27; serves as control group for multiple outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Plasma ACE2 study: used PURE study cohort to see if ACE2 levels predicted death / cardiometabolic diseases.</li><li>Single random &#x27;subcohort&#x27; served as control for multiple outcomes (death, MI, stroke, etc.).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence-Density Design</strong></summary>
+            <div>
+                <ul><li>Nested case-control design where controls sampled from &#x27;risk sets&#x27; for each case as it occurs.</li><li>Risk set: cohort members followed for same length of time as case, but not yet a case.</li><li>Accounts for changes over time.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Italian study of opiate overdose deaths: sampled controls still alive on date of each case&#x27;s death.</li><li>Matched on follow-up time to account for variations in treatment status over time.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Crossover Study</strong></summary>
+            <div>
+                <ul><li>Each case serves as their own control.</li><li>Exposures @ or just before outcome compared w/ exposures of same cases @ other points in time.</li><li>Used for studying short-term effects of intermittent exposures.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Study on mobile phone use + car crashes: compared phone usage 10 min before crash to usage @ other times (e.g., 24 hrs / 7 days before) for same individual.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Immortal Time Bias</strong></summary>
+            <div>
+                <ul><li>Bias in cohort studies of treatments due to misclassified exposure time.</li><li>Study design makes it impossible for exposed participant to have outcome during certain period.</li><li>Falsely inflates event rate in non-user period, making treatment appear protective.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Postmenopausal hormone therapy studies: woman starting hormones in 1981, reported in 1982, counted as &#x27;non-user&#x27; in 1981.</li><li>If heart attack in 1981, wrongly counted as non-user event.</li><li>Biased results, making hormone therapy appear safer.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Study Designs: Deep Dive</strong></summary>
+            <div>
+                <ul><li>This section systematically builds understanding of primary observational study designs.</li><li>Covers definitions, practical applications, inherent strengths, and critical vulnerabilities to bias.</li><li>Uses a question-and-answer format for clarity.</li></ul>
+                
+        <details>
+            <summary><strong>Cross-Sectional Studies</strong></summary>
+            <div>
+                <ul><li>All measurements (predictors + outcomes) made @ single point in time / very short period.</li><li>Investigator draws sample, measures simultaneously; no follow-up.</li><li>Provides a &#x27;snapshot&#x27; of the population.</li></ul>
+                
+        <details>
+            <summary><strong>Defining Characteristic</strong></summary>
+            <div>
+                <ul><li>All measurements made @ single point in time / very short period.</li><li>No follow-up period.</li><li>Example: NHANES provides &#x27;snapshot&#x27; of US health/habits.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Primary Metric: Prevalence</strong></summary>
+            <div>
+                <ul><li>Prevalence: proportion of people w/ disease / condition @ single point in time.</li><li>Differs from cohort studies, which measure incidence (new disease over time).</li><li>Cross-sectional: current condition; Cohort: rate of new cases.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strengths</strong></summary>
+            <div>
+                <ul><li>Efficiency + practicality are primary strengths.</li><li>Speed + Low Cost: no follow-up, relatively fast + inexpensive.</li><li>No Loss to Follow-up: one-time data collection eliminates participant dropout.</li><li>Utility as First Step: provides baseline data for cohort study / clinical trial @ low cost.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Weakness: Establishing Causality</strong></summary>
+            <div>
+                <ul><li>Most significant weakness: difficulty establishing sequence of events.</li><li>Predictor + outcome measured simultaneously → impossible to determine if predictor preceded outcome.</li><li>Example: childhood obesity ↔ TV watching; cannot clarify cause/effect direction.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cohort Studies</strong></summary>
+            <div>
+                <ul><li>Group of participants (cohort) assembled @ outset, followed longitudinally over time.</li><li>Predictor variables measured @ beginning.</li><li>Cohort monitored to determine outcome incidence.</li></ul>
+                
+        <details>
+            <summary><strong>Fundamental Principle</strong></summary>
+            <div>
+                <ul><li>Cohort assembled @ outset, followed longitudinally over time.</li><li>Predictor variables measured @ beginning.</li><li>Monitored for outcome incidence; forward-looking approach.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prospective vs. Retrospective</strong></summary>
+            <div>
+                <ul><li>Key difference: timing of data collection relative to study start.</li><li>Prospective: investigator assembles cohort, measures predictors, follows forward for outcomes.</li><li>Retrospective: investigator identifies past cohort, collects past predictor data (records), ascertains outcomes that already happened.</li></ul>
+                
+        <details>
+            <summary><strong>Prospective Examples</strong></summary>
+            <div>
+                <ul><li>Nurses&#x27; Health Study II: participants enrolled 1989, menstrual cycles asked 1993, followed for mortality.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrospective Examples</strong></summary>
+            <div>
+                <ul><li>Stroke patients study: used existing hospital data to examine &#x27;door-to-needle time&#x27; (predictor) ↔ 1-year mortality (outcome), both already occurred.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategic Advantages of Prospective Design</strong></summary>
+            <div>
+                <ul><li>Increases study validity.</li><li>Greater Control Over Measurements: rigorous protocols for predictors + outcomes, maximizing accuracy, minimizing missing data.</li><li>Avoids Bias in Measuring Predictors: exposures measured before outcomes → prevents recall bias, ensures correct temporal sequence.</li><li>Clearer Participant Selection: direct control over enrollment criteria, ensuring well-defined cohort.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multiple-Cohort Study</strong></summary>
+            <div>
+                <ul><li>Compares two+ distinct cohorts, often defined by different exposure levels.</li><li>Useful for studying rare exposures (e.g., occupational/environmental hazards).</li><li>Inefficient to follow large general population for rare exposures.</li></ul>
+                
+        <details>
+            <summary><strong>Example</strong></summary>
+            <div>
+                <ul><li>Jaundice and Infant Feeding (JIFee) study: compared two exposed cohorts (newborns w/ high bilirubin, newborns readmitted for dehydration) to unexposed cohort (randomly selected newborns).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Immortal Time Bias</strong></summary>
+            <div>
+                <ul><li>Flaw: study design gives exposure group credit for time outcome could not occur.</li><li>Period misclassified as unexposed time.</li><li>Can make treatment appear safer / more effective than it is.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism + Impact</strong></summary>
+            <div>
+                <ul><li>Example: early postmenopausal hormone therapy studies, exposure updated biennially.</li><li>Woman starting hormones in 1981, reported in 1982, classified &#x27;non-user&#x27; for 1981.</li><li>If heart attack in 1981, wrongly attributed to non-user period.</li><li>&#x27;Immortal&#x27; non-user time (when on drug) biased results, making therapy appear protective.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Problem w/ &#x27;Prevalent Users&#x27;</strong></summary>
+            <div>
+                <ul><li>Studying individuals already taking medication @ study start is problematic.</li><li>Four key reasons for concern.</li><li>Can lead to biased results, making treatments seem more beneficial.</li></ul>
+                
+        <details>
+            <summary><strong>Reasons for Problem</strong></summary>
+            <div>
+                <ul><li>1. Overrepresentation of Adherers (Healthy User Effect): prevalent users often adhere better, have better health outcomes regardless of drug effect.</li><li>2. Missing Early Adverse Effects: misses those who stopped treatment early due to adverse effects, especially problematic for early harms.</li><li>3. Complicates Confounding Control: treatment may alter confounder levels (e.g., statin ↓ cholesterol); difficult to adjust for original effect.</li><li>4. Inability to Emulate a Trial: cannot map to clear clinical decision (starting vs. not starting, or continuing vs. stopping).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Control Studies</strong></summary>
+            <div>
+                <ul><li>Investigator starts w/ outcome: identifies cases (w/ disease) + controls (w/o disease).</li><li>Looks backward in time to measure + compare past exposures.</li><li>Fundamentally differs from cohort studies (forward-looking).</li></ul>
+                
+        <details>
+            <summary><strong>Basic Design</strong></summary>
+            <div>
+                <ul><li>Starts w/ outcome: cases (w/ disease) + controls (w/o disease).</li><li>Looks backward to measure + compare past exposures.</li><li>Cohort studies are forward-looking: start w/ exposure, follow for outcome.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Primary Strength: Efficiency for Rare Diseases</strong></summary>
+            <div>
+                <ul><li>Most efficient + often only feasible option for studying rare diseases / long latent periods.</li><li>Starts w/ individuals already having disease.</li><li>Bypasses need to follow massive healthy cohort for years/decades for few outcome events.</li></ul>
+                
+        <details>
+            <summary><strong>Example</strong></summary>
+            <div>
+                <ul><li>Circumcision + penile cancer: cohort study needs &gt;6,000 men for decades.</li><li>Case-control: same statistical power w/ 16 cases + 16 controls.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Susceptibility to Selection Bias</strong></summary>
+            <div>
+                <ul><li>Highly susceptible to selection bias, arising from separate sampling of cases + controls.</li><li>Two main sources of bias.</li><li>Mitigation strategies are crucial.</li></ul>
+                
+        <details>
+            <summary><strong>Main Sources of Bias</strong></summary>
+            <div>
+                <ul><li>1. Finding a Representative Sample of Cases: cases available (e.g., @ hospital) may not represent all cases (undiagnosed, misdiagnosed, died).</li><li>Bias if factors making case available link to exposure.</li><li>Example: vasectomy + prostate cancer study biased if cases drawn from men w/ more medical screening (vasectomy linked to screening).</li><li>2. Sampling Controls: most challenging task; goal is to sample controls from same population that produced cases.</li><li>Controls should be people who would have been selected as a case if they had developed the disease.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Mitigation Strategies for Sampling Controls</strong></summary>
+            <div>
+                <ul><li>1. Clinic/Hospital-Based Controls: convenient, from same facility as cases.</li><li>May partially account for care-seeking, but problematic if control&#x27;s condition relates to exposure.</li><li>2. Population-Based Controls: use disease registries / health plan data for representative &#x27;non-cases&#x27; from same population.</li><li>Often most desirable design.</li><li>3. Using Two+ Control Groups: select multiple control groups w/ different methods to check consistency.</li><li>Example: oral cholera vaccine study in Haiti compared cases to &#x27;test-negative&#x27; controls + &#x27;community&#x27; controls; found similar results.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Differential Measurement Bias (Recall Bias)</strong></summary>
+            <div>
+                <ul><li>Cases remember/report past exposures differently than controls.</li><li>Diagnosis of disease sensitizes them to potential causes.</li><li>Challenging bias to combat.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism + Impact</strong></summary>
+            <div>
+                <ul><li>Example: twin study (one w/ melanoma).</li><li>Melanoma twin asked about childhood sunbathing: OR 2.2.</li><li>Healthy co-twin asked same: OR 0.8.</li><li>Suggests case&#x27;s memory biased by diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategies to Avoid</strong></summary>
+            <div>
+                <ul><li>1. Use data recorded before outcome occurred: best approach when possible (e.g., vaccination records in cholera study).</li><li>2. Blinding: reduces bias.</li><li>Blinding participants: embed exposure questions among &#x27;dummy&#x27; questions about other plausible risk factors.</li><li>Blinding observers (interviewers/lab techs): prevents differential probing / biased interpretation of measurements.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Hybrid and Advanced Case-Control Designs</strong></summary>
+            <div>
+                <ul><li>Traditional case-control design is powerful but vulnerable to significant biases.</li><li>These hybrid/advanced designs developed to solve these problems.</li><li>Offer greater validity by leveraging strengths of a cohort structure.</li></ul>
+                
+        <details>
+            <summary><strong>Nested Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Improves upon traditional design by drawing cases + controls from single, well-defined cohort.</li><li>Avoids selection biases inherent in traditional designs (different populations).</li><li>If exposure data collected prospectively, also avoids recall bias.</li></ul>
+                
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Avoids selection bias: cases + controls from same underlying population.</li><li>Avoids recall bias: if exposure data collected prospectively (banked specimens, baseline questionnaires) before outcome.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incidence-Density Nested Case-Control Study</strong></summary>
+            <div>
+                <ul><li>Controls sampled from &#x27;risk sets&#x27; @ time each case identified.</li><li>Risk set: cohort members followed for same time as case, but not yet developed outcome.</li><li>Primary advantage: accounts for changes in risk factors over time + variable follow-up periods.</li></ul>
+                
+        <details>
+            <summary><strong>Example</strong></summary>
+            <div>
+                <ul><li>Italian study on opiate overdose deaths: assessed protective effect of agonist treatment.</li><li>For each death (case), sampled controls still alive on that date.</li><li>Compared treatment status in 2 months prior to event, capturing risk changes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nested Case-Cohort Design</strong></summary>
+            <div>
+                <ul><li>&#x27;Control&#x27; group is random sample of entire cohort @ baseline.</li><li>Includes individuals who may later become cases.</li><li>Subcohort compared to all cases arising during follow-up.</li></ul>
+                
+        <details>
+            <summary><strong>Key Advantages over Nested Case-Control</strong></summary>
+            <div>
+                <ul><li>1. Single control group for multiple outcomes: subcohort represents source population, serves as comparison for several case sets (e.g., MI, stroke, diabetes).</li><li>2. Provides info on risk factor prevalence in whole cohort: random subcohort is representative sample, allows direct measurement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example</strong></summary>
+            <div>
+                <ul><li>Plasma ACE2 study: single random &#x27;subcohort&#x27; used to assess link between ACE2 levels + five different outcomes (death, MI, stroke, heart failure, diabetes).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case-Crossover Study</strong></summary>
+            <div>
+                <ul><li>Ideal design for studying short-term effects of intermittent exposures on an outcome.</li><li>Each case serves as their own control.</li><li>Exposure status immediately before event compared to same individual&#x27;s exposure status @ other, non-event times.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism + Advantage</strong></summary>
+            <div>
+                <ul><li>Self-comparison powerfully controls for stable confounding factors (genetics, chronic conditions) that don&#x27;t change over short periods.</li><li>Example: mobile phone usage + car crashes study.</li><li>Compared driver&#x27;s phone use 10 min before crash to phone use while driving @ same time of day on previous days.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Choosing the Right Observational Design</strong></summary>
+            <div>
+                <ul><li>Choosing the right design balances the ideal (often prospective cohort for causality) w/ practical constraints.</li><li>Consider time, cost, and nature of the disease.</li><li>Weigh criteria to select appropriate design for research question.</li></ul>
+                
+        <details>
+            <summary><strong>Research Goal</strong></summary>
+            <div>
+                <ul><li>Cross-Sectional: best for describing prevalence of disease/risk factor @ single point in time (e.g., % US adults w/ hypertension?). Weak for causality (unclear sequence).</li><li>Cohort: strongest observational design for determining incidence + investigating potential causes. Clearly establishes exposure precedes outcome, critical for causal inference.</li><li>Case-Control: primarily identifies risk factors by estimating association strength (via OR). Cannot determine prevalence or incidence directly.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Rarity of the Outcome</strong></summary>
+            <div>
+                <ul><li>Case-Control: most efficient + often only feasible option for rare outcomes / long latency periods.</li><li>Cohort &amp; Cross-Sectional: inefficient + often impractical for rare outcomes; require enormous sample sizes for enough cases.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Time and Cost Constraints</strong></summary>
+            <div>
+                <ul><li>Cross-Sectional: fastest + least expensive (no follow-up).</li><li>Case-Control: relatively fast + inexpensive (no long follow-up).</li><li>Cohort (Prospective): most expensive + time-consuming (years/decades of follow-up).</li><li>Cohort (Retrospective): cheaper + faster if high-quality historical data exists.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Susceptibility to Major Biases</strong></summary>
+            <div>
+                <ul><li>Cohort (Prospective): generally least susceptible to bias. Avoids recall bias (exposures measured before outcome), minimizes selection bias (well-defined cohort). Loss to follow-up is primary concern.</li><li>Case-Control: highly susceptible to selection bias (sampling cases/controls separately) + recall bias (retrospective exposure measurement). These are biggest weaknesses.</li><li>Cross-Sectional: less prone to recall/selection bias than case-control. Limited by inability to establish temporal sequence of events.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
