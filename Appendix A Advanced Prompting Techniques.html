@@ -1,0 +1,1129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Appendix A: Advanced Prompting Techniques</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Appendix A: Advanced Prompting Techniques</strong></summary>
+            <div>
+                <ul><li>This document is an appendix detailing advanced methods for interacting with language models (LLMs).</li><li>It focuses on structuring requests, providing context, specifying output formats, and demonstrating expected response types.</li><li>It aims to maximize LLM potential for accurate, relevant, and creative responses, crucial for agentic applications.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary benefit of Chain of Thought (CoT) prompting for complex reasoning tasks?</li><li>2. Which prompting technique involves generating multiple reasoning paths and selecting the most consistent answer?</li><li>3. What is the main purpose of Retrieval Augmented Generation (RAG) in enhancing LLM capabilities?</li><li>4. How does &#x27;Context Engineering&#x27; differ from traditional prompt engineering in its scope?</li><li>5. What Python library is recommended for enforcing structured output and validating JSON data from LLMs?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction to Prompting</strong></summary>
+            <div>
+                <ul><li>Prompting: primary interface for LLM interaction.</li><li>Process: crafting inputs to guide model → desired output.</li><li>Well-designed prompts → accurate, relevant, creative responses; poorly designed → ambiguous, irrelevant, erroneous outputs.</li></ul>
+                
+        <details>
+            <summary><strong>Objective of Prompt Engineering</strong></summary>
+            <div>
+                <ul><li>Consistently elicit high-quality responses from LLMs.</li><li>Requires understanding model capabilities/limitations + effective communication of goals.</li><li>Involves developing expertise in instructing AI.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scope of Appendix</strong></summary>
+            <div>
+                <ul><li>Details various prompting techniques beyond basic interaction.</li><li>Explores structuring complex requests, enhancing reasoning, controlling output, integrating external info.</li><li>Applicable to chatbots, multi-agent systems; ↑ performance/reliability of agentic applications.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Relation to Agentic Patterns</strong></summary>
+            <div>
+                <ul><li>Agentic patterns: architectural structures for intelligent systems.</li><li>Define how agents plan, use tools, manage memory, collaborate.</li><li>Efficacy of agentic systems ↔ meaningful interaction w/ LLMs.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Prompting Principles</strong></summary>
+            <div>
+                <ul><li>Fundamental principles guide communication w/ LLMs.</li><li>Applicable across models + task complexities.</li><li>Mastery essential for consistently generating useful, accurate responses.</li></ul>
+                
+        <details>
+            <summary><strong>Clarity and Specificity</strong></summary>
+            <div>
+                <ul><li>Instructions: unambiguous + precise.</li><li>LLMs interpret patterns; multiple interpretations → unintended responses.</li><li>Define task, desired output format, limitations/requirements; avoid vague language.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conciseness</strong></summary>
+            <div>
+                <ul><li>Specificity crucial, but not @ expense of conciseness.</li><li>Instructions: direct; unnecessary wording/complex sentences → confusion.</li><li>Prompts simple; avoid intricate language/superfluous info.</li></ul>
+                
+        <details>
+            <summary><strong>Using Verbs</strong></summary>
+            <div>
+                <ul><li>Verb choice: key prompting tool; action verbs indicate expected operation.</li><li>Example: &#x27;Summarize the following text&#x27; vs. &#x27;Think about summarizing this&#x27;.</li><li>Precise verbs guide model → activate relevant training data/processes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Instructions Over Constraints</strong></summary>
+            <div>
+                <ul><li>Positive instructions &gt; negative constraints.</li><li>Specify desired action vs. outlining what not to do.</li><li>Excessive reliance on constraints → model focuses on avoidance, not objective.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experimentation and Iteration</strong></summary>
+            <div>
+                <ul><li>Prompt engineering: iterative process; effective prompt requires multiple attempts.</li><li>Start w/ draft, test, analyze output, identify shortcomings, refine prompt.</li><li>Documenting attempts vital for learning + improvement.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Basic Prompting Techniques</strong></summary>
+            <div>
+                <ul><li>Builds on core principles; provides LLMs w/ varying info/examples.</li><li>Serves as initial phase in prompt engineering.</li><li>Effective for wide spectrum of applications.</li></ul>
+                
+        <details>
+            <summary><strong>Zero-Shot Prompting</strong></summary>
+            <div>
+                <ul><li>Most basic form: instruction + input data w/o examples.</li><li>Relies on model&#x27;s pre-training to understand task + generate response.</li><li>Consists of task description + initial text.</li></ul>
+                
+        <details>
+            <summary><strong>When to Use</strong></summary>
+            <div>
+                <ul><li>Sufficient for tasks extensively encountered during training (e.g., simple Q&amp;A, text completion, basic summarization).</li><li>Quickest approach to try first.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>One-Shot Prompting</strong></summary>
+            <div>
+                <ul><li>Provides LLM w/ single example of input + desired output before actual task.</li><li>Serves as initial demonstration to illustrate expected pattern.</li><li>Purpose: equip model w/ concrete instance for task execution.</li></ul>
+                
+        <details>
+            <summary><strong>When to Use</strong></summary>
+            <div>
+                <ul><li>Useful when desired output format/style is specific or less common.</li><li>Provides concrete instance for model to learn from.</li><li>Can ↑ performance vs. zero-shot for tasks requiring particular structure/tone.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Few-Shot Prompting</strong></summary>
+            <div>
+                <ul><li>Enhances one-shot: supplies several examples (typically 3-5) of input-output pairs.</li><li>Aims to demonstrate clearer pattern of expected responses.</li><li>Provides multiple examples to guide model to follow specific output pattern.</li></ul>
+                
+        <details>
+            <summary><strong>When to Use</strong></summary>
+            <div>
+                <ul><li>Effective for tasks requiring adherence to specific format, style, or nuanced variations.</li><li>Excellent for classification, data extraction w/ specific schemas, generating text in particular style.</li><li>Rule of thumb: 3-5 examples, adjust based on task complexity + model token limits.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Importance of Example Quality and Diversity</strong></summary>
+            <div>
+                <ul><li>Effectiveness heavily relies on quality + diversity of examples.</li><li>Examples: accurate, representative, cover variations/edge cases.</li><li>High-quality, well-written examples crucial; even small mistake → confusion.</li><li>Diverse examples → model generalizes better to unseen inputs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Mixing Up Classes in Classification Examples</strong></summary>
+            <div>
+                <ul><li>For classification tasks: best practice to mix order of examples from different classes.</li><li>Prevents model from overfitting to specific sequence.</li><li>Ensures learning of key features independently → more robust, generalizable performance.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evolution to &#x27;Many-Shot&#x27; Learning</strong></summary>
+            <div>
+                <ul><li>Modern LLMs (e.g., Gemini) stronger w/ long context modeling.</li><li>Optimal performance for complex tasks now achieved w/ much larger # of examples (hundreds).</li><li>Allows model to learn more intricate patterns.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Structuring Prompts</strong></summary>
+            <div>
+                <ul><li>Beyond basic techniques, prompt structure critical for guiding LLM.</li><li>Involves using different sections/elements within prompt.</li><li>Provides distinct info (instructions, context, examples) in clear, organized manner.</li></ul>
+                
+        <details>
+            <summary><strong>System Prompting</strong></summary>
+            <div>
+                <ul><li>Sets overall context + purpose for LLM; defines intended behavior.</li><li>Provides instructions/background info establishing rules, persona, or overall behavior.</li><li>Influences model&#x27;s tone, style, general approach throughout interaction.</li></ul>
+                
+        <details>
+            <summary><strong>Applications</strong></summary>
+            <div>
+                <ul><li>Instruct model to consistently respond concisely/helpfully.</li><li>Ensure responses appropriate for general audience.</li><li>Utilized for safety/toxicity control (e.g., maintaining respectful language).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimization</strong></summary>
+            <div>
+                <ul><li>System prompts undergo automatic prompt optimization via LLM-based iterative refinement.</li><li>Services (e.g., Vertex AI Prompt Optimizer) facilitate systematic improvement.</li><li>Ensures highest possible performance for given task.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Role Prompting</strong></summary>
+            <div>
+                <ul><li>Assigns specific character, persona, or identity to LLM.</li><li>Often used w/ system/contextual prompting.</li><li>Instructs model to adopt knowledge, tone, communication style of that role.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Defining role provides framework for tone, style, focused expertise.</li><li>Enhances quality + relevance of output.</li><li>Desired style within role can also be specified (e.g., &#x27;humorous and inspirational&#x27;).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using Delimiters</strong></summary>
+            <div>
+                <ul><li>Effective prompting: clear distinction of instructions, context, examples, input.</li><li>Delimiters (e.g., triple backticks `, XML tags &lt;instruction&gt;, markers ---) separate sections.</li><li>Minimizes misinterpretation by model; ensures clarity of each part&#x27;s role.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Contextual Engineering</strong></summary>
+            <div>
+                <ul><li>Dynamically provides background info crucial for tasks/conversations.</li><li>Helps models grasp nuances, recall past interactions, integrate relevant details.</li><li>Leads to grounded responses + smoother exchanges.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>Previous dialogue, relevant documents (Retrieval Augmented Generation), specific operational parameters.</li><li>Fundamental to agentic systems&#x27; core behaviors: memory persistence, decision-making, sub-task coordination.</li><li>Agents w/ dynamic contextual pipelines → sustain goals, adapt strategies, collaborate seamlessly.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Principle</strong></summary>
+            <div>
+                <ul><li>Quality of model&#x27;s output depends more on richness of provided context than model architecture.</li><li>Reframes task from merely answering question → building comprehensive operational picture for agent.</li><li>Significant evolution from traditional prompt engineering (optimizing immediate user queries).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Layers of Context</strong></summary>
+            <div>
+                <ul><li>System prompts: foundational instructions defining AI&#x27;s operational parameters.</li><li>External data: retrieved documents (knowledge base), tool outputs (external API results).</li><li>Implicit data: user identity, interaction history, environmental state.</li></ul>
+                
+        <details>
+            <summary><strong>Implicit Data Challenges</strong></summary>
+            <div>
+                <ul><li>Incorporating implicit context presents challenges related to privacy + ethical data management.</li><li>Robust governance essential for context engineering, especially in enterprise, healthcare, finance sectors.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Implementation</strong></summary>
+            <div>
+                <ul><li>Specialized tuning systems (e.g., Google&#x27;s Vertex AI prompt optimizer) automate improvement.</li><li>Systematically evaluate responses vs. sample inputs + predefined metrics.</li><li>Enhance model performance + adapt prompts/system instructions across models w/o extensive manual rewriting.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Significance</strong></summary>
+            <div>
+                <ul><li>Differentiates rudimentary AI tool from sophisticated, contextually-aware system.</li><li>Treats context as primary component: what agent knows, when, how it uses info.</li><li>Ensures model has well-rounded understanding of user&#x27;s intent, history, current environment.</li><li>Crucial for transforming stateless chatbots → highly capable, situationally-aware systems.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Structured Output</strong></summary>
+            <div>
+                <ul><li>Goal: extract/generate info in specific, machine-readable format (e.g., JSON, XML, CSV, Markdown tables).</li><li>Explicitly asking for particular format + providing schema/example guides model.</li><li>Organizes response for easy parsing + use by other system parts.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Returning JSON objects for data extraction forces structure + can limit hallucinations.</li><li>Recommended to experiment w/ output formats, especially for non-creative tasks (extraction, categorization).</li><li>Crucial for creating pipelines where LLM output serves as input for subsequent steps.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Leveraging Pydantic for Object-Oriented Facade</strong></summary>
+            <div>
+                <ul><li>Pydantic: Python library for data validation + settings management using type annotations.</li><li>Defining Pydantic model → clear, enforceable schema for desired data structure.</li><li>Provides object-oriented facade to prompt&#x27;s output; transforms raw text → validated, type-hinted Python objects.</li></ul>
+                
+        <details>
+            <summary><strong>Pydantic Usage</strong></summary>
+            <div>
+                <ul><li>Directly parse JSON string from LLM into Pydantic object using `model_validate_json` method.</li><li>Combines parsing + validation in single step.</li><li>For XML data: use `xmltodict` library to convert XML → dictionary, then pass to Pydantic model.</li><li>Field aliases in Pydantic map verbose XML structure to object fields.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Interoperability</strong></summary>
+            <div>
+                <ul><li>Invaluable for ensuring interoperability of LLM-based components w/ larger system.</li><li>LLM output encapsulated in Pydantic object → reliably passed to functions, APIs, data processing pipelines.</li><li>Assurance that data conforms to expected structure + types.</li><li>Practice of &#x27;parse, don&#x27;t validate&#x27; @ system boundaries → more robust, maintainable applications.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Reasoning and Thought Process Techniques</strong></summary>
+            <div>
+                <ul><li>LLMs excel @ pattern recognition/text generation, but struggle w/ complex, multi-step reasoning.</li><li>Techniques enhance reasoning by encouraging models to reveal internal thought processes.</li><li>Addresses improving logical deduction, mathematical computation, planning.</li></ul>
+                
+        <details>
+            <summary><strong>Chain of Thought (CoT)</strong></summary>
+            <div>
+                <ul><li>Powerful method for ↑ LLM reasoning abilities.</li><li>Explicitly prompts model to generate intermediate reasoning steps before final answer.</li><li>Instructs model to &#x27;think step by step&#x27;.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>Mirrors human problem-solving: breaking down into smaller parts, sequential work.</li><li>Helps LLM generate more accurate answers, esp. for calculation/logical deduction tasks.</li><li>Generating intermediate steps → model stays on track, performs operations correctly.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-Shot CoT</strong></summary>
+            <div>
+                <ul><li>Simply add phrase &#x27;Let&#x27;s think step by step&#x27; (or similar) to prompt.</li><li>No examples of reasoning process provided.</li><li>Surprisingly, often significantly ↑ performance by triggering internal reasoning trace.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Few-Shot CoT</strong></summary>
+            <div>
+                <ul><li>Combines CoT w/ few-shot prompting.</li><li>Provides several examples showing input, step-by-step reasoning, + final output.</li><li>Gives clearer template for reasoning + response structure → often better results on complex tasks.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Advantages</strong></summary>
+            <div>
+                <ul><li>Relatively low-effort to implement; highly effective w/ off-the-shelf LLMs.</li><li>↑ interpretability of model&#x27;s output: see reasoning steps, understand &#x27;why&#x27;.</li><li>Improves robustness of prompts across different LLM versions.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Disadvantages</strong></summary>
+            <div>
+                <ul><li>Generating reasoning steps ↑ output length → higher token usage.</li><li>Higher token usage → ↑ costs + response time.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Best Practices</strong></summary>
+            <div>
+                <ul><li>Final answer presented after reasoning steps (reasoning influences subsequent token predictions).</li><li>For single-correct-answer tasks (e.g., math), set model&#x27;s temperature to 0 (greedy decoding).</li><li>Ensures deterministic selection of most probable next token @ each step.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Self-Consistency</strong></summary>
+            <div>
+                <ul><li>Builds on CoT; aims to ↑ reasoning reliability.</li><li>Leverages probabilistic nature of LLMs.</li><li>Generates multiple diverse reasoning paths for same problem, then selects most consistent answer.</li></ul>
+                
+        <details>
+            <summary><strong>Steps</strong></summary>
+            <div>
+                <ul><li>1. Generate Diverse Reasoning Paths: Send CoT prompt multiple times w/ higher temperature → explore different approaches.</li><li>2. Extract the Answer: Get final answer from each path.</li><li>3. Choose the Most Common Answer: Majority vote on extracted answers → most frequent selected as final, consistent answer.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Improves accuracy + coherence of responses, esp. where multiple valid paths exist or model prone to errors.</li><li>Provides pseudo-probability likelihood of answer being correct → ↑ overall accuracy.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Costs</strong></summary>
+            <div>
+                <ul><li>Significant cost: need to run model multiple times for same query.</li><li>Leads to much higher computation + expense.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step-Back Prompting</strong></summary>
+            <div>
+                <ul><li>Enhances reasoning by first asking LLM to consider general principle/concept.</li><li>Addresses specific details after considering broader question.</li><li>Response to broader question used as context for original problem.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>Allows LLM to activate relevant background knowledge + wider reasoning strategies.</li><li>Focusing on underlying principles/higher-level abstractions → more accurate, insightful answers.</li><li>Less influenced by superficial elements; provides stronger basis for creative outputs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Encourages critical thinking + application of knowledge.</li><li>Potentially mitigates biases by emphasizing general principles.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Tree of Thoughts (ToT)</strong></summary>
+            <div>
+                <ul><li>Advanced reasoning technique; extends CoT method.</li><li>Enables LLM to explore multiple reasoning paths concurrently, not single linear progression.</li><li>Utilizes tree structure: each node = &#x27;thought&#x27; (coherent language sequence as intermediate step).</li></ul>
+                
+        <details>
+            <summary><strong>Applications</strong></summary>
+            <div>
+                <ul><li>Particularly suited for complex problems requiring exploration, backtracking, evaluation of multiple possibilities.</li><li>Model can branch out from each node, exploring alternative reasoning routes.</li><li>Allows agent to consider diverse perspectives, potentially recover from initial errors.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Complexity</strong></summary>
+            <div>
+                <ul><li>More computationally demanding + intricate to implement than linear CoT.</li><li>Can achieve superior results on tasks necessitating deliberate + exploratory problem-solving.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Action and Interaction Techniques</strong></summary>
+            <div>
+                <ul><li>Intelligent agents actively engage w/ environment beyond text generation.</li><li>Includes utilizing tools, executing external functions, participating in iterative cycles.</li><li>Examines prompting techniques enabling these active behaviors.</li></ul>
+                
+        <details>
+            <summary><strong>Tool Use / Function Calling</strong></summary>
+            <div>
+                <ul><li>Crucial ability for agent: using external tools/calling functions.</li><li>Performs actions beyond internal capabilities (e.g., web searches, database access, emails, calculations, API interaction).</li><li>Effective prompting instructs model on appropriate timing + methodology for tool utilization.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>Modern LLMs fine-tuned for &#x27;function calling&#x27; or &#x27;tool use&#x27;.</li><li>Interpret tool descriptions (purpose, parameters).</li><li>Determine necessity of tool use, identify tool, format required arguments.</li><li>Model generates structured output (typically JSON) specifying tool + parameters; agentic system executes tool.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>ReAct (Reason &amp; Act)</strong></summary>
+            <div>
+                <ul><li>Prompting paradigm: combines CoT-style reasoning w/ ability to perform actions using tools.</li><li>Interleaved manner; mimics human operation (reason verbally, take actions to gather info/make progress).</li></ul>
+                
+        <details>
+            <summary><strong>ReAct Loop</strong></summary>
+            <div>
+                <ul><li>1. Thought: Model generates thought process, explaining understanding + plan.</li><li>2. Action: Based on thought, model decides to perform action (often tool use); outputs tool name + input.</li><li>3. Observation: Agentic system executes tool, provides result back to model.</li><li>Loop continues w/ new &#x27;Thought&#x27; based on &#x27;Observation&#x27; → further &#x27;Actions&#x27;/&#x27;Observations&#x27; until task complete + &#x27;Final Answer&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Effectiveness</strong></summary>
+            <div>
+                <ul><li>Interleaved process of thinking + acting allows dynamic info gathering.</li><li>Reacts to tool outputs, refines approach.</li><li>Particularly effective for tasks requiring interaction w/ dynamic environments/external knowledge sources.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Advanced Techniques</strong></summary>
+            <div>
+                <ul><li>Beyond foundational, structural, reasoning patterns.</li><li>Further enhance capabilities + efficiency of agentic systems.</li><li>Range from AI optimizing prompts to incorporating external knowledge + tailoring responses.</li></ul>
+                
+        <details>
+            <summary><strong>Automatic Prompt Engineering (APE)</strong></summary>
+            <div>
+                <ul><li>Uses LLMs themselves to generate, evaluate, + refine prompts.</li><li>Automates prompt writing process; potentially ↑ model performance.</li><li>Reduces extensive human effort in prompt design.</li></ul>
+                
+        <details>
+            <summary><strong>General Idea</strong></summary>
+            <div>
+                <ul><li>&#x27;Meta-model&#x27; or process takes task description → generates multiple candidate prompts.</li><li>Prompts evaluated based on output quality on given inputs (e.g., BLEU, ROUGE, human eval).</li><li>Best-performing prompts selected, refined, used for target task.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Programmatic Prompt Optimization (DSPy)</strong></summary>
+            <div>
+                <ul><li>Treats prompts as programmatic modules that can be automatically optimized.</li><li>Moves beyond manual trial-and-error → systematic, data-driven methodology.</li><li>Core relies on Goldset + Objective Function.</li></ul>
+                
+        <details>
+            <summary><strong>Goldset (High-Quality Dataset)</strong></summary>
+            <div>
+                <ul><li>Representative set of high-quality input-and-output pairs.</li><li>Serves as &#x27;ground truth&#x27; defining successful response for given task.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Objective Function (Scoring Metric)</strong></summary>
+            <div>
+                <ul><li>Function automatically evaluates LLM&#x27;s output vs. &#x27;golden&#x27; output from dataset.</li><li>Returns score indicating quality, accuracy, or correctness of response.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimization Strategies</strong></summary>
+            <div>
+                <ul><li>Optimizer (e.g., Bayesian optimizer) systematically refines prompt.</li><li>1. Few-Shot Example Optimization: Programmatically samples example combinations from goldset; identifies most effective set.</li><li>2. Instructional Prompt Optimization: Optimizer refines prompt&#x27;s core instructions; uses LLM as &#x27;meta-model&#x27; to mutate/rephrase prompt text.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ultimate Goal</strong></summary>
+            <div>
+                <ul><li>Maximize scores from objective function.</li><li>&#x27;Training&#x27; prompt to produce results consistently closer to high-quality goldset.</li><li>Combines strategies → simultaneously optimizes instructions + examples → highly effective, robust, machine-optimized prompt.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Iterative Prompting / Refinement</strong></summary>
+            <div>
+                <ul><li>Starts w/ simple, basic prompt; iteratively refines based on model&#x27;s initial responses.</li><li>Analyze shortcomings, modify prompt to address them.</li><li>Human-driven iterative design loop, less automated than APE.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Providing Negative Examples</strong></summary>
+            <div>
+                <ul><li>While &#x27;Instructions over Constraints&#x27; generally holds, negative examples can be helpful (use carefully).</li><li>Shows model input + undesired output, or input + output that should not be generated.</li><li>Helps clarify boundaries or prevent specific types of incorrect responses.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using Analogies</strong></summary>
+            <div>
+                <ul><li>Framing task using analogy helps model understand desired output/process.</li><li>Relates task to something familiar.</li><li>Useful for creative tasks or explaining complex roles.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Factored Cognition / Decomposition</strong></summary>
+            <div>
+                <ul><li>For very complex tasks: break down overall goal into smaller, manageable sub-tasks.</li><li>Prompt model separately on each sub-task.</li><li>Results from sub-tasks combined to achieve final outcome; related to prompt chaining/planning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrieval Augmented Generation (RAG)</strong></summary>
+            <div>
+                <ul><li>Powerful technique: enhances LLMs by giving access to external, up-to-date, or domain-specific info.</li><li>System retrieves relevant documents/data from knowledge base (e.g., database, web).</li><li>Retrieved info included in prompt as context → LLM generates response grounded in external knowledge.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Mitigates issues like hallucination.</li><li>Provides access to info model wasn&#x27;t trained on or that is very recent.</li><li>Key pattern for agentic systems needing to work w/ dynamic or proprietary info.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Persona Pattern (User Persona)</strong></summary>
+            <div>
+                <ul><li>Describes user or target audience for model&#x27;s output.</li><li>Helps model tailor response: language, complexity, tone, info provided.</li><li>Complements role prompting (which assigns persona to model).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using Google Gems</strong></summary>
+            <div>
+                <ul><li>User-configurable feature within Google&#x27;s LLM architecture (Gemini).</li><li>Each &#x27;Gem&#x27; functions as specialized instance of core Gemini AI, tailored for specific, repeatable tasks.</li><li>Users create Gem by providing explicit instructions, establishing operational parameters.</li></ul>
+                
+        <details>
+            <summary><strong>Functionality</strong></summary>
+            <div>
+                <ul><li>Initial instruction set defines Gem&#x27;s purpose, response style, knowledge domain.</li><li>Underlying model consistently adheres to pre-defined directives throughout conversation.</li><li>Allows creation of highly specialized AI agents for focused applications (e.g., code interpreter, data analyzer, formal translator).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>User avoids re-establishing same contextual info w/ each new query.</li><li>Reduces conversational redundancy, ↑ efficiency of task execution.</li><li>Interactions more focused, yielding outputs consistently aligned w/ user&#x27;s initial requirements.</li><li>Enables shift from general-purpose interaction to specialized, pre-defined AI functionalities.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using LLMs to Refine Prompts (The Meta Approach)</strong></summary>
+            <div>
+                <ul><li>Leverages LLMs (e.g., Gemini) to improve prompts themselves.</li><li>&#x27;Meta&#x27; application: AI assists in optimizing instructions given to AI.</li><li>Represents AI self-improvement or AI-assisted human improvement in interacting w/ AI.</li></ul>
+                
+        <details>
+            <summary><strong>How it Works</strong></summary>
+            <div>
+                <ul><li>Provide LLM w/ existing prompt, task, current output examples (and why unsatisfactory).</li><li>Prompt LLM to analyze prompt + suggest improvements.</li><li>Model analyzes for ambiguity, lack of specificity, inefficient phrasing.</li><li>Suggests incorporating techniques: delimiters, clarifying output format, effective persona, few-shot examples.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>Accelerated Iteration: Get suggestions much faster than manual trial-and-error.</li><li>Identification of Blind Spots: LLM spots ambiguities/misinterpretations overlooked by humans.</li><li>Learning Opportunity: Learn about effective prompts from LLM suggestions.</li><li>Scalability: Potentially automate parts of prompt optimization, esp. for large # of prompts.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Considerations</strong></summary>
+            <div>
+                <ul><li>LLM suggestions not always perfect; evaluate + test like manually engineered prompts.</li><li>Provides powerful starting point; streamlines refinement process.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prompting for Specific Tasks</strong></summary>
+            <div>
+                <ul><li>While techniques broadly applicable, some tasks benefit from specific prompting considerations.</li><li>Particularly relevant in realm of code + multimodal inputs.</li></ul>
+                
+        <details>
+            <summary><strong>Code Prompting</strong></summary>
+            <div>
+                <ul><li>LLMs (esp. trained on code datasets) powerful assistants for developers.</li><li>Involves using LLMs to generate, explain, translate, or debug code.</li><li>Requires sufficient context, desired language/version, clarity on functionality/issue.</li></ul>
+                
+        <details>
+            <summary><strong>Use Cases</strong></summary>
+            <div>
+                <ul><li>Writing code: generate snippets/functions based on description.</li><li>Explaining code: provide snippet, ask for line-by-line or summary explanation.</li><li>Translating code: translate code from one programming language to another.</li><li>Debugging/Reviewing code: provide erroneous/improvable code, ask for issues, fixes, refactoring suggestions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multimodal Prompting</strong></summary>
+            <div>
+                <ul><li>Field moving rapidly towards multimodal models (process/generate info across text, images, audio, video).</li><li>Involves using combination of inputs to guide model.</li><li>Refers to using multiple input formats instead of just text.</li></ul>
+                
+        <details>
+            <summary><strong>Example</strong></summary>
+            <div>
+                <ul><li>Image of diagram + text prompt → model explains process.</li><li>Image + text prompt → model generates descriptive caption.</li><li>Prompting techniques will evolve to leverage combined inputs/outputs as capabilities ↑.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Best Practices and Experimentation</strong></summary>
+            <div>
+                <ul><li>Skilled prompt engineering: iterative process, continuous learning + experimentation.</li><li>Several valuable best practices to reiterate + emphasize.</li></ul>
+                
+        <details>
+            <summary><strong>Core Practices</strong></summary>
+            <div>
+                <ul><li>Provide Examples: One or few-shot examples most effective for guiding model.</li><li>Design w/ Simplicity: Keep prompts concise, clear, easy to understand; avoid jargon/complex phrasing.</li><li>Be Specific about Output: Clearly define desired format, length, style, content.</li><li>Use Instructions over Constraints: Tell model what to do, not what not to do.</li><li>Control Max Token Length: Use model configurations or explicit instructions to manage output length.</li><li>Use Variables in Prompts: For applications, use variables for dynamic, reusable prompts; avoid hardcoding.</li><li>Experiment w/ Input Formats + Writing Styles: Try different phrasing (question, statement, instruction), tones, styles.</li><li>For Few-Shot Prompting w/ Classification Tasks, Mix Up Classes: Randomize example order to prevent overfitting.</li><li>Adapt to Model Updates: Test existing prompts on new model versions; adjust for new capabilities/maintain performance.</li><li>Experiment w/ Output Formats: For non-creative tasks, try structured output (JSON, XML).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Collaboration and Documentation</strong></summary>
+            <div>
+                <ul><li>Experiment Together w/ Other Prompt Engineers: Provides different perspectives, leads to more effective prompts.</li><li>CoT Best Practices: Place answer after reasoning; set temperature to 0 for single-correct-answer tasks.</li><li>Document Various Prompt Attempts: Crucial for tracking what works/doesn&#x27;t + why; maintain structured record.</li><li>Save Prompts in Codebases: For applications, store in separate, well-organized files for easier maintenance/version control.</li><li>Rely on Automated Tests + Evaluation: For production systems, implement automated tests/evaluation to monitor performance + ensure generalization.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion on Best Practices</strong></summary>
+            <div>
+                <ul><li>Prompt engineering skill improves w/ practice.</li><li>Applying principles/techniques + systematic approach to experimentation/documentation → significantly ↑ ability to build effective agentic systems.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>Comprehensive overview of prompting as disciplined engineering practice.</li><li>Central purpose: transform general-purpose LLMs → specialized, reliable, highly capable tools.</li><li>Journey begins w/ core principles: clarity, conciseness, iterative experimentation.</li></ul>
+                
+        <details>
+            <summary><strong>Foundation of Effective Communication</strong></summary>
+            <div>
+                <ul><li>Core principles: bedrock of effective communication w/ AI.</li><li>Reduce inherent ambiguity in natural language.</li><li>Steer model&#x27;s probabilistic outputs → single, correct intention.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Basic Techniques: Demonstrating Behavior</strong></summary>
+            <div>
+                <ul><li>Zero-shot, one-shot, few-shot prompting: primary methods for demonstrating expected behavior via examples.</li><li>Provide varying levels of contextual guidance.</li><li>Powerfully shape model&#x27;s response style, tone, format.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Structuring Prompts: Architectural Control</strong></summary>
+            <div>
+                <ul><li>Explicit roles, system-level instructions, clear delimiters: essential architectural layer for fine-grained control.</li><li>Importance paramount for autonomous agents; provides control/reliability for complex, multi-step operations.</li></ul>
+                
+        <details>
+            <summary><strong>Reasoning Patterns for Agents</strong></summary>
+            <div>
+                <ul><li>Agent must leverage advanced reasoning patterns (CoT, ToT) to effectively create/execute plan.</li><li>Compel model to externalize logical steps; systematically break down complex goals.</li><li>Operational reliability of agentic system hinges on predictability of each component&#x27;s output.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Structured Data for Robust Automation</strong></summary>
+            <div>
+                <ul><li>Requesting structured data (JSON) + programmatic validation (Pydantic) not convenience, but necessity.</li><li>Ensures robust automation; w/o discipline, agent&#x27;s cognitive components cannot communicate reliably.</li><li>Structuring/reasoning techniques convert model&#x27;s probabilistic text generation → deterministic, trustworthy cognitive engine.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Action and Perception: Bridging Thought and Reality</strong></summary>
+            <div>
+                <ul><li>Prompts grant agent crucial ability to perceive + act upon environment.</li><li>Bridge gap between digital thought + real-world interaction.</li></ul>
+                
+        <details>
+            <summary><strong>Action-Oriented Frameworks</strong></summary>
+            <div>
+                <ul><li>ReAct + native function calling: vital mechanisms as agent&#x27;s &#x27;hands&#x27;.</li><li>Allow agent to use tools, query APIs, manipulate data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Perception and Grounding</strong></summary>
+            <div>
+                <ul><li>RAG + Context Engineering: function as agent&#x27;s &#x27;senses&#x27;.</li><li>Actively retrieve relevant, real-time info from external knowledge bases.</li><li>Ensures agent&#x27;s decisions grounded in current, factual reality.</li><li>Prevents agent from operating in vacuum (limited to static, outdated training data).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Mastery of Prompting</strong></summary>
+            <div>
+                <ul><li>Mastering full spectrum of prompting: definitive skill.</li><li>Elevates generalist LLM from simple text generator → sophisticated agent.</li><li>Capable of performing complex tasks w/ autonomy, awareness, intelligence.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
