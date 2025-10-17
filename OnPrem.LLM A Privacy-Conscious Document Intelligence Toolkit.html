@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OnPrem.LLM: A Privacy-Conscious Document Intelligence Toolkit</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>OnPrem.LLM: A Privacy-Conscious Document Intelligence Toolkit</strong></summary>
+            <div>
+                <ul><li>Python-based toolkit for Large Language Models (LLMs).</li><li>Applies to sensitive, non-public data in offline/restricted environments.</li><li>Designed for privacy-preserving use cases.</li><li>Publication: arXiv:2505.07672v3 [cs.CL], September 26, 2025.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary design principle of OnPrem.LLM regarding data access?</li><li>2. Which LLM backend is specifically mentioned for efficient quantized inference within OnPrem.LLM?</li><li>3. How many distinct vector storage approaches does OnPrem.LLM&#x27;s Ingest Module offer?</li><li>4. What is the name of the web application framework used for OnPrem.LLM&#x27;s no-code interface?</li><li>5. Beyond fully local execution, what other deployment option does OnPrem.LLM support for balancing performance and data control?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction &amp; Problem Statement</strong></summary>
+            <div>
+                <ul><li>LLMs (GPT-4, LLaMA, Mistral, Claude) → ↑ NLP capabilities: text generation, summarization, Q&amp;A.</li><li>Challenge: Applying cloud LLMs to sensitive, non-public data in regulated environments (e.g., healthcare, defense, finance, law).</li><li>Constraints: Firewalls, air-gapped networks, classified workloads prohibit general-purpose external services.</li></ul>
+                
+        <details>
+            <summary><strong>Existing Approaches &amp; Limitations</strong></summary>
+            <div>
+                <ul><li>1. Running lightweight, local models: ↓ performance.</li><li>2. Self-hosting larger models: ↑ significant infrastructure cost.</li><li>3. Complex hybrid pipelines: leverage cloud APIs w/o violating data governance; difficult to implement.</li><li>Prior privacy-focused systems (PrivateGPT, LocalGPT, GPT4All) often lack comprehensive end-to-end pipelines, diverse LLM backend support, no-code options, or are constrained by narrow retrieval strategies.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>OnPrem.LLM Overview &amp; Design Principles</strong></summary>
+            <div>
+                <ul><li>Modular, production-ready toolkit.</li><li>Applies LLMs to private document workloads in constrained environments.</li><li>Supports fully local execution + secure integration w/ privacy-compliant cloud endpoints.</li></ul>
+                
+        <details>
+            <summary><strong>Key Features</strong></summary>
+            <div>
+                <ul><li>Prebuilt pipelines for common document intelligence tasks.</li><li>Advanced document processing: table extraction, OCR, markdown conversion.</li><li>Retrieval-Augmented Generation (RAG), information extraction, text classification, semantic search, summarization.</li><li>Unified API: seamless backend switching.</li><li>No-code web interface: accessible to non-technical users.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Supported LLM Backends</strong></summary>
+            <div>
+                <ul><li>llama.cpp: efficient quantized inference.</li><li>Hugging Face Transformers: broad model compatibility.</li><li>Ollama: simplified local model orchestration.</li><li>vLLM: high-throughput, GPU-accelerated inference.</li><li>Optional connectors: privacy-compliant cloud providers (e.g., AWS GovCloud, Azure Government).</li><li>Publicly accessible cloud LLMs (OpenAI, Anthropic) also supported for non-sensitive data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Design Principles</strong></summary>
+            <div>
+                <ul><li>Data control: Local processing by default; external access opt-in &amp; configurable.</li><li>Deployment flexibility: Operates on consumer-grade machines / GPU-enabled infrastructure.</li><li>Ease of integration: Python API, point-and-click web interface, prebuilt workflows.</li><li>Real-world focus: Built-in pipelines solve practical document-centric tasks out of the box.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Availability &amp; Use Cases</strong></summary>
+            <div>
+                <ul><li>Open-source, free to use under Apache license.</li><li>Available on GitHub: https://github.com/amaiya/onprem.</li><li>Applied in public sector: horizon scanning (scientific/engineering research), government policy analyses, qualitative survey analyses, resume parsing.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Modules</strong></summary>
+            <div>
+                <ul><li>OnPrem.LLM organized into four primary modules.</li><li>Provide comprehensive framework for document intelligence.</li></ul>
+                
+        <details>
+            <summary><strong>LLM Module</strong></summary>
+            <div>
+                <ul><li>Core engine for interfacing w/ LLMs.</li><li>Unified API for various LLM backends (llama.cpp, Hugging Face, Ollama, vLLM, cloud providers).</li><li>Abstracts complexity of different model implementations.</li></ul>
+                
+        <details>
+            <summary><strong>LLM Module Capabilities</strong></summary>
+            <div>
+                <ul><li>Model loading w/ inflight quantization support.</li><li>Easy accessibility to LLMs served through APIs.</li><li>Agentic-like RAG.</li><li>Structured LLM outputs.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ingest Module</strong></summary>
+            <div>
+                <ul><li>Comprehensive document processing pipeline.</li><li>Transforms raw documents into retrievable knowledge.</li><li>Supports multiple document formats w/ specialized loaders.</li><li>Automated OCR for image-based text.</li><li>Extraction of tables from PDFs.</li></ul>
+                
+        <details>
+            <summary><strong>Vector Storage Approaches</strong></summary>
+            <div>
+                <ul><li>Offers three distinct vector storage approaches.</li></ul>
+                
+        <details>
+            <summary><strong>Dense Store</strong></summary>
+            <div>
+                <ul><li>Implements semantic search.</li><li>Uses sentence transformer embeddings &amp; ChromaDB.</li><li>Similarity-based retrieval via HNSW indexes.</li><li>Elasticsearch also supported.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Sparse Store</strong></summary>
+            <div>
+                <ul><li>Provides on-the-fly semantic search.</li><li>Traditional keyword search via Whoosh (or Elasticsearch).</li><li>Supports custom analyzers &amp; custom fields.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Dual Store</strong></summary>
+            <div>
+                <ul><li>Combines Dense &amp; Sparse approaches.</li><li>Maintains parallel stores.</li><li>Enables hybrid retrieval: leverages semantic similarity + keyword/field matching.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pipelines Module</strong></summary>
+            <div>
+                <ul><li>Pre-built workflows for common document intelligence tasks.</li><li>Specialized submodules for specific functions.</li></ul>
+                
+        <details>
+            <summary><strong>Extractor</strong></summary>
+            <div>
+                <ul><li>Applies prompts to document units (sentences/paragraphs/passages).</li><li>Extracts structured information.</li><li>Uses Pydantic model validation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Summarizer</strong></summary>
+            <div>
+                <ul><li>Provides document summarization.</li><li>Multiple strategies: map-reduce for large documents.</li><li>Concept-focused summarization: summarizes documents re: user-specified concept.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Classifier</strong></summary>
+            <div>
+                <ul><li>Implements text classification.</li><li>Uses scikit-learn wrappers (SKClassifier).</li><li>Hugging Face transformers (HFClassifier).</li><li>Few-shot learning w/ limited examples (FewShotClassifier).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent</strong></summary>
+            <div>
+                <ul><li>Builds LLM-powered agents.</li><li>Executes complex tasks using tools &amp; methods.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>App Module (Web UI)</strong></summary>
+            <div>
+                <ul><li>Streamlit-based web application.</li><li>Makes system accessible to non-technical users.</li><li>Offers six specialized interfaces.</li></ul>
+                
+        <details>
+            <summary><strong>Web UI Interfaces</strong></summary>
+            <div>
+                <ul><li>1. Interactive chat w/ conversation history.</li><li>2. Document-based Q&amp;A w/ source attribution → mitigates hallucinations.</li><li>3. Keyword &amp; semantic search w/ filtering, pagination, result highlighting.</li><li>4. Custom prompt application to individual document passages w/ Excel export.</li><li>5. Visual workflow builder for complex data analysis pipelines.</li><li>6. Administrative interface: document ingestion, folder management, application configuration.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Usage Example: Basic RAG Pipeline</strong></summary>
+            <div>
+                <ul><li>Illustrates software&#x27;s ease of use.</li><li>Example: Download &amp; ingest House Report on 2024 NDAA.</li><li>Answer policy question using RAG.</li></ul>
+                
+        <details>
+            <summary><strong>RAG Pipeline Steps</strong></summary>
+            <div>
+                <ul><li>STEP 1: Download document (e.g., 2024 NDAA report PDF).</li><li>STEP 2: Load default LLM using default LLM backend (e.g., `LLM(n_gpu_layers=-1)`).</li><li>STEP 3: Ingest documents into default vector store.</li><li>STEP 4: Ask questions (e.g., `llm.ask(&#x27;What is said about hypersonics?&#x27;)`).</li><li>Result: Provides context-specific answer from ingested document.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>Addresses critical need for privacy-preserving document intelligence in restricted environments.</li><li>Combines local LLM inference, cloud-based LLM options, modular architecture, prebuilt pipelines.</li><li>Enables advanced NLP workflows w/o compromising data governance.</li><li>Design allows flexible control over system footprint → suitable for various application environments.</li><li>Demand for privacy-conscious, resource-aware frameworks will ↑ as LLMs improve.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
