@@ -1,0 +1,633 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Supercharging PDF Entity Extraction: Using Gemini, DSPy, and Pydantic</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Supercharging PDF Entity Extraction: Using Gemini, DSPy, and Pydantic</strong></summary>
+            <div>
+                <ul><li>This article explores programmatic prompt engineering w/ DSPy for PDF entity extraction.</li><li>It leverages multimodal LLMs (Gemini) and Pydantic for structured output.</li><li>Published by Sules on Medium, Jul 9, 2025.</li><li>Approx. 7 min read.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary role of DSPy in prompt engineering?</li><li>2. Which LLM showed better pre-optimization results for entity extraction, Gemini 1.5 or o3-mini?</li><li>3. What Python library is used to define the structured output schema for the extracted entities?</li><li>4. What accuracy percentage was achieved after optimizing the DSPy prompt with MIPROv2?</li><li>5. What specific DSPy function adds a &#x27;reasoning layer&#x27; to the LLM&#x27;s process?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction to DSPy</strong></summary>
+            <div>
+                <ul><li>DSPy redefines prompt engineering by programmatic incorporation into systems.</li><li>It allows control + structure of LLM outputs.</li><li>Addresses gap in DSPy documentation for local files/PDFs.</li></ul>
+                
+        <details>
+            <summary><strong>Traditional Prompt Engineering</strong></summary>
+            <div>
+                <ul><li>Often manual + less robust.</li><li>Relies on crafting specific prompts for each task.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Approach</strong></summary>
+            <div>
+                <ul><li>Programmatic: defines rules (signatures) for LLM behavior.</li><li>Self-improving: optimizes prompts based on data + metrics.</li><li>Mimics PyTorch architecture for modularity.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>LLM Integration</strong></summary>
+            <div>
+                <ul><li>Utilizes advanced LLMs w/ multimodal capabilities (handle images).</li><li>Focus on Gemini 1.5 Pro 002 for PDF processing.</li></ul>
+                
+        <details>
+            <summary><strong>Gemini 1.5 Pro 002</strong></summary>
+            <div>
+                <ul><li>Preferred LLM for this experiment.</li><li>Showed better results compared to o3-mini.</li><li>Configured via `dspy.LM(&#x27;vertex_ai/gemini-1.5-pro-002&#x27;, ...)`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>o3-mini</strong></summary>
+            <div>
+                <ul><li>Also tested, but results were inferior pre-optimization.</li><li>Hint: newer models ↑ performance w/ lenient prompt engineering.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pydantic for Output Structuring</strong></summary>
+            <div>
+                <ul><li>Used to define + enforce structured output from Gemini.</li><li>Ensures LLM response fits a predefined schema.</li></ul>
+                
+        <details>
+            <summary><strong>BaseModel Definition: Docex</strong></summary>
+            <div>
+                <ul><li>Creates a schema for person entity extraction.</li><li>Specifies required fields, data types, + examples.</li><li>`BaseModel` ensures &#x27;I want response like this, nothing else&#x27;.</li></ul>
+                
+        <details>
+            <summary><strong>Extracted Fields</strong></summary>
+            <div>
+                <ul><li>first_name: `str`, e.g., &#x27;John&#x27;.</li><li>last_name: `str`, e.g., &#x27;Doe&#x27;.</li><li>ssn: `str`, e.g., &#x27;123-45-6789&#x27;.</li><li>address: `str` (optional), e.g., &#x27;123 Main St&#x27;.</li><li>apt: `str` (optional), e.g., &#x27;123&#x27;.</li><li>city: `str`, e.g., &#x27;Springfield&#x27;.</li><li>state: `str`, e.g., &#x27;Maine&#x27;.</li><li>zip_code: `str`, e.g., &#x27;62704&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Architecture</strong></summary>
+            <div>
+                <ul><li>Core components for defining + executing LLM tasks.</li><li>Replaces traditional prompt engineering w/ programmatic approach.</li></ul>
+                
+        <details>
+            <summary><strong>DSPy Signature: ExtractPersonFromPDF</strong></summary>
+            <div>
+                <ul><li>Defines rules for input + output fields.</li><li>Replaces explicit prompt engineering.</li><li>DSPy generates robust prompt from this signature.</li></ul>
+                
+        <details>
+            <summary><strong>Input Field: pdf_file</strong></summary>
+            <div>
+                <ul><li>`dspy.InputField(desc=&#x27;The following document is a synthetic (fake) tax form...&#x27;)`.</li><li>Specifies PDF content as input.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Output Field: En</strong></summary>
+            <div>
+                <ul><li>`dspy.OutputField()`.</li><li>Expected output format is `Docex` (Pydantic model).</li><li>Response MUST fit this schema → error if not.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Module: PDFEntityExtractor</strong></summary>
+            <div>
+                <ul><li>Containerizes the signature for reproducibility.</li><li>Best practice for multiple uses.</li><li>Mimics PyTorch neural network layers.</li></ul>
+                
+        <details>
+            <summary><strong>ChainOfThought Integration</strong></summary>
+            <div>
+                <ul><li>`self.extractor = dspy.ChainOfThought(ExtractPersonFromPDF)`.</li><li>Adds a reasoning layer to the LLM.</li><li>Instructs LLM to &#x27;Think carefully + give reason for answer&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Preparation</strong></summary>
+            <div>
+                <ul><li>Creation of a dataset for training + evaluating DSPy&#x27;s performance.</li><li>Uses synthetic W2 forms + corresponding ground truth JSON.</li></ul>
+                
+        <details>
+            <summary><strong>Source Data</strong></summary>
+            <div>
+                <ul><li>20 synthetic W2 tax forms.</li><li>JSON file containing &#x27;ground truth values&#x27; for all forms.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Data Loading</strong></summary>
+            <div>
+                <ul><li>PDFs loaded as raw bytes (`pdf_bytes_list`).</li><li>Ground truths loaded from JSON file.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>PDF Preprocessing</strong></summary>
+            <div>
+                <ul><li>`prepare_pdf_input(pdf_bytes, start=40000, end=50000)`.</li><li>Limits PDF byte input to manage token limits.</li><li>Helps prevent throughput errors.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Dataset Creation</strong></summary>
+            <div>
+                <ul><li>Combines preprocessed PDFs w/ ground truths.</li><li>Creates `dspy.Example` objects: `pdf_file` + `expected_en`.</li><li>Result: `len(dspy_dataset)` = 20 examples.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Train/Test Split</strong></summary>
+            <div>
+                <ul><li>Dataset split into training + evaluation sets.</li><li>Ratio: 60% train, 40% eval.</li><li>`split_index = int(0.6 * len(dspy_dataset))`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluation Methodology</strong></summary>
+            <div>
+                <ul><li>Defines metric to measure accuracy of extracted entities.</li><li>Compares predicted outputs from Gemini against ground truth.</li></ul>
+                
+        <details>
+            <summary><strong>Metric Definition: extraction_correctness_metric</strong></summary>
+            <div>
+                <ul><li>Custom function to compute correctness for entity extraction.</li><li>Designed to be forgiving for formatting differences.</li><li>Returns a float representing fraction of matching fields.</li></ul>
+                
+        <details>
+            <summary><strong>Normalization Process</strong></summary>
+            <div>
+                <ul><li>Converts output objects (Pydantic models/dicts) to `dict`.</li><li>Transforms every field to `str.strip().lower()`.</li><li>Accounts for formatting variations (e.g., whitespace, case).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Correctness Calculation</strong></summary>
+            <div>
+                <ul><li>Compares normalized predicted output (`pred_norm`) to normalized label (`label_norm`).</li><li>`correct = sum(1 for k in label_norm if k in pred_norm and pred_norm[k] == label_norm[k])`.</li><li>Result: `correct / max(len(label_norm), 1)`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pre-Optimization Evaluation</strong></summary>
+            <div>
+                <ul><li>Establishes baseline performance before DSPy optimization.</li><li>Uses `dspy.Evaluate` object.</li></ul>
+                
+        <details>
+            <summary><strong>Evaluation Setup</strong></summary>
+            <div>
+                <ul><li>`dspy.Evaluate(devset=evalset, metric=extraction_correctness_metric, num_threads=1, display_progress=True, display_table=True)`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Initial Accuracy (Gemini 1.5)</strong></summary>
+            <div>
+                <ul><li>Achieved 80% accuracy before optimization.</li><li>Note: o3-mini performed poorly initially → newer models ↑ performance w/ less prompt engineering.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimization Process</strong></summary>
+            <div>
+                <ul><li>Utilizes DSPy&#x27;s optimizers to improve prompt robustness.</li><li>Aims to ↑ accuracy of entity extraction.</li></ul>
+                
+        <details>
+            <summary><strong>Optimizer Choice: MIPROv2</strong></summary>
+            <div>
+                <ul><li>DSPy&#x27;s advanced optimizer.</li><li>Works by bootstrapping few-shot example candidates.</li><li>Proposes instructions based on task dynamics.</li><li>Finds optimized combination using Bayesian Optimization.</li></ul>
+                
+        <details>
+            <summary><strong>Configuration</strong></summary>
+            <div>
+                <ul><li>`metric=extraction_correctness_metric`.</li><li>`auto=&#x27;light&#x27;` for automatic configuration.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Compilation: mipro_optimizer.compile</strong></summary>
+            <div>
+                <ul><li>Optimizes the `PDFEntityExtractor` module.</li><li>Generates the most effective prompt for the task.</li></ul>
+                
+        <details>
+            <summary><strong>Few-Shot Examples</strong></summary>
+            <div>
+                <ul><li>`max_bootstrapped_demos=1`, `max_labeled_demos=1`.</li><li>Limited to 1-shot due to PDF token consumption → throughput errors.</li><li>Results not hindered by this limitation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimized Prompt Generation</strong></summary>
+            <div>
+                <ul><li>DSPy returns the best performing prompt.</li><li>This prompt is then used by the LLM for extraction.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Post-Optimization Accuracy</strong></summary>
+            <div>
+                <ul><li>Achieved 91% accuracy after MIPROv2 optimization.</li><li>Significant ↑ from 80% pre-optimization.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Best Optimized Prompt</strong></summary>
+            <div>
+                <ul><li>Generated by DSPy, used by Gemini.</li><li>Highly detailed + includes specific directives for LLM behavior.</li></ul>
+                
+        <details>
+            <summary><strong>Key Directives</strong></summary>
+            <div>
+                <ul><li>Extract specific fields (`first_name`, `last_name`, `address`, `apt`, `city`, `state`, `zip_code`) into `En` (dictionary string).</li><li>Input PDF is synthetic data, no real PII.</li><li>Reason through document step-by-step before outputting `En`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>&#x27;Mission Impossible&#x27; Tone</strong></summary>
+            <div>
+                <ul><li>Prompt includes dramatic language: &#x27;highly specialized AI&#x27;, &#x27;critical mission&#x27;, &#x27;prevent major financial crisis&#x27;, &#x27;accuracy paramount&#x27;, &#x27;failure could lead to widespread economic repercussions&#x27;.</li><li>This tone is believed to ↑ LLM&#x27;s focus + performance.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion &amp; Future Outlook</strong></summary>
+            <div>
+                <ul><li>Summarizes DSPy&#x27;s impact + potential for LLM workflows.</li><li>Discusses its relevance amidst advancing LLM capabilities.</li></ul>
+                
+        <details>
+            <summary><strong>DSPy&#x27;s Value</strong></summary>
+            <div>
+                <ul><li>Offers unique approach to prompt engineering.</li><li>Programmatic workflow for LLMs is promising.</li><li>Wise to monitor its maturity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>LLM Advancements vs. DSPy</strong></summary>
+            <div>
+                <ul><li>Newer models (e.g., Gemini 2.5) may reduce need for DSPy for simple tasks.</li><li>Their inherent capabilities might handle lenient prompts better.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scaling Potential</strong></summary>
+            <div>
+                <ul><li>DSPy remains valuable for complex scenarios.</li><li>Useful for incorporating multiple Pydantic models / different tax forms.</li><li>Can &#x27;automate&#x27; the prompting process across varied forms.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
