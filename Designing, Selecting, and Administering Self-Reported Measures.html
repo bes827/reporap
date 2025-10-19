@@ -1,0 +1,993 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Designing, Selecting, and Administering Self-Reported Measures</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Designing, Selecting, and Administering Self-Reported Measures</strong></summary>
+            <div>
+                <ul><li>Chapter 17 from a clinical research guide.</li><li>Authored by Alison J. Huang, Steven R. Cummings, and Michael A. Kohn.</li><li>Focuses on principles for designing, selecting, and administering self-reported measures in clinical research.</li><li>Aims to enhance validity of research findings by improving data ascertainment.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the recommended maximum reading level for self-reported measures designed for older or vulnerable U.S. adult populations?</li><li>2. What statistical metric is commonly used to evaluate the internal consistency of a multi-item scale?</li><li>3. What is a key advantage of electronic/online self-reported measures over paper-based ones regarding data entry?</li><li>4. When designing closed-ended questions, what two properties should the set of response options ideally possess to prevent confusion and ensure comprehensiveness?</li><li>5. What is the primary reason to use diaries or logs for data collection, despite them being more time-consuming for participants?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction to Self-Reported Measures</strong></summary>
+            <div>
+                <ul><li>Self-reported measures are crucial for clinical research → participants describe behaviors, attitudes, medical history, symptoms, functioning, or quality of life.</li><li>Validity of findings often depends on quality of this information.</li><li>Collected via paper/online questionnaires, diaries, electronic logs, structured interviews.</li></ul>
+                
+        <details>
+            <summary><strong>Design Principles</strong></summary>
+            <div>
+                <ul><li>Good measures share core design principles:</li><li>Clear instructions / well-phrased questions → informative responses.</li><li>Tailored to target population: consider literacy levels, cultural assumptions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Common Types of Self-Reported Measures</strong></summary>
+            <div>
+                <ul><li>Multiple ways to collect self-reported data for various purposes:</li><li>Structured interviews: screening for study eligibility.</li><li>E-mailed surveys (e.g., Qualtrics, SurveyMonkey, REDCap): health history.</li><li>Paper-based questionnaires: health-related quality of life.</li></ul>
+                
+        <details>
+            <summary><strong>Diaries &amp; Electronic Logs</strong></summary>
+            <div>
+                <ul><li>Diaries: record episodic symptoms (type, frequency) for future abstraction.</li><li>Electronic logs: mobile devices to track health-related behaviors.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Basic Elements of Self-Reported Questions &amp; Responses</strong></summary>
+            <div>
+                <ul><li>Structured self-reported measures use two basic formats: open-ended or closed-ended questions.</li><li>Choice of format impacts data type and analysis methods.</li><li>Careful design of questions and response options is critical for data quality.</li></ul>
+                
+        <details>
+            <summary><strong>Open-Ended Questions</strong></summary>
+            <div>
+                <ul><li>Invite free-form answers → participants respond in own words.</li><li>Pros: Allows for unexpected, potentially more informative answers.</li><li>Cons: Yield variable, unpredictable responses; ↓ reliability for specific frequencies.</li></ul>
+                
+        <details>
+            <summary><strong>Analysis Challenges</strong></summary>
+            <div>
+                <ul><li>Require qualitative methods / special systems (e.g., coding dictionaries) for analysis.</li><li>Example: &#x27;What habits do you believe increase a person’s chance of having a stroke?&#x27; → may not prompt specific factors like smoking.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Closed-Ended Questions</strong></summary>
+            <div>
+                <ul><li>Include a list of possible answers for participants to choose.</li><li>Pros: Ensures each possibility considered; clarifies unclear questions; answers tabulated quickly.</li><li>Cons: Offers only anticipated answers; leads participants in prespecified directions; may miss accurate/informative participant answers.</li></ul>
+                
+        <details>
+            <summary><strong>Response Options</strong></summary>
+            <div>
+                <ul><li>Single response desired: instruct &#x27;Choose one option only&#x27;; program online surveys for single selection.</li><li>Response options must be mutually exclusive → no meaningful overlap.</li><li>Multiple answers allowed: instruct &#x27;Choose All that apply&#x27; (less ideal).</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of &#x27;All that apply&#x27;</strong></summary>
+            <div>
+                <ul><li>Does not force considerationof each option.</li><li>Unselected response → &#x27;no&#x27; or overlooked possibility.</li><li>Preferable: separate &#x27;yes&#x27;/&#x27;no&#x27; boxes for each response.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Collectively Exhaustive Options</strong></summary>
+            <div>
+                <ul><li>Response options should include all possible choices.</li><li>If other responses anticipated, include &#x27;Other (please specify)&#x27; option → elicits open-ended responses.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ordered Response Options</strong></summary>
+            <div>
+                <ul><li>Capture amount, frequency, or intensity of self-reported phenomena.</li><li>Yield ordered categorical data or continuous scale responses.</li></ul>
+                
+        <details>
+            <summary><strong>Ranked Lists (Ordered Categorical)</strong></summary>
+            <div>
+                <ul><li>Respondents select from a ranked list.</li><li>Example: Pain severity scale (1=no pain to 6=very severe).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Likert Scale</strong></summary>
+            <div>
+                <ul><li>Response options arranged in bilaterally symmetric distances around a neutral/middle value.</li><li>Accommodates neutral/undecided feelings + extreme feelings.</li><li>Example: Satisfaction scale (1=very satisfied to 5=very dissatisfied, with &#x27;neither satisfied nor dissatisfied&#x27; as middle).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Continuous Numerical Scale</strong></summary>
+            <div>
+                <ul><li>Respondents rate on a continuous scale (e.g., 0-10).</li><li>Words/phrases anchor extreme ends and internal points.</li><li>Example: Pain severity 0 (least) to 10 (most).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Visual Analog Scale (VAS)</strong></summary>
+            <div>
+                <ul><li>Responses along a continuum using lines/figures.</li><li>Participant marks a line between two extreme anchor words.</li><li>Pros: More sensitive to small changes than categorical lists.</li><li>Cons: Intermediary descriptive terms usually not included.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Branching Questions</strong></summary>
+            <div>
+                <ul><li>Follow up certain answers to an initial question w/ more detailed questions.</li><li>Initial question often a &#x27;screener&#x27; → determines if additional questions needed.</li><li>Pros: Saves time; respondents avoid irrelevant/redundant questions.</li></ul>
+                
+        <details>
+            <summary><strong>Implementation</strong></summary>
+            <div>
+                <ul><li>Paper-based: direct respondent to next question w/ arrow + &#x27;Go to question X&#x27; instruction.</li><li>Online instruments: programmed w/ automatic skip logic (e.g., if no high BP, skip BP treatment questions).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Validation</strong></summary>
+            <div>
+                <ul><li>Complex skip logic must be validated during pretesting phase.</li><li>Risk: dead ends, &#x27;orphan&#x27; questions (never reached).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimal Wording of Questions</strong></summary>
+            <div>
+                <ul><li>Good questions are simple, unambiguous, and encourage accurate/honest responses.</li><li>Avoid embarrassing or offending respondents.</li></ul>
+                
+        <details>
+            <summary><strong>Clarity</strong></summary>
+            <div>
+                <ul><li>Questions should be clear, specific, use concrete terms.</li><li>Avoid abstract terms (e.g., &#x27;How much exercise do you usually get?&#x27;).</li><li>Better: series of specific questions (e.g., &#x27;hours in vigorous walking&#x27;) or clear, inclusive definition w/ examples.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Simplicity</strong></summary>
+            <div>
+                <ul><li>Use common words/grammar; avoid technical terms.</li><li>Rule of thumb for U.S. adults: avoid &gt;8th-grade reading level.</li><li>Older/vulnerable populations: avoid &gt;6th-grade reading level.</li><li>Tools: &#x27;readability statistics&#x27; in word-processing software (e.g., Microsoft Word).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Neutrality</strong></summary>
+            <div>
+                <ul><li>Avoid &#x27;loaded&#x27; words/stereotypes that suggest desirable answers.</li><li>Example: &#x27;How often did you drink too much alcohol?&#x27; → judgmental.</li><li>Better: &#x27;How often did you drink five or more drinks in one day?&#x27; → less judgmental, more definitive.</li><li>Preamble can permit admission of undesirable behaviors (e.g., &#x27;People sometimes forget to take medications...&#x27;).</li><li>Goal: make participants feel acceptable to choose any response w/o leading.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Common Pitfalls in Question Design</strong></summary>
+            <div>
+                <ul><li>Avoid design flaws that lead to confusion or inaccurate data.</li><li>Each question should be carefully reviewed for potential issues.</li></ul>
+                
+        <details>
+            <summary><strong>Double-Barreled Questions</strong></summary>
+            <div>
+                <ul><li>Contain only one concept, issue, or behavior.</li><li>Pitfall: asking about satisfaction w/ &#x27;doctors and nurses&#x27; in one question.</li><li>Solution: two separate questions (one for doctors, one for nurses) → more accurate info.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Hidden Assumptions</strong></summary>
+            <div>
+                <ul><li>Questions should not make assumptions that may not apply to all participants.</li><li>Pitfall: &#x27;I felt down or depressed even with help from my family&#x27; → assumes family + seeking support.</li><li>Solution: rephrase or ensure applicability to all target population members.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Incongruous Question &amp; Answer Options</strong></summary>
+            <div>
+                <ul><li>Answer options must match the question stem.</li><li>Pitfall: Question &#x27;Have you had pain in the last week?&#x27; w/ options &#x27;never,&#x27; &#x27;seldom,&#x27; &#x27;often.&#x27;</li><li>Solution: Rephrase question to &#x27;How often have you had pain in the last week?&#x27; to match frequency options.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Medical or Scientific Jargon</strong></summary>
+            <div>
+                <ul><li>Questions should reflect expected health literacy of respondents.</li><li>Avoid terms familiar to investigators but confusing to participants w/o biomedical training.</li><li>Better: &#x27;high blood pressure&#x27; instead of &#x27;hypertension&#x27;; &#x27;rapid heart rate&#x27; instead of &#x27;tachycardia&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Question Time Frames</strong></summary>
+            <div>
+                <ul><li>When assessing characteristics varying over time, questions need appropriate time units.</li><li>Specifying time frame yields more reliable information.</li><li>Optimal length depends on variable: shortest recent segment recallable accurately.</li></ul>
+                
+        <details>
+            <summary><strong>Varying Behaviors</strong></summary>
+            <div>
+                <ul><li>Pitfall: Assuming behavior is constant (e.g., &#x27;How many tablets do you take a day?&#x27;).</li><li>Solution: Specify time frame (e.g., &#x27;In the past 2 weeks, how many tablets did you usually take each day?&#x27;).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recall Accuracy</strong></summary>
+            <div>
+                <ul><li>Too long a period (e.g., sexual activity over entire year) → inaccurate recollection.</li><li>Optimal length varies: sleep habits (past week) may reflect year; unprotected sex (longer intervals needed).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Average Behavior Questions</strong></summary>
+            <div>
+                <ul><li>Two ways: &#x27;usual/typical&#x27; behavior or counting actual behaviors over time.</li><li>&#x27;Usual intake&#x27; (e.g., beers/week) is simple/brief but assumes participants can average.</li><li>Pitfall: Drinking patterns change; people report common, ignore extremes → underestimates (e.g., weekend drinking).</li><li>Consistency: If series of questions (alcohol, marijuana), use same approach + time period for each.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multi-item Scales to Measure Abstract Variables</strong></summary>
+            <div>
+                <ul><li>Assess abstract concepts (e.g., quality of life) difficult to capture in single question.</li><li>Scores from series of questions summarized as multi-item scale.</li><li>Pros: Enriches assessment; greater range of score values (e.g., 1-100 vs. &#x27;poor&#x27; to &#x27;excellent&#x27;) → ↑ sensitivity to detect differences.</li><li>Less random error → greater reliability (random error in one item offset by others).</li></ul>
+                
+        <details>
+            <summary><strong>Scoring &amp; Interpretation</strong></summary>
+            <div>
+                <ul><li>Overall score computed by averaging nonmissing items (assuming equal weight/characteristic).</li><li>Example: Opinion on diet/health → sum of points for each item.</li><li>Cons: Complex scoring algorithms → results (e.g., 46.2) difficult to understand intuitively.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Internal Consistency</strong></summary>
+            <div>
+                <ul><li>Evaluated statistically using Cronbach’s alpha.</li><li>Cronbach’s alpha: ranges 0 to 1.0; calculated from correlations between individual item scores.</li><li>Higher values → greater consistency.</li><li>Low values (&lt;0.70) → items measure different characteristics; combining into single scale may be inappropriate.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Formatting of Multi-item Instruments</strong></summary>
+            <div>
+                <ul><li>Format should facilitate completion of all questions in correct sequence.</li><li>Complex format → skipped questions, wrong info, incomplete instruments.</li><li>Goal: ensure accurate, standardized responses.</li></ul>
+                
+        <details>
+            <summary><strong>Instructions</strong></summary>
+            <div>
+                <ul><li>All instruments need initial instructions on how to complete.</li><li>Important for self-administered + interviewer-administered measures.</li><li>Helpful: provide example of how to complete an easy question.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Grouping &amp; Ordering Questions</strong></summary>
+            <div>
+                <ul><li>Group similar topic areas / same question format together.</li><li>Introduce new topic/format sets w/ brief instructions, descriptive statement, or heading.</li><li>Order: emotionally neutral questions first (DOB, household size); more sensitive questions later (income, sexual behavior) → ↑ complete/honest responses.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Diaries and Logs</strong></summary>
+            <div>
+                <ul><li>Offer more accurate tracking of episodic events/behaviors/symptoms (e.g., falls, menstrual bleeding).</li><li>Valuable if timing/duration matters or events easily forgotten.</li><li>Data recorded on paper or electronically (online forms, mobile apps).</li></ul>
+                
+        <details>
+            <summary><strong>Data Abstraction &amp; Analysis</strong></summary>
+            <div>
+                <ul><li>Diary data abstracted to calculate average frequency over relevant interval (daily, weekly).</li><li>Electronic/online diaries: can automatically generate summed/averaged data → eliminates manual abstraction step.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Participant Burden &amp; Design Considerations</strong></summary>
+            <div>
+                <ul><li>More time-consuming than retrospective questions.</li><li>Risk: &#x27;diary fatigue&#x27; for extended periods → ↑ missing/inaccurate data.</li><li>Recommendation: Reserve for essential behaviors/events (key predictor/outcome); collect data for shortest informative time.</li><li>Clear instructions + examples are crucial → participants record info w/o real-time guidance.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Voiding Diaries</strong></summary>
+            <div>
+                <ul><li>Used in clinical trials for urinary incontinence → assess frequency, timing, severity, type of urinary symptoms.</li><li>Complex info assessed → requires detailed instructions + examples of completed entries for accuracy.</li><li>Paper-based: requires separate diary abstraction form for research staff.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Designing New Measures vs. Using Existing Measures</strong></summary>
+            <div>
+                <ul><li>Decision point: develop new instrument or adapt existing one.</li><li>Impacts time, resources, and comparability of findings.</li></ul>
+                
+        <details>
+            <summary><strong>Designing New Measures</strong></summary>
+            <div>
+                <ul><li>Necessary if no standardized instrument exists for an important characteristic.</li><li>Ranges from single new question (minor variable) to new multi-item scale (primary outcome).</li></ul>
+                
+        <details>
+            <summary><strong>Simple Item Development</strong></summary>
+            <div>
+                <ul><li>Investigator uses good judgment + basic writing principles.</li><li>Pretest item to ensure clarity + appropriate answers.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Complex Instrument Development (Multi-item Scale)</strong></summary>
+            <div>
+                <ul><li>Can take years of effort to develop, refine, validate.</li><li>Process:</li><li>1. Clarify construct being measured.</li><li>2. Generate potential items from qualitative interviews/focus groups.</li><li>3. Iterative refinement from pretesting w/ additional participants.</li><li>4. Draft multi-item instrument w/ promising items.</li><li>5. Critical review by peers, mentors, experts.</li><li>6. Additional iterative pretesting, revising, shortening, evaluating psychometric properties.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example: Day-to-Day Impact of Vaginal Aging (DIVA) Questionnaire</strong></summary>
+            <div>
+                <ul><li>Developed due to lack of robust measures for postmenopausal vaginal symptoms.</li><li>Process:</li><li>1. Focus groups w/ symptomatic postmenopausal women (3 racial/ethnic groups) → discussed symptom impact.</li><li>2. Initial pool of 100 items developed; refined/eliminated based on expert/participant input → 25-item questionnaire.</li><li>3. Administered to hundreds of women in multiethnic cohort study.</li><li>4. Consolidated to 23 items, organized into 4 domain scales (activities of daily living, emotional well-being, sexual functioning, self-concept/body image) based on variability, internal consistency, reliability, construct validity.</li><li>5. Further evaluation in NIH-funded MsFLASH trial network → construct validity, sensitivity to change, minimal clinically important differences.</li><li>6. Continued administration in other samples → further psychometric evaluation, development of shorter/specific versions (e.g., for cancer patients).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recommendation</strong></summary>
+            <div>
+                <ul><li>Time-consuming process → use only when existing measures are inadequate for essential variables (e.g., main predictor/outcome).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using Existing Measures</strong></summary>
+            <div>
+                <ul><li>Whenever possible, use or adapt existing measures.</li><li>Pros: Benefits from prior work; easier comparison of findings across studies.</li><li>Many available for free in public domain; some developed by consensus organizations.</li></ul>
+                
+        <details>
+            <summary><strong>Databases of Publicly Available Measures</strong></summary>
+            <div>
+                <ul><li>PhenX toolkit: established, validated measures for biomedical research (substance abuse, mental health, etc.).</li><li>NIH Toolbox: cognitive, sensory, motor, emotional function across lifespan.</li><li>PROMIS (Patient-Reported Outcomes Measurement Information System): physical, mental, social health for general/chronic populations.</li><li>Science of Behavior Change Measures Repository: mechanisms of behavior change, psychometric adequacy evidence.</li><li>NIH Common Data Element (CDE) Resource Portal: lists CDEs, surveys, instruments.</li><li>Neuro-QoL: quality of life for adults/children w/ neurologic disorders.</li><li>REDCap HealthMeasures: PROMIS, Neuro-QoL for REDCap administration.</li><li>Rand Health: surveys for patient health, mental health screening, quality of care/life.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Copyright &amp; Permissions</strong></summary>
+            <div>
+                <ul><li>Not all measures are public domain → contact authors/publishers for permission to use/adapt.</li><li>Copyright protections apply regardless of notice.</li><li>Even free instruments: acknowledge/cite origin in reports.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Modifying Existing Instruments</strong></summary>
+            <div>
+                <ul><li>Ideal: use w/o modification if properties evaluated.</li><li>Necessary modifications: delete, change, or add items if inappropriate (e.g., cultural differences).</li><li>Long instruments: contact developers for shorter versions that retain strengths.</li><li>Caution: Deleting items from established scale risks changing score meaning, endangering comparisons, diminishing reproducibility/sensitivity.</li><li>Alternative: Some instruments have discrete subscales that can be scored separately → drop nonessential subscales, leave others intact.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Recommended Steps for Selecting &amp; Adapting Measures</strong></summary>
+            <div>
+                <ul><li>Systematic approach to select, review, adapt self-reported measures for a new study.</li><li>Applies to each variable/construct (predictor, outcome, confounder).</li><li>Goal: assess strengths/weaknesses of existing instruments for research question in target population.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Define Variables or Constructs</strong></summary>
+            <div>
+                <ul><li>Create list of important variables/constructs to measure.</li><li>Write short definition for each.</li><li>Assess if complex variables have multiple underlying dimensions (&#x27;subconstructs&#x27;) to measure separately.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 2: Compile Existing Measures</strong></summary>
+            <div>
+                <ul><li>Assemble files of available questions/instruments for each variable.</li><li>Start w/ instruments from similar studies + common repositories (Table 17.1).</li><li>Compile original/subsequent publications on measure development.</li><li>If multiple alternatives, create folder of candidate measures for each variable.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 3: Review Underlying Concepts</strong></summary>
+            <div>
+                <ul><li>For each measure, review how concept is defined (including domains/subscales).</li><li>Compare definitions to your study&#x27;s intended measurement.</li><li>Review measure&#x27;s instructions, item stems, response scales.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 4: Examine Scale Construction &amp; Score Interpretability</strong></summary>
+            <div>
+                <ul><li>Review score range + scoring direction (high vs. low score meaning).</li><li>Consider if numeric score is intuitively meaningful.</li><li>Examine special development methods (e.g., factor analysis).</li><li>Check for user manual/guide on score generation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 5: Review Previous Administration Methods &amp; Target Populations</strong></summary>
+            <div>
+                <ul><li>Assess if measure developed/tested in group similar to your target population; identify relevant differences.</li><li>Examine past administration methods (self-/interviewer-administered, in-person/telephone).</li><li>Consider necessary changes for your study.</li><li>If translations needed, check for available versions in target languages.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 6: Review Psychometric Characteristics</strong></summary>
+            <div>
+                <ul><li>For complex constructs, review performance info in similar populations.</li><li>Psychometric characteristics (Table 17.2) indicate if measure yields dependable, useful, relevant info.</li><li>Assess: variability, reliability, validity, sensitivity to change (Chapter 4).</li></ul>
+                
+        <details>
+            <summary><strong>Variability</strong></summary>
+            <div>
+                <ul><li>Initial assessment confirms adequate distribution of responses.</li><li>Highly skewed distribution → &#x27;ceiling&#x27; or &#x27;floor&#x27; effects → difficult to detect subgroup differences or intervention changes.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Test-Retest Reliability</strong></summary>
+            <div>
+                <ul><li>Measure should produce same/similar responses if repeated over short interval (no underlying change) but long enough (no recall of initial response).</li><li>Higher correlation between initial/repeat assessments → greater test-retest reliability → reproducible responses under same conditions.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Validity</strong></summary>
+            <div>
+                <ul><li>Face validity: subjective judgment that items assess characteristics of interest (e.g., vision-related functioning questions for visual disorders).</li><li>Content validity: extent to which measure covers all aspects of construct.</li><li>Construct validity: whether answers correlate w/ other measures of overlapping constructs (convergent validity) and not w/ dissimilar constructs (divergent validity).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Sensitivity to Change</strong></summary>
+            <div>
+                <ul><li>If study goal is to measure change, evaluate responsiveness by applying before/after effective interventions.</li><li>Example: Vision-related functioning questionnaire before/after cataract surgery.</li><li>Expected: improved visual acuity (e.g., 20/60 to 20/30) → improved questionnaire scores.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Minimal Clinically Important Difference (MCID)</strong></summary>
+            <div>
+                <ul><li>For numerical outcome measures: determine MCID in score that corresponds to meaningful improvement/deterioration.</li><li>Example: Vision-related functioning MCID → magnitude of score change corresponding to accepted metric of treatment success (e.g., patient satisfaction, willingness to repeat surgery).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 7: Revise &amp; Shorten the Set of Instruments</strong></summary>
+            <div>
+                <ul><li>Resist including non-essential measures (&#x27;just in case&#x27;).</li><li>Long instruments → tire respondents → ↓ accuracy/reproducibility.</li><li>Non-essential questions → ↑ effort for data acquisition, entry, cleaning, analysis.</li><li>Maxim: &#x27;When in doubt, leave it out.&#x27;</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 8: Pretest Instruments</strong></summary>
+            <div>
+                <ul><li>Administer instruments to small sample resembling target population.</li><li>Provides info on administration time (especially for new measures/populations).</li><li>Modify items producing missing/confusing responses.</li><li>Improve instructions/formatting.</li><li>Key measures: large-scale pretesting may be needed to confirm adequate response range + assess psychometric characteristics.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluating Measures for Diverse Populations</strong></summary>
+            <div>
+                <ul><li>Many measures developed/tested in mainstream, well-educated groups.</li><li>Limited info on appropriateness, reliability, validity, responsiveness in other populations.</li><li>Biased responses can arise from cultural differences.</li></ul>
+                
+        <details>
+            <summary><strong>Sources of Bias</strong></summary>
+            <div>
+                <ul><li>Cultural differences in perceived meaning of concepts.</li><li>Variations in cognitive processing of questions.</li><li>Familiarity w/ common data collection methods.</li><li>Example: Depression study w/ diverse adults → responses influenced by cultural norms for expressing negative feelings, comfort w/ strangers, nuances of &#x27;depression&#x27; in other languages.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Adaptation for New Populations</strong></summary>
+            <div>
+                <ul><li>Assess conceptual adequacy: is underlying concept relevant, meaningful, acceptable in new group?</li><li>Confirm conceptual equivalence: is concept fundamentally same across cultural groups?</li><li>Retest specific items if they rely on cultural assumptions not applicable to target group.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Psychometric Adequacy</strong></summary>
+            <div>
+                <ul><li>Reevaluate psychometric adequacy to confirm reliable/valid data in new cultural group.</li><li>Requires more time/effort but ensures appropriate measures across all study groups.</li><li>If comparing cultural groups: ensure psychometric equivalence across groups.</li><li>Otherwise, score differences may reflect measure performance differences, not true group differences.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Administering Measures</strong></summary>
+            <div>
+                <ul><li>Self-reported measures distributed via various platforms.</li><li>Choice of platform and administration method impacts efficiency, data quality, and participant access.</li></ul>
+                
+        <details>
+            <summary><strong>Administration Platforms</strong></summary>
+            <div>
+                <ul><li>Paper questionnaires (during visits, mailed).</li><li>Computer tablet/workstation (during visits).</li><li>Online questionnaires (website link, e-mail).</li><li>Electronic diaries/logs (mobile apps).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>E-mailed &amp; Online Questionnaires</strong></summary>
+            <div>
+                <ul><li>Pros:</li><li>Answers integrated directly into electronic database → eliminates expense/errors of paper data transfer.</li><li>Automatic checks for missing/out-of-range values → real-time error correction.</li><li>Programmed reminders for incomplete measures; staff notification for incomplete answers.</li><li>Cons:</li><li>Not accessible to individuals w/o internet/electronic devices → ↓ enrollment/follow-up in digitally underserved populations (older adults, economically vulnerable).</li><li>Solution: provide/lend devices; invite participants to study site.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Formatting for Platform</strong></summary>
+            <div>
+                <ul><li>Measure designed for one platform (e.g., paper) may need reformatting for another (e.g., online).</li><li>Paper: well-spaced questions, large/easy-to-read font (black type on white forms).</li><li>Online: consider device type; ensure items formatted for screen size (avoid cut-off options, excessive scrolling).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Self- Versus Interviewer Administration</strong></summary>
+            <div>
+                <ul><li>Each method has distinct advantages and disadvantages.</li></ul>
+                
+        <details>
+            <summary><strong>Self-Administered (Participant-Administered)</strong></summary>
+            <div>
+                <ul><li>Pros:</li><li>Efficient, uniform for simple questions (e.g., demographics).</li><li>Less research staff time (especially w/ electronic data capture).</li><li>May elicit more honest responses to sensitive questions (e.g., symptoms, stigmatized behaviors) due to added privacy.</li><li>Cons:</li><li>Requires participants to read and understand questions independently.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Interviewer-Administered</strong></summary>
+            <div>
+                <ul><li>Pros:</li><li>Better for complicated questions requiring explanation/detailed instructions.</li><li>Useful when participants have variable reading comprehension.</li><li>Allows real-time confirmation of complete responses.</li><li>Cons:</li><li>More costly, time-consuming.</li><li>Responses may be influenced by interviewer-respondent relationship.</li><li>Inevitably administered w/ minor variations (wording, tone) → ↓ standardization.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Common Susceptibilities</strong></summary>
+            <div>
+                <ul><li>Both methods susceptible to:</li><li>Errors from imperfect respondent memory.</li><li>Respondent tendency to give socially acceptable answers (potentially more pronounced w/ interviewer).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Hybrid Approach</strong></summary>
+            <div>
+                <ul><li>Participants complete measures independently during study visits w/ research personnel present.</li><li>Pros: Researchers can explain instructions before start; check for completeness before participants leave.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Interviewing Approaches</strong></summary>
+            <div>
+                <ul><li>Interviewer skill significantly impacts response quality.</li><li>Standardization is key to maximizing reproducibility.</li></ul>
+                
+        <details>
+            <summary><strong>Standardization</strong></summary>
+            <div>
+                <ul><li>Uniform wording of questions.</li><li>Uniform nonverbal signals during interview.</li><li>Interviewers must avoid introducing biases (changing words, tone).</li><li>Interview script should resemble common speech → comfortable verbatim reading → ↓ interviewer improvisation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Probing</strong></summary>
+            <div>
+                <ul><li>Necessary to follow up on answers → encourage appropriate responses, clarify meaning.</li><li>Can be standardized by writing standard phrases in margins/beneath questions.</li><li>Example: For &#x27;How many cups of coffee on typical day?&#x27;, if respondent says &#x27;I’m not sure...&#x27;, probe: &#x27;Do the best you can; tell me about how many you drink on a typical day.&#x27;</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Interview Modalities</strong></summary>
+            <div>
+                <ul><li>In person, videoconference, or telephone.</li><li>In-person: appropriate if direct observation needed for other data; for participants unable to use phones.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Alternative Measurement Strategies</strong></summary>
+            <div>
+                <ul><li>Physiologic instruments &amp; biologic assays offer alternatives to self-report for some conditions/exposures.</li><li>Researchers should be alert for new technologies.</li></ul>
+                
+        <details>
+            <summary><strong>Examples of Objective Measures</strong></summary>
+            <div>
+                <ul><li>Physical activity: wearable accelerometers → more objective/precise estimate of total amount/patterns of activity/energy expenditure than questionnaires.</li><li>Sleep: actigraphy/sensors worn at night → measure duration/disruption more accurately than self-reported diaries.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Unique Value of Self-Reported Measures</strong></summary>
+            <div>
+                <ul><li>Often provide unique or complementary info not replaceable by physiologic/lab data.</li><li>Example: Insomnia study → self-report valuable for participants&#x27; perceptions of sleep quality/daytime sleepiness impact, even w/ objective actigraphy data.</li><li>Some health conditions (e.g., generalized anxiety disorder, irritable bowel syndrome) defined primarily by patient symptom perception → self-reported instruments are best/only measure of experience.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Summary of Key Principles</strong></summary>
+            <div>
+                <ul><li>1. Study validity often depends on quality/appropriateness of self-reported data.</li><li>2. Questions must be clear, simple, neutral, appropriate for target population; examine for ambiguity, pitfalls (double-barreled, hidden assumptions, incongruous options, jargon).</li><li>3. Abstract variables: combine questions into multi-item scales, assuming single characteristic + internal consistency.</li><li>4. Search for existing instruments w/ valid/reliable results in target participants.</li><li>5. New measure development: clarify concepts, review existing, generate items for pretesting/refinement; critical peer review, more pretesting/revision/evaluation.</li><li>6. Pretest instruments; assess administration time before study.</li><li>7. Measures for one target population may not suit different cultural backgrounds.</li><li>8. Self-administered: economical, easier to standardize, ↑ privacy → ↑ validity. Interviewer-administered: ↑ complete responses, clarifies understanding.</li><li>9. Electronic/online administration: ↑ efficiency, ↑ data accuracy; requires digital access for respondents.</li><li>10. Questions must be easy to read; interviewer questions comfortable to read aloud. Format measures for expected platform.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
