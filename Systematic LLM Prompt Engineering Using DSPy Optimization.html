@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Systematic LLM Prompt Engineering Using DSPy Optimization</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Systematic LLM Prompt Engineering Using DSPy Optimization</strong></summary>
+            <div>
+                <ul><li>Article by Robert Martin-Short.</li><li>Published: Aug 25, 2025.</li><li>Read time: 27 min.</li><li>Focus: LLM prompt iteration, LLMOPs, DSPy optimization for generator &amp; LLM-judge prompts.</li><li>Methodology: Practical approach using a real-world customer service dataset.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the approximate failure rate of the baseline generator in the sample dataset, as judged by the gold standard LLM?</li><li>2. Which DSPy optimizer algorithm is highlighted for its ability to adapt system instructions and create/edit few-shot examples?</li><li>3. What is the primary advantage of using DSPy&#x27;s `ChainOfThought` module for LLM judges?</li><li>4. What is the recommended approach for generating gold standard judgments in a real-world project, as opposed to the method used in this demo?</li><li>5. What is a potential pitfall of LLM judges that can lead to bias towards longer outputs?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>1.0 Challenge of Prompt Iteration</strong></summary>
+            <div>
+                <ul><li>Prompt iteration is central to building trustworthy generative AI products.</li><li>Process is difficult: many ways to write prompts; models sensitive to small changes; generative task judgment often subjective.</li></ul>
+                
+        <details>
+            <summary><strong>Prompt Evolution &amp; Maintenance</strong></summary>
+            <div>
+                <ul><li>Over time, prompts grow complex via iteration &amp; edge case fixes.</li><li>Highly optimized against specific model versions.</li><li>Challenge: upgrading to latest model version / switching provider → significant refactoring likely.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluation Difficulties</strong></summary>
+            <div>
+                <ul><li>Regression testing process: incrementally adjust generator prompt, re-run test suite, evaluate result.</li><li>Process is tedious; evaluation highly subjective.</li><li>Even SMEs struggle when opinions diverge.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>2.0 Who Evaluates the Output?</strong></summary>
+            <div>
+                <ul><li>LLMs are non-deterministic, generative models.</li><li>Attributes are core to functionality, but make them difficult to evaluate.</li><li>Traditional NLP metrics rarely applicable; often no ground truth for comparison.</li></ul>
+                
+        <details>
+            <summary><strong>Role of LLM Judges</strong></summary>
+            <div>
+                <ul><li>LLM judge: typically a powerful model.</li><li>Simulates expert annotator → determines quality of generator model output.</li><li>State-of-the-art foundation models excel @ classifying if generated output meets predefined criteria.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ideal LLM Judge Characteristics</strong></summary>
+            <div>
+                <ul><li>Judge prompt distills human SME thought process.</li><li>Produces outputs reliably aligned w/ SME consensus.</li><li>Allows automatic application to representative development set → compare results across generator prompt versions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>3.0 Adding Complexity: Multi-Stage LLM Projects</strong></summary>
+            <div>
+                <ul><li>LLM judge reliability: human effort still needed to label training set for judge.</li><li>Judge prompt aligned to match human labels.</li><li>Complexities &amp; model version dependencies apply to LLM judges too.</li></ul>
+                
+        <details>
+            <summary><strong>Judge Development &amp; Training</strong></summary>
+            <div>
+                <ul><li>Multi-stage project w/ several LLM calls → several judges may be needed.</li><li>Each judge requires its own training set.</li><li>Judge training dataset: labeled by SME, split into training (to build judge prompt) &amp; test (to prevent overfitting).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generator Optimization Workflow</strong></summary>
+            <div>
+                <ul><li>Once judge trained, used to optimize generator prompt against development dataset.</li><li>Ideally, another holdout set needed to check for generator prompt overfitting to dev set.</li><li>Prompt versions &amp; datasets should be logged for reproducibility.</li></ul>
+                
+        <details>
+            <summary><strong>Workflow Components (Figure 1 Summary)</strong></summary>
+            <div>
+                <ul><li>1. Generator Prompt: Initial version for iteration.</li><li>2. Development Dataset (Inputs): Used for generator optimization.</li><li>3. Judge Dataset (Inputs &amp; Outputs): Used to develop the judge.</li><li>4. SME Labels: Human annotation of judge dataset outputs.</li><li>5. Judge Training Set: Subset of labeled judge dataset to build judge prompt.</li><li>6. Judge Test Set: Subset of labeled judge dataset to test judge prompt &amp; prevent overfitting.</li><li>7. Optimized Judge: Used to evaluate generator outputs.</li><li>8. Generator Holdout Set: Final check for generator overfitting.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>LLMOps Frameworks</strong></summary>
+            <div>
+                <ul><li>Many components for single generator prompt optimization → ideally need LLMOps framework.</li><li>Built-in logging &amp; tracking beneficial.</li><li>Example: mlflow documentation or advanced class modules.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>4.0 Purpose of This Article</strong></summary>
+            <div>
+                <ul><li>Build essential components of the system shown in Figure 1.</li><li>Toy problem: generating helpful customer service responses.</li><li>Dataset: modified airline customer support messages from Kaggle (CC0 license).</li></ul>
+                
+        <details>
+            <summary><strong>Data Generation</strong></summary>
+            <div>
+                <ul><li>Sample of Kaggle dataset seeded generation of 5000 synthetic conversations via gemini-2.5-flash.</li><li>Each conversation: customer + support messages, unique ID, company name.</li><li>Goal: create reasonably sized example dataset similar to real customer support logs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generator Model Aim</strong></summary>
+            <div>
+                <ul><li>Assume customer support role.</li><li>Respond to user query as helpful as possible given situation.</li><li>Challenge: customer questions may require specific context / be outside agent control.</li><li>Model must show empathy, understanding; must NOT hallucinate facts (critical check for production, ideally w/ LLM judge + knowledge banks).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Orchestration Library</strong></summary>
+            <div>
+                <ul><li>Used to track prompts &amp; perform optimization.</li><li>Unique: abstracts raw, text-based prompts into modular Python code (Signatures &amp; Modules).</li><li>Provides tools to define success metrics &amp; automatically optimize prompts towards them.</li><li>Promise: w/ good metric &amp; calculation ability (ground truth / LLM judge) → automatic prompt optimization w/o manual text editing.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Methodology &amp; Limitations</strong></summary>
+            <div>
+                <ul><li>Steps towards robust, reproducible, fairly automated prompt development.</li><li>Allows re-optimization if model provider switches.</li><li>Far from perfect; likely no substitute for careful manual prompt engineering + SME collaboration.</li><li>Encapsulates evaluation-driven development principles; highlights DSPy&#x27;s power to speed up iteration.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>5.0 Dataset and Objective Details</strong></summary>
+            <div>
+                <ul><li>Kaggle dataset: ~30k customer questions re: air travel.</li><li>Synthetic conversations: 5000 generated from Kaggle samples.</li><li>Agent goal: respond to user query as helpfully as possible, showing empathy, understanding, and avoiding hallucinations.</li></ul>
+                
+        <details>
+            <summary><strong>Data Preprocessing</strong></summary>
+            <div>
+                <ul><li>Basic preprocessing applied (e.g., fasttext language detector).</li><li>Conversations randomly truncated: final utterance always &#x27;Customer&#x27; message → model generates next &#x27;Support&#x27; response.</li><li>Company name appended to conversations for additional context (accuracy lift testable w/ framework).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Dataset Sampling &amp; Splitting</strong></summary>
+            <div>
+                <ul><li>Development dataset (for generator &amp; judge tuning): small enough for efficiency, representative of production.</li><li>Random sample: 400 truncated conversations.</li><li>Split into test (40%) &amp; train (60%) segments.</li><li>Smarter sampling methods for prompt optimization are active research areas.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>6.0 Baseline Generator &amp; Judge Development Set</strong></summary>
+            <div>
+                <ul><li>Split dataset further: 160 examples for judge development, 240 for generator prompt development.</li><li>Numbers are arbitrary → practical compromise between representativeness &amp; time/cost.</li><li>Outputs for judge development generated via baseline generator.</li></ul>
+                
+        <details>
+            <summary><strong>Generator Model Selection</strong></summary>
+            <div>
+                <ul><li>gpt-3.5-turbo used as generator model for meaningful performance gains in toy project.</li><li>DSPy advantage: ease of switching models w/o manual prompt re-optimization.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>6.1 Basic Version w/o DSPy</strong></summary>
+            <div>
+                <ul><li>Manually-typed prompt: &#x27;You are a customer service agent whose job is to provide a single, concise response...&#x27;.</li><li>Code uses `LLMCallerBase` modules (optionally enforce structured output w/ `instructor` library).</li><li>`ParallelProcessor` for parallel API calls, minimizes errors w/ backoff throttling.</li></ul>
+                
+        <details>
+            <summary><strong>Generating Baseline Results</strong></summary>
+            <div>
+                <ul><li>Uses `OpenAITextOutputCaller` &amp; `ParallelProcessor`.</li><li>`dev_dataset` is `split_dataset[&#x27;train&#x27;]`; `judge_dataset` is `split_dataset[&#x27;test&#x27;]`.</li><li>`baseline_results_for_judge` generated using `gpt-3.5-turbo` w/ `temperature=1.0`.</li><li>`concat_latest_response` function adds generated response to input conversation.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>6.2 With DSPy</strong></summary>
+            <div>
+                <ul><li>DSPy abstracts prompting component.</li><li>Core objects: Signatures &amp; Modules.</li><li>Signatures: classes defining inputs/outputs of LLM call (e.g., `SupportTranscriptNextResponse`).</li><li>Docstrings in Signatures act as system instructions.</li></ul>
+                
+        <details>
+            <summary><strong>DSPy Signature Example</strong></summary>
+            <div>
+                <ul><li>`SupportTranscriptNextResponse`:</li><li>`transcript: str` (InputField, desc=&#x27;Input transcript to judge&#x27;)</li><li>`llm_response: str` (OutputField, desc=&#x27;The support agent&#x27;s next utterance&#x27;)</li><li>Docstring: `SupportTranscriptNextResponse.__doc__ = baseline_customer_response_support_system_prompt.strip()`</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Module Example</strong></summary>
+            <div>
+                <ul><li>DSPy module implements prompting strategy for a signature.</li><li>`ChainOfThought` module used: implements chain of thought prompting → forces model to generate reasoning field + response.</li><li>`support_transcript_generator_module = dspy.ChainOfThought(SupportTranscriptNextResponse)`</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generating Baseline Results w/ DSPy</strong></summary>
+            <div>
+                <ul><li>`ParallelProcessor` supports DSPy.</li><li>`dspy_config`: specifies model (`openai/gpt-3.5-turbo`), API key, temperature.</li><li>`process_dataset_with_dspy` method: extracts signature, deconstructs/re-assembles on workers to avoid pickling errors.</li><li>Each worker calls `dspy_module.predict(transcript=input_text)`.</li><li>Advantage: module easily saved, reloaded, fed into other DSPy tools (Evaluate, Optimize).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>7.0 The Judge Training Dataset</strong></summary>
+            <div>
+                <ul><li>LLM judge development: judge acts like human customer support expert.</li><li>Reads interaction, judges agent&#x27;s success, provides critiques w/ reasoning.</li><li>Requires gold standard judgments &amp; critiques.</li></ul>
+                
+        <details>
+            <summary><strong>Gold Standard Generation (Real Project vs. Demo)</strong></summary>
+            <div>
+                <ul><li>Real project: run judge development dataset through baseline generator → SME reviews inputs/outputs → generates labeled dataset.</li><li>Binary yes/no judgment often preferable → direct calculation of metrics (accuracy, precision, Cohen’s kappa).</li><li>Demo: Claude Opus 4.0 + &#x27;gold standard&#x27; judge prompt (designed w/ GPT5) used to simulate SME labeling (no substitute for human SME).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>DSPy Signature for Judge</strong></summary>
+            <div>
+                <ul><li>`SupportTranscriptJudge` signature:</li><li>`transcript: str` (InputField, desc=&#x27;Input transcript to judge&#x27;)</li><li>`satisfied: bool` (OutputField, desc=&#x27;Whether the agent satisfied the customer query&#x27;)</li><li>`ChainOfThought` module automatically generates reasoning field.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Running Gold Standard Judge</strong></summary>
+            <div>
+                <ul><li>Uses `dspy.ChainOfThought(SupportTranscriptJudge)` w/ `anthropic/claude-sonnet-4-20250514` (temperature=0).</li><li>`ParallelProcessor` used for `process_dataset_with_dspy`.</li><li>`extract_llm_response_fields_dspy` maps results.</li><li>Judge training dataset contains mix of &#x27;positive&#x27; &amp; &#x27;negative&#x27; results + explanations → tunes LLM judge to distinguish.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Baseline Generator Performance (Figure 2 Summary)</strong></summary>
+            <div>
+                <ul><li>First indication of baseline generator performance.</li><li>Sample dataset: almost 50% failure rate according to gold standard LLM judge.</li><li>Serious project: pause @ SME labeling stage → conduct careful error analysis to understand main failure modes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>8.0 Optimizing the Judge Prompt</strong></summary>
+            <div>
+                <ul><li>With gold standard judge dataset, proceed to develop &amp; optimize judge prompt.</li><li>One way: start w/ baseline judge (encode SME reasoning) → run on training set → incremental edits until alignment w/ SME scores levels off.</li><li>Log each prompt version &amp; alignment score for progress tracking.</li></ul>
+                
+        <details>
+            <summary><strong>DSPy Prompt Optimizers</strong></summary>
+            <div>
+                <ul><li>Alternative: use DSPy&#x27;s prompt optimizers.</li><li>Take module, metric function, small training set → attempt to optimize prompt to maximize metric.</li><li>Metric: match accuracy between judge&#x27;s binary classification &amp; ground truth from SME labeled dataset.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>MIPROv2 Algorithm</strong></summary>
+            <div>
+                <ul><li>Focus: MIPROv2 (can adapt system instructions, create/edit few-shot examples).</li><li>Automatic, iterative process:</li><li>1. Runs module on subset of training data; filters high-scoring trajectories → generates few-shot examples.</li><li>2. Uses LLM calls to generate multiple candidate system prompts based on step 1 observations.</li><li>3. Searches for combinations of candidate system prompts &amp; few-shot examples that maximize metric on mini-batches of training data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pros &amp; Cons of Optimizers</strong></summary>
+            <div>
+                <ul><li>Pros: Helps design prompts data-drivenly, similar to traditional ML models.</li><li>Cons: Separates developers from data → difficult to explain why prompt is optimal (&#x27;model said so&#x27;); numerous hyperparameters influence results.</li><li>Experience: Optimizers make sense w/ existing ground truth; output can be starting point for manual iteration + SME collaboration.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Judge Model Selection</strong></summary>
+            <div>
+                <ul><li>Judge model: Gemini 1.5 flash (cheap &amp; fast).</li><li>`dspy.configure(lm=judge_model, track_usage=True, adapter=dspy.JSONAdapter())`</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Baseline Judge Alignment</strong></summary>
+            <div>
+                <ul><li>`baseline_judge`: &#x27;best attempt&#x27; at judge based on SME labeled dataset review.</li><li>Initial alignment w/ gold standard judge: ~60% accuracy (using `dspy.Evaluate` w/ `match_judge_metric`).</li><li>`match_judge_metric`: simple metric function to determine if judge score matches gold standard label.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimization Setup &amp; Execution</strong></summary>
+            <div>
+                <ul><li>Split SME labeled dataset: 110 examples for training, rest for validation.</li><li>`dspy.MIPROv2` optimizer configured w/ `match_judge_metric`, `auto=&#x27;medium&#x27;`, `init_temperature=1.0`, `seed=101`.</li><li>`optimizer.compile(baseline_judge, trainset=training_set)`.</li><li>Note: multiple LLM calls during optimization → can be costly; check documentation for hyperparameter explanations.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimized Judge Performance &amp; Changes</strong></summary>
+            <div>
+                <ul><li>Accuracy score after optimization: ~70% → judge prompt more aligned w/ gold standard labels.</li><li>`judge_optimized.inspect_history(n=1)` shows latest system prompt, few-shot examples, last call.</li><li>Optimization runs produce different results (minor mods to complete rewrites) w/ similar scores.</li><li>Few-shot examples almost always added from training set → main drivers of metric improvements.</li><li>Crucial: evaluate against both training &amp; validation sets to protect against overfitting (less problematic than traditional ML).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Saving Modules</strong></summary>
+            <div>
+                <ul><li>Save optimized &amp; baseline judge modules for future use &amp; experiment reproduction.</li><li>`judge_optimized.save(&#x27;dspy_modules/optimized_llm_judge&#x27;, save_program=True)`</li><li>`baseline_judge.save(&#x27;dspy_modules/baseline_llm_judge&#x27;, save_program=True)`</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>9.0 Using Optimized Judge to Optimize Generator</strong></summary>
+            <div>
+                <ul><li>Goal: improve baseline generator prompt using optimized LLM judge as ground truth provider.</li><li>Process similar to judge optimization, but metric function differs.</li><li>Generator development set: 240 examples.</li></ul>
+                
+        <details>
+            <summary><strong>Manual Iteration vs. DSPy</strong></summary>
+            <div>
+                <ul><li>Manual: generate prompt version on inputs → run judge on results → calculate accuracy → review critiques → iterate, save new version.</li><li>DSPy: automatic optimization helps initiate this path.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Two LLMs in Optimization</strong></summary>
+            <div>
+                <ul><li>Generator model: gpt-3.5-turbo.</li><li>Judge model: gemini-1.5-flash.</li><li>Custom module `ModuleWithLM` created to use specific LLM w/ a module.</li></ul>
+                
+        <details>
+            <summary><strong>ModuleWithLM Implementation</strong></summary>
+            <div>
+                <ul><li>Loads `optimized_judge`.</li><li>`judge_lm` configured for `gemini/gemini-1.5-flash`.</li><li>`ModuleWithLM` wraps `dspy.Module` to associate a specific LM (`self.lm`) with an inner module (`self.module`).</li><li>`forward` method uses `dspy.context(lm=self.lm)` to ensure correct LM is used.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>LLM Judge Metric Function</strong></summary>
+            <div>
+                <ul><li>`LLM_judge_metric(example, prediction, trace=None)`:</li><li>Takes input transcript &amp; generated LLM response.</li><li>Concatenates them: `f&#x27;{transcript_text}\nSupport: {output_text}&#x27;`.</li><li>Calls `optimized_judge_program(transcript=transcript_text)`.</li><li>Returns `bool(judged.satisfied)`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generator Optimization Setup</strong></summary>
+            <div>
+                <ul><li>Loads `baseline_generation` module.</li><li>Converts `dev_dataset` to DSPy examples.</li><li>Splits into `optimize_training_data` (200 examples) &amp; `optimize_validation_data` (rest) to check for overfitting.</li><li>`dspy.MIPROv2` optimizer configured w/ `LLM_judge_metric`, `auto=&#x27;medium&#x27;`, `init_temperature=1.0`, `seed=101`.</li><li>`optimizer.compile(generate_response, trainset=optimize_training_data)`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Performance Assessment (Figure 3 Summary)</strong></summary>
+            <div>
+                <ul><li>Overall accuracy assessment using `dspy.Evaluate`.</li><li>Baseline generator score: ~58% accuracy.</li><li>Optimized generator score: ~75% accuracy.</li><li>Gain: ~17% improvement.</li></ul>
+                
+        <details>
+            <summary><strong>Analysis of Gains</strong></summary>
+            <div>
+                <ul><li>Small dataset: some gain from handful of judge results switching from &#x27;unsatisfied&#x27; to &#x27;satisfied&#x27;.</li><li>Check if changes are within natural variability of judge (run multiple times).</li><li>Generator&#x27;s responses got longer &amp; more polite, but didn&#x27;t convey more info.</li><li>LLM judges known to bias towards longer outputs → optimization pushed generator in that direction.</li><li>Greatest strength: provides new baseline prompt grounded in best practice, more defensible than original &#x27;best guess&#x27;.</li><li>Sets stage for manual iteration, use of optimized LLM judge for feedback, SME consultation for error analysis &amp; edge cases.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>10.0 Important Learnings</strong></summary>
+            <div>
+                <ul><li>Prompt optimization w/ DSPy for LLM judge &amp; generator refinement is somewhat long-winded.</li><li>Enforces good practice: development dataset curation, prompt logging, checking for overfitting.</li><li>LLM judge alignment process requires human-in-the-loop for labeled data → DSPy optimization reduces expensive SME iterations.</li></ul>
+                
+        <details>
+            <summary><strong>Statistical Significance &amp; Cost</strong></summary>
+            <div>
+                <ul><li>Small performance gains from optimization might not be statistically significant due to natural variability of LLMs.</li><li>Optimization can be costly in terms of tokens → care needed to avoid high API bills.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generator Optimization Value</strong></summary>
+            <div>
+                <ul><li>Using optimized judge to optimize generator prompt (bypassing human labeling) may be worth pursuing.</li><li>Benefit: automatic curation of good few-shot examples.</li><li>NOT a substitute for manual evaluation &amp; error analysis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Future Considerations</strong></summary>
+            <div>
+                <ul><li>Curiosity: pros &amp; cons of extending framework to more complex systems (e.g., ReACT, prompt-chaining) for larger tasks.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
