@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Planning the Measurements: Precision, Accuracy, and Validity</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Planning the Measurements: Precision, Accuracy, and Validity</strong></summary>
+            <div>
+                <ul><li>Focus: Designing measurements that accurately represent phenomena of interest for research questions.</li><li>Key Concepts: Measurement scales, precision (random error), accuracy (precision + bias), validity.</li><li>Application: Applies to predictor, outcome variables, and covariates in studies.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What type of measurement scale offers the highest statistical power and allows for the most detailed distribution patterns?</li><li>2. When assessing the accuracy of a measurement, what is the primary reference point used for comparison?</li><li>3. Name three main sources of random error that can reduce the precision of a measurement.</li><li>4. What is the key difference between precision and accuracy in measurement, particularly regarding systematic error?</li><li>5. Beyond standardizing methods and training observers, what is a crucial strategy for reducing systematic error in mechanical or electrical instruments?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Measurement Scales</strong></summary>
+            <div>
+                <ul><li>Classification of variables based on information content.</li><li>Influences statistical power, sample size, and distribution patterns.</li><li>Prefer continuous over categorical variables for ↑ statistical efficiency.</li></ul>
+                
+        <details>
+            <summary><strong>Categorical Variables</strong></summary>
+            <div>
+                <ul><li>Phenomena classified into categories; not suitable for quantification.</li><li>Information content &lt; numerical variables.</li></ul>
+                
+        <details>
+            <summary><strong>Dichotomous</strong></summary>
+            <div>
+                <ul><li>Two possible values/categories.</li><li>Example: Vital status (alive/dead).</li><li>Descriptive Statistics: Counts, proportions.</li><li>Statistical Power: Low.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Nominal</strong></summary>
+            <div>
+                <ul><li>More than two categories; unordered.</li><li>Example: Gender identity, blood type.</li><li>Descriptive Statistics: Counts, proportions.</li><li>Statistical Power: Low.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ordinal</strong></summary>
+            <div>
+                <ul><li>More than two categories; ordered, but intervals not quantifiable.</li><li>Example: Degree of pain (none, mild, moderate, severe); social class.</li><li>Descriptive Statistics: Counts, proportions, medians.</li><li>Statistical Power: Intermediate.</li></ul>
+                
+        <details>
+            <summary><strong>Designing Ordinal Scales</strong></summary>
+            <div>
+                <ul><li>Useful to provide ~6 categories (e.g., &#x27;strongly agree&#x27; to &#x27;strongly disagree&#x27;).</li><li>Allows later collapse into dichotomy (e.g., agree/disagree); reverse not possible.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Numerical Variables</strong></summary>
+            <div>
+                <ul><li>Quantified with a number (&#x27;how much&#x27; or &#x27;how many&#x27;).</li><li>Offer ↑ information, ↑ statistical power, ↓ sample size requirements.</li></ul>
+                
+        <details>
+            <summary><strong>Continuous</strong></summary>
+            <div>
+                <ul><li>Theoretically infinite number of values on a scale.</li><li>Example: Weight, hemoglobin level.</li><li>Descriptive Statistics: Means, standard deviations.</li><li>Statistical Power: High.</li></ul>
+                
+        <details>
+            <summary><strong>Advantages of Continuous Variables</strong></summary>
+            <div>
+                <ul><li>↑ Statistical efficiency; allows observation of magnitude of change.</li><li>Flexibility in fitting data to variable nature/association shape.</li><li>Example: BMI vs. mortality → U-shaped pattern, threshold values.</li><li>Example: Birth weight → record actual weight, allows flexible cutoffs (&lt;1500, 1500-1999, etc.).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Discrete or Count</strong></summary>
+            <div>
+                <ul><li>Limited, countable number of values (typically integers).</li><li>Example: Number of pregnancies, number of sexual partners.</li><li>Descriptive Statistics: Same as ordinal (few values); same as continuous (many values).</li><li>Statistical Power: High if many possible values, especially if average near middle.</li></ul>
+                
+        <details>
+            <summary><strong>Discrete vs. Continuous in Analysis</strong></summary>
+            <div>
+                <ul><li>Well-distributed discrete variables (≥6 possible values) ≈ continuous variables in statistical analyses.</li><li>Equivalent for measurement design purposes.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Quantifying Subjective Phenomena</strong></summary>
+            <div>
+                <ul><li>Essential for research questions on pain, quality of life.</li><li>Example: SF-36 questionnaire → discrete numerical ratings for 8 dimensions (physical, social, emotional function, general well-being).</li><li>Process: ↑ objectivity, ↓ bias, ↑ detailed communication.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Precision</strong></summary>
+            <div>
+                <ul><li>Degree to which a variable is reproducible; nearly same value each time measured.</li><li>Also called reproducibility, reliability, consistency.</li><li>↑ Precision → ↑ statistical power for given sample size.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism: Random Error</strong></summary>
+            <div>
+                <ul><li>Precision is a function of random error (chance variability).</li><li>↑ Error → ↓ Precision.</li></ul>
+                
+        <details>
+            <summary><strong>Sources of Random Error</strong></summary>
+            <div>
+                <ul><li>1. Observer variability: Choice of words, skill w/ instrument.</li><li>2. Instrument variability: Changing environmental factors (temp), reagent differences.</li><li>3. Participant variability: Intrinsic variability unrelated to study variables (e.g., strength due to time of day, food intake, effort).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Assessing Precision</strong></summary>
+            <div>
+                <ul><li>Evaluated by reproducibility of repeated measurements.</li><li>Comparison: Same person (within-observer) / different people (between-observer).</li><li>Also: Within/between instruments.</li></ul>
+                
+        <details>
+            <summary><strong>For Continuous Variables</strong></summary>
+            <div>
+                <ul><li>Expressed as: Within-participant standard deviation / coefficient of variation (within-participant SD ÷ mean).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>For Categorical Variables</strong></summary>
+            <div>
+                <ul><li>Expressed as: Percent agreement, interclass correlation coefficient, kappa statistic.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategies for Enhancing Precision</strong></summary>
+            <div>
+                <ul><li>Aim: Minimize random error; ↑ reproducibility.</li><li>Decision based on: Variable importance, magnitude of precision problem, feasibility/cost.</li></ul>
+                
+        <details>
+            <summary><strong>1. Standardizing Measurement Methods</strong></summary>
+            <div>
+                <ul><li>All study protocols must include detailed instructions.</li><li>Example: Specify cuff deflation rate @ 2 mm Hg/s for BP.</li><li>Example: Participant sit in quiet room for 5 min before BP measurement.</li><li>Materials: Written directions, pictures, video for environment prep, participant prep, measurement execution, recording, instrument calibration.</li><li>Benefit: Ensures uniform performance, basis for method description in publications.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>2. Training &amp; Certifying Observers</strong></summary>
+            <div>
+                <ul><li>Improves consistency of measurement techniques, esp. w/ multiple observers.</li><li>Test mastery of techniques; certify prescribed performance level.</li><li>Measure &amp; optimize interrater reliability (e.g., using Kappa) when multiple observers.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>3. Refining Instruments</strong></summary>
+            <div>
+                <ul><li>Mechanical/electronic instruments: Engineer to ↓ variability.</li><li>Questionnaires/interviews: Multiple iterations to ↑ clarity, avoid ambiguities.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>4. Automating Instruments</strong></summary>
+            <div>
+                <ul><li>Eliminates human observer variation.</li><li>Examples: Automatic BP devices, self-response questionnaires.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>5. Repetition</strong></summary>
+            <div>
+                <ul><li>Influence of random error ↓ by repeating measurement; use mean of ≥2 readings.</li><li>Example: Average of two leg strength measurements ↑ precision.</li><li>Benefit: Substantially ↑ precision.</li><li>Limitations: Added cost, practical difficulties; potential for systematic changes (e.g., tiring, improved test-taking).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Accuracy</strong></summary>
+            <div>
+                <ul><li>Degree to which a variable represents the true value.</li><li>Depends on: Maximizing precision + minimizing bias.</li><li>Many strategies for ↑ precision also ↑ accuracy.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism: Bias (Systematic Error)</strong></summary>
+            <div>
+                <ul><li>Accuracy is affected by bias.</li><li>↑ Bias → ↓ Accuracy.</li><li>Example: Miscalibrated instruments → precise but biased results.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Sources of Bias</strong></summary>
+            <div>
+                <ul><li>Systematic errors corresponding to random error sources.</li></ul>
+                
+        <details>
+            <summary><strong>Observer Bias</strong></summary>
+            <div>
+                <ul><li>Conscious/unconscious distortion in perception/reporting by observer.</li><li>Example: Tendency to round BP measurements down to nearest zero.</li><li>Example: Using leading questions in interviews.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Instrument Bias</strong></summary>
+            <div>
+                <ul><li>Faulty function of mechanical instrument.</li><li>Example: Uncalibrated scale drifts downward → consistently low body weights.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Participant Bias</strong></summary>
+            <div>
+                <ul><li>Distortion by study participant (respondent/recall bias).</li><li>Example: Breast cancer patients exaggerating alcohol intake if they believe it&#x27;s a cause.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Assessing Accuracy</strong></summary>
+            <div>
+                <ul><li>Best assessed by comparing to a &#x27;gold standard&#x27;.</li><li>Gold Standard: Reference measurement by technique believed to best represent true value.</li><li>Designating gold standard: Difficult judgment, draws on prior work &amp; expert consensus.</li></ul>
+                
+        <details>
+            <summary><strong>For Continuous Scales</strong></summary>
+            <div>
+                <ul><li>Expressed as: Mean difference between measurement under investigation and gold standard.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>For Dichotomous Scales</strong></summary>
+            <div>
+                <ul><li>Described by: Sensitivity and specificity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>For Categorical Scales (&gt;2 options)</strong></summary>
+            <div>
+                <ul><li>Calculated as: Percent correct on each option.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategies for Enhancing Accuracy</strong></summary>
+            <div>
+                <ul><li>Aim: Minimize systematic error.</li><li>Decision based on: Potential impact of inaccuracy on conclusions, feasibility/cost.</li><li>Always use: Standardizing, training.</li><li>Essential when feasible: Calibration (for instruments changing over time), blinding (for comparisons).</li></ul>
+                
+        <details>
+            <summary><strong>1. Standardizing Measurement Methods</strong></summary>
+            <div>
+                <ul><li>Example: Define diastolic BP as point where sounds cease to be heard (vs. muffled).</li><li>Example: Participant sit in quiet room for 5 min before measurement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>2. Training &amp; Certifying Observers</strong></summary>
+            <div>
+                <ul><li>Example: Trainer checks observer&#x27;s BP reading accuracy by repeating measurement.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>3. Refining Instruments</strong></summary>
+            <div>
+                <ul><li>Example: Use extra-wide BP cuff for obese/muscular patients to avoid consistently high readings.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>4. Automating Instruments</strong></summary>
+            <div>
+                <ul><li>Example: Use automatic BP device to eliminate observer tendency to read BP lower in active drug group.</li><li>Example: Use automatic BP device to mitigate participant&#x27;s emotional reaction to observer.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>5. Making Unobtrusive Measurements</strong></summary>
+            <div>
+                <ul><li>Participants unaware of measurement → eliminates conscious bias.</li><li>Example: Observers blending in to evaluate hand hygiene in cafeteria.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>6. Calibrating Instruments</strong></summary>
+            <div>
+                <ul><li>Periodic calibration w/ gold standard ↑ accuracy of mechanical/electrical instruments.</li><li>Example: Calibrate BP manometer monthly.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>7. Blinding</strong></summary>
+            <div>
+                <ul><li>Does not improve overall accuracy, but eliminates differential bias between study groups.</li><li>Double-blind trial: Participants/observers unaware of active medicine/placebo assignment.</li><li>Result: Inaccuracy in outcome measurement is same in both groups.</li><li>Example: Double-blind placebo conceals study group assignment to prevent observer reading BP lower in active group.</li><li>Example: Prevents participant overreporting side effects if they know they&#x27;re on active drug.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Validity</strong></summary>
+            <div>
+                <ul><li>Qualitative dimension of how well a measurement represents the phenomena of interest.</li><li>Example: Cystatin C more valid for kidney function than creatinine (creatinine influenced by muscle mass).</li><li>Often not amenable to gold standard assessment, esp. for subjective/abstract phenomena (pain, quality of life).</li></ul>
+                
+        <details>
+            <summary><strong>Types of Validity</strong></summary>
+            <div>
+                <ul><li>Constructs used to address validity when no gold standard.</li></ul>
+                
+        <details>
+            <summary><strong>Content Validity</strong></summary>
+            <div>
+                <ul><li>Examines how well measurement represents all aspects of phenomena.</li><li>Example: SF-36 questionnaire includes social, physical, emotional function, general health, mental health, bodily pain to assess quality of life.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Face Validity</strong></summary>
+            <div>
+                <ul><li>Describes whether measurement seems inherently reasonable.</li><li>Example: Assessing frailty by muscle weakness, exhaustion, weight loss, slow walking speed.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Construct Validity</strong></summary>
+            <div>
+                <ul><li>Degree to which measurement matches theoretical expectations.</li><li>Example: Social isolation measure should differentiate individuals w/ few vs. many friendships/social activities.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Predictive Validity</strong></summary>
+            <div>
+                <ul><li>Ability of measurement to predict an outcome.</li><li>Example: How well frailty measurement predicts admission to long-term care.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Criterion-Related Validity</strong></summary>
+            <div>
+                <ul><li>Degree to which new measurement correlates w/ established measurements.</li><li>Example: New biochemical test of muscle mass correlates w/ muscle strength measurements.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Approach to Measuring Subjective/Abstract Phenomena</strong></summary>
+            <div>
+                <ul><li>1. Search literature/consult experts: Find suitable, validated instrument.</li><li>Advantages: Results comparable to prior work, simplifies grant/publication process.</li><li>Disadvantages: Validation suboptimal, instrument may be outmoded/not optimal for research question.</li><li>2. Develop new measurement approach: Can be challenging, time/effort intensive.</li><li>May lead to worthwhile contribution, but validation process often less conclusive.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Other Features of Measurement Approaches</strong></summary>
+            <div>
+                <ul><li>Considerations for designing effective and efficient measurements.</li></ul>
+                
+        <details>
+            <summary><strong>Sensitivity</strong></summary>
+            <div>
+                <ul><li>Ability to detect differences in a characteristic important to investigator.</li><li>Required sensitivity depends on research question.</li><li>Example: 6-minute walk distance more sensitive to Δ cardiac performance than self-reported shortness of breath after walking one block.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Specificity</strong></summary>
+            <div>
+                <ul><li>Represents only the characteristic of interest.</li><li>Example: Echocardiographic measurement of heart contractile function more specific to heart failure treatment effect than 6-minute walk distance (also influenced by lung function, leg muscle fatigability).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Appropriateness</strong></summary>
+            <div>
+                <ul><li>Measurements must align w/ study objectives.</li><li>Example: Stress study for myocardial infarction → define type of stress (psychological/physical, acute/chronic) before operational definitions.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Adequate Distribution of Responses</strong></summary>
+            <div>
+                <ul><li>Measurement most useful if values range from high to low in participants.</li><li>Pretesting ensures responses don&#x27;t cluster at one end (&#x27;floor and ceiling effects&#x27;).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Objectivity</strong></summary>
+            <div>
+                <ul><li>Minimize subjective judgments.</li><li>Achieved by: ↓ observer/participant involvement, using automated instruments.</li><li>Danger: Tunnel vision, limits scope of observations, ability to discover unanticipated phenomena.</li><li>Mitigation: Include open-ended questions, opportunity for subjective/qualitative data.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Efficiency &amp; Parsimony</strong></summary>
+            <div>
+                <ul><li>Avoid adding items not central to research question.</li><li>Collect useful data @ affordable cost (time, money) w/ acceptable participant burden.</li><li>Common error: Collecting too much info → participant fatigue, overwhelmed team, cluttered data management/analysis.</li><li>Result: More expensive study, paradoxically less successful in answering main questions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Measurements on Stored Materials</strong></summary>
+            <div>
+                <ul><li>Many measurements can be done later on banked biologic specimens or electronically filed images.</li><li>Examples: Medical history (EMR, NLP), biochemical measures (serum, plasma, urine, stool), genetic/molecular tests (whole blood, tissue), imaging (X-rays, CT).</li></ul>
+                
+        <details>
+            <summary><strong>Advantages of Storage</strong></summary>
+            <div>
+                <ul><li>1. Cost reduction: Measure only on individuals w/ outcome of interest + sample of others (e.g., nested case-control study).</li><li>2. Scientific advances: New ideas/measurement techniques can be employed later, funded by new grants.</li><li>3. Sophisticated analyses: Allows application of proteomics, gene expression in individual cells.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Practical Considerations</strong></summary>
+            <div>
+                <ul><li>Specimen Collection: Carefully collected, quickly frozen.</li><li>Archiving: Very low temperatures (-70 °C or -190 °C) for preservation.</li><li>Types of Specimens: Consider archiving plasma, urine, white blood cells, stool samples to anticipate wide array of future assays.</li><li>Informed Consent: Obtain broad consent covering wide scope of future potential uses.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
