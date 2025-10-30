@@ -1,0 +1,905 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SARCOID LIVER DISEASE – A REVIEW ARTICLE</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>SARCOID LIVER DISEASE – A REVIEW ARTICLE</strong></summary>
+            <div>
+                <ul><li>- Journal: Hepatology</li><li>- Publication: Publish Ahead of Print</li><li>- DOI: 10.1097/HEP.0000000000001568</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. What percentage of patients with hepatic sarcoidosis have fibrosis or cirrhosis on biopsy?</li><li>- 2. What is the 5-year survival rate for patients with hepatic sarcoidosis who undergo liver transplantation?</li><li>- 3. Infliximab treatment (5 mg/kg at 0, 2, 6 weeks, then every 6 weeks) showed clinical and biochemical improvement in what proportion of patients?</li><li>- 4. What is the reported prevalence of gastrointestinal manifestation of sarcoidosis, as compared to hepatic sarcoidosis?</li><li>- 5. What is the typical starting dosage of Methotrexate (MTX) for hepatic involvement?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Core Concepts</strong></summary>
+            <div>
+                <ul><li>- Sarcoidosis is a <u>multisystemic inflammatory disease</u> characterized by <b>non-necrotizing granulomas</b>.</li><li>- The liver is a commonly affected organ, but significant liver disease is less common.</li><li>- Diagnosis requires a multidisciplinary approach and exclusion of other pathologies.</li></ul>
+                
+        <details>
+            <summary><strong>Hallmark Pathology</strong></summary>
+            <div>
+                <ul><li>- The cornerstone of diagnosis is a liver biopsy confirming a pattern of <b>non-necrotizing granulomas</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Epidemiology</strong></summary>
+            <div>
+                <ul><li>- The worldwide burden is unknown due to diagnostic challenges and mimicking other diseases like <b>tuberculosis (TB)</b>.</li><li>- Reported incidence varies widely from <q>0.02 to 1.6 per thousand adults</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Geographic Variation</strong></summary>
+            <div>
+                <ul><li>- <b>Lowest incidence</b>: Eastern Asian countries (<q>1-5 per 100,000</q>).</li><li>- <b>Highest incidence</b>: Scandinavian countries (<q>140-160 per 100,000</q>).</li><li>- <b>North America</b>: Prevalence ranges from <q>60 to 160 per 100,000</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Demographics: Ethnicity, Age, and Gender</strong></summary>
+            <div>
+                <ul><li>- <b>Race</b>: Strongly associated, with African Americans having the highest incidence in the U.S. (<q>17.8 per 100,000</q>).</li><li>- <b>Age</b>: Peak onset is <q>30–55 years old</q>, with a possible bimodal distribution (second peak in women <q>50-65 years</q>).</li><li>- <b>Mortality</b>: Age-adjusted mortality rate is higher for Black Americans.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Epidemiology of <u>Hepatic</u> Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- Data is scarce compared to pulmonary sarcoid.</li><li>- Prevalence varies significantly, documented between <q>3.6% to 20%</q> in clinical cohorts, with a predominance in African American patients.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical vs. Autopsy Findings</strong></summary>
+            <div>
+                <ul><li>- Autopsy studies show a much higher prevalence, with nearly <q>80%</q> of patients with sarcoidosis having hepatic granulomas.</li><li>- Over <q>50%</q> have hepatic granulomas on biopsy, but only <q>10–30%</q> have elevated liver-associated enzymes (LAE).</li><li>- Clinically significant disease with symptoms is reported in less than <q>20%</q> of patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Natural History</strong></summary>
+            <div>
+                <ul><li>- The clinical course is highly variable, ranging from spontaneous regression to progressive fibrotic disease.</li></ul>
+                
+        <details>
+            <summary><strong>Systemic Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- Generally has a good prognosis with low mortality.</li><li>- Spontaneous resolution occurs in <q>50%</q> of cases within the first <b>2 years</b>.</li><li>- 5-year survival is estimated at <q>93% to 95%</q>.</li><li>- Associated with a <q>1.8-fold</q> increased risk of serious infections, especially in the first 2 years after diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatic Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- Natural history is poorly understood due to its varied clinical course.</li><li>- Extrapulmonary manifestations can precede or occur without thoracic involvement.</li><li>- Long-standing disease may lead to liver transplantation.</li></ul>
+                
+        <details>
+            <summary><strong>Phenotypes</strong></summary>
+            <div>
+                <ul><li>- A study by Schupp et al. divided sarcoidosis into 5 phenotypes.</li><li>- Hepatic sarcoidosis is most observed in the <b>'abdominal phenotype'</b>, often with spleen involvement (<q>36.7%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Morbidity & Mortality</strong></summary>
+            <div>
+                <ul><li>- Morbidity is linked to the specific organ system affected (pulmonary, cardiac, hepatic, neurologic, ocular being most severe).</li><li>- Global mortality from sarcoidosis is around <q>10 cases per 1,000 person-years</q>.</li><li>- The most common cause of sarcoidosis-related death is often undiagnosed <q><b>cardiac involvement</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Factors</strong></summary>
+            <div>
+                <ul><li>- Sarcoidosis is likely triggered by antigen exposures in genetically susceptible individuals.</li></ul>
+                
+        <details>
+            <summary><strong>Antigenic & Infectious Triggers</strong></summary>
+            <div>
+                <ul><li>- <b>Mycobacterial catalase-peroxidase protein (mKatG)</b> has been identified to induce granulomatous inflammation.</li><li>- <b>Propionibacterium acnes</b> is also associated.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Environmental & Lifestyle Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Inorganic aerosols</b>: metal dust, photocopier toners (copper, iron, silica).</li><li>- <b>Organic bioaerosols</b>: associated with flares in the spring season.</li><li>- <b>Obesity</b>: In one cohort, obese women had a <q>3.59-fold</q> increased risk of developing sarcoidosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pathogenesis</strong></summary>
+            <div>
+                <ul><li>- Pathological hallmark is the presence of compact, epithelioid, <b>non-necrotizing granulomas</b>.</li><li>- Involves a multifactorial interplay of environmental, genetic, and immunological factors.</li></ul>
+                
+        <details>
+            <summary><strong>Immune Response Cascade</strong></summary>
+            <div>
+                <ul><li>- Initial step: A dysregulated and exaggerated <b>T helper 1 (TH1)</b> immune response to an antigen.</li><li>- This activates alveolar macrophages, which then initiate a downstream adaptive immune response.</li><li>- Pro-inflammatory factors like <b>tumor necrosis factor α (TNF-α)</b> and <b>interleukin-17</b> create an environment for granuloma formation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Granuloma Composition</strong></summary>
+            <div>
+                <ul><li>- Comprised primarily of macrophages that fuse to form <b>multinucleated giant cells</b>.</li><li>- <b>CD4+ T helper cells</b> are interspersed within the granuloma.</li><li>- The periphery is surrounded by <b>CD8+ T cells, regulatory T cells (Tregs), fibroblasts, and B cells</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Genetic Susceptibility</strong></summary>
+            <div>
+                <ul><li>- <b>Human leukocyte surface antigen (HLA)</b> polymorphisms play a significant role.</li><li>- <u>Associated with development</u>: <q><b>HLA-DRB1*03/07/15</b></q>.</li><li>- <u>Protective role</u>: <q><b>HLA-DRB1*04</b></q>.</li><li>- <u>Associated with acute disease</u>: <q><b>HLA-DQB1*0201</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Presentation</strong></summary>
+            <div>
+                <ul><li>- Sarcoidosis can mimic various diseases, making differential diagnosis crucial.</li><li>- General symptoms include fatigue (<q>50-70%</q>), painless peripheral lymphadenopathy (<q>~20%</q>), low-grade fever, weight loss, and night sweats.</li></ul>
+                
+        <details>
+            <summary><strong>Non-Hepatic Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- <b>Lung involvement</b> and lymph node enlargement are seen in > <q>90%</q> of cases.</li><li>- <b>Eye, skin, and liver</b> involvement: <q>15%–30%</q>.</li><li>- <b>Cardiac and nervous system</b> involvement: <q>2% to 10%</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Specific Organ Manifestations</strong></summary>
+            <div>
+                <ul><li>- <b>Cardiac</b>: Often asymptomatic, but can present with atrioventricular block, arrhythmias, and heart failure.</li><li>- <b>Ocular</b>: Uveitis (frequently bilateral) is seen in <q>60-80%</q> of cases.</li><li>- <b>Skin</b>: Erythema nodosum, macules, nodules, papules, or plaques in up to one-third of patients.</li><li>- <b>Gastrointestinal</b>: Rare, accounting for <q>0.1 to 1.6%</q> of cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatic Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- Isolated hepatic sarcoidosis is rare, but can occur without intra-thoracic disease in <q>13–50%</q> of cases.</li><li>- Most patients are <b>asymptomatic</b> with a mild course.</li></ul>
+                
+        <details>
+            <summary><strong>Symptoms & Signs</strong></summary>
+            <div>
+                <ul><li>- <b>Symptomatic patients (~15%)</b> may report fatigue, right upper quadrant pain, pruritus, fever, jaundice, and weight loss.</li><li>- <b>Hepatomegaly</b> is present in up to <q>30%</q> of patients and carries a worse prognosis.</li><li>- Liver hilum adenopathy can cause cholestasis via external compression.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biochemical Pattern</strong></summary>
+            <div>
+                <ul><li>- Often presents as an asymptomatic elevation of liver associated enzymes (LAE).</li><li>- Most common pattern is <b>cholestatic</b>, with elevated Alkaline Phosphatase (<b>ALP</b>) and GGT.</li><li>- A common threshold for treatment consideration is LAE elevation > <q>three times the upper limit of normal (ULN)</q>.</li><li>- Synthetic function is rarely affected.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cholestatic Syndromes</strong></summary>
+            <div>
+                <ul><li>- Can mimic other cholestatic diseases, delaying diagnosis.</li><li>- Pathogenesis involves progressive destruction of bile ducts by portal granulomas.</li><li>- Can resemble <b>primary biliary cirrhosis (PBC)</b> or, less commonly, <b>primary sclerosing cholangitis (PSC)</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Advanced Disease & Complications</strong></summary>
+            <div>
+                <ul><li>- <b>Fibrosis and cirrhosis</b> may be observed in <q>20–29%</q> of biopsies.</li><li>- Can cause <b>noncirrhotic portal hypertension (NCPH)</b> in up to <q>half</q> of patients with portal hypertension.</li><li>- <b>Budd-Chiari syndrome</b> is a rare but reported association.</li><li>- Progression to cirrhosis occurs in <q>6–24%</q> of cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis & Workup</strong></summary>
+            <div>
+                <ul><li>- Diagnosis is challenging and requires excluding other causes of granulomatous liver disease (e.g., infections, drugs, autoimmune diseases).</li><li>- A diagnosis of hepatic sarcoidosis requires histopathologic confirmation of noncaseating granuloma in the liver.</li></ul>
+                
+        <details>
+            <summary><strong>Laboratory Tests</strong></summary>
+            <div>
+                <ul><li>- <b>Serum angiotensin-converting enzyme (sACE)</b>: Increased in > <q>50%</q> of patients with active disease.</li><li>- <u>Limitation</u>: Low sensitivity and specificity, with variability among ethnic groups.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Imaging</strong></summary>
+            <div>
+                <ul><li>- <b>Ultrasound/CT</b>: May show hypodense nodules in <q>5–35%</q> of cases and hepatomegaly in <q>8–18%</q>.</li><li>- <b>MRI and 18F-FDG PET CT</b> are the <u>most sensitive</u> modalities for detecting focal liver nodules.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Biopsy & Histopathology</strong></summary>
+            <div>
+                <ul><li>- Remains the <b>only way to make a definitive diagnosis</b> of hepatic involvement.</li><li>- <u>Key feature</u>: Well-differentiated, <b>non-caseating granulomas</b>.</li><li>- <u>Essential step</u>: Specimens must be stained for <b>acid-fast bacilli, fungi, and spirochetes</b> to rule out infectious causes.</li></ul>
+                
+        <details>
+            <summary><strong>Granuloma Distribution & Features</strong></summary>
+            <div>
+                <ul><li>- Granulomas are often multifocally distributed.</li><li>- <b>Lobular involvement</b>: <q>70%</q> of cases.</li><li>- <b>Portal or periportal localization</b>: <q>60%</q> of cases.</li><li>- <b>Bile duct association</b>: <q>40%</q> of cases.</li><li>- <b>Ductopenia</b>: Present in <q>15%</q> of cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Necrotizing Sarcoid Granulomatosis</strong></summary>
+            <div>
+                <ul><li>- A rare form characterized by necrosis within granulomas, often with vasculitis.</li><li>- Hepatic involvement is uncommon.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment</strong></summary>
+            <div>
+                <ul><li>- <u>Main goals</u>: Prevent progression to fibrosis, relieve symptoms, and decrease organ damage.</li><li>- No prospective randomized controlled trials exist for universal management.</li></ul>
+                
+        <details>
+            <summary><strong>General Principles & Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Observation</b>: Asymptomatic disease with no organ dysfunction may not require treatment, as spontaneous remission occurs in > <q>one-third</q> of patients.</li><li>- <b>Indications for treatment</b>: Organ dysfunction, progressive damage, risk of death, or significantly compromised quality of life (See Table 2).</li><li>- A trial of treatment withdrawal every <q>1-2 years</q> is suggested for stable patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment of <u>Hepatic</u> Sarcoidosis</strong></summary>
+            <div>
+                <ul><li>- Approach is personalized and relies on expert opinion due to a lack of evidence-based recommendations.</li><li>- Treatment is often guided by extrahepatic involvement, especially pulmonary disease.</li></ul>
+                
+        <details>
+            <summary><strong>Stepwise Approach (See Figure 3)</strong></summary>
+            <div>
+                <ul><li>- <b>First-line</b>: Corticosteroids or Ursodeoxycholic acid (UDCA).</li><li>- <b>Second-line</b>: Azathioprine or Methotrexate for partial response or steroid-sparing.</li><li>- <b>Third-line (Salvage)</b>: Anti-TNF alpha agents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Corticosteroids</strong></summary>
+            <div>
+                <ul><li>- Remain the <b>first-line therapy</b> to reduce inflammation and granulomas.</li><li>- <b>Dose</b>: <b>Prednisone</b> <q>20 to 40 mg</q> daily for up to <q>2–3 months</q>, then tapered.</li><li>- <b>Efficacy</b>: Can reduce granuloma size/number in <q>77.8%</q> of patients and improve symptoms.</li><li>- <u>Limitation</u>: May decrease LAE levels without significant histological regression.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ursodeoxycholic Acid (UDCA)</strong></summary>
+            <div>
+                <ul><li>- A potential first-line option, especially for predominant cholestasis or pruritus.</li><li>- <b>Dose</b>: Typically <q>10 mg/kg/day</q>.</li><li>- <b>Benefits</b>: Improves fatigue, pruritus, and liver biochemistries. Favorable safety profile for long-term use.</li><li>- <u>Limitation</u>: Has not been shown to reverse histological damage or prevent complications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immunomodulators (Steroid-Sparing)</strong></summary>
+            <div>
+                <ul><li>- Used as second-line agents for relapsing/resistant cases or to reduce steroid exposure.</li></ul>
+                
+        <details>
+            <summary><strong>Methotrexate (MTX)</strong></summary>
+            <div>
+                <ul><li>- A common second-line agent.</li><li>- <b>Dose</b>: Starting at <q>10 mg/week</q> with a maximum of <q>15 mg/week</q>.</li><li>- <u>Caution</u>: Potential for drug-induced liver injury; requires monitoring.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Azathioprine (AZA)</strong></summary>
+            <div>
+                <ul><li>- Can be considered when tapering corticosteroids.</li><li>- <b>Dose</b>: <q>50 to 150 mg/d</q>.</li><li>- <u>Prerequisite</u>: Check <b>thiopurine S-methyltransferase (TPMT)</b> activity to assess risk of myelosuppression and hepatotoxicity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Agents</strong></summary>
+            <div>
+                <ul><li>- <b>Mycophenolate mofetil (MMF)</b> and <b>hydroxychloroquine</b> have been used, but data is scarce.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anti-Tumor Necrosis Factor (TNF) Inhibitors</strong></summary>
+            <div>
+                <ul><li>- Includes <b>infliximab</b> and <b>adalimumab</b>.</li><li>- Used for refractory disease or when steroids are contraindicated/intolerable.</li><li>- Can effectively induce remission of hepatic granulomas.</li></ul>
+                
+        <details>
+            <summary><strong>Infliximab Efficacy</strong></summary>
+            <div>
+                <ul><li>- A study showed clinical and biochemical improvement in <q>9 out of 10</q> patients.</li><li>- <b>Dose</b>: <q>5 mg/kg</q> at weeks 0, 2, and 6, followed by every 6-week intervals.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of Complications</strong></summary>
+            <div>
+                <ul><li>- Management of portal hypertension and its sequelae (e.g., varices) is crucial.</li></ul>
+                
+        <details>
+            <summary><strong>Portal Hypertension</strong></summary>
+            <div>
+                <ul><li>- Hepatic sarcoidosis causes <b>pre-sinusoidal</b> portal hypertension.</li><li>- Management includes non-selective beta-blockers, endoscopic variceal screening, and consideration of TIPS.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Transplantation</strong></summary>
+            <div>
+                <ul><li>- A rare intervention, accounting for about <q>0.012%</q> of all liver transplants in the US.</li><li>- Candidacy requires careful assessment of other organ involvement.</li><li>- <b>Survival rates</b>: <q>78%</q> at 1-year and <q>61%</q> at 5-years.</li><li>- <b>Recurrence</b> in the graft is rare and accounted for <q>7%</q> of total deaths in one analysis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Directions</strong></summary>
+            <div>
+                <ul><li>- Current treatment strategies focus on interrupting granuloma formation, but clinical trials for hepatic sarcoidosis are lacking.</li><li>- A deeper understanding of pathogenesis may lead to new treatment approaches.</li><li>- Artificial intelligence (AI) and machine learning may help in prognostication and interpreting radiologic studies.</li></ul>
+                
+        <details>
+            <summary><strong>Unmet Needs (See Table 3)</strong></summary>
+            <div>
+                <ul><li>- <b>Diagnosis</b>: Need for non-invasive biomarkers to replace or supplement liver biopsy.</li><li>- <b>Therapeutics</b>: Need for steroid-sparing therapies and targeted treatments for granuloma resolution.</li><li>- <b>Prognosis</b>: Need for markers to predict disease progression and complications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
