@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DeepSeek-OCR: When LLMs Can Actually See</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>DeepSeek-OCR: When LLMs Can Actually See</strong></summary>
+            <div>
+                <ul><li>This article introduces DeepSeek-OCR, a breakthrough in AI&#x27;s ability to remember, compress, and retrieve information using visual memory compression.</li><li>It transforms images into vision tokens, enabling AI to handle significantly longer contexts.</li><li>The approach mirrors human visual recall, offering a more natural AI memory system.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary innovation of DeepSeek-OCR regarding how AI processes images?</li><li>2. How many vision tokens are approximately equivalent to 1,000 regular text tokens in DeepSeek-OCR, while maintaining 97% accuracy?</li><li>3. What are the minimum GPU VRAM requirements for running the 3B DeepSeek-OCR model locally?</li><li>4. Which DeepSeek-OCR prompt would you use to convert a PDF document with tables into a structured output?</li><li>5. How many pages can DeepSeek-OCR process daily on a single GPU, making it suitable for generating large-scale training data?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>What is DeepSeek-OCR?</strong></summary>
+            <div>
+                <ul><li>DeepSeek-OCR is an advanced tool for extracting text from images.</li><li>It processes various visual inputs: photos of whiteboards, scanned documents, PDFs, screenshots.</li><li>Its core innovation is transforming text blocks into &#x27;vision tokens&#x27; instead of traditional plain text.</li></ul>
+                
+        <details>
+            <summary><strong>Vision Token Mechanism</strong></summary>
+            <div>
+                <ul><li>Traditional AI systems treat all input as regular text tokens.</li><li>DeepSeek-OCR converts text blocks into &#x27;vision tokens&#x27; → tiny visual summaries.</li><li>This method allows for significant data compression.</li></ul>
+                
+        <details>
+            <summary><strong>Efficiency &amp; Accuracy</strong></summary>
+            <div>
+                <ul><li>100 vision tokens ≈ 1,000 regular text tokens.</li><li>This compression maintains ~97% accuracy.</li><li>Implication: AI systems could &#x27;remember&#x27; by seeing whole pictures, not just reading words.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Using DeepSeek-OCR Today</strong></summary>
+            <div>
+                <ul><li>DeepSeek-OCR can be run locally for direct inference.</li><li>Specific hardware and software requirements ensure smooth performance.</li><li>A simple Python script facilitates quick setup and usage.</li></ul>
+                
+        <details>
+            <summary><strong>Local Deployment Requirements</strong></summary>
+            <div>
+                <ul><li>GPU: 16-24GB VRAM for the 3B model; 40-80GB VRAM for larger models.</li><li>System RAM: 32-64GB recommended.</li><li>Storage: SSD for faster loading times.</li><li>Software: CUDA 11.8 and PyTorch 2.6 for compatibility.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Installation &amp; Quick Start</strong></summary>
+            <div>
+                <ul><li>Clone the GitHub repository: `git clone https://github.com/deepseek-ai/DeepSeek-OCR.git`.</li><li>Navigate to directory: `cd DeepSeek-OCR`.</li><li>Install dependencies: `pip install -r requirements.txt`.</li></ul>
+                
+        <details>
+            <summary><strong>Python Inference Code</strong></summary>
+            <div>
+                <ul><li>Utilizes `transformers` library for `AutoModel` and `AutoTokenizer`.</li><li>Model loaded from &#x27;deepseek-ai/DeepSeek-OCR&#x27; with `trust_remote_code=True`.</li><li>Device selection: `cuda` if available, else `cpu`.</li><li>Data type: `torch.bfloat16` for CUDA, `torch.float32` for CPU.</li><li>`model.infer` function processes images based on `prompt`, `image_file`, `output_path`, `base_size`, `image_size`, `crop_mode`, `save_results`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Proven Prompts for Text Extraction</strong></summary>
+            <div>
+                <ul><li>Prompts guide the model&#x27;s processing of images.</li><li>Different prompts yield varied output formats and levels of detail.</li><li>Customizing prompts allows control over extraction type.</li></ul>
+                
+        <details>
+            <summary><strong>Prompt Types</strong></summary>
+            <div>
+                <ul><li>&#x27;&lt;image&gt;\n&lt;|grounding|&gt;OCR this image.&#x27; → Basic OCR, plain text output.</li><li>&#x27;&lt;image&gt;\n&lt;|grounding|&gt;Convert the document to markdown.&#x27; → Markdown conversion, preserves structure (e.g., PDFs w/ tables).</li><li>&#x27;&lt;image&gt;\nFree OCR.&#x27; → Lightweight text extraction, no layout information.</li><li>Grounding prompt usage → Provides bounding boxes or layout metadata.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Vision Compression Redefines &#x27;Memory&#x27;</strong></summary>
+            <div>
+                <ul><li>DeepSeek-OCR&#x27;s innovation extends beyond reading to visual memory.</li><li>It proposes a shift from linear, text-token-based AI memory.</li><li>Visual compression enables AI systems to &#x27;remember&#x27; more like humans.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits for AI Memory</strong></summary>
+            <div>
+                <ul><li>Store entire conversations as visual embeddings → &#x27;snapshots of context&#x27;.</li><li>Recall specific ideas/scenes through imagery → similar to human memory.</li><li>Operate w/ massively larger context windows @ fraction of cost.</li><li>This approach is seen as an evolution in AI memory compression.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Real-World Use Cases</strong></summary>
+            <div>
+                <ul><li>DeepSeek-OCR&#x27;s efficiency and accuracy make it suitable for high-volume data processing.</li><li>It can generate high-quality training data for next-generation LLMs and VLMs.</li><li>Applications span various sectors, including healthcare and research.</li></ul>
+                
+        <details>
+            <summary><strong>High-Volume Processing Capability</strong></summary>
+            <div>
+                <ul><li>Model can process 200,000+ pages daily on a single GPU.</li><li>This capacity is crucial for generating large-scale, high-quality training data.</li><li>Supports development of advanced Large Language Models (LLMs) and Vision-Language Models (VLMs).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Practical Applications</strong></summary>
+            <div>
+                <ul><li>Digitizing archives: Convert scanned books, reports, magazines → searchable text/markdown.</li><li>Enterprise workflows: Extract data from invoices, contracts, forms @ scale.</li><li>Research tools: Convert PDF papers → markdown, preserving structure for analysis.</li><li>LLM data preprocessing: OCR outputs → structured context for large-language models.</li><li>AI memory research: Explore vision compression&#x27;s impact on long-term AI recall systems.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
