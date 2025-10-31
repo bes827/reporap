@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mixture Of Reasoning Experts (MoRE) for Enhanced Language Model Performance</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Mixture Of Reasoning Experts (MoRE) for Enhanced Language Model Performance</strong></summary>
+            <div>
+                <ul><li>This document describes the Mixture Of Reasoning Experts (MoRE) technique.</li><li>It details how combining specialized language models improves response quality.</li><li>Focuses on architectural components and implementation details.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary challenge MoRE aims to address in Language Models?</li><li>2. How many distinct expert models were utilized in the original MoRE paper?</li><li>3. What mechanism does the Factual Expert employ to augment its responses?</li><li>4. What is the scoring range for expert responses in MoRE, and what is its purpose?</li><li>5. In the simplified MoRE implementation, what is the default threshold for abstaining from a response?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>MoRE: Core Concept</strong></summary>
+            <div>
+                <ul><li>Language Models (LMs) struggle to generalize across diverse question types.</li><li>Distinct reasoning abilities are often required for different queries.</li><li>MoRE combines specialized LMs → improved response quality.</li></ul>
+                
+        <details>
+            <summary><strong>Problem Addressed</strong></summary>
+            <div>
+                <ul><li>LMs lack generalization across varied reasoning tasks.</li><li>Single LM often insufficient for complex, multi-faceted queries.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Solution Mechanism</strong></summary>
+            <div>
+                <ul><li>Utilize a &#x27;Mixture Of Reasoning Experts&#x27; (MoRE) approach.</li><li>Each expert specializes in a particular reasoning domain.</li><li>Collective intelligence of experts &gt; individual LM performance.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Original MoRE Paper Implementation</strong></summary>
+            <div>
+                <ul><li>Employs four distinct expert models.</li><li>Each expert designed for a specific reasoning type.</li><li>Responses are scored and selected via a classifier.</li></ul>
+                
+        <details>
+            <summary><strong>Expert Models</strong></summary>
+            <div>
+                <ul><li>Four specialized experts used to cover diverse reasoning needs.</li></ul>
+                
+        <details>
+            <summary><strong>Factual Expert</strong></summary>
+            <div>
+                <ul><li>Augmented by Retrieval-Augmented Generation (RAG) pipeline.</li><li>Retrieves top 10 relevant passages from Wikipedia.</li><li>Appends passages to prompt before question.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multihop Expert</strong></summary>
+            <div>
+                <ul><li>Designed for multi-step reasoning processes.</li><li>Elicits complex thought chains.</li><li>Uses manually written rationales after each demo.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Math Expert</strong></summary>
+            <div>
+                <ul><li>Biased towards specific reasoning steps for mathematical problems.</li><li>Utilizes manually written explanations for GSM8k Dataset.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Commonsense Expert</strong></summary>
+            <div>
+                <ul><li>Provided with 10 facts generated by a Codex model.</li><li>Facts appended to prompt before question.</li><li>Enhances general knowledge reasoning.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Response Selection &amp; Scoring</strong></summary>
+            <div>
+                <ul><li>Each expert generates a response.</li><li>Responses are evaluated for quality and relevance.</li><li>Allows for abstention if no response meets criteria.</li></ul>
+                
+        <details>
+            <summary><strong>Scoring Mechanism</strong></summary>
+            <div>
+                <ul><li>Random forest classifier scores each response.</li><li>Score range: 0 to 1.</li><li>Score indicates response quality.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Final Answer Determination</strong></summary>
+            <div>
+                <ul><li>Highest-scoring response selected as final answer.</li><li>Score also determines if answer is &#x27;sufficiently good&#x27;.</li><li>Option to abstain from responding if scores are too low.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Simplified MoRE Implementation (Python)</strong></summary>
+            <div>
+                <ul><li>Demonstrates MoRE principles using `instructor` and `OpenAI`.</li><li>Focuses on Factual and Multihop experts for illustration.</li><li>Includes a scoring mechanism and decision logic for response selection.</li></ul>
+                
+        <details>
+            <summary><strong>Key Libraries &amp; Tools</strong></summary>
+            <div>
+                <ul><li>Python libraries used for implementation.</li><li>Facilitates structured output and API interaction.</li></ul>
+                
+        <details>
+            <summary><strong>OpenAI Client</strong></summary>
+            <div>
+                <ul><li>Interface for interacting with OpenAI models.</li><li>`instructor.from_openai(OpenAI())` initializes client.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pydantic</strong></summary>
+            <div>
+                <ul><li>Used for defining structured data models.</li><li>Ensures type safety and clear output formats.</li><li>`BaseModel` and `Field` are core components.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Instructor</strong></summary>
+            <div>
+                <ul><li>Extends OpenAI client for structured output.</li><li>Maps model responses directly to Pydantic models.</li><li>Simplifies parsing and validation of LLM outputs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Textwrap</strong></summary>
+            <div>
+                <ul><li>Utility for formatting text.</li><li>`dedent` function removes common leading whitespace.</li><li>Used for cleaner prompt construction.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Pydantic Expert Models</strong></summary>
+            <div>
+                <ul><li>Defines the expected output structure for each expert and the scorer.</li><li>Ensures consistent data handling.</li></ul>
+                
+        <details>
+            <summary><strong>MultihopExpert</strong></summary>
+            <div>
+                <ul><li>Structure for multihop reasoning responses.</li><li>Fields: `chain_of_thought` (str), `answer` (str).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>FactualExpert</strong></summary>
+            <div>
+                <ul><li>Structure for factual query responses.</li><li>Field: `answer` (str).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>ModelScore</strong></summary>
+            <div>
+                <ul><li>Structure for scoring expert answers.</li><li>Field: `score` (float).</li><li>Constraint: `ge=0`, `lt=1` (score ≥0 and &lt;1).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Expert Query Functions</strong></summary>
+            <div>
+                <ul><li>Functions to interact with specific expert models.</li><li>Each function targets a different reasoning type.</li></ul>
+                
+        <details>
+            <summary><strong>query_factual_expert</strong></summary>
+            <div>
+                <ul><li>Inputs: `query` (str), `evidence` (list[str]).</li><li>Model: `gpt-4o`.</li><li>Response Model: `FactualExpert`.</li><li>System prompt includes `query` and `formatted_evidence`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>query_multihop_expert</strong></summary>
+            <div>
+                <ul><li>Inputs: `query` (str).</li><li>Model: `gpt-4o`.</li><li>Response Model: `MultihopExpert`.</li><li>System prompt includes `query`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>score_answer</strong></summary>
+            <div>
+                <ul><li>Inputs: `query` (str), `answer` (str).</li><li>Model: `gpt-4o`.</li><li>Response Model: `ModelScore`.</li><li>System role: &#x27;scores answers based on well they are able to answer a specific user query&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Example Workflow</strong></summary>
+            <div>
+                <ul><li>Illustrates how experts are queried, scored, and a final answer is selected.</li><li>Demonstrates the decision-making process.</li></ul>
+                
+        <details>
+            <summary><strong>Query Definition</strong></summary>
+            <div>
+                <ul><li>Example query: &#x27;Who&#x27;s the original singer of Help Me Make It Through The Night?&#x27;</li><li>`evidences`: Provided factual context for the Factual Expert.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Threshold for Abstention</strong></summary>
+            <div>
+                <ul><li>`threshold = 0.8`.</li><li>If max expert score &lt; 0.8, system abstains from responding.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Expert Execution</strong></summary>
+            <div>
+                <ul><li>Calls `query_factual_expert` with query and evidence.</li><li>Calls `query_multihop_expert` with query.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Answer Scoring</strong></summary>
+            <div>
+                <ul><li>Calls `score_answer` for `factual_expert_output.answer`.</li><li>Calls `score_answer` for `multihop_expert_output.answer`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Decision Logic</strong></summary>
+            <div>
+                <ul><li>Compares scores from both experts.</li><li>If `max(scores) &lt; threshold` → &#x27;Abstaining from responding&#x27;.</li><li>Else if `factual_expert_score.score &gt; multihop_expert_score.score` → Factual Expert&#x27;s answer.</li><li>Else → Multihop Expert&#x27;s answer.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
