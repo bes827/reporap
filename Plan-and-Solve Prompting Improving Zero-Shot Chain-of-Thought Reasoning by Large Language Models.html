@@ -1,0 +1,785 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models</strong></summary>
+            <div>
+                <ul><li>Article from arXiv preprint arXiv:2305.04091v3 [cs.CL], published 26 May 2023.</li><li>Focus: Enhancing Large Language Model (LLM) reasoning for multi-step tasks via novel prompting strategies.</li><li>Key Finding: PS+ prompting significantly ↑ accuracy vs. Zero-shot-CoT, comparable to/exceeding Zero-shot-PoT &amp; 8-shot CoT for math reasoning.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What percentage of Zero-shot-CoT errors are attributed to semantic misunderstanding?</li><li>2. Which prompting strategy achieved an average accuracy of 76.7% across arithmetic reasoning datasets in a zero-shot setting?</li><li>3. What is the primary instruction added to PS prompting to address calculation errors and improve reasoning quality?</li><li>4. On which symbolic reasoning dataset did Zero-shot PS+ prompting outperform Few-Shot-CoT (Manual) with an accuracy of 75.2%?</li><li>5. How much did PS+ prompting with Self-Consistency (SC) improve accuracy on the GSM8K dataset compared to PS+ without SC?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction: LLMs &amp; Reasoning Challenges</strong></summary>
+            <div>
+                <ul><li>Large Language Models (LLMs) show impressive NLP performance.</li><li>Often provided as a service → no direct access to model parameters → challenging to fine-tune.</li><li>Leverage LLMs: Elicit strong reasoning abilities via instructions (prompts).</li></ul>
+                
+        <details>
+            <summary><strong>LLM Learning Approaches</strong></summary>
+            <div>
+                <ul><li>Few-shot learning: Conditioning LLMs on a few illustrative examples.</li><li>Zero-shot learning: Solving new problems w/o illustrative examples, using only a prompt.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Chain-of-Thought (CoT) Prompting</strong></summary>
+            <div>
+                <ul><li>Method to tackle multi-step complex reasoning tasks using LLMs.</li><li>Enables explicit generation of intermediate reasoning steps before final answer.</li></ul>
+                
+        <details>
+            <summary><strong>Few-shot CoT Prompting</strong></summary>
+            <div>
+                <ul><li>Includes manually crafted step-by-step reasoning demonstrations.</li><li>Improves reasoning task accuracy.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot CoT Prompting</strong></summary>
+            <div>
+                <ul><li>Eliminates manual effort of crafting examples.</li><li>Appends &#x27;Let’s think step by step&#x27; to target problem as input prompt.</li><li>Surprisingly yields performance similar to few-shot CoT.</li></ul>
+                
+        <details>
+            <summary><strong>Zero-shot CoT Pitfalls (GPT-3, GSM8K sample)</strong></summary>
+            <div>
+                <ul><li>Despite success, suffers from specific error types.</li><li>Analysis on 100 arithmetic test examples w/ incorrect answers.</li></ul>
+                
+        <details>
+            <summary><strong>Calculation Errors</strong></summary>
+            <div>
+                <ul><li>7% of incorrect answers.</li><li>Errors in numerical computation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Missing-Step Errors</strong></summary>
+            <div>
+                <ul><li>12% of incorrect answers.</li><li>Intermediate reasoning step(s) missed, esp. w/ many steps.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Semantic Misunderstanding Errors</strong></summary>
+            <div>
+                <ul><li>27% of incorrect answers.</li><li>Other errors in problem understanding &amp; reasoning coherence.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Proposed Prompting Strategies</strong></summary>
+            <div>
+                <ul><li>New zero-shot CoT methods to address Zero-shot-CoT pitfalls.</li><li>Guide LLMs to explicitly devise a plan &amp; generate intermediate reasoning.</li></ul>
+                
+        <details>
+            <summary><strong>Plan-and-Solve (PS) Prompting</strong></summary>
+            <div>
+                <ul><li>Addresses: Missing-step errors.</li><li>Components: 1) Devise a plan to divide task into smaller subtasks; 2) Carry out subtasks according to plan.</li><li>Prompt: Replaces &#x27;Let’s think step by step&#x27; w/ &#x27;Let’s first understand the problem and devise a plan to solve the problem. Then, let’s carry out the plan and solve the problem step by step.&#x27;</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Plan-and-Solve Plus (PS+) Prompting</strong></summary>
+            <div>
+                <ul><li>Addresses: Calculation errors; improves quality of generated reasoning steps.</li><li>Extension of PS prompting w/ more detailed instructions.</li><li>Greatly ↑ quality of generated reasoning process.</li></ul>
+                
+        <details>
+            <summary><strong>Key Instructions Added</strong></summary>
+            <div>
+                <ul><li>&#x27;extract relevant variables and their corresponding numerals&#x27; → ↓ errors from missing necessary reasoning steps.</li><li>&#x27;calculate intermediate results (pay attention to calculation and commonsense)&#x27; → ↑ LLM ability to generate relevant/important reasoning steps.</li><li>Correlation analysis: Variable/plan existence has negative correlation w/ calculation &amp; missing-step errors.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Customization</strong></summary>
+            <div>
+                <ul><li>Strategy easily customized to solve various problems.</li><li>Applicable beyond math reasoning: commonsense, symbolic reasoning.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Plan-and-Solve Prompting Mechanism</strong></summary>
+            <div>
+                <ul><li>Two-step process for zero-shot PS prompting.</li><li>Does not require demonstration examples.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Prompting for Reasoning Generation</strong></summary>
+            <div>
+                <ul><li>Aims to construct templates to elicit LLMs to determine/accomplish subtasks.</li><li>Guides LLMs to pay more attention to calculations &amp; intermediate results.</li></ul>
+                
+        <details>
+            <summary><strong>Template Structure</strong></summary>
+            <div>
+                <ul><li>Input data example converted to prompt: &#x27;Q: [X]. A: [T]&#x27;.</li><li>[X]: Input problem statement.</li><li>[T]: Hand-crafted instruction (trigger sentence).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot PS Instruction</strong></summary>
+            <div>
+                <ul><li>&#x27;Let’s first understand the problem and devise a plan to solve the problem. Then, let’s carry out the plan and solve the problem step by step.&#x27;</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>PS+ Instruction</strong></summary>
+            <div>
+                <ul><li>Extends PS instruction w/ &#x27;extract relevant variables and their corresponding numerals&#x27; + &#x27;calculate intermediate results (pay attention to calculation and commonsense)&#x27;.</li><li>This strategy of adding specific descriptions to trigger sentence → new way to ↑ zero-shot performance on complex reasoning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Decoding Strategy</strong></summary>
+            <div>
+                <ul><li>Uses greedy decoding (1 output chain) for generating output by default.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 2: Prompting for Answer Extraction</strong></summary>
+            <div>
+                <ul><li>Devises another prompt to extract final numerical answer from reasoning text.</li><li>Appends answer extraction instruction to first prompt + LLM generated reasoning text.</li><li>Example: &#x27;Therefore, the answer (arabic numerals) is&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experimental Setup</strong></summary>
+            <div>
+                <ul><li>Evaluation of proposed methods on 10 benchmark datasets across 3 reasoning categories.</li><li>Comparison w/ various zero-shot &amp; few-shot baselines.</li></ul>
+                
+        <details>
+            <summary><strong>Benchmarks (Datasets)</strong></summary>
+            <div>
+                <ul><li>Total 10 datasets evaluated.</li><li>Table 1: Dataset details (Domain, # Samples, Ave. words, Answer type).</li></ul>
+                
+        <details>
+            <summary><strong>Arithmetic Reasoning (6 datasets)</strong></summary>
+            <div>
+                <ul><li>GSM8K: High-quality, linguistically diverse grade school math word problems (# Samples: 1319, Ave. words: 46.9, Answer: Number).</li><li>SVAMP: One-unknown arithmetic word problems (up to 4th grade) (# Samples: 1000, Ave. words: 31.8, Answer: Number).</li><li>MultiArith: Math word problems requiring multiple reasoning steps/operations (# Samples: 600, Ave. words: 31.8, Answer: Number).</li><li>AddSub: Addition/subtraction arithmetic word problems (# Samples: 395, Ave. words: 31.5, Answer: Number).</li><li>AQuA: Algebraic word problems w/ natural language rationales (# Samples: 254, Ave. words: 51.9, Answer: Option).</li><li>SingleEq: Single-equation grade-school algebra word problems (# Samples: 508, Ave. words: 27.4, Answer: Number).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Commonsense Reasoning (2 datasets)</strong></summary>
+            <div>
+                <ul><li>CommonsenseQA (CSQA): Multiple-choice questions requiring different types of commonsense knowledge (# Samples: 1221, Ave. words: 27.8, Answer: Option).</li><li>StrategyQA: Questions requiring multi-step reasoning, steps inferred (# Samples: 2290, Ave. words: 9.6, Answer: Yes/No).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Symbolic Reasoning (2 datasets)</strong></summary>
+            <div>
+                <ul><li>Last Letter Concatenation: Questions requiring concatenation of last letters of words in a name (# Samples: 500, Ave. words: 15.0, Answer: String).</li><li>Coin Flip: Questions on coin state after flips (# Samples: 500, Ave. words: 37.0, Answer: Yes/No).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot &amp; Few-shot Baselines</strong></summary>
+            <div>
+                <ul><li>Comparison against three types of prompting baselines.</li></ul>
+                
+        <details>
+            <summary><strong>Zero-shot Baselines</strong></summary>
+            <div>
+                <ul><li>Zero-shot-CoT: Appends &#x27;Let’s think step by step&#x27; to prompt w/o demonstrations.</li><li>Zero-shot-PoT: Uses LLM (OpenAI Codex) to generate Python program; answer derived by executing program.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Few-shot Baselines (Manual Demonstrations)</strong></summary>
+            <div>
+                <ul><li>Manual-CoT: Creates hand-crafted examples as demonstrations.</li><li># Examples: 8 for MultiArith, GSM8K, AddSub, SingleEq, SVAMP; 4 for AQuA, Last Letters; 7 for CSQA; 6 for StrategyQA.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Few-shot Baselines (Automatic Demonstrations)</strong></summary>
+            <div>
+                <ul><li>Auto-CoT: Automatically selects examples by clustering for diversity.</li><li>Generates reasoning chains using Zero-shot-CoT to construct demonstrations.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Implementation Details</strong></summary>
+            <div>
+                <ul><li>Backbone LLM: Public GPT-3 (175B), specifically `text-davinci-003` engine.</li><li>Temperature: Set to 0 (argmax sampling) for greedy decoding.</li><li>Evaluation Metric: Accuracy reported across all methods/datasets.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experimental Results</strong></summary>
+            <div>
+                <ul><li>Proposed Zero-shot-PS+ prompting consistently outperforms Zero-shot-CoT across all reasoning problems/datasets.</li><li>Comparable to/exceeds Zero-shot-Program-of-Thought (PoT) Prompting.</li><li>Performance similar to 8-shot CoT prompting in arithmetic reasoning, despite being zero-shot.</li></ul>
+                
+        <details>
+            <summary><strong>Arithmetic Reasoning (Table 2)</strong></summary>
+            <div>
+                <ul><li>Accuracy comparison on six math reasoning datasets.</li></ul>
+                
+        <details>
+            <summary><strong>Zero-shot PS+ vs. Zero-shot CoT</strong></summary>
+            <div>
+                <ul><li>PS+ consistently outperforms CoT by a large margin.</li><li>↑ accuracy over CoT by ≥ 5% for all datasets except GSM8K (↑ 2.9%).</li><li>GSM8K exception: Potentially due to higher linguistic complexity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot PS vs. Zero-shot CoT</strong></summary>
+            <div>
+                <ul><li>PS also outperforms CoT across all datasets.</li><li>2.5% ↑ average accuracy than Zero-shot CoT.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>PS(+) vs. Zero-shot PoT</strong></summary>
+            <div>
+                <ul><li>PS+ outperforms PoT on 5/6 arithmetic datasets.</li><li>PS outperforms PoT on 3 arithmetic datasets.</li><li>Suggests: Adding detailed instructions effectively elicits higher-quality reasoning steps.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>PS+ vs. Few-shot Methods</strong></summary>
+            <div>
+                <ul><li>PS+ (76.7% avg accuracy) slightly ↓ Manual-CoT (77.6% avg).</li><li>PS+ ↑ Auto-CoT (75.9% avg).</li><li>Indicates: Zero-shot prompting can approach/outperform few-shot CoT, sparking new CoT development.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Commonsense Reasoning (Table 3)</strong></summary>
+            <div>
+                <ul><li>Accuracy on CommonsenseQA &amp; StrategyQA datasets.</li><li>Zero-shot PoT excluded (not designed for this problem).</li></ul>
+                
+        <details>
+            <summary><strong>Zero-shot PS+ vs. Zero-shot CoT</strong></summary>
+            <div>
+                <ul><li>PS+ consistently outperforms CoT.</li><li>CSQA: 71.9% (PS+) vs. 65.2% (CoT).</li><li>StrategyQA: 65.4% (PS+) vs. 63.8% (CoT).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot PS+ vs. Few-Shot-CoT (Manual)</strong></summary>
+            <div>
+                <ul><li>PS+ underperforms Few-Shot-CoT (Manual) on this problem.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Symbolic Reasoning (Table 4)</strong></summary>
+            <div>
+                <ul><li>Accuracy on Last Letters &amp; Coin Flip datasets.</li><li>Zero-shot PoT excluded.</li></ul>
+                
+        <details>
+            <summary><strong>Zero-shot PS+ vs. Manual-CoT</strong></summary>
+            <div>
+                <ul><li>Last Letters: PS+ (75.2%) outperforms Manual-CoT (70.6%).</li><li>Coin Flip: PS+ (99.6%) slightly worse than Manual-CoT (100.0%).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot PS+ vs. Zero-shot CoT</strong></summary>
+            <div>
+                <ul><li>PS+ outperforms CoT by a good margin.</li><li>Last Letters: 75.2% (PS+) vs. 64.8% (CoT).</li><li>Coin Flip: 99.6% (PS+) vs. 96.8% (CoT).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Analysis of Prompting Strategies</strong></summary>
+            <div>
+                <ul><li>Deeper insights into the impact of PS+ prompting on performance &amp; error types.</li><li>Evaluates self-consistency, prompt effectiveness, and error distribution.</li></ul>
+                
+        <details>
+            <summary><strong>Results w/ Self-Consistency (SC) (Figure 4)</strong></summary>
+            <div>
+                <ul><li>SC reduces randomness in LLM output by generating N reasoning results &amp; majority voting.</li><li>Experiments on GSM8K &amp; SVAMP datasets (temp=0.7, N=10).</li></ul>
+                
+        <details>
+            <summary><strong>PS+ w/ SC vs. PS+ w/o SC</strong></summary>
+            <div>
+                <ul><li>Substantially ↑ performance.</li><li>GSM8K: 73.7% (w/ SC) vs. 58.7% (w/o SC).</li><li>SVAMP: 84.4% (w/ SC) vs. 75.7% (w/o SC).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>PS+ w/ SC vs. Zero-shot CoT w/ SC</strong></summary>
+            <div>
+                <ul><li>PS+ w/ SC consistently outperforms Zero-shot CoT w/ SC.</li><li>GSM8K: 73.7% (PS+ SC) vs. 70.7% (CoT SC).</li><li>SVAMP: 84.4% (PS+ SC) vs. 81.7% (CoT SC).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Effect of Prompts (Table 5)</strong></summary>
+            <div>
+                <ul><li>Comparison of 6 different input prompts on GSM8K &amp; SVAMP.</li><li>Highlights importance of detailed instructions.</li></ul>
+                
+        <details>
+            <summary><strong>Prompt 3 (Variables/Numerals Only)</strong></summary>
+            <div>
+                <ul><li>Performs worse than Zero-shot-CoT (Prompt 1).</li><li>Reason: Lacks instructions for devising &amp; completing a plan.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Zero-shot-PS+ Prompts</strong></summary>
+            <div>
+                <ul><li>Perform well due to added instructions.</li><li>Instructions cover intermediate results calculation, plan design, &amp; implementation.</li><li>Conclusion: LLMs generate high-quality reasoning w/ detailed guiding instructions.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Error Analysis (Table 6)</strong></summary>
+            <div>
+                <ul><li>Qualitative evaluation of PS+ impact on calculation &amp; missing-step errors.</li><li>Sample: 100 random GSM8K problems w/ incorrect answers from each method.</li></ul>
+                
+        <details>
+            <summary><strong>Incorrect Answers Count</strong></summary>
+            <div>
+                <ul><li>Zero-shot-CoT: 46 problems.</li><li>Zero-shot-PS: 43 problems.</li><li>Zero-shot-PS+: 39 problems.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Error Type Distribution</strong></summary>
+            <div>
+                <ul><li>Zero-shot-CoT: 7% Calculation, 12% Missing, 27% Semantic.</li><li>Zero-shot-PS: 7% Calculation, 10% Missing, 26% Semantic.</li><li>Zero-shot-PS+: 5% Calculation, 7% Missing, 27% Semantic.</li><li>Conclusion: PS+ achieves least calculation &amp; missing-step errors; semantic errors comparable.</li><li>Plan-and-solve prompts effectively guide LLMs to generate clear/complete reasoning steps.</li><li>Additional PS+ instructions (&#x27;extract relevant variables&#x27;, &#x27;calculate intermediate results&#x27;) → ↓ calculation errors.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Correlation Analysis (Figure 5)</strong></summary>
+            <div>
+                <ul><li>Examines correlation between sub-parts of generated reasoning &amp; error types.</li><li>Analyzes existence of variable definition, reasoning plan, &amp; solution in generated text.</li><li>Study uses same 100 GSM8K problems as error analysis.</li></ul>
+                
+        <details>
+            <summary><strong>Key Correlations</strong></summary>
+            <div>
+                <ul><li>Variable definition existence: Negative correlation w/ calculation errors (-0.41) &amp; missing-reasoning-step errors (-0.02).</li><li>Plan existence: Negative correlation w/ calculation errors (-0.56) &amp; missing-reasoning-step errors (-0.83).</li><li>Solution existence: Positive correlation w/ calculation errors (0.76), missing-reasoning-step errors (0.7), &amp; semantic errors (0.24).</li><li>Conclusion: Zero-shot-PS+ prompt improves LLM performance by ↓ calculation &amp; missing-reasoning-step errors.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Presence of Plans in PS Predictions</strong></summary>
+            <div>
+                <ul><li>Random sample of 100 data examples examined for plan presence in PS predictions.</li><li>Observation: 90/100 predictions incorporated a plan.</li><li>Indicates: Emergence of strong planning abilities in recent LLMs (e.g., GPT-3.5, GPT-4).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>Zero-shot-CoT suffers from calculation, missing-reasoning-step, &amp; semantic understanding errors.</li><li>Plan-and-Solve (PS &amp; PS+) prompting strategies address these issues.</li><li>PS+ prompting outperforms previous zero-shot baselines &amp; performs on par w/ few-shot CoT on multiple arithmetic reasoning datasets.</li></ul>
+                
+        <details>
+            <summary><strong>Key Findings</strong></summary>
+            <div>
+                <ul><li>Zero-shot PS+ prompting generates high-quality reasoning processes vs. Zero-shot-CoT → PS prompts provide more detailed instructions.</li><li>Zero-shot PS+ prompting has potential to outperform manual Few-shot CoT prompting → sparks further development of new CoT approaches.</li><li>PS(+) prompting is a general idea, applicable to non-reasoning tasks.</li><li>Refining the plan is an interesting future work direction.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Limitations</strong></summary>
+            <div>
+                <ul><li>Two primary limitations identified in this work.</li></ul>
+                
+        <details>
+            <summary><strong>Prompt Design Effort</strong></summary>
+            <div>
+                <ul><li>Requires effort to design prompts that guide LLMs to generate correct reasoning steps.</li><li>GPT-3 models are sensitive to prompt expressions → careful design needed.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Semantic Misunderstanding Errors</strong></summary>
+            <div>
+                <ul><li>Proposed PS/PS+ prompting addresses calculation &amp; missing-reasoning-step errors.</li><li>Semantic misunderstanding errors still remain.</li><li>Future work: Explore addressing semantic misunderstanding errors via prompting, rather than LLM upgrades.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
