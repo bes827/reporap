@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Creating Your Personalized AI Fitness Coach with the GPT-4O Model and Streamlit</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Creating Your Personalized AI Fitness Coach with the GPT-4O Model and Streamlit</strong></summary>
+            <div>
+                <ul><li>Author: Tom Odhiambo</li><li>Publication Date: Nov 13, 2024</li><li>Platform: Medium</li><li>Focus: Developing an AI fitness coach using GPT-4O and Streamlit for personalized fitness guidance.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary AI model used for generating personalized fitness plans in this system?</li><li>2. Which framework acts as the &#x27;ingenious orchestrator&#x27; for multiple AI agents collaborating in this fitness coach?</li><li>3. What are the five core capabilities envisioned for this AI fitness coach?</li><li>4. Name at least three types of user data collected to create a personalized fitness profile.</li><li>5. Beyond routine generation, what two other critical functions do specialized agents perform to keep users engaged and on track?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>The Vision: Your AI Fitness Coach</strong></summary>
+            <div>
+                <ul><li>AI-powered coach capabilities:</li><li>1. Gather user info (age, weight, objectives).</li><li>2. Create tailored workout routines.</li><li>3. Solicit feedback for plan refinement.</li><li>4. Monitor progress continuously.</li><li>5. Inspire &amp; motivate w/ encouragement &amp; advice.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Technology: LangGraph</strong></summary>
+            <div>
+                <ul><li>Orchestrates multiple AI agents for task accomplishment.</li><li>Framework for efficient management, distribution, &amp; execution of tasks.</li><li>Enables dynamic workflows; each stage = distinct state in a graph.</li></ul>
+                
+        <details>
+            <summary><strong>LangGraph Concept</strong></summary>
+            <div>
+                <ul><li>Develops dynamic workflows for agents.</li><li>Each stage of application = distinct state w/in a graph.</li><li>States interact coherently, like interconnected rooms.</li><li>Each &#x27;room&#x27; executes specific function; LangGraph ensures seamless collaboration.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Fitness Routine Process via LangGraph</strong></summary>
+            <div>
+                <ul><li>Not just exercise listing; involves:</li><li>1. Comprehending personal goals &amp; physical limitations.</li><li>2. Constructing regimen tailored to body type, preferences, aspirations.</li><li>3. Modifying regimen based on feedback &amp; progress.</li><li>4. Keeping motivated by tracking performance metrics.</li><li>Each element = individual state; LangGraph manages separately w/ overall vision.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>AI Fitness Coach Architecture: Specialized Agents</strong></summary>
+            <div>
+                <ul><li>Network of agents, each w/ unique function.</li><li>Roles: gather user input, design fitness programs, evaluate feedback, monitor progress, motivate.</li><li>Agents work in harmony → engaging, responsive training experience.</li></ul>
+                
+        <details>
+            <summary><strong>User Input Agent</strong></summary>
+            <div>
+                <ul><li>Collects user data (age, weight, fitness goals).</li><li>Creates structured user profile (JSON) for easy processing.</li></ul>
+                
+        <details>
+            <summary><strong>Input Data Collected</strong></summary>
+            <div>
+                <ul><li>Age, Weight (kg), Height (cm), Gender (Male/Female/Other).</li><li>Primary Goal (Weight loss/Muscle gain/Endurance improvement/General fitness).</li><li>Target Timeframe (3 months/6 months/1 year).</li><li>Workout Type Preferences (Cardio/Strength training/Yoga/Pilates/Flexibility/HIIT).</li><li>Preferred Workout Duration (15-120 minutes, step 15).</li><li>Preferred Workout Days (Mon-Sun).</li><li>Current Activity Level (Sedentary/Lightly active/Moderately active/Highly active).</li><li>Health Conditions/Injuries (text area).</li><li>Dietary Preferences (Optional, text area).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Routine Creation Agent</strong></summary>
+            <div>
+                <ul><li>Develops customized fitness program post-user profile.</li><li>Designs plan w/ workout types, durations, intensity, rest days.</li></ul>
+                
+        <details>
+            <summary><strong>Plan Components</strong></summary>
+            <div>
+                <ul><li>Detailed weekly fitness plan includes:</li><li>1. Types of exercises.</li><li>2. Duration &amp; frequency of workouts.</li><li>3. Intensity levels.</li><li>4. Rest days.</li><li>5. Any dietary recommendations.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Feedback Collection Agent</strong></summary>
+            <div>
+                <ul><li>Users provide feedback post-workout.</li><li>AI coach modifies regimen based on input → aligns w/ individual requirements.</li></ul>
+                
+        <details>
+            <summary><strong>Feedback Process</strong></summary>
+            <div>
+                <ul><li>Analyzes user feedback on recent session.</li><li>Summarizes feedback &amp; suggests immediate adjustments to current plan.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Progress Monitoring Agent</strong></summary>
+            <div>
+                <ul><li>Reviews user&#x27;s progress.</li><li>Provides encouragement or suggestions based on data.</li></ul>
+                
+        <details>
+            <summary><strong>Monitoring Output</strong></summary>
+            <div>
+                <ul><li>Summary of user&#x27;s progress.</li><li>Offers encouragement.</li><li>Suggests new challenges or adjustments.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Motivational Agent</strong></summary>
+            <div>
+                <ul><li>Delivers uplifting messages to keep users focused &amp; committed.</li><li>Essential component for complete coaching experience.</li></ul>
+                
+        <details>
+            <summary><strong>Motivational Strategies</strong></summary>
+            <div>
+                <ul><li>Generates motivational messages.</li><li>Provides helpful tips.</li><li>Sends reminders to keep user engaged &amp; committed.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>User Interface: Streamlit</strong></summary>
+            <div>
+                <ul><li>Intuitive web interface for user interaction.</li><li>Allows users to enter data, generate plans, &amp; provide feedback.</li></ul>
+                
+        <details>
+            <summary><strong>UI Features</strong></summary>
+            <div>
+                <ul><li>Tabs for &#x27;Create Fitness Plan&#x27; &amp; &#x27;Update Fitness Plan&#x27;.</li><li>Input fields for all user data points (age, weight, goals, preferences, etc.).</li><li>Button to &#x27;Create Fitness Plan&#x27; → triggers AI generation.</li><li>Text area for &#x27;Provide feedback about your current plan&#x27;.</li><li>Button to &#x27;Update Plan&#x27; → triggers feedback analysis &amp; plan adjustment.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>AI-driven fitness coach creation w/ minimal code &amp; appropriate tools.</li><li>Combines language models (GPT-4O) w/ engaging interfaces (Streamlit).</li><li>Tailors fitness programs &amp; offers instantaneous feedback.</li><li>Supports goals: weight loss, muscle gain, endurance enhancement.</li><li>Helps maintain motivation &amp; ensures users stay on course.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
