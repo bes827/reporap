@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memento: Fine-tuning LLM Agents without Fine-tuning LLMs</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Memento: Fine-tuning LLM Agents without Fine-tuning LLMs</strong></summary>
+            <div>
+                <ul><li>This paper introduces Memento, a novel learning paradigm for Adaptive Large Language Model (LLM) agents.</li><li>It eliminates the need for fine-tuning the underlying LLMs, offering low-cost continual adaptation.</li><li>The method uses memory-based online reinforcement learning, formalized as a Memory-augmented Markov Decision Process (M-MDP).</li><li>Published on arXiv:2508.16153v2 [cs.LG] on 25 Aug 2025.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary advantage of Memento over traditional LLM agent fine-tuning methods for continuous adaptation?</li><li>2. Memento achieved what Pass@3 accuracy on the GAIA validation set, demonstrating its capability in long-horizon tool use?</li><li>3. How does Memento address the &#x27;swamping problem&#x27; often encountered in memory systems that continuously add cases?</li><li>4. In Memento&#x27;s architecture, which component is responsible for decomposing tasks and querying case memory for relevant experiences?</li><li>5. What is the observed effect of increasing the number of retrieved cases (K) beyond an optimal point on Memento&#x27;s performance on the DeepResearcher dataset?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction: LLM Agents &amp; Memento&#x27;s Innovation</strong></summary>
+            <div>
+                <ul><li>LLM agents: systems leveraging LLMs for autonomous complex tasks via interaction, reasoning, decision-making.</li><li>Proactive, iterative operation guided by explicit goals; access external tools, memory, environments.</li><li>Applications: deep research, tool-enhanced execution, code generation.</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of Current LLM Agent Paradigms</strong></summary>
+            <div>
+                <ul><li>1. Rigid frameworks: fixed workflows, hardcoded reasoning → good for narrow tasks, lack flexibility.</li><li>Static post-deployment: no online info incorporation, no adaptation to novel situations.</li><li>2. Computationally intensive: updating LLM via parameter tuning (supervised fine-tuning/RL).</li><li>High computational cost, inefficient for continuous adaptation/online learning, impractical for open-ended scenarios.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Memento&#x27;s Solution: Memory-Based Learning</strong></summary>
+            <div>
+                <ul><li>Addresses challenge: continual learning from changing environment w/o prohibitive LLM fine-tuning cost.</li><li>Inspired by human memory mechanisms: episodic traces, sleep-dependent consolidation, dopamine-driven credit assignment, case/analogy-based retrieval.</li><li>Leverages external memory to store past trajectories (successes/failures) → guides decision-making.</li></ul>
+                
+        <details>
+            <summary><strong>Case-Based Reasoning (CBR) Alignment</strong></summary>
+            <div>
+                <ul><li>Aligns w/ CBR principles: solving new problems by recalling analogous past situations.</li><li>Example: deep research agents use past web-based task success → solve never-seen, structurally similar tasks.</li><li>Offers efficient, generalizable, human-inspired pathway for continual learning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Memento Framework Overview</strong></summary>
+            <div>
+                <ul><li>Non-parametric, learn-on-the-fly framework for CBR.</li><li>Instantiated as planner–executor architecture, grounded in memory-based Markov Decision Process (MDP).</li><li>Components: (i) planner, (ii) tool-enabled executor, (iii) growing Case Bank (episodic memory).</li><li>Online CBR via storing rich episodic traces, not solely LLM&#x27;s fixed parametric memory.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Methodology: Memory-Based MDP with Case-Based Reasoning Policy</strong></summary>
+            <div>
+                <ul><li>Integrates LLM agents w/ CBR: solves new problems by learning from solutions to similar past problems.</li><li>Achieves continuous improvement w/o parameter fine-tuning by learning from experiences stored in memory.</li><li>Models sequential decision-making of CBR agents as a Memory-Based Markov Decision Process (M-MDP).</li></ul>
+                
+        <details>
+            <summary><strong>Definition: Memory-Based Markov Decision Process (M-MDP)</strong></summary>
+            <div>
+                <ul><li>Tuple: ⟨𝒮, 𝒜,𝒫, ℛ, γ,ℳ⟩.</li><li>𝒮: state space; 𝒜: action space; 𝒫: transition dynamics (𝒮 × 𝒜 → ∆(𝒮)); ℛ: reward function (𝒮 × 𝒜 → R).</li><li>γ ∈ [0, 1): discount factor; ℳ = (𝒮 × 𝒜 × R)∗: memory space.</li><li>Key difference from standard MDP: introduction of memory space as set of past experiences.</li></ul>
+                
+        <details>
+            <summary><strong>CBR Agent Behavior in M-MDP</strong></summary>
+            <div>
+                <ul><li>At timestep t: maintains case bank Mt = {ci}Nt i=1, each case ci = (si, ai,ri).</li><li>Given current state st: CBR agent first retrieves case ct ∼ µ(⋅ ∣ st, Mt).</li><li>Then reuses/adapts via LLM: at ∼ pLLM(⋅ ∣ st, ct).</li><li>Action at → receives reward rt = ℛ(st, at), observes next state st+1 ∼ 𝒫(⋅∣st, at).</li><li>Retains new case: Mt+1 = Mt ∪ {(st, at,rt)}.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Definition: Case-Based Reasoning Agent</strong></summary>
+            <div>
+                <ul><li>Agent makes decisions based on current state (s) + finite memory of past experiences (M).</li><li>µ(c ∣ s, M): case retrieval policy, probability distribution over M given s.</li><li>pLLM(a ∣ s, c): action likelihood of LLM conditioned on s and retrieved case c.</li><li>Overall policy π(a∣s, M) = ∑c∈M µ(c∣s, M)pLLM(a∣s, c).</li></ul>
+                
+        <details>
+            <summary><strong>Trajectory &amp; Probability</strong></summary>
+            <div>
+                <ul><li>Trajectory τ = {M0,s0, c0, a0,r0, M1,s1, c1, a1,r1,⋯}.</li><li>p(τ) = ∏T−1 t=0 µ(ct ∣ st, Mt) * pLLM(at ∣ st, ct) * I[rt = ℛ(st, at)] * I[Mt+1 = Mt ∪ (st, at,rt)] * 𝒫(st+1 ∣ st, at).</li><li>(1) Retrieve, (2) Reuse&amp;Revise, (4) Retain: agent behavior.</li><li>(3) Evaluation, (5) Transition: environment dynamics.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Soft Q-Learning for CBR Agent</strong></summary>
+            <div>
+                <ul><li>Optimizes CBR policy π by learning case retrieval policy µ, w/ pLLM fixed.</li><li>&#x27;Action&#x27; of µ: select case c = (s, a,r) from case bank M.</li><li>Applies maximum entropy RL framework → encourages diversity in retrieved cases.</li></ul>
+                
+        <details>
+            <summary><strong>Optimisation Objective &amp; Value Function</strong></summary>
+            <div>
+                <ul><li>Objective J(π) = Eτ∼p [∑T−1 t=0 [ℛ(st, at) + αℋ (µ (⋅∣st, Mt))]], where ℋ is entropy, α is entropy weight.</li><li>Value function Vπ(st, Mt) = ∑c∈Mt µ(c∣st, Mt)[Qπ(st, Mt, c) − α log µ(c∣st, Mt)].</li><li>Q value function Qπ(st, Mt, ct) = Ea∼pLLM(⋅∣st,ct),st+1∼𝒫(⋅∣st,at) [ℛ(st, at) + γVπ(st+1, Mt+1)].</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optimal Retrieval Policy &amp; TD Learning</strong></summary>
+            <div>
+                <ul><li>Optimal retrieval policy µ∗(c∣s, M) = exp(Q∗(s, M, c)/α) / ∑c′∈M exp(Q∗(s, M, c′)/α).</li><li>Learned via Temporal Difference (TD) learning in soft Q-learning:</li><li>Q(st, Mt, ct) ← Q(st, Mt, ct) + η[rt + γα log ∑c′∈Mt+1 exp (Q(st+1, Mt+1, ct+1)) − Q(st, Mt, ct)].</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Enhance Q-Learning Based on State Similarity</strong></summary>
+            <div>
+                <ul><li>Directly learning Q-function is challenging due to complex natural language state/case descriptions.</li><li>Approximates Q value via kernel-based estimation, following episodic control (EC) algorithms.</li><li>Maintains episodic memory 𝒟 = {(s, c, Q)}: state, retrieved case, Q value of each interaction.</li></ul>
+                
+        <details>
+            <summary><strong>Kernel-Based Q-Function Approximation</strong></summary>
+            <div>
+                <ul><li>QEC(s, M, c; θ) = ∑(s′,c′,Q′)∈𝒟c kθ(s,s′)Q′ / ∑(sˆ,cˆ,Qˆ )∈𝒟c kθ(s,sˆ).</li><li>𝒟c = {(si, ci, Qi) ∈ 𝒟 ∶ ci = c}: past interactions w/ same retrieved case c.</li><li>Learns Q function by optimizing kernel parameter θ via TD learning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Loss Function for Kernel Parameter Optimization</strong></summary>
+            <div>
+                <ul><li>ℒ(θ) = E(s,c,r,s′,M,M′) [ (QEC(s, M, c; θ) − [r + γα log ∑c′∈M′ exp(QEC(s′, M′, c′; ¯θ))])² ].</li><li>¯θ: target kernel network; s′: next state; M′ = M ∪ {c}: updated case bank.</li><li>Gradient ▽θℒ(θ) = 2 E(s,c,r,s′,M,M′) [ (fθ(s, c) − y) ∑i∈𝒟c wi(s, c; θ) (Qi − fθ(s, c)) ▽θ log kθ(s,si) ].</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Implementation: Deep Research Agent</strong></summary>
+            <div>
+                <ul><li>Memento implements stateful prompt engineering via M-MDP in Deep Research scenarios.</li><li>Agents solve complex, long-horizon tasks by iteratively interacting w/ environment, invoking tools, retrieving info, processing heterogeneous data.</li><li>Alternates between two core stages: Case-Based Planning and Tool-Based Execution.</li></ul>
+                
+        <details>
+            <summary><strong>Framework Architecture</strong></summary>
+            <div>
+                <ul><li>Follows plan-and-act paradigm: planner &amp; executor operate in alternating loop for task completion.</li><li>Integrates three memory modules for effective coordination: Case Memory, Subtask Memory, Tool Memory.</li></ul>
+                
+        <details>
+            <summary><strong>Planning Stage (Planner)</strong></summary>
+            <div>
+                <ul><li>Planner: LLM-driven CBR agent.</li><li>Receives task instruction → queries Case Memory for relevant case triplets (si, ai,ri)K i=1.</li><li>Case Memory: retrieves experiences from case bank via similarity-based retriever or online-updating Q-function.</li><li>Retrieved cases + current task instruction → prompt for LLM → generates plan for each subtask.</li><li>Subtask Memory: orchestrates planner-executor interaction, records subtasks &amp; execution outcomes.</li><li>After each iteration: planner assesses task completion using execution history.</li><li>If unfinished: replans based on updated context; else: returns final result, updates case memory w/ new experiences (only upon task completion).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Execution Stage (Executor)</strong></summary>
+            <div>
+                <ul><li>Executor: powered by general-purpose LLM, executes each subtask as autonomous episode via MCP protocol.</li><li>Supports rich reasoning &amp; flexible tool composition.</li><li>Consults Tool Memory (scoped per subtask) → determines appropriate tool invocation → updates results.</li><li>Reads pending subtasks from Subtask Memory, accesses relevant history from Tool Memory.</li><li>MCP: standardized, model-agnostic interface → flexible coordination w/ diverse external tools/data sources.</li><li>Unifies access under single protocol layer → seamless integration of dynamic reasoning &amp; compositional tool use.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Case Memory Management</strong></summary>
+            <div>
+                <ul><li>Online-growing case bank Mt, operated w/ Write and Read operations.</li><li>Available in non-parametric and parametric variants.</li></ul>
+                
+        <details>
+            <summary><strong>Memory Storage (Write Operation)</strong></summary>
+            <div>
+                <ul><li>Write(st, at,rt, Mt) = Mt+1 = Mt ∪ {(st, at,rt)}.</li><li>Appends each historical case (st, at,rt) to case bank Mt after each time step t.</li><li>State st encoded using frozen text encoder; action at &amp; reward rt preserved in original forms.</li><li>Continuously performed → case bank grows into comprehensive, transferable repository of experiences.</li><li>Accumulates successes/failures → enables retrospective analysis (avoid past mistakes) &amp; prospective guidance (successful trajectories).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Non-Parametric Memory Retrieval (ReadNP)</strong></summary>
+            <div>
+                <ul><li>ReadNP(st, Mt) = TopK(si,ai,ri) ∈ Mt sim ( enc(st), enc(si)).</li><li>Receives task instruction → retrieves relevant cases (mixture of successful/failed).</li><li>Mirrors human analogical learning: previously encountered outcomes shape decision-making.</li><li>Retrieves K nearest past cases by computing semantic similarity (cosine similarity) between current &amp; past states.</li><li>Prioritizes cases whose historical contexts align w/ current task.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Parametric Memory Retrieval (ReadP)</strong></summary>
+            <div>
+                <ul><li>ReadP(st, Mt) = TopKci ∈ Mt Q(st, ci; θ).</li><li>Empowers agent to selectively leverage high-utility cases for planning.</li><li>Write operation: concurrently updates Q-function online (vs. merely appending tuple).</li><li>CBR planner in Memento is single-step → TD target collapses to immediate reward → simplifies learning objective.</li><li>Trains parametric Q-function Q(s, c; θ) end-to-end, dispensing w/ kernel-based estimation.</li><li>Single-step Q-learning loss: ℒ(θ) = E(s,c,r) [(Q(s, c; θ) − r)²].</li><li>Binary reward (r ∈ {0, 1}) → replaces MSE w/ cross-entropy (CE) loss for stable signals.</li><li>Reformulated objective: ℒ(θ) = E(s,c,r) [− rlog Q(s, c; θ) − (1 − r) log (1 − Q(s, c; θ))].</li><li>Q represents probability p(r = 1∣s, c; θ).</li><li>Write refines Q-function; Read uses learned Q-function to compute retrieval policy distribution (via Eq. 7).</li><li>Applies TopK operator to select K cases w/ highest Q-values for planning references → reduces randomness, enhances interpretability.</li><li>Continually updating Q-function → captures latent patterns, approximates optimal retrieval policy µ∗.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Tool Usage</strong></summary>
+            <div>
+                <ul><li>Deep research tasks demand long execution sequences, multi-turn interactions, stringent atomic actions.</li><li>Requires agent to acquire, process, integrate, analyze external/heterogeneous information.</li><li>Memento designs a suite of tools accessible via MCP protocol.</li></ul>
+                
+        <details>
+            <summary><strong>External Information Acquisition</strong></summary>
+            <div>
+                <ul><li>Supports open-ended tasks requiring up-to-date external knowledge (e.g., GAIA, BrowseComp).</li><li>Search toolkit: integrates retrieval &amp; content acquisition.</li><li>Uses searxng (self-hosted metasearch engine) → aggregates results from Google, Bing, Duckduckgo, Brave.</li><li>Retrieved candidates re-ranked based on semantic similarity to query context → ensures relevance/precision.</li><li>Crawl4AI: fetches/parses full web content of selected results for deeper understanding.</li><li>Search tool: coarse filter (keyword matching); Crawler: fine-grained mechanism (extract detailed info).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Multimodal Heterogeneous Information Processing</strong></summary>
+            <div>
+                <ul><li>Supports downstream reasoning over heterogeneous data sources.</li><li>Versatile, fine-grained document processing toolkit: automatically extracts info from broad spectrum of file types/modalities.</li><li>Images: captioned via vision-language model (VLM).</li><li>Audio: transcribed via automated speech recognition.</li><li>PowerPoint: parsed slide-by-slide w/ embedded image descriptions.</li><li>Spreadsheets: converted to readable row-wise layout.</li><li>Archives: unpacked; plain text/code files: read directly; JSON/XML: parsed into structured objects.</li><li>Word documents: translated into Markdown; Videos: natural-language summaries from VLMs.</li><li>PDFs/unsupported formats: fallback extraction via Chunkr AI or plain-text parsing.</li><li>Unified interface for accessing/interpreting content across diverse file types/modalities → streamlines heterogeneous data handling.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Reasoning</strong></summary>
+            <div>
+                <ul><li>Integrates code execution &amp; mathematical computation for robust, automated analysis.</li><li>Code tool: sandboxed environment for writing, running, managing code within unified workspace.</li><li>Users: create files, execute shell/Python commands, inspect outputs within persistent task directory.</li><li>Python scripts validated against security whitelist (supports numpy, pandas, torch).</li><li>Workspace maintains state across steps → iterative development.</li><li>Crucial for data analysis, automation, dynamic code generation tasks.</li><li>Math tool: handles fundamental arithmetic operations.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experiments</strong></summary>
+            <div>
+                <ul><li>Investigates Deep Research agent, necessitating tool use &amp; multi-round interaction w/ real-world environments.</li><li>Evaluates general-purpose reasoning capabilities across four datasets.</li><li>Planner: GPT-4.1; Executor: o3 (GAIA), o4-mini (other datasets); Image: GPT-4o; Video: Gemini 2.5 Pro; Audio: Assembly AI.</li></ul>
+                
+        <details>
+            <summary><strong>Datasets</strong></summary>
+            <div>
+                <ul><li>1. GAIA (Mialon et al., 2023): long-horizon tool use &amp; planning.</li><li>450 non-trivial questions (300 test, 150 validation) w/ unambiguous answers.</li><li>Stratified into 3 difficulty levels: Level 1 (≈5 steps, single tool), Level 2 (5–10 steps, multiple tools), Level 3 (up to 50 steps, no tool restrictions).</li><li>2. DeepResearcher (Zheng et al., 2025): real-time web research.</li><li>Compiled from 7 open-domain QA datasets: NQ, TriviaQA, HotpotQA, 2Wiki, MusiQue, Bamboogle, PopQA.</li><li>Each contributes 512 examples (Bamboogle 125 high-quality samples).</li><li>3. SimpleQA (Wei et al., 2024): factual precision.</li><li>4,330 fact-seeking questions, focuses on factual accuracy.</li><li>4. Humanity’s Last Exam (HLE) (Phan et al., 2025): long-tail academic reasoning.</li><li>2,500 questions across diverse academic subjects, assesses limits of broad-domain reasoning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluation Metrics</strong></summary>
+            <div>
+                <ul><li>GAIA: Exact Match (EM) metric.</li><li>Prediction correct only if it exactly matches ground-truth after standard normalization.</li><li>Reflects percentage of perfectly matched answers.</li><li>DeepResearcher, SimpleQA, HLE: Macro-F1 score.</li><li>EM cannot accurately reflect LLM agent capabilities (overlooks expression diversity).</li><li>Partial Match (PM): indicates partial semantic match scores between LLM-generated &amp; gold answers.</li><li>GPT-4o-mini used as answer evaluator for PM scores.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Model Configurations</strong></summary>
+            <div>
+                <ul><li>Non-parametric CBR: encodes sentences w/ SimCSE, ranks candidates using cosine similarity.</li><li>Parametric CBR: initializes sentence representations w/ SimCSE, Q-function as two-layer MLP.</li><li>CBR planner&#x27;s state: only state, action, reward from final step of each trajectory written to memory → compact, informative case bank.</li><li>Offline Executor: static executor, no planner, case memory, external tools → reflects raw parametric knowledge from LLMs.</li><li>Online Executor: stripped-down baseline + live search/MCP tools → reflects value of real-time retrieval/tool execution.</li><li>Memento (w/o CBR): episodic memory disabled → measures gain from case-based reasoning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Experimental Results</strong></summary>
+            <div>
+                <ul><li>Memento achieves strong performance across benchmarks, demonstrating effectiveness of memory-based learning.</li></ul>
+                
+        <details>
+            <summary><strong>Deep Researcher Performance</strong></summary>
+            <div>
+                <ul><li>Tests real-time web research, evidence retrieval, cross-page synthesis, multi-hop reasoning.</li><li>Memento w/ MCP tools (search engine, browser) achieves average 66.6% F1 across 7 benchmarks.</li><li>Nearly doubles CoT + RAG baseline (37.7% F1).</li><li>Demonstrates real-time, online retrieval tools can rival/exceed carefully curated static databases.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>GAIA (Validation &amp; Test) Performance</strong></summary>
+            <div>
+                <ul><li>Assesses robustness in long-horizon planning, tool orchestration, execution.</li><li>Achieves top-1 ranking on validation set (87.88% Pass@3) and 4th place on test set (79.40%).</li><li>Outperforms most existing open-source agent frameworks (Manus, Aworld, OWL).</li><li>Validation: memory initialized from scratch, iteratively stores successful/failed trajectories over 3 iterations.</li><li>Test: performance based solely on case bank accumulated during validation.</li><li>Challenges remain for Level 3 tasks: require extended reasoning horizons, advanced tool coordination.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Humanity’s Last Exam (HLE) Performance</strong></summary>
+            <div>
+                <ul><li>Evaluates frontier of human knowledge &amp; complex reasoning in long-tail, specialized domains.</li><li>Memento (GPT-4.1 planner, o4-mini executor w/ tools) attains 24.4% PM.</li><li>Ranks second overall, within 0.92 points of GPT-5 (25.32%).</li><li>Outperforms Gemini-2.5-Pro (21.64%), o3-high (20.32%), o4-mini-high (18.08%).</li><li>Continual learning via CBR effectively transforms episodic experiences into reusable knowledge → complementary pathway to generalization in long-tail domains.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>SimpleQA Performance</strong></summary>
+            <div>
+                <ul><li>Evaluates reliability &amp; robustness against hallucination in single-hop factual QA.</li><li>Memento (GPT-4.1 planner, o4-mini executor w/ tool use) achieves highest accuracy: 95.0%.</li><li>Outperforms WebSailor (93.5%), WebDancer (90.5%), WebThinker (77.5%), DeepSeek-r1-React (72.2%).</li><li>Provides strong factual reliability, substantially mitigates hallucination on straightforward queries → new state-of-the-art.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ablation Studies</strong></summary>
+            <div>
+                <ul><li>Analyzes Memento&#x27;s hyper-parameter selection, component-wise contributions, learning curves, OOD performance, and token costs.</li></ul>
+                
+        <details>
+            <summary><strong>Hyper-parameter Selection: Number of Retrieved Cases (K)</strong></summary>
+            <div>
+                <ul><li>Increasing K raises computational cost, can introduce noise from irrelevant examples.</li><li>Varies K (0, 2, 4, 8, 16, 32) on DeepResearcher dataset.</li><li>Performance improves up to K = 4: highest F1 (64.5) and PM (78.5).</li><li>Plateaus or slightly declines for larger K.</li><li>Suggests CBR benefits from small, high-quality memory; unlike few-shot prompting, more examples don&#x27;t always help.</li><li>Careful case selection &amp; memory curation crucial for continual learning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Component-wise Analysis</strong></summary>
+            <div>
+                <ul><li>Consistent pattern across HLE, SimpleQA, DeepResearcher.</li><li>Offline Executor → Live Tools: generally ↓ hallucination, ↑ F1/PM (SimpleQA: +28.8 F1 / +63.3 PM, HLE: +4.8 / +7.1).</li><li>May hurt on open-domain data (DeepResearcher: −18.0 F1 / −2.1 PM) due to data contamination.</li><li>Introducing Planning (Memento w/o CBR): robust gains on each benchmark (HLE: +11.0 / +1.6, SimpleQA: +32.5 / +4.9, DeepResearcher: +29.1 / +11.5).</li><li>Explicit decomposition &amp; tool orchestration systematically improve execution.</li><li>Case-Based Reasoning (CBR): consistent, additive improvements (HLE: +4.5 / +7.0, SimpleQA: +3.7 / +5.3, DeepResearcher: +6.7 / +8.2).</li><li>HLE: w/o sufficient domain knowledge, neither tool usage nor planning alone reliably produces correct answers on long-tail tasks.</li><li>DeepResearcher: data contamination identified across benchmarks → drop in F1/PM when moving from offline to online executor w/o planning.</li><li>Internal knowledge within model plays important role, can outperform RAG.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Continual Learning Ability Boosted by Parametric &amp; Non-Parametric CBR</strong></summary>
+            <div>
+                <ul><li>Full Memento architecture consistently outperforms ablated versions across iterations, achieving higher accuracy.</li><li>Removing CBR → noticeable ↓ performance, highlighting effectiveness &amp; complementary benefits of both parametric &amp; non-parametric CBR.</li><li>Learning curve of accuracy on DeepResearcher dataset ↑ w/ increased iterations.</li><li>Memory-based approaches effectively enhance LLM agents w/o parameter updates.</li><li>Case Bank saturates quickly (~3k training data); rapid convergence w/ marginal gains after few iterations.</li><li>Diminishing returns w/ many more iterations.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Generalisation across Out-of-Distribution (OOD) Tasks</strong></summary>
+            <div>
+                <ul><li>Evaluates OOD generalization using MusiQue, Bamboogle, PopQA as OOD datasets.</li><li>NQ, TQ, HotpotQA, 2Wiki used for training.</li><li>Collects/stores trajectories from training datasets in case bank.</li><li>During inference: Memento retrieves 4 most relevant cases from case bank for each target query.</li><li>Achieves substantial improvements on all OOD benchmarks: absolute gains range from 4.7% to 9.6%.</li><li>Highlights effectiveness of case-based reasoning in enhancing generalization to unseen tasks.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Discussion and Analysis</strong></summary>
+            <div>
+                <ul><li>Further analyzes Memento&#x27;s efficiency &amp; operational behavior.</li><li>Examines average # of tool calls per task, tool-call statistics, impact of reasoning-oriented vs. general-purpose models.</li></ul>
+                
+        <details>
+            <summary><strong>Tool Call Statistics &amp; Token Costs</strong></summary>
+            <div>
+                <ul><li>Code, search, crawl tasks dominate across all difficulty levels, usage ↑ notably as difficulty ↑.</li><li>Overall tool usage grows w/ task complexity.</li><li>Most challenging problems increasingly rely on model’s internal reasoning to interpret/aggregate evidence from prior tool outputs, rather than simply calling more tools.</li><li>Highlights importance of effective integration between planning, memory, &amp; evidence aggregation for open-ended, long-horizon deep research tasks.</li></ul>
+                
+        <details>
+            <summary><strong>Token Costs on GAIA</strong></summary>
+            <div>
+                <ul><li>Average response tokens ↑ sharply w/ task difficulty.</li><li>Level 1: 26k input, 4.7k output tokens.</li><li>Level 2: 48k input, 6.9k output tokens.</li><li>Level 3: 121k input, 9.8k output tokens.</li><li>Primary computational burden in complex scenarios stems from integrating/analyzing multi-step tool outputs, not generating long responses.</li><li>Output tokens remain stable across task levels (final answers typically short).</li><li>System effectively controls generation length, avoids unnecessary verbosity.</li><li>Input context grows significantly w/ task difficulty due to complexity/unpredictability of real-world environments.</li><li>More detailed observations, plans, tool outputs, intermediate reasoning steps incorporated into input prompts → substantial ↑ input tokens.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Impact of Fast and Slow Think Mode</strong></summary>
+            <div>
+                <ul><li>Compares fast- vs. slow-thinking planners on overall system performance (pass@1) across task difficulties.</li><li>Pairing fast, non-deliberative GPT-4.1 planner w/ o3 executor yields highest average accuracy (70.9%).</li><li>Outperforms more deliberative o3 planner (63.03%) even w/ same executor.</li><li>GPT-4.1 achieves substantial 16.4% improvement over o3 when using o4-mini executor.</li><li>Qwen3-32B models confirm trend: fast planner consistently outperforms slow counterpart.</li></ul>
+                
+        <details>
+            <summary><strong>Reasons for Fast Planner Superiority</strong></summary>
+            <div>
+                <ul><li>Planner relying on o3 model often answers directly (skips plan generation) or produces overly verbose plans → misleads executor.</li><li>In complex multi-step reasoning: slow planner tends to compress solutions into single, convoluted chain of thought.</li><li>Fast planner effectively decomposes problems into manageable sub-tasks.</li><li>Overall: concise, structured planning → more effective downstream execution in modular LLM systems.</li><li>Overly deliberative planning: introduces unnecessary context/redundancy, induces role confusion → undermines two-stage architecture specialization.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>Introduces Memento: memory-based learning paradigm for LLM agents.</li><li>Enables online adaptation w/o updating model weights.</li><li>Formalizes deep research agents as memory-based MDP, implemented within planner–executor framework.</li></ul>
+                
+        <details>
+            <summary><strong>Key Mechanisms &amp; Performance</strong></summary>
+            <div>
+                <ul><li>Leverages episodic case bank: records/retrieves trajectories for continual policy improvement.</li><li>Achieves strong performance across GAIA, DeepResearcher, SimpleQA.</li><li>Ablation studies: both parametric &amp; non-parametric CBR critical for significant performance gains.</li><li>Small, curated memory yields optimal results.</li></ul>
+                
+        <details>
+            <summary><strong>Future Work</strong></summary>
+            <div>
+                <ul><li>Motivates future work on deep research tasks using memory-based MDP.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Appendix A: Derivation of the Optimal Policy in Soft-Q Learning</strong></summary>
+            <div>
+                <ul><li>Soft value function Vπ(s, M) = ∑c∈M µ(c∣s, M)[Qπ(s, M, c) − α log µ(c∣s, M)].</li><li>Q function Qπ(s, M, c) = Ea∼pLLM(⋅∣s,c),s′∼𝒫(⋅∣s,a) [r(s, a) + γVπ(s′, M′)].</li><li>Goal: derive optimal retrieval policy by expected value function JMaxEnt(π) = E(s,M)∼dπ [Vπ(s, M)].</li></ul>
+                
+        <details>
+            <summary><strong>Optimization Objective &amp; Lagrange Multiplier</strong></summary>
+            <div>
+                <ul><li>For simplicity: µc = µ(c∣s, M), Qc = Qπ(s, M, c).</li><li>Introduces Lagrange multiplier λ to constrain ∑c µc = 1.</li><li>Optimization objective 𝒥 ({µc}, λ) = ∑c µcQc − α∑c µc log µc − λ(∑c µc − 1).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Derivative &amp; Closed-Form Solution</strong></summary>
+            <div>
+                <ul><li>Derivative concerning µc: ∂𝒥 ({µc}, λ) / ∂µc = Qc − α(1 + log µc) − λ.</li><li>Setting derivative to 0 → µc = exp(Qc/α − (λ/α + 1)) = K exp(Qc/α).</li><li>Optimal retrieval policy µ∗c = exp(Q∗c /α) / ∑c′ exp(Q∗c′/α).</li><li>When α → 0, soft Q learning deteriorates to standard Q-learning.</li><li>Softmax form of policy used in previous LLM-based agents w/ LLM prior.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Appendix B: Analysis of Memory Mechanisms</strong></summary>
+            <div>
+                <ul><li>Compares several representative memory mechanisms, emphasizing Read &amp; Write operations.</li><li>Discusses tabular, parametric Q-value representations, and EC-based methods.</li></ul>
+                
+        <details>
+            <summary><strong>Memory Mechanism Comparison Table</strong></summary>
+            <div>
+                <ul><li>Summarizes details for: Tabular Q-learning, Deep Q-learning, Neural Episodic Control, Non-Parametric Memory (Sec. 4), Parametric Memory (Sec. 4).</li><li>Attributes: Kernel, Neural Q, Q-Function, Read, Write, Gradient.</li></ul>
+                
+        <details>
+            <summary><strong>Tabular Q-learning</strong></summary>
+            <div>
+                <ul><li>Q-Table: explicit table Q ∶ 𝒮 × 𝒜 → R.</li><li>Read: direct lookup of Q(s, M, a).</li><li>Write: updates entry for state–action pair after observing transition, follows standard TD learning (Eq. 8).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Deep Q-learning</strong></summary>
+            <div>
+                <ul><li>Learns Q function via neural network Q(s, M, a; θ).</li><li>Read: samples cases from retrieval policy µ following Eq. (7).</li><li>Write: updates parameters θ by minimizing TD error.</li><li>Loss ℒ(θ) = E(s,c,r,s′,M,M′) [ (Q(s, M, c; θ) − [r + γα log ∑c′∈M′ exp (Q (s′, M′, c′; ¯θ))])² ].</li><li>Gradient ▽θℒ(θ) = 2E(s,c,r,s′,M,M′) [(Q(s, M, c; θ) − y) ▽θ Q(s, M, c; θ)].</li><li>Parametric formulation enables generalization across states/actions via shared parameters θ.</li><li>Cost: optimization instability, large data demand, approximation errors propagate globally.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Neural Episodic Control (EC)-based Methods</strong></summary>
+            <div>
+                <ul><li>Value estimation regularized through learnable kernel (Eq. 9).</li><li>Read: samples cases from retrieval policy distribution (Eq. 7).</li><li>Write: stores (s, c, Q) into episodic memory, updates kernel parameters θ by Eq. (10) w/ gradient in Eq. (11).</li><li>Parameterizes kernel to regularize historical Q-values of matched states.</li><li>Ensures generalization across state space while retaining data-efficient adaptation &amp; improved stability vs. deep Q-learning.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Non-Parametric Memory in Memento (Sec. 4)</strong></summary>
+            <div>
+                <ul><li>CBR agent implemented as planner.</li><li>Write: appends each observed case (st, at,rt) into case bank (Eq. 12).</li><li>Read: retrieves most relevant experiences by cosine-similarity matching between current query embedding &amp; stored states, followed by TopK selection (Eq. 13).</li><li>Similarity-based retrieval (w/o further parameterization) is common in CBR, effective for reusing past experiences.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Parametric Memory in Memento (Sec. 4)</strong></summary>
+            <div>
+                <ul><li>Single-step nature of deep research setting permits fitting parametric Q-function directly.</li><li>Reduced state space ↓ data requirements.</li><li>Single-step case: temporal-difference bootstrap vanishes → learning objective reduces to Eq. (14).</li><li>Binary reward signal: replaces MSE objective w/ CE loss → avoids vanishing-gradient problem, provides stable training signals.</li><li>Final updating objective: binary classification loss (Eq. 15).</li><li>Gradient: ▽θℒ(θ) = E(s,c,r) [ (Q(s, c; θ) − r) / (Q(s, c; θ)(1 − Q(s, c; θ))) ▽θ Q(s, c; θ) ].</li><li>To stabilize case selection: applies TopK operator in parametric Read (Eq. 16) rather than sampling from retrieval policy µ.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
