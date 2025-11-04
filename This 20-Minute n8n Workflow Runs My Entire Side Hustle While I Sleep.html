@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>This 20-Minute n8n Workflow Runs My Entire Side Hustle While I Sleep</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>This 20-Minute n8n Workflow Runs My Entire Side Hustle While I Sleep</strong></summary>
+            <div>
+                <ul><li>Article on automating a side hustle using n8n.</li><li>Published on Medium by Snehal Singh.</li><li>Approx. 3 min read; published ~Aug 2, 2025.</li><li>Focus: Building passive systems for lead capture, replies, &amp; digital product delivery.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the primary no-code automation tool central to this workflow?</li><li>2. How much time did the author initially spend building this specific n8n workflow?</li><li>3. What are the two distinct user types (based on payment) that the Tally form submission differentiates?</li><li>4. Which platform is utilized for digital product delivery and payment verification within the workflow?</li><li>5. Beyond scaling, what is the ultimate goal automation helps achieve for a side hustle?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Core Concept: Passive Systems</strong></summary>
+            <div>
+                <ul><li>Traditional passive income often overlooks passive systems.</li><li>Author&#x27;s approach: Tiny automation built in 20 min w/ n8n.</li><li>Result: Leads, replies, &amp; digital product delivery while author sleeps.</li></ul>
+                
+        <details>
+            <summary><strong>Problem &amp; Solution</strong></summary>
+            <div>
+                <ul><li>Problem: Manual handling of DMs, link sending, product updates was &#x27;annoying&#x27;.</li><li>Solution: Automate everything using n8n + free tools.</li><li>Benefit: Workflow sells, author sleeps; ↑ efficiency, ↓ manual effort.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Initial Product &amp; Success</strong></summary>
+            <div>
+                <ul><li>Product: Notion template for content creators.</li><li>Price: $19.</li><li>Initial marketing: One post on X → unexpected sales.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Workflow Stack Overview</strong></summary>
+            <div>
+                <ul><li>Key tools integrated for automation.</li><li>No backend, no coding, no monthly SaaS bill (free tier usage).</li><li>Achieves full automation w/ minimal overhead.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Tools &amp; Functions</strong></summary>
+            <div>
+                <ul><li>Tally Form: Lead capture (free/premium users).</li><li>n8n: Automation brain; orchestrates entire workflow.</li><li>Gumroad: Digital product delivery; Stripe payment verification.</li><li>Gmail API: Sends personalized confirmation/product emails.</li><li>Google Sheets: Simple lead tracking; CRM for retargeting/feedback.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Optional Tool</strong></summary>
+            <div>
+                <ul><li>Notion: Manages content; can be used for optional lead tagging.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>The 20-Minute Workflow Steps</strong></summary>
+            <div>
+                <ul><li>Sequential steps defining the automation logic.</li><li>Designed for efficiency &amp; user experience.</li><li>Built in ≈20 minutes, runs autonomously.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Trigger</strong></summary>
+            <div>
+                <ul><li>User fills Tally form.</li><li>Purpose: Download free version / Buy premium template.</li><li>Action: Hits an n8n webhook, initiating workflow.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 2: Check Payment Status</strong></summary>
+            <div>
+                <ul><li>Conditional logic based on user action.</li><li>If free user: Email w/ free link sent.</li><li>If paid user: n8n checks Stripe payment via Gumroad webhook; once verified, thank-you email + product link sent.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 3: Add to CRM (Google Sheet)</strong></summary>
+            <div>
+                <ul><li>Every lead (free/paid) logged into Google Sheet.</li><li>Purpose: Retarget free users w/ discount; Get feedback from paid users; Spot buying patterns.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 4: Deliver Product</strong></summary>
+            <div>
+                <ul><li>Personalized email sent from author&#x27;s Gmail.</li><li>Content: User&#x27;s name, template access link, bonus Loom video for onboarding.</li><li>Effect: Feels human, but fully automated.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Effectiveness &amp; Benefits</strong></summary>
+            <div>
+                <ul><li>Workflow&#x27;s success factors &amp; advantages.</li><li>Achieved w/o sales funnel, team, or custom code.</li><li>Runs on free tier, maximizing cost-efficiency.</li></ul>
+                
+        <details>
+            <summary><strong>Key Success Factors</strong></summary>
+            <div>
+                <ul><li>Smart automation setup.</li><li>Delivers actual value to users.</li><li>Leverages internet for reach &amp; distribution.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Strategic Goal</strong></summary>
+            <div>
+                <ul><li>Automations multiply hustle, not replace it.</li><li>Primary goal: Buy back time for the entrepreneur.</li><li>Result: Side hustle operates while author sleeps.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Replication Guide</strong></summary>
+            <div>
+                <ul><li>Prompt for recreating the workflow in n8n.</li><li>Estimated build time: Under 30 minutes.</li><li>Once live, it functions autonomously.</li></ul>
+                
+        <details>
+            <summary><strong>Workflow Components</strong></summary>
+            <div>
+                <ul><li>Trigger: Webhook from Tally.</li><li>Condition: Check purchase status.</li><li>Action 1: Log to Google Sheet.</li><li>Action 2: Send Gmail (custom body).</li><li>Action 3 (optional): Tag in Notion DB.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
