@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>الفصل السادس: تشكيل وحدات جديدة</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>الفصل السادس: تشكيل وحدات جديدة</strong></summary>
+            <div>
+                <ul><li>هذا الفصل يوثق عملية إعادة بناء القوات المسلحة المصرية بعد هزيمة يونيو 1967 وحتى حرب أكتوبر 1973.</li><li>يركز على التحديات الكبرى في تجنيد وتدريب الضباط والجنود.</li><li>يستعرض استراتيجيات مبتكرة لإنشاء وحدات قتالية متخصصة مثل اللواء البرمائي ووحدات المهندسين.</li></ul>
+                
+        <details>
+            <summary><strong>اختبار المعرفة</strong></summary>
+            <div>
+                <ul><li>1. كم كان إجمالي عدد الضباط المطلوب إعدادهم خلال سنتين لسد النقص وتشكيل الوحدات الجديدة؟</li><li>2. ما هي المدة الزمنية التي استغرقتها عملية تدريب &#x27;ضابط الحرب&#x27;؟</li><li>3. كم كان عدد الشبان الذين يصلون لسن التجنيد سنوياً في مصر خلال تلك الفترة، وكم منهم كان يستوفي الحد الأدنى من المعايير؟</li><li>4. ما هي المهمة الرئيسية للواء البرمائي 130؟</li><li>5. كم عدد الثغرات التي كان على وحدات المهندسين فتحها في الساتر الترابي، وكم عدد الكباري الثقيلة التي كان يجب إنشاؤها لعبور القناة؟</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تحديات بناء القوات المسلحة</strong></summary>
+            <div>
+                <ul><li>عملية بناء القوات المسلحة استمرت بلا توقف منذ يونيو 1967 حتى أكتوبر 1973.</li><li>تجنيد وتدريب 290,000 رجل (30,000 ضابط و 260,000 رتبة أخرى) في ~سنتين: عمل شاق.</li><li>القوات المسلحة ↑ من 860,000 رجل (60,000 ضابط و 800,000 رتبة أخرى) إلى 1,150,000 رجل (90,000 ضابط و 1,060,000 رتبة أخرى) بحلول أكتوبر 1973.</li></ul>
+                
+        <details>
+            <summary><strong>مشكلة نقص الضباط</strong></summary>
+            <div>
+                <ul><li>نقص حاد في الضباط: 90-94% في الوحدات.</li><li>إجمالي النقص العام: ~10,000 ضابط.</li><li>احتياج الوحدات الجديدة: ~10,000 ضابط إضافي.</li><li>∴ إجمالي الاحتياج: 20,000 ضابط خلال سنتين.</li></ul>
+                
+        <details>
+            <summary><strong>طاقة الكليات العسكرية التقليدية</strong></summary>
+            <div>
+                <ul><li>أقصى طاقة تدريب: 2,000 ضابط/عام.</li><li>لحل المشكلة بالوسائل التقليدية: تحتاج ~10 سنوات (أو 11 سنة مع تعويض الخسائر).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تأثير نقص الضباط</strong></summary>
+            <div>
+                <ul><li>العجز في كوادر الضباط → تأثير خطير على كفاءة القوات المسلحة.</li><li>الضابط: قائد ومعلم للجنود؛ غيابه يؤثر على التعليم والقيادة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مشكلة تجنيد الجنود</strong></summary>
+            <div>
+                <ul><li>تجنيد ~500,000 شاب بين يونيو 1971 ويونيو 1973 لاستكمال الوحدات القائمة وإنشاء وحدات جديدة.</li><li>مصر (35 مليون نسمة) عاجزة عن إمداد القوات المسلحة بـ ~140,000 شاب سنوياً بالمستوى الثقافي والصحي المطلوب.</li></ul>
+                
+        <details>
+            <summary><strong>موارد التجنيد السنوية</strong></summary>
+            <div>
+                <ul><li>عدد الشبان الذين يصلون لسن التجنيد سنوياً: ~350,000.</li><li>عدد الشبان الذين يستوفون الحد الأدنى من المستويات الثقافية والصحية: ~100,000.</li><li>∴ احتياجاتنا الفعلية تفوق مواردنا بـ ~40,000 رجل سنوياً.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>حل مشكلة الضباط: &#x27;ضابط الحرب&#x27;</strong></summary>
+            <div>
+                <ul><li>قرار إنشاء كوادر جديدة من الضباط تسمى &#x27;ضابط حرب&#x27;.</li><li>الهدف: سد النقص السريع في الضباط وتحسين الضبط والربط.</li><li>الفوائد: حل مشكلة الضباط + حل مشكلة الضبط والربط مع الجنود المثقفين.</li></ul>
+                
+        <details>
+            <summary><strong>معايير الانتقاء والتدريب</strong></summary>
+            <div>
+                <ul><li>الانتقاء: من الجنود المثقفين أو ضباط الصف الحائزين على درجة جامعية.</li><li>التدريب: مركز لمدة 3-6 أشهر في تخصص واحد.</li><li>المستوى: عالٍ في التخصص، معلومات عامة محدودة عن التخصصات الأخرى (للسماح بالتعاون).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الهدف من &#x27;ضابط الحرب&#x27;</strong></summary>
+            <div>
+                <ul><li>تأهيل سريع للقيادة الفورية في الوحدات.</li><li>الخدمة مؤقتة: حتى انتهاء الحرب ثم التسريح.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>التحديات والاستجابة</strong></summary>
+            <div>
+                <ul><li>عدم تحمس الجنود المثقفين في البداية: فضلوا البقاء كجنود/ضباط صف؛ خشية الارتباط بالخدمة العسكرية.</li><li>الحل: لقاءات توعية، وعد بتسريح الضابط منهم في نفس موعد تسريح دفعته كجندي.</li><li>النتيجة: إقبال الكثيرين على التطوع بعد التوعية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الأعداد المحققة</strong></summary>
+            <div>
+                <ul><li>تأهيل وترقية 10,000 رجل من الجنود المثقفين إلى رتبة ملازم.</li><li>تأهيل 10,000 آخرين من خريجي الجامعات المجندين في 1971 و 1972.</li><li>∴ إجمالي &#x27;ضباط الحرب&#x27; قبل يونيو 1973: 20,000 ضابط.</li><li>بالإضافة إلى 5,000 ضابط عادي تم تدريبهم في الكليات العسكرية.</li><li>∴ إجمالي الضباط المؤهلين والمدربين خلال سنتين: 25,000 ضابط.</li><li>النتيجة قبل أكتوبر 1973: استكمال كوادر الضباط + فائض ~10-15% في كل تخصص لمواجهة الخسائر المحتملة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>حل مشكلة تجنيد الجنود</strong></summary>
+            <div>
+                <ul><li>مشكلة تجنيد الجنود أقل صعوبة من الضباط، لكنها ليست بسيطة.</li><li>الحاجة إلى ~500,000 شاب بين يونيو 1971 ويونيو 1973.</li></ul>
+                
+        <details>
+            <summary><strong>خفض المعايير</strong></summary>
+            <div>
+                <ul><li>اضطرار لقبول مستويات أقل ثقافياً وصحياً.</li><li>واجه معارضة شديدة من رجال الخدمات الطبية حول خفض مستوى اللياقة الطبية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تطوع المرأة</strong></summary>
+            <div>
+                <ul><li>محاولة فتح مجال التطوع للمرأة للانضمام للقوات المسلحة.</li><li>طرح الموضوع للنقاش في اجتماع شهري: أثار اهتمام الجميع، الغالبية العظمى ضد التوسع.</li><li>القرار النهائي: فتح باب التطوع للمرأة لوظائف السكرتارية فقط.</li><li>القيود: العمل في القواعد الخلفية، عدم الإرسال للمناطق الأمامية أو النائية.</li><li>الدفعة الأولى: استقبلت خلال 1972، تخرجت في نوفمبر 1972.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>إنشاء وحدات نوعية</strong></summary>
+            <div>
+                <ul><li>إضافة 25,000 ضابط و 260,000 رتبة أخرى مكنت من إنشاء مئات الوحدات خلال السنتين قبل أكتوبر 1973.</li><li>التركيز على الوحدات المرتبطة بخطة العبور ارتباطاً وثيقاً.</li></ul>
+                
+        <details>
+            <summary><strong>اللواء البرمائي 130</strong></summary>
+            <div>
+                <ul><li>بدء التفكير في إنشائه: أواخر 1971.</li><li>قرار الإنشاء: يناير 1972.</li><li>الغرض: دفعه في عمق العدو عبر البحيرات/البحر → شل مراكز قيادة العدو، تعطيل تقدم احتياطياته من العمق.</li><li>الميزة: يعبر البحيرات في &lt;1 ساعة (مقارنة بـ 6-8 ساعات للمعديات).</li></ul>
+                
+        <details>
+            <summary><strong>التكوين والتجهيز</strong></summary>
+            <div>
+                <ul><li>تشكيل على غرار الوحدات الخاصة.</li><li>التسليح: ~10 دبابات برمائية، ~200 مركبة برمائية لنقل المشاة الميكانيكية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>التوجيهات والتدريب</strong></summary>
+            <div>
+                <ul><li>توجيه رقم 15 (15 يونيو 1972): ينظم عمل اللواء وأسلوب عمل الكتائب البرمائية عبر المسطحات المائية.</li><li>بيان عملي: أغسطس 1972.</li><li>أول مشروع تدريبي ليلي: ليلة 20/21 أكتوبر 1972.</li><li>تدريبات مكثفة في 1973: المركبات تستطيع البقاء في الماء لمدة تصل إلى 6 ساعات متتالية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>المشروع التدريبي لاختبار الكفاءة (1/2 يوليو 1973)</strong></summary>
+            <div>
+                <ul><li>أكثر صعوبة من واجب العمليات الفعلي.</li><li>المهام: نزول كتائب اللواء ليلاً من مناطق تجمع قريبة من شاطئ البحر الأبيض، السباحة لمسافة 10 كم، الخروج للشاطئ عند نقاط وتوقيتات محددة.</li><li>التقدم في العمق: تدمير مواقع العدو، صد وعرقلة احتياطاته المتقدمة.</li></ul>
+                
+        <details>
+            <summary><strong>نتائج المشروع التدريبي</strong></summary>
+            <div>
+                <ul><li>نجاح إحدى الكتائب في تنفيذ مهمتها.</li><li>الكتيبة الأخرى: ضلت اتجاهها، وصلت بصعوبة لمكان غير محدد.</li><li>الخسائر: فقدان مركبتين و10 أفراد (إنقاذ 7، غرق 3).</li><li>الدروس المستفادة: اكتساب ثقة أكبر بالدبابات والمركبات، تعلم دروس جديدة رغم الخسائر.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>أداء اللواء في حرب أكتوبر 1973</strong></summary>
+            <div>
+                <ul><li>عبور البحيرات المرة يوم 6 أكتوبر 1973 في أقل من ساعة زمنية.</li><li>المعدات: 10 دبابات، 20 مركبة برمائية.</li><li>الخسائر: لا توجد خسائر في المعدات أو الرجال.</li><li>الذكرى: تذكر الشهداء الثلاثة الذين فقدوا في التدريب.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>وحدات المهندسين</strong></summary>
+            <div>
+                <ul><li>أولوية قصوى: عبور القناة عملية مهندسين بالدرجة الأولى.</li><li>النجاح في تشكيل وتدريب وحدات المهندسين: المفاجأة الكبرى في الحرب.</li><li>الاعتقاد العالمي (صديق وعدو): استحالة التغلب على مشكلات العبور.</li></ul>
+                
+        <details>
+            <summary><strong>المهام الرئيسية لوحدات المهندسين</strong></summary>
+            <div>
+                <ul><li>جميع المهام تتم تقريباً في وقت واحد، تحت نيران العدو وهجماته المتكررة.</li><li>1. فتح 70 ثغرة في الساتر الترابي (1500 متر مكعب لكل ثغرة).</li><li>2. إنشاء 10 كباري ثقيلة لعبور الدبابات والمدافع والمعدات الثقيلة.</li><li>3. إنشاء 5 كباري خفيفة (حمولة 4 أطنان) لتجنب نيران العدو وتخفيف الضغط على الكباري الرئيسية.</li><li>4. إنشاء 30 كوبري اقتحام لعبور المشاة.</li><li>5. تجهيز وتشغيل 155 معدية.</li><li>6. تشغيل 200 قارب مطاطي لعبور المشاة.</li></ul>
+                
+        <details>
+            <summary><strong>الجدول الزمني التقديري للمهام</strong></summary>
+            <div>
+                <ul><li>فتح الثغرات: 2-3 ساعات.</li><li>بدء عمل المعديات: فور إتمام فتح الثغرات.</li><li>تركيب الكباري: بعد ~ساعتين من بدء عمل المعديات.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>حجم الوحدات المشاركة</strong></summary>
+            <div>
+                <ul><li>عدد وحدات المهندسين التي ساهمت مباشرة في عملية العبور: ~55 كتيبة من مختلف التخصصات.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>شهادة العدو</strong></summary>
+            <div>
+                <ul><li>الجنرال الإسرائيلي اليعازر (ر.أ.ح.ق.م) في مذكراته: أشار إلى صعوبة عبور القناة.</li><li>وزير الحربية الإسرائيلي دايان: &#x27;لكي يعبر المصريون قناة السويس، يلزمهم سلاح المهندسين الأمريكي والسوفيتي مجتمعين لمساعدتهم في ذلك&#x27;.</li><li>هذه الشهادة: مصدر فخر واعتزاز، وتؤكد حجم المجهود المبذول لتحقيق المفاجأة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
