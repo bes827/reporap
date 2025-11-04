@@ -1,0 +1,585 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How to Set Up n8n (Self-Hosted) for Free — Lifetime Hosting on Oracle Cloud</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>How to Set Up n8n (Self-Hosted) for Free — Lifetime Hosting on Oracle Cloud</strong></summary>
+            <div>
+                <ul><li>A comprehensive guide for self-hosting n8n, a workflow automation tool, on Oracle Cloud&#x27;s free tier.</li><li>Focuses on step-by-step setup using Ubuntu 22.04.</li><li>Enables automation of various tasks via a drag-and-drop interface.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the default port n8n runs on before NGINX configuration?</li><li>2. Which tool is recommended to keep n8n running persistently, even after server reboots?</li><li>3. What command secures the SSH key by restricting its permissions?</li><li>4. Which service provides free SSL certificates for securing web traffic?</li><li>5. What is the recommended frequency for backing up n8n configurations?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Why n8n &amp; Oracle Cloud?</strong></summary>
+            <div>
+                <ul><li>n8n: powerful workflow automation tool → connects apps &amp; APIs.</li><li>Self-hosting: provides full control over data &amp; operations.</li><li>Oracle Cloud Free Tier: offers a virtual server w/o upfront cost, as per article.</li></ul>
+                
+        <details>
+            <summary><strong>Cost Clarification: &#x27;Free&#x27; Tier</strong></summary>
+            <div>
+                <ul><li>Article claims &#x27;free&#x27; hosting on Oracle Cloud&#x27;s free tier.</li><li>User comment suggests: smallest instance may cost ≈ $2/month.</li><li>Always Free tier may have specific limitations or configurations not fully &#x27;free&#x27; for all instances.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 1: Getting Your Server Ready</strong></summary>
+            <div>
+                <ul><li>Initial setup on Oracle Cloud: sign up &amp; instance creation.</li><li>Crucial for foundational server access &amp; security.</li></ul>
+                
+        <details>
+            <summary><strong>Oracle Cloud Account &amp; Instance</strong></summary>
+            <div>
+                <ul><li>Sign up @ oracle.com/cloud/free/.</li><li>Create Ubuntu 22.04 instance (virtual server).</li><li>Record public IP &amp; SSH key; essential for access.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Logging In via SSH</strong></summary>
+            <div>
+                <ul><li>Use terminal/PowerShell: `ssh -i ~/your-key-path/ssh-key-2025-07-03.key ubuntu@&lt;your-ip&gt;`.</li><li>Replace `~/your-key-path/ssh-key-2025-07-03.key` w/ actual key path.</li><li>Replace `&lt;your-ip&gt;` w/ server&#x27;s public IP (e.g., 80.225.122.46).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Securing SSH Key</strong></summary>
+            <div>
+                <ul><li>Command: `chmod 400 ~/Downloads/n8n-demo-key/ssh-key-2025-07-03.key`.</li><li>Purpose: Locks down key permissions → only owner can read it.</li><li>Benefit: Prevents unauthorized access to server.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Updating Ubuntu &amp; Installing Tools</strong></summary>
+            <div>
+                <ul><li>Command: `sudo apt update &amp;&amp; sudo apt upgrade -y &amp;&amp; sudo apt install -y build-essential curl wget git ufw ca-certificates gnupg lsb-release software-properties-common`.</li><li>`build-essential`: for compiling software.</li><li>`curl`, `wget`: for downloading files.</li><li>`git`: for version control.</li><li>`ufw`: Uncomplicated Firewall for security.</li><li>`ca-certificates`: for secure web connections.</li><li>`gnupg`: for encryption.</li><li>`lsb-release`: identifies Linux distribution.</li><li>`software-properties-common`: manages software sources.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 2: Setting Up Node.js</strong></summary>
+            <div>
+                <ul><li>n8n requires Node.js to run.</li><li>NVM (Node Version Manager) is used for flexible Node.js version management.</li></ul>
+                
+        <details>
+            <summary><strong>Installing NVM</strong></summary>
+            <div>
+                <ul><li>Command: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`.</li><li>Then: `export NVM_DIR=&quot;$HOME/.nvm&quot;`.</li><li>Finally: `source &quot;$NVM_DIR/nvm.sh&quot;` → makes NVM available in current terminal session.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Installing Node.js v22</strong></summary>
+            <div>
+                <ul><li>Command: `nvm install 22`.</li><li>Activate: `nvm use 22`.</li><li>Set as default: `nvm alias default 22`.</li><li>Verify: `node -v` → should show `v22.something`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 3: Running n8n with PM2</strong></summary>
+            <div>
+                <ul><li>PM2 ensures n8n runs continuously in the background.</li><li>Prevents n8n from stopping when terminal closes or server restarts.</li></ul>
+                
+        <details>
+            <summary><strong>Installing PM2</strong></summary>
+            <div>
+                <ul><li>Command: `npm install -g pm2`.</li><li>Verify: `pm2 -v`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Creating n8n Startup Script</strong></summary>
+            <div>
+                <ul><li>Install `nano` editor: `sudo apt install -y nano`.</li><li>Create script: `nano ~/start-n8n.sh`.</li><li>Script content:</li><li>`#!/bin/sh`</li><li>`# Loads env variables from ~/.n8n/.env`</li><li>`set -a`</li><li>`. ~/.n8n/.env`</li><li>`set +a`</li><li>`# Starts n8n`</li><li>`npx n8n`</li><li>Make executable: `chmod +x ~/start-n8n.sh`.</li><li>Purpose: Loads environment variables &amp; starts n8n.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Running n8n with PM2</strong></summary>
+            <div>
+                <ul><li>Start n8n: `pm2 start ~/start-n8n.sh --name n8n`.</li><li>Enable auto-run on boot: `pm2 startup`.</li><li>Save PM2 configuration: `pm2 save`.</li></ul>
+                
+        <details>
+            <summary><strong>Key PM2 Commands</strong></summary>
+            <div>
+                <ul><li>`pm2 start &lt;app&gt;`: Starts an application.</li><li>`pm2 stop &lt;app&gt;`: Pauses an application.</li><li>`pm2 restart &lt;app&gt;`: Restarts an application.</li><li>`pm2 status`: Shows status of all running applications.</li><li>`pm2 save`: Saves current process list for automatic restart on boot.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 4: Adding NGINX</strong></summary>
+            <div>
+                <ul><li>NGINX acts as a reverse proxy.</li><li>Handles web traffic &amp; forwards it to n8n running on port 5678.</li><li>Provides a cleaner access point for n8n.</li></ul>
+                
+        <details>
+            <summary><strong>Installing NGINX</strong></summary>
+            <div>
+                <ul><li>Command: `sudo apt update &amp;&amp; sudo apt install -y nginx`.</li><li>Enable NGINX to start on boot: `sudo systemctl enable nginx`.</li><li>Start NGINX service: `sudo systemctl start nginx`.</li><li>Verify status: `sudo systemctl status nginx`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Configuring NGINX for n8n</strong></summary>
+            <div>
+                <ul><li>Create config file: `sudo nano /etc/nginx/sites-available/n8n`.</li><li>Add server block configuration:</li><li>`server {`</li><li>`    listen 80;`</li><li>`    server_name your-domain.com;  # Use your domain or IP`</li><li>`    location / {`</li><li>`        proxy_pass http://localhost:5678;`</li><li>`        proxy_http_version 1.1;`</li><li>`        proxy_set_header Upgrade $http_upgrade;`</li><li>`        proxy_set_header Connection &quot;upgrade&quot;;`</li><li>`        proxy_set_header Host $host;`</li><li>`        proxy_set_header X-Real-IP $remote_addr;`</li><li>`        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`</li><li>`        proxy_set_header X-Forwarded-Proto $scheme;`</li><li>`        proxy_buffering off;`</li><li>`        proxy_cache off;`</li><li>`        chunked_transfer_encoding off;`</li><li>`    }`</li><li>`}`</li><li>Replace `your-domain.com` w/ actual domain or server IP.</li><li>Link config to `sites-enabled`: `sudo ln -s /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/`.</li><li>Test NGINX config: `sudo nginx -t`.</li><li>Reload NGINX: `sudo systemctl reload nginx`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 5: Locking It Down with SSL</strong></summary>
+            <div>
+                <ul><li>Secures communication w/ HTTPS.</li><li>Uses Certbot to obtain &amp; manage free SSL certificates from Let&#x27;s Encrypt.</li></ul>
+                
+        <details>
+            <summary><strong>Installing Certbot</strong></summary>
+            <div>
+                <ul><li>Command: `sudo apt install -y certbot python3-certbot-nginx`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Obtaining SSL Certificate</strong></summary>
+            <div>
+                <ul><li>Command: `sudo certbot --nginx -d your-domain.com`.</li><li>Replace `your-domain.com` w/ your actual domain.</li><li>Follow prompts to complete setup.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Auto-Renewal of Certificate</strong></summary>
+            <div>
+                <ul><li>Command: `sudo systemctl enable certbot.timer`.</li><li>Purpose: Automates SSL certificate renewals.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Configuring Server Firewall (iptables)</strong></summary>
+            <div>
+                <ul><li>Edit iptables rules: `sudo nano /etc/iptables/rules.v4`.</li><li>Define rules to restrict access (e.g., allow specific IPs for SSH).</li><li>Apply/restore rules: `sudo iptables-restore &lt; /etc/iptables/rules.v4`.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 6: Keeping Things Smooth</strong></summary>
+            <div>
+                <ul><li>Ongoing maintenance &amp; troubleshooting tips.</li><li>Ensures n8n remains secure, functional, &amp; up-to-date.</li></ul>
+                
+        <details>
+            <summary><strong>Environment Variables (.env file)</strong></summary>
+            <div>
+                <ul><li>Create/edit file: `~/.n8n/.env`.</li><li>Add variables:</li><li>`N8N_BASIC_AUTH_ACTIVE=true`</li><li>`N8N_BASIC_AUTH_USER=yourusername`</li><li>`N8N_BASIC_AUTH_PASSWORD=yourpassword`</li><li>`WEBHOOK_TUNNEL_URL=https://your-domain.com/`</li><li>Secure file: `chmod 600 ~/.n8n/.env` → restricts access to owner.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Checking Logs</strong></summary>
+            <div>
+                <ul><li>Command: `pm2 logs n8n`.</li><li>Purpose: Troubleshoot n8n issues.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Firewall Configuration (UFW)</strong></summary>
+            <div>
+                <ul><li>Allow SSH: `sudo ufw allow 22`.</li><li>Allow HTTP: `sudo ufw allow 80`.</li><li>Allow HTTPS: `sudo ufw allow 443`.</li><li>Enable UFW: `sudo ufw enable`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Backups Strategy</strong></summary>
+            <div>
+                <ul><li>n8n configs: Weekly backup to cloud storage.</li><li>.env file: Monthly backup to encrypted drive.</li><li>PM2 list: Monthly `pm2 save` + Git.</li><li>Scripts: After changes, commit to Git repo.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Updates</strong></summary>
+            <div>
+                <ul><li>Regularly check for updates to n8n, Node.js, PM2, &amp; NGINX.</li><li>Benefit: Prevents glitches &amp; ensures security.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Fun Stuff to Do with n8n</strong></summary>
+            <div>
+                <ul><li>Highlights practical applications &amp; benefits of n8n automation.</li></ul>
+                
+        <details>
+            <summary><strong>Examples of n8n Use Cases</strong></summary>
+            <div>
+                <ul><li>Auto-posting to social media (Twitter, LinkedIn) → saves hours.</li><li>Pulling data for reports → eliminates manual work.</li><li>Triggering actions based on email inbox events.</li><li>Integrating w/ AI tools for task automation.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>If Things Go Wrong (Troubleshooting)</strong></summary>
+            <div>
+                <ul><li>Common issues &amp; their solutions.</li></ul>
+                
+        <details>
+            <summary><strong>n8n Not Working</strong></summary>
+            <div>
+                <ul><li>Check logs: `pm2 logs n8n`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Domain Issues</strong></summary>
+            <div>
+                <ul><li>Verify domain points to server IP.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>NGINX Errors</strong></summary>
+            <div>
+                <ul><li>Test NGINX config: `sudo nginx -t`.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Firewall Blocking</strong></summary>
+            <div>
+                <ul><li>Check UFW: ensure ports 22, 80, 443 are allowed.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
