@@ -1,0 +1,489 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>إنتشاء خطوط جديدة للقيادة والسيطرة</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>إنتشاء خطوط جديدة للقيادة والسيطرة</strong></summary>
+            <div>
+                <ul><li>اسم المقال: إنتشاء خطوط جديدة للقيادة والسيطرة</li><li>المصدر: مذكرات أو تحليل استراتيجي لقائد عسكري رفيع المستوى</li><li>المؤلف: رئيس أركان حرب القوات المسلحة المصرية (الرئيس السابق)</li><li>الفترة الزمنية: قبل وأثناء حرب أكتوبر 1973</li></ul>
+                
+        <details>
+            <summary><strong>اختبار المعرفة</strong></summary>
+            <div>
+                <ul><li>1. ما هو العدد التقريبي للقوات المسلحة المصرية (الجيش العامل والاحتياط) قبل حرب أكتوبر 1973؟</li><li>2. ما هي النسبة المئوية التقريبية للأفراد الذين لا ينخرطون ضمن الوحدات الميدانية في القوات المسلحة المصرية قبل حرب أكتوبر 1973؟</li><li>3. كم عدد القيادات الرئيسية التي تم تجميع القوات المسلحة تحتها لتسهيل السيطرة؟</li><li>4. ما هو اسم أول توجيه صدر خلال حرب أكتوبر 1973، ومتى صدر؟</li><li>5. كم عدد الكتيبات الصغيرة التي صدرت قبل حرب أكتوبر 1973 لمساعدة الجنود والضباط الأصاغر؟</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تحديات القيادة والسيطرة على قوة عسكرية ضخمة</strong></summary>
+            <div>
+                <ul><li>السيطرة على قوات مسلحة ضخمة (≈ 1.2 مليون ضابط وجندي) عمل بالغ الصعوبة.</li><li>نسبة عالية من الأفراد (8.3%) لا ينخرطون بوحدات ميدانية، وهي نسبة ↑ مقارنة بالجيوش الأجنبية.</li><li>هذا الوضع اضطراري ← عاملين رئيسيين.</li></ul>
+                
+        <details>
+            <summary><strong>حجم وتكوين القوات المسلحة</strong></summary>
+            <div>
+                <ul><li>عند تولي المنصب: ≈ 860,000 فرد.</li><li>قبل حرب أكتوبر 73: الجيش العامل بلغ 1,050,000 فرد.</li><li>+ 150,000 مسرحين تم تنظيم استدعائهم ← إجمالي 1,200,000 ضابط وجندي.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>أسباب ارتفاع نسبة غير الميدانيين</strong></summary>
+            <div>
+                <ul><li>↑ تفوق جوي للعدو الساحق → إمكانية توجيه جماعات منقولة جواً لتدمير أهداف حيوية متناثرة.</li><li>البنية التحتية والأهداف الحيوية بمصر (مئات الكباري، خطوط أنابيب المياه/البترول، خزانات، محطات ضخ/توليد كهرباء) : أهداف مثالية للتخريب.</li><li>↑ التوسع المستمر بحجم القوات المسلحة → ↑ طاقة المنشآت التعليمية لتلبية مطالب تدريب الكوادر.</li><li>يتطلب ذلك ↑ تدعيم المنشآت بضباط الصف المعلمين والإداريين لرفع مستوى كفاءتها.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>هيكل هيئة أركان الحرب العامة (ه.أ.ح.ع)</strong></summary>
+            <div>
+                <ul><li>جهاز مركب ومعقد للغاية.</li><li>يضم ≈ 500 ضابط؛ 10,000 من الرتب الأخرى.</li><li>على قمته: رئيس أركان حرب القوات المسلحة (ر.أ.ح.ق.م.م).</li></ul>
+                
+        <details>
+            <summary><strong>القيادة المباشرة</strong></summary>
+            <div>
+                <ul><li>تحت إمرة (ر.أ.ح.ق.م.م) المباشرة: 15 ضابطاً برتبة لواء.</li><li>كل منهم على قمة فرع / تخصص / إدارة لمعاونة (ر.أ.ح.ق.م.م) في السيطرة على القوات.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القيادات الرئيسية المجمعة</strong></summary>
+            <div>
+                <ul><li>لتسهيل السيطرة على القوات ذات المليون جندي، تم تجميعها تحت #15 قيادة رئيسية:</li><li>البحرية؛ الطيران؛ الدفاع الجوي؛ الجيش الثاني؛ الجيش الثالث؛ قوات المظلات؛ قوات الصاعقة؛ منطقة البحر الأحمر؛ المنطقة الشمالية؛ المنطقة الغربية؛ المنطقة المركزية؛ المنطقة الوسطى؛ المنطقة الجنوبية؛ قطاع بور سعيد.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>فلسفة القيادة وفجوة الاتصال</strong></summary>
+            <div>
+                <ul><li>الاعتماد على الاتصال المباشر مع المرؤوسين، لا الاكتفاء بتقارير المستويات العليا.</li><li>التحقق من التقارير عبر الاتصال المباشر مع المستويات الصغرى.</li><li>تحدي الحفاظ على هذا الرباط التاريخي مع الجنود في ظل حجم القوات الكبير.</li></ul>
+                
+        <details>
+            <summary><strong>أسلوب القيادة الشخصي</strong></summary>
+            <div>
+                <ul><li>لم أكن من القادة الذين يعتمدون كلياً على تقارير المرؤوسين المباشرين.</li><li>كنت أستمع للتقارير + أكمل وأتحقق منها بالاتصال المباشر مع المستويات الصغرى.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>خبرة الاتصال المباشر السابقة</strong></summary>
+            <div>
+                <ul><li>قائد كتيبة مظلات: زيارة الضباط والجنود والتحدث معهم يومياً.</li><li>قائد لواء مشاة: زيارة الوحدات الصغرى مرة أسبوعياً على الأقل.</li><li>قائد القوات الخاصة (مظلات وصاعقة): زيارة كل وحدة فرعية مرة أسبوعياً تقريباً.</li><li>قائد منطقة البحر الأحمر العسكرية (واجهة ≈ 1000 كم): زيارة جميع الأفراد مرة شهرياً تقريباً.</li><li>الهدف: لمس القدرات الحقيقية؛ معالجة نقاط الضعف؛ غرس الأفكار والتعليمات.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>معضلة الاتصال في القيادة العليا</strong></summary>
+            <div>
+                <ul><li>زيارة جميع الوحدات كـ (ر.أ.ح.ق.م.م) أمر مستحيل.</li><li>الاعتماد على سلسلة القيادة التقليدية → التقارير لا تنقل نبض الجنود وأفكارهم وقدراتهم.</li><li>لا ضمان لاستقبال الجنود للتعليمات بالحماس المطلوب.</li><li>#7 قيادات تفصل بين (ر.أ.ح.ق.م.م) وكل جندي مقاتل.</li><li>احتمال إهمال / خطأ إحدى القيادات السبع ← عدم ضمان تنفيذ التعليمات بالأسلوب المرغوب.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>آليات الاتصال المباشر الجديدة</strong></summary>
+            <div>
+                <ul><li>للتغلب على مشكلة الاتصال، تم إدخال أساليب جديدة لخلق اتصال مباشر مع الضباط والجنود.</li><li>هذه الأساليب تتناسب مع ظروف القوات المسلحة وحجمها.</li></ul>
+                
+        <details>
+            <summary><strong>المؤتمرات الشهرية للقيادة</strong></summary>
+            <div>
+                <ul><li>الوسيلة الأولى لخلق اتصال مباشر مع مستويين من القيادة.</li><li>عقد مؤتمر شهري برئاسة (ر.أ.ح.ق.م.م) مهما كانت الظروف والمشاغل ← قناعة بضرورته وفائدته الكبيرة.</li></ul>
+                
+        <details>
+            <summary><strong>تفاصيل المؤتمر</strong></summary>
+            <div>
+                <ul><li>الحاضرون: جميع المساعدين (#40 ضابط لواء)؛ جميع القادة الرئيسيين (#15 قائد)؛ ومع كل منهم قادته المرؤوسون مباشرة (مثال: قائد الجيش + قادة الفرق).</li><li>عدد الحاضرين: يتراوح بين #50 و #100 قائد.</li><li>الجدول: مناقشة كافة المشاكل القائمة؛ غداء خفيف معاً بمبنى القيادة العامة.</li><li>آخر مؤتمر قبل حرب أكتوبر 73: المؤتمر #71 بتاريخ 21 سبتمبر 73 (قبل الحرب بأسبوعين).</li><li>يوجد تسجيل كامل لكل المؤتمرات: يشمل المواضيع والقرارات المتخذة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>معالجة أزمة الثقة بين الأركان والميدان</strong></summary>
+            <div>
+                <ul><li>خبرة سابقة: وجود أزمة ثقة بين الضباط الميدانيين وضباط أركان الحرب بالقيادات العليا.</li><li>اتهامات الميدانيين للأركان: بيروقراطية؛ عدم واقعية؛ فرض سلطات بتعليمات سخيفة/غير قابلة للتنفيذ.</li><li>اتهامات الأركان للميدانيين: إسراف وتبذير؛ عدم مراعاة التعليمات الفنية/الإدارية في استخدام المعدات → ↓ كفاءتها وصلاحيتها.</li><li>واجب (ر.أ.ح.ق.م.م): خلق جو من الثقة بين المجموعتين لتعاون يخدم صالح القوات المسلحة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>آلية حل المشكلات وتعزيز التعاون</strong></summary>
+            <div>
+                <ul><li>أسلوب ديمقراطي: أي قائد/مدير يعرض مشكلته؛ يناقش جوانبها؛ يدعو الطرف الآخر للرد؛ يشارك الحاضرون بالرأي؛ يتخذ القرار بعد بحث مستفيض.</li><li>النتائج: كل جانب أدرك مبالغته في عيوب الآخر.</li><li>القادة الميدانيون: ↑ إدراك لأهمية القيود المفروضة عليهم.</li><li>ضباط أركان الحرب والمديرون: ↑ إلمام وتجاوب مع مطالب القادة الميدانيين.</li><li>اللقاءات والغداء المشترك والأحاديث غير الرسمية: خلقت جواً من الصداقة → إذابة الجليد بين الطرفين.</li><li>حل معظم المشكلات؛ المشكلات المعقدة ← تشكيل لجنة مشتركة لدراستها وعرض نتائجها بالمؤتمر التالي.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>التوجيهات المكتوبة</strong></summary>
+            <div>
+                <ul><li>الوسيلة الثانية: خلق اتصال مباشر مع #3 مستويات قيادية إضافية (تصل إلى مستوى قائد السرية).</li><li>ليست دورية أو تقليدية؛ لا يكتبها متخصص.</li><li>أكتبها بنفسي طبقاً للظروف والأحداث؛ كل توجيه ← وراءه قصة / حادث / أخطاء لا أريد تكرارها.</li></ul>
+                
+        <details>
+            <summary><strong>خصائص التوجيهات ومحتواها</strong></summary>
+            <div>
+                <ul><li>لا تكتفي بالقول &#x27;هذا خطأ&#x27;؛ بل تحلل أسباب الخطأ وتعلم الآخرين كيفية التصرف.</li><li>تضع أفكاري وبصماتي في عقول رجال القوات المسلحة بكلمات علمية رصينة من ضابط مجرب.</li><li>الهدف: أن يكون الأشبال أفضل منه في حمل راية الحرب والحرية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تأثير التوجيهات واستقبالها</strong></summary>
+            <div>
+                <ul><li>أثناء زياراتي للقوات: أسأل الضباط والجنود عما ورد في توجيهاتي.</li><li>النتيجة: الضباط الأصاغر والجنود ارتبطوا بي فكرياً؛ نفذوها بدقة وحماس.</li><li>مثال: يوم 8 أكتوبر 73 شرق القناة، الجنود يهتفون &#x27;عاش التوجيه رقم 41!&#x27; و &#x27;لقد اتبعنا تعليماتك في التوجيه رقم 41 بالحرف الواحد!&#x27;.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>إحصائيات وأمثلة على التوجيهات</strong></summary>
+            <div>
+                <ul><li>العدد: #48 توجيهاً صدرت بين يوليو 1970 وسبتمبر 1973.</li><li>توجيهات الحرب: أولها توجيه #51 &#x27;خبرة الحرب في قتال المدرعات&#x27; صدر 11 أكتوبر (بعد خسارة #150 دبابة في اليوم السابق).</li><li>آخر توجيه قبل العزل: توجيه #70 صدر 30 نوفمبر 73.</li><li>الفائدة: ↑ تثقيف وتعليم القادة الأصاغر والجنود؛ معالجة التكتيكات الصغرى (التي كانت من نقاط الضعف الرئيسية).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الكتيبات الصغيرة</strong></summary>
+            <div>
+                <ul><li>الوسيلة الثالثة: الوصول إلى الجندي وضابط الصف وقائد الفصيلة (المستويات الأدنى).</li><li>قائد السرية هو المعلم الأول، لكن في قواتنا (مليون رجل) ← #10,000+ قائد سرية.</li><li>لا يمكن ضمان كفاءة جميع هؤلاء القادة والمعلمين مع التوسع السريع.</li><li>أي ضعف/تقصير من قائد السرية → ينعكس مباشرة على الجنود (قائد جيد → وحدة جيدة؛ قائد سيء → وحدة سيئة).</li></ul>
+                
+        <details>
+            <summary><strong>هدف الكتيبات ومحتواها</strong></summary>
+            <div>
+                <ul><li>مساعدة قائد السرية في مهمته.</li><li>تعالج أموراً تخص الجندي بصفة مباشرة.</li><li>العدد: #8 كتيبات صدرت (6 قبل الحرب؛ 2 بعد وقف إطلاق النار).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قائمة الكتيبات</strong></summary>
+            <div>
+                <ul><li>الكتيبات الستة الأولى (قبل الحرب):</li><li>1. دليل الجندي</li><li>2. دليل السائق</li><li>3. دليل نقاط المراقبة الجوية</li><li>4. التقاليد العسكرية</li><li>5. دليل التائهين في الصحراء</li><li>6. عقيدتنا الدينية طريقنا للنصر.</li><li>الكتيبان الآخران (بعد وقف إطلاق النار):</li><li>1. &#x27;دليل القادة الأصاغر لضباط المشاة والمشاة الميكانيكية&#x27; (صدر 5 ديسمبر 73).</li><li>2. &#x27;دليل القادة الأصاغر في وحدات المدرعات&#x27; (تم مراجعته للمرة الثالثة والأخيرة وطباعته 1 ديسمبر 74).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>التوزيع والتأثير والجدل</strong></summary>
+            <div>
+                <ul><li>الحجم: صغير يسمح بوضعه في الجيب ليقرأه الجندي في أي وقت.</li><li>&#x27;عقيدتنا الدينية طريقنا للنصر&#x27;: طبع 1.2 مليون نسخة؛ تعليمات بحمله في المعركة؛ يوزع على كل فرد احتياط.</li><li>جدل: إسرائيل استولت على نسخ منه؛ حاولت سوء تفسير فقراته (ادعاء تعليمات بقتل الأسرى)؛ حملة ضد (ر.أ.ح.ق.م.م)؛ ترجمة ممسوخة.</li><li>النظام المصري لم يرد؛ (ر.أ.ح.ق.م.م) كذب الادعاءات شخصياً كسفير لمصر بلندن (تتعارض مع الدين والتقاليد).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القيمة الاستراتيجية للكتيبات</strong></summary>
+            <div>
+                <ul><li>لعبت دوراً مهماً في تثقيف وتوجيه الجنود والضباط الأصاغر.</li><li>الكتيبان الأخيران ذوا قيمة كبيرة جداً: بينا - على ضوء خبرة الحرب - كيفية تصرف قائد الفصيلة والسرية في المشكلات.</li><li>عالجت ضعفاً في القوات: الضابط المصري قد يعرف كيف يقاتل اللواء/الكتيبة، لكن لا يعرف كيف يقاتل بفصيلته/سريته بشكل مستقل.</li><li>الكتيبات والتوجيهات كانت علاجاً فعالاً لهذا الموقف الخطير.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
