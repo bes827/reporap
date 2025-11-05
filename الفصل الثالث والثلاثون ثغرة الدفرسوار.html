@@ -1,0 +1,977 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>الفصل الثالث والثلاثون: ثغرة الدفرسوار</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>الفصل الثالث والثلاثون: ثغرة الدفرسوار</strong></summary>
+            <div>
+                <ul><li>تحليل نقدي للقرارات السياسية والعسكرية التي أدت إلى حدوث ثغرة الدفرسوار خلال حرب أكتوبر ١٩٧٣.</li></ul>
+                
+        <details>
+            <summary><strong>اختبار معرفي</strong></summary>
+            <div>
+                <ul><li>١. ما هو الخطأ الاستراتيجي الأول الذي ارتكبته القيادة المصرية والذي أدى إلى سلسلة من الأخطاء اللاحقة؟</li><li>٢. كم دبابة خسرتها القوات المصرية في هجوم ١٤ أكتوبر الفاشل، وماذا يمثل هذا الرقم مقارنة بالخسائر السابقة؟</li><li>٣. ما هي الحجة السياسية التي استخدمت لتبرير تطوير الهجوم شرق القناة، ولماذا يعتبرها الكاتب باطلة؟</li><li>٤. ما هي النسبة المئوية للقوات التي يجب الاحتفاظ بها كاحتياطي استراتيجي حسب المبادئ العسكرية المذكورة؟</li><li>٥. ما هو الخلاف الجوهري الذي حدث بين الكاتب والقيادة السياسية حول كيفية التعامل مع ثغرة الدفرسوار؟</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القرار السياسي الخاطئ: تطوير الهجوم شرقاً</strong></summary>
+            <div>
+                <ul><li>قرار سياسي بشن هجوم نحو المضائق رغم المعارضة العسكرية الشديدة.</li></ul>
+                
+        <details>
+            <summary><strong>معارضة القيادة العسكرية</strong></summary>
+            <div>
+                <ul><li>رفض الكاتب (رئيس الأركان) لتطوير الهجوم لعدة أسباب استراتيجية.</li></ul>
+                
+        <details>
+            <summary><strong>أسباب الرفض</strong></summary>
+            <div>
+                <ul><li>- القوات الجوية الإسرائيلية ما زالت قوية وتشكل تهديداً خطيراً.</li><li>- القوات البرية ستتحرك في العراء دون غطاء جوي كافٍ.</li><li>- تجربة اللواء الأول مشاة القاسية كانت درساً يجب التعلم منه.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>ضعف الغطاء الجوي المصري</strong></summary>
+            <div>
+                <ul><li>- الدفاع الجوي المتحرك محدود جداً (أعداد قليلة من صواريخ سام ٦).</li><li>- القوات الجوية المصرية ضعيفة ولا تستطيع تحدي الطيران الإسرائيلي.</li><li>- القوات البرية ستكون فريسة للطيران الإسرائيلي بعد الخروج من مظلة الدفاع الجوي (بعد ≈ ١٥ كم شرق القناة).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الإصرار السياسي</strong></summary>
+            <div>
+                <ul><li>ضغط وزير الحربية لتنفيذ الهجوم لأسباب سياسية.</li></ul>
+                
+        <details>
+            <summary><strong>المبرر السياسي: تخفيف الضغط على سوريا</strong></summary>
+            <div>
+                <ul><li>- ادعاء بأن الهجوم سيخفف الضغط على الجبهة السورية.</li><li>- الكاتب عارض ذلك: الهجوم لن ينجح ولن يجبر إسرائيل على سحب قوات من سوريا.</li><li>- العدو يمتلك ٨ ألوية مدرعة أمام الجبهة المصرية، وهي كافية لصد أي هجوم.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>فرض القرار</strong></summary>
+            <div>
+                <ul><li>- الوزير طرح الموضوع ٣ مرات خلال ٢٤ ساعة.</li><li>- المرة الثالثة: &quot;القرار السياسي يحتم علينا ضرورة تطوير الهجوم نحو المضائق&quot;.</li><li>- صدرت الأوامر بالهجوم يوم ١٢ أكتوبر ليبدأ صباح ١٣ أكتوبر.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>رفض قادة الجيوش الميدانية</strong></summary>
+            <div>
+                <ul><li>اللواء سعد مأمون (قائد الجيش الثاني) واللواء عبد المنعم واصل (قائد الجيش الثالث) عارضا التعليمات بشدة.</li></ul>
+                
+        <details>
+            <summary><strong>ردود الفعل</strong></summary>
+            <div>
+                <ul><li>- اللواء سعد مأمون هدد بالاستقالة: &quot;أنا مستقيل. أنا لا أستطيع أن أقوم بتنفيذ التعليمات&quot;.</li><li>- اللواء عبد المنعم واصل أبدى معارضة شديدة.</li><li>- الكاتب أبلغهم بأنه أُجبر على القرار أيضاً.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مؤتمر القيادة</strong></summary>
+            <div>
+                <ul><li>- عُقد مؤتمر مساء يوم ١٢ أكتوبر بحضور قادة الجيوش.</li><li>- تكررت نفس وجهات النظر المعارضة والمؤيدة.</li><li>- النتيجة: إصرار الوزير على أن القرار سياسي، وتم فقط تأجيل الهجوم من فجر ١٣ إلى فجر ١٤ أكتوبر.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الخطأ الكبير الأول</strong></summary>
+            <div>
+                <ul><li>اعتبر الكاتب هذا القرار &quot;أول غلطة كبيرة ترتكبها القيادة المصرية خلال الحرب&quot;.</li><li>- هذه الغلطة جرت إلى سلسلة أخرى من الأخطاء أثرت على سير الحرب ونتائجها.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>هجوم ١٤ أكتوبر ونتائجه الكارثية</strong></summary>
+            <div>
+                <ul><li>تفاصيل الهجوم الفاشل الذي أدى إلى خسائر فادحة ودون تحقيق أي هدف.</li></ul>
+                
+        <details>
+            <summary><strong>تحريك القوات للهجوم</strong></summary>
+            <div>
+                <ul><li>دفع الأنساق الثانية (الاحتياطيات المدرعة) إلى شرق القناة لتنفيذ الهجوم.</li></ul>
+                
+        <details>
+            <summary><strong>القوات المشاركة</strong></summary>
+            <div>
+                <ul><li>- الفرقة ٢١ المدرعة عبرت من خلال قطاع الفرقة ١٦ مشاة.</li><li>- الفرقة ٤ المدرعة (عدا لواء) عبرت من خلال رأس كوبري الجيش الثالث.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>خطة الهجوم المصرية</strong></summary>
+            <div>
+                <ul><li>استخدام ٤ ألوية مدرعة ولواء مشاة ميكانيكي في ٤ اتجاهات مختلفة.</li></ul>
+                
+        <details>
+            <summary><strong>محاور الهجوم</strong></summary>
+            <div>
+                <ul><li>- لواء مدرع ← ممر متلا (القطاع الجنوبي).</li><li>- لواء مشاة ميكانيكي ← ممر الجدي (القطاع الجنوبي).</li><li>- لواءان مدرعان ← الطاسة (القطاع الأوسط).</li><li>- لواء مدرع ← بالوظة (القطاع الشمالي).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قوة العدو وتكتيكاته</strong></summary>
+            <div>
+                <ul><li>العدو كان مستعداً للهجوم وغير تكتيكاته لتقليل خسائره.</li></ul>
+                
+        <details>
+            <summary><strong>تغيير التكتيك الإسرائيلي</strong></summary>
+            <div>
+                <ul><li>- قبل ١٠ أكتوبر: استخدام الدبابات بأسلوب الصدمة والسرعة ← خسائر كبيرة (≈ ٢٠٠ دبابة يومي ٨ و ٩ أكتوبر).</li><li>- بعد ١٠ أكتوبر: أسلوب حذر يعتمد على التحرك البطيء والاستفادة من الأرض والسواتر الطبيعية ← ↓ خسائر الدبابات بشكل ملحوظ.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>حجم القوات الإسرائيلية</strong></summary>
+            <div>
+                <ul><li>- عوض العدو معظم خسائره.</li><li>- يوم ١٣ أكتوبر، امتلك العدو ٩٠٠ دبابة في ٨ ألوية مدرعة أمام الجبهة المصرية.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>نتيجة الهجوم: يوم أسود</strong></summary>
+            <div>
+                <ul><li>فشل الهجوم المصري فشلاً ذريعاً مع خسائر جسيمة.</li></ul>
+                
+        <details>
+            <summary><strong>المواجهة غير المتكافئة</strong></summary>
+            <div>
+                <ul><li>- القوات المصرية (٥٠٠ دبابة) هاجمت ٩٠٠ دبابة إسرائيلية.</li><li>- الهجوم تم في مناطق اختارها العدو بعناية.</li><li>- الهجوم تم تحت سيطرة جوية إسرائيلية كاملة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الخسائر المصرية</strong></summary>
+            <div>
+                <ul><li>- فقدت القوات المصرية ٢٥٠ دبابة في يوم واحد.</li><li>- هذا الرقم يزيد عن مجموع الخسائر في الأيام الثمانية الأولى للحرب.</li><li>- بحلول ظهر يوم ١٤ أكتوبر، انسحبت القوات المصرية مرة أخرى إلى رؤوس الكباري.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تداعيات الهجوم الفاشل</strong></summary>
+            <div>
+                <ul><li>الآثار المباشرة لهزيمة ١٤ أكتوبر على معنويات القادة وزيارة الكاتب للجبهة.</li></ul>
+                
+        <details>
+            <summary><strong>انهيار قائد الجيش الثاني</strong></summary>
+            <div>
+                <ul><li>اللواء سعد مأمون ينهار عصبياً نتيجة لهزيمة قواته.</li></ul>
+                
+        <details>
+            <summary><strong>تفاصيل الحادثة</strong></summary>
+            <div>
+                <ul><li>- الساعة ١٠:٠٠ يوم ١٤ أكتوبر: الكاتب يحاول الاتصال باللواء سعد مأمون ويُقال له إنه في الراحة.</li><li>- الرئيس السادات يأمر الكاتب بالتوجه للجبهة لرفع المعنويات.</li><li>- الساعة ١٣:٠٠: الكاتب يصل مركز قيادة الجيش الثاني ويكتشف أن اللواء مأمون منهار بسبب أخبار الهزيمة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الحالة الصحية والإخلاء</strong></summary>
+            <div>
+                <ul><li>- الطبيب يمنع اللواء مأمون من الجلوس ويؤكد أن حالته تستدعي رعاية خاصة وإخلاء للخلف.</li><li>- اللواء مأمون يرفض الإخلاء ويصر على أنه يستطيع ممارسة مسئولياته.</li><li>- تم تأجيل قرار إخلائه إلى صباح اليوم التالي.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>زيارة الكاتب للجبهة</strong></summary>
+            <div>
+                <ul><li>محاولات لرفع الروح المعنوية ومواجهة المخاطر في ميدان المعركة.</li></ul>
+                
+        <details>
+            <summary><strong>الإجراءات المتخذة</strong></summary>
+            <div>
+                <ul><li>- اجتماع مع ضباط قيادة الجيش الثاني وبحث الموقف.</li><li>- اتصال بقادة الفرق لإبلاغهم تحيات الرئيس وتشجيعه.</li><li>- إصرار على زيارة الفرقة ٢١ المدرعة التي تحملت العبء الأكبر.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مخاطر التحرك ليلاً</strong></summary>
+            <div>
+                <ul><li>- قائد الفرقة ٢١ (العميد عرابي) حذر من خطورة التحرك ليلاً في ميدان المعركة.</li><li>- أثناء التحرك، وجد الكاتب أحد الكباري مدمراً والآخر مرفوعاً لتجنب قصف المدفعية.</li><li>- تعرضت عربة الحراسة لشظايا وأصيب أحد أفرادها، مما استدعى العودة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>توضيح موقف الكاتب الشخصي</strong></summary>
+            <div>
+                <ul><li>الكاتب ينفي الشائعات التي صورته كمؤيد لتطوير الهجوم.</li></ul>
+                
+        <details>
+            <summary><strong>دحض الشائعات</strong></summary>
+            <div>
+                <ul><li>- انتشرت شائعات بأنه كان من أنصار الاندفاع السريع نحو الشرق.</li><li>- يؤكد أنه كان دائماً ضد فكرة تطوير الهجوم سواء في مرحلة التخطيط أو إدارة العمليات.</li><li>- يوضح أن صفاته الشخصية (مقدام، هجومي) لا يجب ربطها بقرار خاطئ يغامر بمستقبل البلاد.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>دحض مبررات السادات للهجوم</strong></summary>
+            <div>
+                <ul><li>تفنيد الكاتب للحجة السياسية القائلة بأن هجوم ١٤ أكتوبر كان لتخفيف الضغط عن سوريا.</li></ul>
+                
+        <details>
+            <summary><strong>السبب الأول: الواقع الجغرافي والتفوق الجوي الإسرائيلي</strong></summary>
+            <div>
+                <ul><li>- بعد الجبهة المصرية عن قلب إسرائيل (≈ ٢٠٠ كم من سيناء المفتوحة).</li><li>- التفوق الجوي الإسرائيلي الساحق يمكّن إسرائيل من احتواء الجبهة المصرية بقوات قليلة وحشد الأغلبية ضد سوريا.</li><li>- هذا الموقف حذر منه الكاتب منذ عام ١٩٧٢ وسيستمر طالما سيناء محتلة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>السبب الثاني: القوات الإسرائيلية الكافية على الجبهة المصرية</strong></summary>
+            <div>
+                <ul><li>- وجود ٨ ألوية مدرعة إسرائيلية أمام الجبهة المصرية.</li><li>- هذه القوة كانت أكثر من كافية لصد أي هجوم مصري.</li><li>- ∴ الهجوم المصري لن يجبر إسرائيل على سحب أي قوات من الجبهة السورية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>السبب الثالث: استقرار الوضع في الجبهة السورية</strong></summary>
+            <div>
+                <ul><li>- الوضع في الجبهة السورية استقر يوم ١١ أكتوبر.</li><li>- وصول فرقتين عراقيتين (مدرعة + ميكانيكية) واشتراكهما في القتال يوم ١٢ أكتوبر.</li><li>- وصول لواءين مدرعين أردنيين (الأول يوم ١٣ أكتوبر).</li><li>- ∴ الموقف السوري لم يكن بالصورة الحرجة التي صورها السادات.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>السبب الرابع: التناقض في الإجراءات اللاحقة</strong></summary>
+            <div>
+                <ul><li>- سؤال منطقي: إذا كان دفع الفرقتين المدرعتين (٤ و ٢١) شرقاً لتخفيف الضغط عن سوريا، فلماذا لم يتم سحبهما إلى الغرب بعد فشل الهجوم؟</li><li>- عدم سحبهما يثبت أن الهدف لم يكن مرتبطاً بسوريا.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>المبادئ العسكرية: أهمية الاحتفاظ بالاحتياطي</strong></summary>
+            <div>
+                <ul><li>شرح لأهمية القوات الاحتياطية وكيف أن قرار تطوير الهجوم أخل بهذا المبدأ الأساسي.</li></ul>
+                
+        <details>
+            <summary><strong>مبدأ الاختراق والاحتياطي</strong></summary>
+            <div>
+                <ul><li>- لا يوجد خط دفاعي لا يمكن اختراقه (أمثلة: ماجينو، زيجفريد، بارليف).</li><li>- المهاجم يختار نقاط الضعف في خط الدفاع.</li><li>- ∴ يجب على المدافع الاحتفاظ بقوة احتياطية لضرب أي اختراق.</li></ul>
+                
+        <details>
+            <summary><strong>حجم القوة الاحتياطية</strong></summary>
+            <div>
+                <ul><li>- تتراوح عادة بين الثلث (٣٣٪) والخمس (٢٠٪) من حجم القوات المدافعة.</li><li>- لا يجوز أن تقل عن ٢٥٪ إلا في حالات الضرورة القصوى ولفترة قصيرة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الخطة المصرية الأصلية والاحتياطيات</strong></summary>
+            <div>
+                <ul><li>الخطة الأولية للحرب راعت وجود احتياطيات قوية غرب القناة.</li></ul>
+                
+        <details>
+            <summary><strong>توزيع الدبابات المصرية عند بدء الحرب</strong></summary>
+            <div>
+                <ul><li>- إجمالي الدبابات: ٢٢٠٠ دبابة.</li><li>- ١٧٠٠ دبابة في اتجاه القناة.</li><li>- ٢٠٠ دبابة في منطقة البحر الأحمر ومناطق أخرى.</li><li>- ٣٠٠ دبابة كاحتياطي استراتيجي (منها ١٠٠ دبابة للحرس الجمهوري).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الاحتياطي التكتيكي غرب القناة</strong></summary>
+            <div>
+                <ul><li>- الخطة الأصلية: عبور ١٠٠٠ دبابة، والاحتفاظ بـ ٧٠٠ دبابة غرب القناة.</li><li>- هذه القوة كانت ضمن تشكيل الفرقتين المدرعتين (٤ و ٢١).</li><li>- بقاء هاتين الفرقتين غرب القناة كان كفيلاً بسحق أي اختراق للعدو.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الإخلال بالموازين</strong></summary>
+            <div>
+                <ul><li>قرار تطوير الهجوم يوم ١٢ أكتوبر أدى إلى دفع الاحتياطيات المدرعة شرق القناة.</li></ul>
+                
+        <details>
+            <summary><strong>الموقف بعد القرار</strong></summary>
+            <div>
+                <ul><li>- اعتباراً من فجر ١٤ أكتوبر، لم يتبق غرب القناة في منطقة الجيشين الثاني والثالث سوى لواء مدرع واحد.</li><li>- اختلت الموازين وأصبح الموقف مثالياً ليقوم العدو بمحاولة اختراق.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>اختراق الدفرسوار: استغلال العدو للخطأ المصري</strong></summary>
+            <div>
+                <ul><li>كيف مهدت الأخطاء المصرية الطريق أمام العدو للقيام بعملية الاختراق.</li></ul>
+                
+        <details>
+            <summary><strong>طائرة الاستطلاع الأمريكية SR-71</strong></summary>
+            <div>
+                <ul><li>تحليق طائرة استطلاع أمريكية كشف الموقف الحقيقي للقوات المصرية.</li></ul>
+                
+        <details>
+            <summary><strong>الطلعة الأولى: ١٣ أكتوبر</strong></summary>
+            <div>
+                <ul><li>- حوالي الساعة ١١:٣٠، ظهرت طائرة استطلاع فوق منطقة القتال والدلتا.</li><li>- طارت على ارتفاع ٢٥ كم وبسرعة ٣ ماخ، خارج مدى صواريخ الدفاع الجوي المصري.</li><li>- النتيجة: إسرائيل أصبحت تعلم بموقف القوات المصرية شرق وغرب القناة بدقة، ولم يعد هناك ما يمكن إخفاؤه.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الطلعة الثانية: ١٥ أكتوبر</strong></summary>
+            <div>
+                <ul><li>- قامت الطائرة برحلة استطلاعية أخرى فوق الجبهة والمنطقة الخلفية.</li><li>- النتيجة: تأكد العدو من خلو المنطقة غرب القناة من الدبابات تقريباً.</li><li>- كانت هذه الطلعة إنذاراً واضحاً بأن العدو قد يقوم باختراق، لكن القيادة السياسية تجاهلته.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>رفض سحب القوات إلى الغرب</strong></summary>
+            <div>
+                <ul><li>إصرار القيادة السياسية على إبقاء القوات المدرعة شرق القناة رغم الخطر المتزايد.</li></ul>
+                
+        <details>
+            <summary><strong>اقتراح الكاتب (صباح ١٥ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>- اقترح إعادة تجميع الفرقتين المدرعتين (٤ و ٢١) في غرب القناة لإعادة الاتزان الدفاعي.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>رفض الوزير</strong></summary>
+            <div>
+                <ul><li>- المبرر: سحب القوات قد يؤثر على الروح المعنوية للجنود وقد يفسره العدو كعلامة ضعف.</li><li>- سبب سياسي آخر: السادات كان سيلقي خطاباً هاماً أمام مجلس الشعب يوم ١٦ أكتوبر وأراد أن يتحدث من &quot;موقف قوة&quot;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>بدء الاختراق: ليلة ١٦/١٥ أكتوبر</strong></summary>
+            <div>
+                <ul><li>نجاح العدو في العبور إلى الضفة الغربية مستغلاً الفراغ الدفاعي.</li></ul>
+                
+        <details>
+            <summary><strong>المعلومات الأولية</strong></summary>
+            <div>
+                <ul><li>- صباح ١٦ أكتوبر: وصلت معلومات أولية &quot;مطمئنة&quot; للقيادة العامة.</li><li>- البلاغ: &quot;نجحت جماعات صغيرة من العدو في العبور... ويقوم الجيش باتخاذ الإجراءات اللازمة&quot;.</li><li>- رغم ذلك، تم رفع درجة استعداد اللواء المدرع ٢٣ بالقاهرة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تطور الموقف</strong></summary>
+            <div>
+                <ul><li>- خلال نهار ١٦ أكتوبر: بدأت تصل معلومات عن مهاجمة دبابات العدو لكتائب صواريخ سام على عمق يصل إلى ١٥ كم غرب القناة.</li><li>- تكتيك العدو: قوة من ٧-١٠ دبابات تظهر فجأة، تدمر موقع الصواريخ من مسافة ١٥٠٠-٢٠٠٠ متر، ثم تختفي.</li><li>- عجزت قيادة الجيش الثاني عن تحديد حجم ومكان القوة المعادية بدقة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الصدام حول تصفية الثغرة</strong></summary>
+            <div>
+                <ul><li>خلاف حاد بين الكاتب (رئيس الأركان) والقيادة السياسية (الوزير والرئيس) حول أفضل طريقة لمواجهة الاختراق.</li></ul>
+                
+        <details>
+            <summary><strong>مؤتمر القيادة (بعد ظهر ١٦ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>اتفاق على توجيه ضربة صباح ١٧ أكتوبر، ولكن خلاف جذري على كيفية تنفيذها.</li></ul>
+                
+        <details>
+            <summary><strong>خطة الكاتب (رئيس الأركان)</strong></summary>
+            <div>
+                <ul><li>- سحب الفرقة ٤ المدرعة واللواء ٢٥ المدرع من شرق القناة إلى غربها خلال الليل.</li><li>- توجيه الضربة الرئيسية من غرب القناة باتجاه شمال شرقي (بقوة لواءين مدرعين).</li><li>- توجيه ضربة ثانوية من الغرب إلى الشرق (اللواء ١١٦ مشاة).</li><li>- الفرقة ٢١ مدرعة توجه ضربة من الشرق إلى الجنوب لإغلاق مدخل الثغرة.</li></ul>
+                
+        <details>
+            <summary><strong>مبررات خطة الكاتب</strong></summary>
+            <div>
+                <ul><li>١. إعادة الاتزان الدفاعي غرب القناة.</li><li>٢. اللواء ٢٥ مدرع مدرب على القتال في هذه المنطقة تحديداً.</li><li>٣. الضربة الرئيسية ستتم تحت مظلة الدفاع الجوي (صواريخ سام).</li><li>٤. تحقيق قوة صدمة كافية (لواءان مدرعان) وتأمين قاعدة الهجوم.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>خطة الوزير (التي تم إقرارها)</strong></summary>
+            <div>
+                <ul><li>- رفض سحب أي قوات من الشرق إلى الغرب.</li><li>- الضربة الرئيسية من شرق القناة: اللواء ٢٥ المدرع يهاجم من الجنوب إلى الشمال.</li><li>- الفرقة ٢١ مدرعة تهاجم من الشمال إلى الجنوب.</li><li>- الضربة الثانوية من غرب القناة: اللواء ١١٦ مشاة يهاجم من الغرب إلى الشرق.</li></ul>
+                
+        <details>
+            <summary><strong>عيوب خطة الوزير</strong></summary>
+            <div>
+                <ul><li>- الضربة الرئيسية ضعيفة (لواء واحد) ومعرضة للخطر.</li><li>- ستتم خارج مظلة الدفاع الجوي، مما يعرضها للطيران الإسرائيلي.</li><li>- تتجاهل خبرة القوات بطبيعة الأرض غرب القناة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تدخل الرئيس السادات</strong></summary>
+            <div>
+                <ul><li>الكاتب يلجأ للرئيس لتغيير قرار الوزير، لكنه يواجه رد فعل عنيف.</li></ul>
+                
+        <details>
+            <summary><strong>المواجهة</strong></summary>
+            <div>
+                <ul><li>- الكاتب عرض وجهة نظره على الرئيس السادات.</li><li>- السادات ثار وفقد أعصابه وصرخ: &quot;أنا لا أريد أن اسمع منك مرة ثانية هذه الاقتراحات... إذا أثرت هذا الموضوع مرة أخرى فإني سوف أحاكمك&quot;.</li><li>- الكاتب شعر بجرح عميق وفكر في الاستقالة، لكنه قرر البقاء مع القوات في وقت الشدة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مقاومة قائد الجيش الثالث</strong></summary>
+            <div>
+                <ul><li>محاولة اللواء عبد المنعم واصل وقائد اللواء ٢٥ مدرع تجنب المهمة الانتحارية.</li></ul>
+                
+        <details>
+            <summary><strong>المكالمة الهاتفية</strong></summary>
+            <div>
+                <ul><li>- منتصف ليلة ١٧/١٦ أكتوبر: اللواء واصل يبلغ الكاتب بأن اللواء ٢٥ لن يستطيع التحرك لأسباب فنية.</li><li>- كان واضحاً أنهما يتوقعان كارثة ويريدان منع العملية.</li><li>- الكاتب، رغم تفهمه، أصر على تنفيذ الأوامر لأن القرار قد اتُخذ.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>نبوءة بالفشل</strong></summary>
+            <div>
+                <ul><li>- اللواء واصل قال بيأس: &quot;سوف أقوم بتنفيذ هذه الأوامر ولكني أقولها مسبقاً، سوف يدمر هذا اللواء&quot;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>معركة الدفرسوار يوم ١٧ أكتوبر</strong></summary>
+            <div>
+                <ul><li>تحليل لأوضاع القوات المتواجهة عشية المعركة، وسير العمليات التي انتهت بفشل مصري آخر.</li></ul>
+                
+        <details>
+            <summary><strong>ميزان القوى (فجر ١٧ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>تفوق ساحق للعدو في منطقة المعركة نتيجة سوء توزيع القوات المصرية.</li></ul>
+                
+        <details>
+            <summary><strong>قوات العدو (٨ ألوية مدرعة + لواءان ميكانيكيان)</strong></summary>
+            <div>
+                <ul><li>- فرقة (لواء مدرع + لواء مشاة) غرب القناة + لواء مدرع لتأمين الثغرة شرقاً.</li><li>- لواء مدرع + لواء مشاة لاحتواء الفرقة ٢١ مدرعة المصرية.</li><li>- لواء مدرع لاحتواء كامل جبهة الجيش الثاني.</li><li>- لواء مدرع لاحتواء كامل جبهة الجيش الثالث.</li><li>- فرقة احتياط (٣ ألوية مدرعة) شرق القناة مستعدة للعبور.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القوات المصرية (٨ ألوية مدرعة)</strong></summary>
+            <div>
+                <ul><li>- ٤ ألوية مدرعة &quot;مربوطة بالأرض&quot; وغير فعالة ضمن فرق المشاة.</li><li>- لواءان من الفرقة ٢١ (منهكة) يهاجمان جنوباً.</li><li>- اللواء ٢٥ مدرع يهاجم شمالاً في مهمة انتحارية (يواجه ٣ ألوية معادية).</li><li>- لواء واحد يحرس المنطقة الخلفية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>النتيجة: الخطأ الكبير الثالث</strong></summary>
+            <div>
+                <ul><li>- مصر حشدت فعلياً ٣ ألوية مدرعة ولواء مشاة للمعركة.</li><li>- العدو حشد في نفس المنطقة ٦ ألوية مدرعة ولواءين مشاة.</li><li>- تفوق ساحق للعدو في منطقة المعركة الحاسمة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>سير المعركة ونتائجها</strong></summary>
+            <div>
+                <ul><li>فشل الهجمات المصرية من كل المحاور وتدمير القوة الضاربة الرئيسية.</li></ul>
+                
+        <details>
+            <summary><strong>هجوم اللواء ١١٦ مشاة (من الغرب)</strong></summary>
+            <div>
+                <ul><li>- نجح في البداية وتقدم لمسافة ٣ كم ودمر بعض الدبابات.</li><li>- على بعد ٢ كم من القناة، تعرض لنيران كثيفة وأجبر على التقهقر بخسائر كبيرة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>هجوم الفرقة ٢١ مدرعة (من الشرق)</strong></summary>
+            <div>
+                <ul><li>- نجحت في قطع الطريق المؤدي للثغرة من الشرق.</li><li>- عجزت عن إحراز أي تقدم جنوب هذا الطريق.</li><li>- ظل الطريق إلى الثغرة من الجنوب والجنوب الشرقي مفتوحاً.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مصير اللواء ٢٥ المدرع (من الجنوب الشرقي) </strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>الكمين</strong></summary>
+            <div>
+                <ul><li>- وجه العدو فرقة مدرعة كاملة (٣ ألوية) لمواجهة اللواء المصري الوحيد.</li><li>- لواء إسرائيلي سد طريق التقدم شمالاً، بينما قام لواءان آخران بالالتفاف من اليمين والمؤخرة.</li><li>- عندما دخل اللواء منطقة الكمين، هوجم من ثلاثة اتجاهات وتم تدميره بالكامل، كما توقع قائده.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تدفق قوات العدو إلى الغرب</strong></summary>
+            <div>
+                <ul><li>بعد فشل الهجوم المضاد المصري، نجح العدو في إنشاء رأس جسر وبدأ في دفع قواته بأعداد كبيرة إلى غرب القناة.</li></ul>
+                
+        <details>
+            <summary><strong>إنشاء الكوبري وعبور القوات (ليلة ١٨/١٧ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>- نجح العدو في بناء أول كوبري له في منطقة الدفرسوار.</li><li>- عبر عليه لواءان مدرعان من فرقة &quot;برن&quot; الإسرائيلية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الموقف فجر ١٨ أكتوبر</strong></summary>
+            <div>
+                <ul><li>- أصبح للعدو فرقتان مدرعتان غرب القناة:</li><li>- فرقة شارون: لواء مدرع + لواء مشاة.</li><li>- فرقة برن: لواءان مدرعان.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تدمير الاحتياطي الاستراتيجي المصري</strong></summary>
+            <div>
+                <ul><li>- وجهت القيادة المصرية اللواء المدرع ٢٣ (الاحتياطي الاستراتيجي) لضرب العدو غرب القناة.</li><li>- فشل الهجوم وخسر اللواء عدداً كبيراً من دباباته.</li><li>- النتيجة: أصبحت الضفة الغربية &quot;عارية من الدبابات&quot; تقريباً، عدا لواء خلف كل جيش ولواء الحرس الجمهوري بالقاهرة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تعزيزات العدو (ظهر ١٨ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>- عبر لواء مدرع إسرائيلي آخر إلى الغرب وانضم إلى فرقة برن.</li><li>- أصبح إجمالي قوة العدو غرب القناة: ٤ ألوية مدرعة ولواء مشاة.</li><li>- التوزيع: فرقة برن (٣ ألوية مدرعة)، فرقة شارون (لواء مدرع + لواء مشاة).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>فهم متأخر وقرار غير كافٍ</strong></summary>
+            <div>
+                <ul><li>لم تدرك القيادة السياسية أهمية المناورة بالقوات إلا بعد أن تدهور الموقف بشكل حرج.</li></ul>
+                
+        <details>
+            <summary><strong>توقيت الفهم (بعد ظهر ١٨ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>- جاء الإدراك متأخراً جداً، فقط بعد أن:</li><li>- أصبحت القوات المصرية مهددة بالتطويق.</li><li>- دمر العدو الكثير من مواقع صواريخ سام.</li><li>- أصبحت القوات الجوية المعادية تعمل بحرية عبر الثغرة.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قصور في التفكير الاستراتيجي</strong></summary>
+            <div>
+                <ul><li>- حتى بعد فهم الخطأ، كان التفكير قاصراً على رد الفعل (&quot;ماذا سنفعل غداً؟&quot;).</li><li>- فشلوا في تقدير سرعة حشد العدو لقواته وتوقع خطواته التالية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قرار السحب المتأخر</strong></summary>
+            <div>
+                <ul><li>- اتُخذ قرار بسحب الفرقة الرابعة المدرعة ليلة ٢٠/١٩ أكتوبر.</li><li>- كان الكاتب قد طالب بسحبها مع اللواء ٢٥ ليلة ١٧/١٦ أكتوبر (أي قبل ٣ أيام).</li><li>- لو تم السحب في التوقيت المقترح، لتغير الموقف تماماً.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>النتيجة: &quot;قليل جداً، ومتأخر جداً&quot;</strong></summary>
+            <div>
+                <ul><li>- سحب الفرقة الرابعة المدرعة وحدها لم يعد كافياً لاستعادة الموقف.</li><li>- كان للعدو بالفعل فرقتان مدرعتان غرب القناة، وكان من المتوقع أن تصبح ثلاث فرق بحلول فجر اليوم التالي.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
