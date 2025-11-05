@@ -1,0 +1,577 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>الفصل الثاني: مركز "لعبة السلم"</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>الفصل الثاني: مركز &quot;لعبة السلم&quot;</strong></summary>
+            <div>
+                <ul><li>المصدر: فصل من كتاب يناقش استراتيجيات السياسة الخارجية الأمريكية.</li><li>الموضوع: تحليل آلية عمل مركز محاكاة السياسات &quot;لعبة السلم&quot; وتطبيقاته، مع التركيز على دراسة حالة الزعيم المصري جمال عبد الناصر كنموذج لفهم العلاقات مع دول العالم الثالث.</li></ul>
+                
+        <details>
+            <summary><strong>اختبار معرفي</strong></summary>
+            <div>
+                <ul><li>١. ما هي نسبة النجاح التي حققتها &quot;لعبة السلم&quot; في توقع تحركات السوفييت في أوروبا؟</li><li>٢. ما هي اللعبة التي شبه بها الكاتب عقلية بعض زعماء العالم النامي في مواجهة القوى العظمى، على عكس لعبة الشطرنج؟</li><li>٣. وفقًا لقواعد &quot;اللعبة&quot;، ما هو الهدف الأول لأي زعيم وطني؟</li><li>٤. كم كانت نسبة تمثيل ناصر لـ&quot;طراز ناصر في الحكم&quot; حسب تقديرات الكاتب؟</li><li>٥. ما هو المبدأ الذي يصف أفضلية التعامل مع خصم عاقل على صديق جاهل في &quot;لعبة الأمم&quot;؟</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مركز &quot;لعبة السلم&quot;: المفهوم والآلية</strong></summary>
+            <div>
+                <ul><li>مركز محاكاة استراتيجي تابع للحكومة الأمريكية.</li><li>- الهدف: تمثيل اتجاهات السياسة العالمية وأزماتها لتقييم نتائجها المحتملة.</li><li>- المشاركون: خبراء من وزارة الخارجية، المخابرات المركزية (CIA)، والبنتاغون.</li></ul>
+                
+        <details>
+            <summary><strong>بيئة العمل</strong></summary>
+            <div>
+                <ul><li>وصف لمكان انعقاد الجلسات في وزارة الخارجية.</li><li>- حادثة جهاز التنصت: اكتشاف جهاز إرسال صغير أثار القلق وكشف سرية المكان.</li><li>- الأجواء: مزيج من الملل، النقاشات الحادة، الصمت العميق، والعمل المستمر حتى منتصف الليل.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>آلية العمل والمحاكاة</strong></summary>
+            <div>
+                <ul><li>يقوم الخبراء بتمثيل أدوار قادة العالم ودولهم.</li><li>- يتم تزويدهم بتقارير ومعلومات استخباراتية مستمرة.</li><li>- يحددون مواقف الدول التي يمثلونها ويقترحون حلولاً للأزمات.</li></ul>
+                
+        <details>
+            <summary><strong>الأدوار المُمثَّلة</strong></summary>
+            <div>
+                <ul><li>يتم إعطاء أسماء رمزية للقادة العالميين.</li><li>- &quot;تيتو&quot;: شخص يرتدي بذلة أمريكية.</li><li>- &quot;ديغول&quot;: شخص اسمه &quot;بيتر سيلر&quot;.</li><li>- &quot;كونراد أديناور&quot;: فتاة جميلة ترتدي نظارات.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>المخرجات</strong></summary>
+            <div>
+                <ul><li>تُقدَّم النتائج على شكل مذكرات وتقارير.</li><li>- تتوقع كيف سيتصرف القادة الحقيقيون (ناصر، ديغول، إلخ) في ظروف مماثلة.</li><li>- تُدمج هذه التقارير مع سيل المعلومات الواردة لتصبح &quot;حقائق ومعلومات للقرارات&quot; للخطوات اللاحقة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قواعد &quot;لعبة السلم&quot;</strong></summary>
+            <div>
+                <ul><li>الأسس والمبادئ التي تحكم عملية المحاكاة واتخاذ القرار داخل اللعبة.</li></ul>
+                
+        <details>
+            <summary><strong>القاعدة الأولى: الأخلاق النسبية</strong></summary>
+            <div>
+                <ul><li>الأخلاق المعتبرة هي أخلاق الدول المُمثَّلة، وليس القيم الأمريكية.</li><li>- لا يُلتفت للأخلاق الأمريكية إلا عند محاولة تحديد ردود فعل الحكومة الأمريكية.</li><li>- مفاهيم &quot;الخير&quot; و&quot;الشر&quot; العالمية ليس لها أي اعتبار في التخطيط.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القاعدة الثانية: البقاء في السلطة</strong></summary>
+            <div>
+                <ul><li>الهدف الأول والأسمى لأي زعيم وطني هو البقاء في السلطة.</li><li>- في حال تعذر ذلك، يكون الهدف هو اعتزال الحكم بأقل خسارة ممكنة.</li><li>- النظرة الواقعية (Realism) للزعامة ← نتائج أفضل من النظرة المثالية (Idealism).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>القاعدة الثالثة: عدالة القضية</strong></summary>
+            <div>
+                <ul><li>الافتراض الأساسي: كل زعيم يعتقد أنه يخدم وطنه وقضيته عادلة.</li><li>- مثال: وصف ديغول بأنه &quot;غير أمريكي&quot; هو حقيقة في اللعبة، وليس حكماً أخلاقياً (خير/شر).</li><li>- الهدف هو النجاح وفقاً لظروف الدولة المُمثَّلة، وليس تصنيف اللاعبين إلى &quot;أخيار&quot; أو &quot;أشرار&quot;.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>فعالية &quot;اللعبة&quot; وحدودها</strong></summary>
+            <div>
+                <ul><li>تقييم لمدى نجاح منهجية &quot;لعبة السلم&quot; في توقع الأحداث العالمية.</li></ul>
+                
+        <details>
+            <summary><strong>مجالات النجاح</strong></summary>
+            <div>
+                <ul><li>أظهرت &quot;اللعبة&quot; فعالية عالية في تحليل الشؤون الأوروبية.</li><li>- توقع تحركات السوفييت في أوروبا وردود الفعل المضادة.</li><li>- تحديد معالم الصراع الروسي الصيني ورسم أبعاده.</li></ul>
+                
+        <details>
+            <summary><strong>نسبة النجاح</strong></summary>
+            <div>
+                <ul><li>نسبة النجاح والتوفيق ← تصل إلى ٨٥٪.</li><li>- هذه النسبة مماثلة لنجاح تنبؤات مرصد غرينتش للتقلبات الجوية.</li><li>- كانت كافية لوضع دراسات المركز في طليعة الدراسات الأخرى.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>دور العقول الإلكترونية</strong></summary>
+            <div>
+                <ul><li>كان العمل سهلاً وموفقاً في الشأن الأوروبي.</li><li>- تم الاعتماد على تغذية العقول الإلكترونية بالمعلومات الاقتصادية واتجاهات الرأي العام.</li><li>- وجود عنصر العقل والنظام في أوروبا سهّل عملية التحليل الحاسوبي.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>مجالات الفشل والقصور</strong></summary>
+            <div>
+                <ul><li>صعوبة بالغة في دراسة وتخطيط الأوضاع في الدول الأفريقية والآسيوية.</li><li>- لم يكن الاعتماد على العقول الإلكترونية سهلاً بسبب افتقاد عنصر العقل والنظام.</li><li>- كان اللجوء لتحليل العواطف والنزعات الفطرية ضرورياً، وهو أمر صعب النمذجة.</li></ul>
+                
+        <details>
+            <summary><strong>أمثلة على فشل التنبؤات</strong></summary>
+            <div>
+                <ul><li>انهيار نظام نكروما في غانا (الاعتقاد بأن الجيش كان أضعف من القيام بانقلاب).</li><li>- انقلاب عبد الكريم قاسم في العراق ضد نوري باشا.</li><li>- الاعتقاد بعدم قدرة الفيتكونغ على الاستمرار في القتال.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>أسباب الفشل</strong></summary>
+            <div>
+                <ul><li>عوامل متعددة جعلت التنبؤ في العالم الثالث صعباً وغير دقيق.</li></ul>
+                
+        <details>
+            <summary><strong>عقلية &quot;لعبة التشكن&quot; (لعبة الجبان)</strong></summary>
+            <div>
+                <ul><li>زعماء العالم الثالث لا يلعبون &quot;الشطرنج&quot; (لعبة منطق وقواعد).</li><li>- يلعبون &quot;التشكن&quot;: سباق سيارتين وجهاً لوجه، والفائز هو من لا ينحرف (الأكثر تهوراً وجنوناً).</li><li>- في هذه اللعبة، تنعدم فرص اللاعب الذكي الاستراتيجي وتكون للاعب المعتوه المغامر.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>عدم القدرة على توقع سلوك الحكومة الأمريكية</strong></summary>
+            <div>
+                <ul><li>تأثير العوامل الداخلية على قرارات أمريكا يجعلها غير متوقعة.</li><li>- سيطرة الحقد والتحيز والجهل على بعض كبار المسؤولين.</li><li>- ضغط الرأي العام، الفئات الانتهازية، وحاجة أعضاء الكونغرس لكسب الدوائر الانتخابية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الأوضاع الداخلية في دول العالم الثالث</strong></summary>
+            <div>
+                <ul><li>أوضاع اقتصادية يائسة وهوة سحيقة بين الواقع والأماني.</li><li>- خيبة أمل مريرة لدى الشعوب تجعل بقاء الزعماء صعباً.</li><li>- الاعتماد على الأساليب الغوغائية أو ابتزاز المساعدات للبقاء في الحكم.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>استراتيجية الولايات المتحدة في &quot;لعبة الأمم&quot;</strong></summary>
+            <div>
+                <ul><li>المبادئ الحقيقية التي تحكم السياسة الخارجية الأمريكية، بعيداً عن الشعارات المعلنة.</li></ul>
+                
+        <details>
+            <summary><strong>مبدأ &quot;الفعالية والنجاح&quot;</strong></summary>
+            <div>
+                <ul><li>القيد الوحيد على السلوك الأمريكي خارج حدودها هو &quot;اعتبارات الفعالية والنجاح&quot;.</li><li>- كل ما تتوفر له فرص النجاح يُفعل، وإلا يُترك.</li><li>- لا توجد قيود ديمقراطية على السلوك الخارجي كما هو الحال في الداخل.</li></ul>
+                
+        <details>
+            <summary><strong>دور &quot;المبادئ الأخلاقية&quot;</strong></summary>
+            <div>
+                <ul><li>الأخلاق تأتي كعامل ثانوي بعد تقييم فرص النجاح.</li><li>- السؤال الحقيقي يصبح: &quot;هل يمكننا أن ننجح بالتنفيذ دون أن نخوض غمار معركة افتضاح وتعرٍّ؟&quot;.</li><li>- التوجيهات الدبلوماسية تؤكد على اتباع وسائل ديمقراطية كعامل لنجاح الضغط، وليس كقيمة بحد ذاتها.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>ازدواجية المعايير والنفاق</strong></summary>
+            <div>
+                <ul><li>السلوك الأمريكي يتبع استراتيجية ذات وجهين: &quot;أخلاقي&quot; و&quot;لاأخلاقي&quot;.</li><li>- كتم النوايا الحقيقية أو التحايل على المعاهدات أمر وارد إذا كان يحقق المصلحة.</li><li>- الشرط: النجاح في ذلك دون الوقوع في مآزق محرجة أو مواقف فاضحة.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>دراسة حالة: جمال عبد الناصر</strong></summary>
+            <div>
+                <ul><li>استخدام ناصر كنموذج لفهم وتطبيق &quot;لعبة الأمم&quot; مع زعماء العالم الثالث.</li></ul>
+                
+        <details>
+            <summary><strong>أهمية &quot;طراز ناصر&quot; في اللعبة</strong></summary>
+            <div>
+                <ul><li>كان وجود شخصية تمثل ناصر عنصراً حيوياً لتوازن المسرحية (اللعبة).</li><li>- لو لم يكن ناصر موجوداً، لكان من الضروري البحث عن مثيل له.</li><li>- ناصر نفسه شعر بوجود &quot;دور على المسرح ينتظر لاعباً ليؤديه&quot; وحاول تأديته.</li></ul>
+                
+        <details>
+            <summary><strong>مقياس &quot;النموذج الناصري&quot;</strong></summary>
+            <div>
+                <ul><li>مقياس لتقييم قدرة الزعماء على البقاء في السلطة بناءً على مدى تشابههم مع نموذج ناصر.</li></ul>
+                
+        <details>
+            <summary><strong>أمثلة على المقياس</strong></summary>
+            <div>
+                <ul><li>ناصر: ≈ ٨٠٪ (نسبة أعلى مما تتطلبه ظروفه).</li><li>- نكروما: ≈ ٧٠٪ (نسبة أقل مما تتطلبه ظروفه الصعبة ← سقط).</li><li>- سوكارنو وقاسم: من نفس نوع نكروما.</li><li>- الملك حسين: ≈ ٤٠٪ (أكثر مما تتطلبه ظروفه ← بقي في السلطة).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>قناعة الحكومة الأمريكية</strong></summary>
+            <div>
+                <ul><li>رغم اعتراض الوزير دالاس، اقتنعت واشنطن بأن &quot;طراز ناصر&quot; هو الخيار الأقل ضرراً.</li><li>- الحكام الغوغائيون في سوريا، مثلاً، كان استمالتهم نصراً أجوفاً لأنهم يسقطون بسرعة.</li><li>- ناصر، على عكسهم، كان لديه قدرة على التأقلم واتخاذ قرارات حاسمة تحقق مكاسب للطرفين.</li></ul>
+                
+        <details>
+            <summary><strong>مبدأ &quot;العدو العاقل&quot;</strong></summary>
+            <div>
+                <ul><li>المبدأ الحاكم: &quot;عدواً عاقلاً (كيفما كان ذلك) خير من صديق جاهل&quot;.</li><li>- ناصر كان قادراً على إبرام صفقات (مثل اتفاق محتمل مع إسرائيل) دون أن تدرك جماهيره حقيقتها.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>طبيعة اللعبة مع ناصر</strong></summary>
+            <div>
+                <ul><li>وجود وجهات نظر مختلفة جذرياً حول طبيعة العلاقة المصرية-الأمريكية.</li></ul>
+                
+        <details>
+            <summary><strong>وجهة نظر ناصر: لعبة ذات حاصل صفري</strong></summary>
+            <div>
+                <ul><li>أي ربح لأحد الطرفين هو بالضرورة خسارة للطرف الآخر (ربح + خسارة = صفر).</li><li>- مثال: مفاوضات المساعدات المالية (إذا حصل ناصر على ٦٠ مليون دولار بدلاً من ٤٠، فهو ربح ٢٠ وخسرت أمريكا ٢٠).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>وجهة نظر أمريكا (الظاهرية): لعبة ذات حاصل غير صفري</strong></summary>
+            <div>
+                <ul><li>اللعبة يمكن أن تكون مربحة للطرفين (Win-Win).</li><li>- تشبيهها بصفقة بين رجلي أعمال أو رغبة مشتركة في تجنب الحرب وتحسين الاقتصاد.</li><li>- زكريا محيي الدين دافع عن هذا الرأي، معتبراً أن هناك أهدافاً مشتركة للبشرية.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>الحقيقة (وجهة نظر الكاتب): لعبة المصالح والخداع</strong></summary>
+            <div>
+                <ul><li>كلا النظرتين السابقتين غير صحيحة.</li><li>- أمريكا تسعى لمصالحها بالدرجة الأولى؛ أي مغانم للطرف الآخر هي إما عرضية أو &quot;طُعم&quot;.</li><li>- النزاع المصري-الأمريكي قائم على تضارب المنافع، الإصرار على تقديم المصالح، الحيلة، والتضليل.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>تجربة الكاتب الشخصية</strong></summary>
+            <div>
+                <ul><li>الكاتب قام بتمثيل دور ناصر في &quot;مركز اللعبة&quot; من ١٩٥٢ إلى ١٩٥٧.</li><li>- التقى بناصر الحقيقي عدة مرات وقارن بين قراراته وقرارات ناصر.</li><li>- وجد أن قراراته في اللعبة كانت &quot;أسوأ&quot; (أقل جرأة) من قرارات ناصر الحقيقي من وجهة نظر المصالح الغربية.</li></ul>
+                
+        <details>
+            <summary><strong>مثال: أزمة السويس ١٩٥٦</strong></summary>
+            <div>
+                <ul><li>سأله نائب مدير الـ CIA إذا كان ناصر سيؤمم القناة لو سحبت أمريكا تمويل السد العالي.</li><li>- أجاب الكاتب أنه &quot;أمّم&quot; القناة في اللعبة منذ أشهر، لكنه لا يعرف ما سيفعله ناصر الحقيقي.</li><li>- لاحقاً، اكتشف أن ناصر كان يتوقع رد فعل أقسى بكثير مما توقعته واشنطن.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
