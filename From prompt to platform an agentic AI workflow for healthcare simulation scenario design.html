@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>From prompt to platform: an agentic AI workflow for healthcare simulation scenario design</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>From prompt to platform: an agentic AI workflow for healthcare simulation scenario design</strong></summary>
+            <div>
+                <ul><li>Journal: Adv Simul (Lond)</li><li>Publication Date: 2025 May 16</li><li>DOI: 10.1186/s41077-025-00357-z</li><li>PMID: 40380247</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What is the estimated time reduction in scenario development using the described AI workflow?</li><li>2. The workflow ensures adherence to which two major simulation standards frameworks?</li><li>3. What is the average processing time for the system to generate a complete scenario based on 50 test runs?</li><li>4. The initial prototype was built on ChatGPT, but the advanced workflow transitioned to which open-source platform?</li><li>5. What key AI methodology is used to enhance factual accuracy by accessing external knowledge sources like PubMed?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Introduction &amp; Problem Statement</strong></summary>
+            <div>
+                <ul><li>Effective healthcare simulation relies on meticulously crafted scenarios.</li><li>Traditionally, this process is highly resource-intensive.</li></ul>
+                
+        <details>
+            <summary><strong>The Challenge of Scenario Design</strong></summary>
+            <div>
+                <ul><li>Demands significant time &amp; expertise from educators.</li><li>Often quoted figure: 24 hours of preparation for a 10–20 min scenario.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Emerging Solution: Large Language Models (LLMs)</strong></summary>
+            <div>
+                <ul><li>Advanced LLMs (e.g., ChatGPT) show potential to revolutionize the process.</li><li>Can streamline development &amp; offer insights missed by conventional methods.</li></ul>
+                
+        <details>
+            <summary><strong>Key Concerns</strong></summary>
+            <div>
+                <ul><li>Accuracy, relevance, &amp; structural coherence of AI-generated content.</li><li>Necessitates careful consideration &amp; human oversight.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Aim &amp; Objectives of the Innovation</strong></summary>
+            <div>
+                <ul><li>Primary Aim: Develop an AI-powered system to significantly ↓ time &amp; effort for creating high-quality, standards-compliant simulation scenarios.</li><li>Hypothesis: Frees up educator resources, allowing more focus on learner interaction &amp; debriefing.</li></ul>
+                
+        <details>
+            <summary><strong>Specific Objectives</strong></summary>
+            <div>
+                <ul><li>1. Automate generation of core scenario components.</li><li>2. Ensure consistent alignment w/ established simulation design standards.</li><li>3. Make the workflow user-friendly &amp; accessible to educators w/o programming skills.</li></ul>
+                
+        <details>
+            <summary><strong>Core Components for Automation</strong></summary>
+            <div>
+                <ul><li>Learning objectives.</li><li>Detailed patient narrative.</li><li>Relevant diagnostic data.</li><li>Comprehensive debriefing points.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Adherence to Standards</strong></summary>
+            <div>
+                <ul><li>INACSL Standards of Best Practice: Simulation Design.</li><li>ASPiH Standards Framework for Simulation-Based Education.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Broader System Goals</strong></summary>
+            <div>
+                <ul><li>4. Design for adaptability across clinical settings &amp; learner levels.</li><li>5. Incorporate multilingual capabilities for global applicability.</li><li>6. Address potential issues: factual accuracy, AI bias, &amp; ethical considerations (IP, patient privacy).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Target Audience</strong></summary>
+            <div>
+                <ul><li>Broad spectrum of individuals involved in healthcare simulation.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Groups</strong></summary>
+            <div>
+                <ul><li>Simulation educators (nursing, medicine, allied health).</li><li>Simulation center directors &amp; technical staff.</li><li>Curriculum developers.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Secondary Groups</strong></summary>
+            <div>
+                <ul><li>Institutions expanding simulation offerings.</li><li>Educators in resource-constrained settings.</li><li>Newcomers to scenario design (lowers barrier to entry).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>System Development: A Two-Phase Evolution</strong></summary>
+            <div>
+                <ul><li>The project evolved from an initial prototype to a fully automated, agentic system.</li></ul>
+                
+        <details>
+            <summary><strong>Phase 1: The Initial ChatGPT-based Scenario Designer</strong></summary>
+            <div>
+                <ul><li>Created a structured, custom, interactive interface (OpenAI GPT).</li><li>Specifically trained w/ simulation scenario templates &amp; materials.</li><li>Guided users through a methodical series of prompts.</li></ul>
+                
+        <details>
+            <summary><strong>Functionality</strong></summary>
+            <div>
+                <ul><li>Systematically elicited key parameters: clinical case, learner demographic, objectives.</li><li>Sequentially generated text for each scenario section.</li><li>Allowed educators to review &amp; refine AI output at each stage.</li></ul>
+                
+        <details>
+            <summary><strong>Technical Enhancement</strong></summary>
+            <div>
+                <ul><li>Evolved in Dec 2024 to use ChatGPT’s Canvas functionality.</li><li>Enabled direct modification of scenario structure in the web interface.</li><li>Facilitated a more dynamic &amp; responsive design process.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Limitations of Phase 1</strong></summary>
+            <div>
+                <ul><li>1. Contained within ChatGPT environment → restricted integration w/ external systems.</li><li>2. Limited knowledge base (max 12 documents).</li><li>3. Lacked connectivity to document creation tools → required manual export.</li><li>4. Outputs were text-only → no automatic generation of visual elements.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Phase 2: From Chatbot to Agentic AI Workflow</strong></summary>
+            <div>
+                <ul><li>Transition necessitated by Phase 1 limitations.</li><li>Moved from a guided chatbot to a fully autonomous system.</li><li>AI Agent Definition: Perceives environment, makes independent decisions, &amp; takes actions w/o constant human intervention.</li></ul>
+                
+        <details>
+            <summary><strong>Platform Selection: n8n</strong></summary>
+            <div>
+                <ul><li>An open-source, no-code platform was chosen.</li></ul>
+                
+        <details>
+            <summary><strong>Key Reasons for Choosing n8n</strong></summary>
+            <div>
+                <ul><li>Open-source → no licensing costs.</li><li>Self-hosting capability → full data control &amp; privacy.</li><li>Flexibility → integrates w/ diverse LLM providers (OpenAI, Anthropic, Google), preventing vendor lock-in.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Implementation Insights</strong></summary>
+            <div>
+                <ul><li>Entire development was executed by a physician w/ basic coding knowledge, not an AI expert.</li><li>Demonstrates democratization of AI: sophisticated workflows are achievable for motivated educators w/ modest technical skills.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>AI Model Strategy</strong></summary>
+            <div>
+                <ul><li>Leverages a strategic combination of AI models to optimize performance &amp; cost.</li></ul>
+                
+        <details>
+            <summary><strong>Model Selection</strong></summary>
+            <div>
+                <ul><li>GPT-4o: For tool-calling agents requiring specialized capabilities.</li><li>Gemini 2.0 Flash &amp; Pro: For main workflow components (large context, cost-free).</li><li>Anthropic Claude 3.7 Sonnet: For final review &amp; editing to ensure high quality.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Local LLM Feasibility</strong></summary>
+            <div>
+                <ul><li>Tested a complete local system (Qwen 32B, Mistral Small 3).</li><li>Achieved similar results but w/ longer execution times due to hardware limits (Apple Mac Mini M4Pro, 32GB RAM).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Performance Metrics</strong></summary>
+            <div>
+                <ul><li>Average processing time: 4.5 minutes (across 50 test runs).</li><li>Supports comprehensive multilingual output for global application.</li><li>Customizable w/ institutional branding (logos, document templates).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agentic Workflow Architecture (n8n Implementation)</strong></summary>
+            <div>
+                <ul><li>Designed to mimic a complex, multi-step reasoning process.</li><li>Draws on principles of agent-based AI systems.</li></ul>
+                
+        <details>
+            <summary><strong>Core AI Methodologies Employed</strong></summary>
+            <div>
+                <ul><li>The workflow integrates several advanced AI concepts to function effectively.</li></ul>
+                
+        <details>
+            <summary><strong>Decomposition (Sub-agents)</strong></summary>
+            <div>
+                <ul><li>Overall task of scenario generation is broken into smaller, manageable sub-tasks.</li><li>Each sub-task is handled by a dedicated agent (a node in the n8n workflow).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Prompt Chaining</strong></summary>
+            <div>
+                <ul><li>The output of one agent becomes part of the input prompt for the next.</li><li>Ensures sequential context passing for a coherent progression.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Parallelization</strong></summary>
+            <div>
+                <ul><li>Independent agents are executed concurrently to improve efficiency.</li><li>Example: Agents for &#x27;roles/resources&#x27; &amp; &#x27;briefing/debriefing&#x27; run in parallel.</li><li>Significantly ↓ overall processing time.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Retrieval-Augmented Generation (RAG)</strong></summary>
+            <div>
+                <ul><li>The initial agent uses RAG to access &amp; incorporate information from knowledge sources.</li><li>Enhances factual accuracy &amp; relevance of generated content.</li></ul>
+                
+        <details>
+            <summary><strong>RAG Knowledge Sources</strong></summary>
+            <div>
+                <ul><li>Vector database (populated w/ healthcare simulation textbooks).</li><li>Direct search of PubMed &amp; Semantic Scholar.</li><li>Guidelines repositories for specific clinical scenarios.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Tool Use</strong></summary>
+            <div>
+                <ul><li>Leverages n8n&#x27;s ability to integrate w/ external APIs.</li><li>Performs tasks like retrieving articles, validating data formats, &amp; sending emails.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Iterative Refinement</strong></summary>
+            <div>
+                <ul><li>A dedicated &#x27;reviewer&#x27; agent assesses the output for quality control.</li><li>Checks for adherence to user query &amp; simulation best-practice standards.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Detailed Workflow Steps &amp; Agent Interactions</strong></summary>
+            <div>
+                <ul><li>Operates through a user-friendly conversational interface.</li><li>Process begins w/ educator providing basic scenario requirements.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: User Input &amp; Initial RAG</strong></summary>
+            <div>
+                <ul><li>Educator provides parameters: title, diagnosis, learner group, objectives, patient characteristics, language.</li><li>Initial agent performs RAG search, synthesizing findings into a &#x27;Research Output&#x27; parameter.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 2: Activation of Specialized Agents</strong></summary>
+            <div>
+                <ul><li>Once educator confirms parameters, the main n8n workflow orchestrates a network of interconnected AI agents.</li></ul>
+                
+        <details>
+            <summary><strong>Agent: Scenario Outline &amp; Objectives</strong></summary>
+            <div>
+                <ul><li>Generates a structured JSON object w/ title, description, needs assessment, learning objectives.</li><li>Explicitly references ASPiH core values for standards alignment.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent: Roles &amp; Resources</strong></summary>
+            <div>
+                <ul><li>Generates a detailed specification of required roles &amp; physical resources.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent: Scenario Patient &amp; Briefings</strong></summary>
+            <div>
+                <ul><li>Creates structured briefings (faculty script, pre-briefing, briefing) &amp; a detailed patient profile.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent: Scenario States</strong></summary>
+            <div>
+                <ul><li>Generates a structured description of scenario states.</li><li>Includes detailed physiological parameters, transitions, &amp; trigger mechanisms (time-based &amp; action-based).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent: Educational Content</strong></summary>
+            <div>
+                <ul><li>Focuses on pedagogical elements: desired actions for learners, debriefing points, teaching notes &amp; references.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 3: Quality Control &amp; Formatting</strong></summary>
+            <div>
+                <ul><li>A sequence of agents finalizes the output.</li></ul>
+                
+        <details>
+            <summary><strong>Agent: Reviewer</strong></summary>
+            <div>
+                <ul><li>Acts as a quality control mechanism.</li><li>Assesses combined output for consistency, clinical accuracy, completeness, &amp; coherence.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Agent: Editor</strong></summary>
+            <div>
+                <ul><li>Receives all JSON data &amp; formats it into HTML, then converts to a PDF for distribution.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 4: Parallel Supplemental Material Generation</strong></summary>
+            <div>
+                <ul><li>In parallel w/ the main workflow, agents generate realistic clinical documents.</li><li>Examples: Arterial blood gas results, imaging findings, laboratory test results.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Step 5: Final Assembly &amp; Delivery</strong></summary>
+            <div>
+                <ul><li>Outputs from all agents are combined into a single, cohesive document.</li><li>The final scenario is delivered to the user&#x27;s email address.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Scope of Application &amp; Implementation Guide</strong></summary>
+            <div>
+                <ul><li>The AI-driven workflow has a broad scope of potential application in healthcare simulation.</li></ul>
+                
+        <details>
+            <summary><strong>Potential Applications</strong></summary>
+            <div>
+                <ul><li>Versatile system adaptable to a wide range of settings &amp; learners.</li></ul>
+                
+        <details>
+            <summary><strong>Adaptability</strong></summary>
+            <div>
+                <ul><li>Clinical Settings: Emergency medicine, critical care, obstetrics, pediatrics, mental health.</li><li>Learner Levels: Undergraduate students to experienced professionals.</li><li>Learning Objectives: Clinical skills, teamwork, communication, decision-making.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Additional Uses</strong></summary>
+            <div>
+                <ul><li>Multilingual output → global application.</li><li>Rapid generation of scenario variations for research.</li><li>Use w/ standardized patients, in-situ simulations, or in dedicated centers.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Instructions for Implementation &amp; Use</strong></summary>
+            <div>
+                <ul><li>1. Access n8n platform (self-hosted or cloud).</li><li>2. Import the pre-built scenario design workflow.</li><li>3. Obtain &amp; configure API keys for required AI models (OpenAI, Anthropic, Google).</li></ul>
+                
+        <details>
+            <summary><strong>Usage Steps</strong></summary>
+            <div>
+                <ul><li>4. Provide a clear, concise brief specifying scenario requirements.</li><li>5. Execute the workflow within n8n.</li><li>6. **CRITICAL STEP:** A subject matter expert must conduct a thorough review &amp; refinement of the AI-generated scenario.</li><li>7. Implement the finalized scenario in simulation activities.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Local Hosting Option</strong></summary>
+            <div>
+                <ul><li>System can be configured to use locally-hosted, smaller LLMs.</li><li>↓ ongoing operational costs &amp; addresses data privacy concerns.</li><li>Requires sufficient computational resources &amp; modest technical skills.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Evaluation: Pitfalls, Resources &amp; Lessons Learned</strong></summary>
+            <div>
+                <ul><li>Analysis of the system&#x27;s challenges, requirements, and key takeaways from the development process.</li></ul>
+                
+        <details>
+            <summary><strong>Potential Pitfalls &amp; Workarounds</strong></summary>
+            <div>
+                <ul><li>Acknowledging and addressing potential issues is critical for successful implementation.</li></ul>
+                
+        <details>
+            <summary><strong>Content Inaccuracy</strong></summary>
+            <div>
+                <ul><li>Concern: LLMs may produce factually incorrect or clinically inappropriate information.</li><li>Mitigation: **Rigorous review process by subject matter experts is crucial.**</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>AI Bias</strong></summary>
+            <div>
+                <ul><li>Concern: AI outputs may reflect biases present in training data.</li><li>Mitigation: Design prompts to encourage diverse representation; review outputs for inclusivity.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Technical Issues</strong></summary>
+            <div>
+                <ul><li>Concern: Problems w/ n8n platform or AI models.</li><li>Mitigation: Have backup plans &amp; access to technical support.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Self-Hosting Challenges</strong></summary>
+            <div>
+                <ul><li>Concern: Managing computational resources &amp; model updates.</li><li>Mitigation: Careful infrastructure planning &amp; regular update protocols.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Resources Needed &amp; Cost Estimation</strong></summary>
+            <div>
+                <ul><li>Implementation costs depend on the chosen deployment option.</li></ul>
+                
+        <details>
+            <summary><strong>Cost Components</strong></summary>
+            <div>
+                <ul><li>n8n platform access (self-hosted vs. cloud).</li><li>API access to commercial AI models (usage-based).</li><li>Self-hosted option: Initial server hardware costs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cost-Benefit Analysis</strong></summary>
+            <div>
+                <ul><li>Significant reduction in scenario development time may offset direct costs.</li><li>Estimated time reduction: ≈ 70–80%.</li><li>Translates to substantial labor cost savings.</li></ul>
+                
+        <details>
+            <summary><strong>Supporting Evidence</strong></summary>
+            <div>
+                <ul><li>Aligns w/ University of Toronto pilot program findings:</li><li>- Scenario development time ↓ by 73%.</li><li>- Maintained 92% clinical accuracy compared to human-authored cases.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Cost Management Strategies</strong></summary>
+            <div>
+                <ul><li>Self-hosted approach w/ local LLMs: Most cost-effective long-term solution, eliminates ongoing API fees.</li><li>Cloud-based approach w/ commercial APIs: Flexible, pay-as-you-go solution for occasional use.</li></ul>
+                
+        <details>
+            <summary><strong>Strategic Model Use</strong></summary>
+            <div>
+                <ul><li>Utilize free models (e.g., Gemini 2.0) for main workflow components.</li><li>Reserve premium models (e.g., GPT-4o, Claude 3.7) for specialized tasks.</li><li>Optimizes cost w/o compromising quality.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Lessons Learned</strong></summary>
+            <div>
+                <ul><li>The development process yielded several valuable insights.</li></ul>
+                
+        <details>
+            <summary><strong>Collaboration is Key</strong></summary>
+            <div>
+                <ul><li>Interdisciplinary collaboration between simulation experts &amp; technically-inclined individuals is paramount.</li><li>However, specialized AI expertise is not a prerequisite for implementation.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Iterative Refinement is Crucial</strong></summary>
+            <div>
+                <ul><li>The process of refining AI prompts &amp; workflow logic is essential for optimizing output quality &amp; accuracy.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Human Oversight is Non-Negotiable</strong></summary>
+            <div>
+                <ul><li>Reinforces the essential role of human expertise.</li><li>AI should be viewed as a powerful tool, not a replacement for human judgment.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>User Training is Necessary</strong></summary>
+            <div>
+                <ul><li>Educators require guidance on how to effectively interact w/ the AI tool &amp; interpret its outputs.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Ethical Considerations are Central</strong></summary>
+            <div>
+                <ul><li>Issues of accuracy, bias, &amp; intellectual property require careful attention throughout development.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Process Clarification</strong></summary>
+            <div>
+                <ul><li>Creating the AI workflow unexpectedly led to a deeper understanding of our own scenario design practices.</li><li>Forced us to make implicit knowledge explicit &amp; transferable.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Democratization of AI</strong></summary>
+            <div>
+                <ul><li>Sophisticated AI implementations are within reach of motivated clinicians &amp; educators w/o specialized technical expertise.</li><li>This has profound implications for accelerating innovation &amp; adoption of AI in healthcare education.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
