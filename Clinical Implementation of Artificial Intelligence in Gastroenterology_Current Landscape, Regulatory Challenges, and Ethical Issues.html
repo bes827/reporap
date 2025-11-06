@@ -1,0 +1,843 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clinical Implementation of Artificial Intelligence in Gastroenterology
+Current Landscape, Regulatory Challenges, and Ethical Issues</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Clinical Implementation of Artificial Intelligence in Gastroenterology</strong><br><em>Current Landscape, Regulatory Challenges, and Ethical Issues</em></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> Gastroenterology 2025;169:518–530</li><li>- <b>Focus:</b> This review provides an overview for the clinical implementation of AI in gastroenterology, exploring regulatory pathways, real-world evidence requirements, cost-effectiveness, and ethical/medicolegal concerns.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the term for the phenomenon where a lenient interpretation of 'substantial equivalence' allows generations of devices to be cleared based on iterative changes, potentially becoming dissimilar from the original predicate?</li><li>- What is the name of the international, consensus-based initiative aiming to develop recommendations for the composition and reporting of datasets for medical AI systems to tackle bias?</li><li>- In the EU, AI as a Medical Device (AIaMD) providing information for clinical decision-making will be classified as at least which risk class under the MDR?</li><li>- What is the term for the phenomenon where physicians may favor an algorithmic output over their own decision, even when it could be incorrect, due to strong trust in technology?</li><li>- A post-hoc analysis suggested that a CADx-enabled optical diagnosis strategy for diminutive rectosigmoid polyps could lead to what percentage reduction in average colonoscopy costs?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Overview</strong></summary>
+            <div>
+                <ul><li>- <b>Gastroenterology</b> is a leading specialty for AI innovation, with some of the most translationally mature applications in medicine.</li><li>- <b>Endoscopy AI</b> is particularly advanced, with regulatory approval for <u>computer-aided detection (CADe)</u> and <u>computer-aided diagnosis (CADx)</u> in colonoscopy.</li><li>- The clinical efficacy of <b>CADe</b> in colonoscopy is now supported by high-quality evidence from multiple <u>randomized controlled trials (RCTs)</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Key Implementation Challenges</strong></summary>
+            <div>
+                <ul><li>- Navigating evolving <b>regulatory hurdles</b> for AI as a medical device (AIaMD).</li><li>- Generating robust <b>real-world clinical evidence</b> to demonstrate impact on patient outcomes.</li><li>- Ensuring <b>cost-effectiveness</b> and establishing reimbursement models.</li><li>- Addressing novel challenges from emerging tech like <b>generative AI (genAI)</b>.</li><li>- Managing <b>ethical and medicolegal concerns</b> (data governance, patient harm, liability, bias).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regulatory Approval Pathways</strong></summary>
+            <div>
+                <ul><li>- Global variation exists, but common principles apply in major jurisdictions like the US and EU.</li><li>- Processes are defined to demonstrate <u>safety</u> and <u>clinical efficacy</u> based on intended use and risk classification.</li></ul>
+                
+        <details>
+            <summary><strong>🇺🇸 US Food and Drug Administration (FDA)</strong></summary>
+            <div>
+                <ul><li>- Devices are categorized into 3 classes based on risk: <b>Class I</b> (low), <b>Class II</b> (medium), and <b>Class III</b> (highest).</li></ul>
+                
+        <details>
+            <summary><strong>510(k) Clearance</strong></summary>
+            <div>
+                <ul><li>- Granted to devices that are <u>“substantially equivalent”</u> to a predicate device.</li><li>- Generally requires the least evidence, focusing on bench and performance data.</li><li>- It is the fastest and least resource-intensive option.</li><li>- <b>Note:</b> All endoscopy AI systems cleared via 510(k) have been evaluated in <q><u>RCT settings</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Premarket Approval (PMA)</strong></summary>
+            <div>
+                <ul><li>- Required for <b>Class III</b> (highest risk) devices.</li><li>- Most rigorous pathway, requiring extensive clinical evidence, often from <u>RCTs with US-representative populations</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>De Novo Pathway</strong></summary>
+            <div>
+                <ul><li>- Targets <u>novel devices</u> without a predicate.</li><li>- Bridges the gap between 510(k) and PMA, typically relying on pivotal studies.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🇪🇺 European Union (EU)</strong></summary>
+            <div>
+                <ul><li>- The new <b>Medical Device Regulation (MDR)</b> became effective in <q>2021</q>.</li><li>- Risk classes are similar to the FDA but with additional subcategories: <b>Class IIa</b> and <b>Class IIb</b> for medium-risk devices.</li><li>- The class determines the conformity assessment route, which usually requires an independent <u>notified body</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Current Status of Approved AI Devices</strong></summary>
+            <div>
+                <ul><li>- Most approved devices in gastroenterology relate to <b>endoscopy</b> and <b>radiology</b> (primarily liver-focused).</li></ul>
+                
+        <details>
+            <summary><strong>🇺🇸 Approved in the United States (FDA)</strong></summary>
+            <div>
+                <ul><li>- The first commercially approved AI endoscopy device was <b>GI Genius</b> (Medtronic), cleared via the De Novo Pathway in <q>2021</q>.</li><li>- All approved colonoscopy devices in the US are currently for <b>CADe only</b>.</li><li>- See Table 1 for a full list.</li></ul>
+                
+        <details>
+            <summary><strong>Key Endoscopy Devices</strong></summary>
+            <div>
+                <ul><li>- <b>GI GENIUS</b> (Medtronic): CADe for polyp detection.</li><li>- <b>EndoScreener</b> (Wision AI): Cleared via 510(k) using GI Genius as a predicate.</li><li>- <b>SKOUT</b> (Iterative Health): Cleared via 510(k) using GI Genius as a predicate.</li><li>- <b>Navicam Proscan</b> (AnX Robotics): Automates reading of video capsule endoscopy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Radiology Devices</strong></summary>
+            <div>
+                <ul><li>- Most focus on the <b>liver</b>.</li><li>- Functions include: assessing fatty infiltration (<b>HepaFatSmart</b>), assessing liver lesions on CT (<b>iCAS-LV</b>), and planning ablation procedures (<b>VisAble.IO</b>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🇪🇺 Approved in the European Union (CE Marking)</strong></summary>
+            <div>
+                <ul><li>- Many of the same devices as the US are approved, but for a <u>broader range of applications</u>.</li><li>- Unlike the FDA, the EU <q>does not make the evidence used for approval publicly available</q>.</li><li>- See Table 2 for a full list.</li></ul>
+                
+        <details>
+            <summary><strong>Expanded Applications</strong></summary>
+            <div>
+                <ul><li>- <b>CADx</b> for colorectal polyps.</li><li>- Endoscopic scoring of <b>ulcerative colitis</b> activity (SMARTIBD).</li><li>- <b>CADe</b> of Barrett’s neoplasia (CADU, WISE VISION).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Regulatory Difference</strong></summary>
+            <div>
+                <ul><li>- <b>CADe</b> and <b>CADx</b> AI systems were approved in the EU <q><u>without evidence from RCTs</u></q>, in stark contrast to the FDA's more rigorous requirements.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regulatory Challenges & Future Directions</strong></summary>
+            <div>
+                <ul><li>- Regulatory uncertainty for AI as a Medical Device (AIaMD) may delay technological innovation.</li><li>- Traditional pathways are not well-designed for the dynamic pace of AI.</li></ul>
+                
+        <details>
+            <summary><strong>EU Challenges</strong></summary>
+            <div>
+                <ul><li>- The new <b>EU MDR</b> poses significant challenges, especially for small- and medium-sized enterprises (SMEs).</li><li>- AIaMD providing information for clinical decision making is classified as at least <q><b>Class IIa</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>MDR Impact</strong></summary>
+            <div>
+                <ul><li>- A 2022 survey showed that MDR certificates had not been issued for <q>>85%</q> of previously certified devices.</li><li>- Up to <q>30%</q> of SMEs were unable to access an MDR-designated notified body.</li><li>- Consequence: Many companies are planning to <u>reduce their portfolio</u> or <u>deprioritize Europe</u> for first approval.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>EU AI Act</strong></summary>
+            <div>
+                <ul><li>- The world's first comprehensive legal framework on AI.</li><li>- Creates strict rules for high-risk AI systems, requiring comprehensive AI-specific technical documentation (<u>ISO/IEC 420001</u>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>US FDA Challenges & Directions</strong></summary>
+            <div>
+                <ul><li>- Currently no AI-specific clearance pathway; most use the <b>510(k) pathway</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Predicate Creep</strong></summary>
+            <div>
+                <ul><li>- A key risk of the 510(k) pathway.</li><li>- Lenient interpretation of 'substantial equivalence' allows generations of devices to be cleared with iterative changes, resulting in devices dissimilar from original predicates.</li><li>- Analysis showed almost <q><u>one-third</u></q> of FDA-cleared AI/ML algorithms were based on a non-AI/ML initial predicate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>FDA's Proposed Solutions</strong></summary>
+            <div>
+                <ul><li>- <b>Total Product Lifecycle Approach:</b> An adaptive regulatory scheme for AI that can continuously learn and improve.</li><li>- <b>Predetermined Change Control Plans:</b> Allows manufacturers to prespecify and get premarket authorization for intended modifications without new submissions.</li><li>- <b>Global Collaboration:</b> Working with UK and Canada on <u>Good Machine Learning Practices</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Generative AI (genAI) Challenges</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> AI models that generate derived synthetic content (images, text, etc.).</li><li>- Often built on broad 'foundation models'.</li></ul>
+                
+        <details>
+            <summary><strong>Unique Regulatory Issues</strong></summary>
+            <div>
+                <ul><li>- Difficult to define a clearly constrained <u>intended use</u> due to broad capabilities.</li><li>- Prone to <b>“hallucinations”</b> (generation of erroneous or false content).</li><li>- Lack of transparency regarding model development, especially when using off-the-shelf software.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Barriers to Clinical Implementation</strong></summary>
+            <div>
+                <ul><li>- Beyond regulation, several other factors hinder widespread adoption of AI in gastroenterology.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Trials & Real-World Evidence</strong></summary>
+            <div>
+                <ul><li>- Most AI evidence consists of preclinical or small-scale studies.</li><li>- <b>Gastroenterology</b> is the largest contributor to the <q>65</q> published prospective RCTs for AI health technologies.</li></ul>
+                
+        <details>
+            <summary><strong>RCTs vs. Observational Studies</strong></summary>
+            <div>
+                <ul><li>- <b>RCTs:</b> Overwhelmingly show improved adenoma detection rate (ADR) with CADe, but may induce a <u>Hawthorne effect</u> (behavior change due to trial participation).</li><li>- <b>Observational Studies:</b> Found CADe provided less or no efficacy, but are prone to selection bias and lack controlled groups.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human-AI Interaction</strong></summary>
+            <div>
+                <ul><li>- Clinical efficacy is highly dependent on the interaction between the human operator and the AI system.</li></ul>
+                
+        <details>
+            <summary><strong>Behavioral Risks</strong></summary>
+            <div>
+                <ul><li>- <b>Overreliance:</b> CADe could lead to unconscious degradation in the quality of mucosal exposure.</li><li>- <b>Altered Gaze:</b> Eye-tracking studies showed CADe led to less time spent looking at the <u>peripheries</u> of the screen.</li><li>- <b>Detrimental Interaction:</b> CADx studies showed the highest accuracy was achieved by <q><u>standalone AI</u></q>, with human interaction being detrimental to performance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physician Sentiment Biases</strong></summary>
+            <div>
+                <ul><li>- <b>Automation Bias:</b> Tendency to favor the AI's output over one's own judgment, even when the AI is incorrect.</li><li>- <b>Algorithmic Aversion:</b> General mistrust of AI, leading to rapid loss of confidence after errors, even if overall performance is superior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Trial Endpoints & Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b>ADR</b> is an established endpoint, but CADe mainly increases detection of <u>diminutive polyps (<5 mm)</u>.</li><li>- The impact of detecting these small lesions on long-term colorectal cancer (CRC) incidence is <u>uncertain</u>.</li><li>- There is a potential risk of <b>overdiagnosis</b> leading to unnecessary surveillance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cost-Effectiveness & Reimbursement</strong></summary>
+            <div>
+                <ul><li>- A major current barrier to implementation with very few published economic evaluations.</li></ul>
+                
+        <details>
+            <summary><strong>Cost Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Short-term:</b> Costs may <u>increase</u> with CADe due to more polypectomies, pathology exams, and surveillance.</li><li>- <b>Long-term:</b> Microsimulation studies estimate significant savings from reduced CRC incidence, with one study projecting yearly savings of <q><b>$290 million</b></q> in the US.</li></ul>
+                
+        <details>
+            <summary><strong>CADx Cost Savings</strong></summary>
+            <div>
+                <ul><li>- A post-hoc analysis of a clinical trial suggested a CADx-enabled optical diagnosis strategy for diminutive rectosigmoid polyps could lead to an <q><u>11% reduction</u></q> in average colonoscopy costs.</li><li>- This could potentially save <q><b>$85.2 million</b></q> in the US annually.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reimbursement Models</strong></summary>
+            <div>
+                <ul><li>- Currently, there is <u>no specific reimbursement</u> for CADe in colonoscopy in the United States.</li><li>- Japan's public health insurance announced an add-on payment for a CADe tool in <q><b>February 2024</b></q>.</li><li>- Alternative models proposed include value-based payments, time-limited reimbursements, and advance market commitments.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ethical and Medicolegal Issues</strong></summary>
+            <div>
+                <ul><li>- Implementation of AI raises major concerns regarding data governance, patient harm, accountability, and bias.</li></ul>
+                
+        <details>
+            <summary><strong>Data Governance</strong></summary>
+            <div>
+                <ul><li>- AI development requires vast quantities of data, creating privacy challenges (HIPAA, GDPR).</li><li>- <b>Anonymization:</b> Full anonymization is difficult to achieve, with risks of re-identification, especially for rare diseases.</li><li>- <b>Consent:</b> Traditional consent models are too narrow for future secondary AI research. <u>Broader consent strategies</u> complemented by robust governance may be needed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Accountability & Liability</strong></summary>
+            <div>
+                <ul><li>- When harm occurs, liability is complex: is it the clinician, hospital, developer, or data labeler?</li><li>- A key distinction is between <u>improper use</u> of the AI and errors from a <u>flawed algorithm</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Role of AI Autonomy</strong></summary>
+            <div>
+                <ul><li>- As AI autonomy increases, the burden of responsibility is likely to shift toward <b>algorithm developers</b>.</li><li>- The American Medical Association (AMA) policy states that for fully autonomous systems, the developer must <q><u>accept liability</u></q> and hold medical liability insurance.</li><li>- <b>Example:</b> Digital Diagnostics carries medical malpractice insurance for its autonomous AI system for diabetic retinopathy screening.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lessons from Other Industries</strong></summary>
+            <div>
+                <ul><li>- <b>Automotive Industry:</b> SAE's 6-level classification for driving automation (Level 0 to 5) can be adapted for healthcare. Liability is shifting towards corporations (e.g., Mercedes accepting responsibility for accidents).</li><li>- <b>Manufacturing Industry:</b> Collaborative robots, or "cobots," work alongside humans to enhance precision, a model that could apply to complex procedures like endoscopic submucosal dissection.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bias & Health Inequalities</strong></summary>
+            <div>
+                <ul><li>- AI algorithms may introduce bias and exacerbate health inequalities.</li><li>- This can occur at multiple stages: problem selection, data collection, algorithm development, and post-deployment.</li></ul>
+                
+        <details>
+            <summary><strong>Mitigation Efforts</strong></summary>
+            <div>
+                <ul><li>- <b>Good Machine Learning Practice:</b> Guiding principles from regulatory bodies recommend that data should be <u>representative</u> of the intended patient population.</li><li>- <b>Transparency Issue:</b> Patient demographic characteristics for training datasets are often not in the public domain for most CADe software.</li><li>- <b>STANDING Together Initiative:</b> An international, consensus-based exercise to develop recommendations for the composition and reporting of datasets to underpin medical AI and tackle bias.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusions</strong></summary>
+            <div>
+                <ul><li>- The path to real-world clinical implementation of AI in gastroenterology is complex and involves overcoming numerous challenges.</li><li>- Key hurdles include evolving <b>regulatory landscapes</b>, the need for high-quality <b>real-world evidence</b>, and the development of viable <b>reimbursement models</b>.</li><li>- Addressing issues of <b>bias</b>, <b>accountability</b>, and <b>data governance</b> is critical for patient safety and trust.</li><li>- Ongoing proactive <b>collaboration</b> between all stakeholders is required to harness the transformative potential of AI to improve patient care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
