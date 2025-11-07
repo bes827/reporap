@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Use of Natural Language Processing to Objectively Identify Hepatic Encephalopathy</title>
+<style>
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    color: #2c2c2c;
+    padding: 40px;
+}
+
+/* Mindmap container */
+.mindmap {
+    max-width: 900px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.mindmap ul {
+    margin: 0.5em 0 1em 1em;
+    padding-left: 1.5em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #a855f7; /* prettier bullets */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+
+/* Collapsible sections */
+.mindmap details {
+    border-left: 4px solid #8b5cf6;
+    background: #ffffff;
+    margin: 15px 0;
+    padding: 16px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover glow */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+}
+
+/* Summary styling */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    color: #4c1d95;
+}
+
+/* Custom arrow */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Titles */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.3em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Description bullets */
+.mindmap ul {
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    font-size: 0.97em;
+    color: #444;
+    list-style-type: disc;
+    position: relative;
+    padding-left: 4px;
+}
+
+/* Nesting indent style */
+.mindmap details > div > details {
+    margin-left: 20px;
+    border-color: #a855f7;
+    background: #f9f5ff;
+}
+
+/* Fade-in effect */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Description box */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 1px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 4px 6px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    transition: background 0.3s ease;
+}
+
+.mindmap .desc-box:hover {
+    background: #f9f4ff;
+}
+
+
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.7); /* semi-transparent purple */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    margin: 0 6px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.85); /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
+#level-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(124, 58, 237, 0.1);
+    padding: 8px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move; /* shows move cursor */
+}
+
+</style>
+
+
+
+
+</style>
+</head>
+<body>
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="setMindmapLevel(1)">Level 1</button>
+    <button onclick="setMindmapLevel(2)">Level 2</button>
+    <button onclick="setMindmapLevel(3)">Level 3</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Use of Natural Language Processing to Objectively Identify Hepatic Encephalopathy</strong></summary>
+            <div>
+                <ul><li>Journal: American Journal of Gastroenterology</li><li>DOI: 10.14309/ajg.0000000000003824</li><li>Aim: Use natural language processing (NLP) to identify terms associated with an inpatient hepatic encephalopathy (HE) episode and validate them across multiple cohorts.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>1. What are the top 5 text-derived variables that consistently showed the highest value in determining an inpatient HE episode across multiple cohorts?</li><li>2. In the derivation cohort, what was the sensitivity and Negative Predictive Value (NPV) of using any of the top 5 NLP terms to identify HE?</li><li>3. How many points does an inpatient HE diagnosis add to the MELD3.0 score for mortality prediction?</li><li>4. In the external validation cohort (VCU NACSELD), which single term had the highest relative importance in the machine learning analysis for identifying HE?</li><li>5. While many symptoms are noted in patient charts, which terms were considered too non-specific for HE diagnosis by liver transplant physicians and subsequently removed from the analysis?</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Background &amp; Rationale</strong></summary>
+            <div>
+                <ul><li>HE → significant clinical, psychosocial, &amp; financial burden in decompensated cirrhosis.</li><li>Subjectivity in HE diagnosis hinders objective outcome analysis.</li><li>This study aims to create an objective assessment of HE episodes using NLP.</li></ul>
+                
+        <details>
+            <summary><strong>Impact on Liver Transplant (LT) Priority</strong></summary>
+            <div>
+                <ul><li>HE is inadequately captured by current LT priority systems.</li><li>An inpatient HE diagnosis adds 4-7 points to MELD3.0 for mortality prediction.</li><li>Reluctance to add HE-related exception points is due to diagnostic subjectivity.</li></ul>
+                
+        <details>
+            <summary><strong>MELD3.0 Score Inadequacy</strong></summary>
+            <div>
+                <ul><li>MELD3.0, despite including serum albumin, does not adequately reflect HE burden.</li><li>Patients w/ HE suffer from a downward spiral: sarcopenia, malnutrition, infections, re-admissions.</li><li>LT is the main curative treatment, breaking this cycle.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Impact on Clinical Trials</strong></summary>
+            <div>
+                <ul><li>Subjectivity in HE diagnosis affects its use as a primary or secondary endpoint.</li><li>Often requires repeated, detailed manual adjudication committee reviews.</li><li>Objective NLP-based definitions could streamline adjudication.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Study Methodology</strong></summary>
+            <div>
+                <ul><li>A multi-cohort study using NLP &amp; machine learning (ML) to identify key HE-related terms in clinical notes.</li><li>Gold standard for HE diagnosis involved chart validation by two independent assessors.</li><li>Terms were initially selected based on GI society guidelines.</li></ul>
+                
+        <details>
+            <summary><strong>Cohort Design</strong></summary>
+            <div>
+                <ul><li>Study involved a derivation cohort and two independent validation cohorts (internal &amp; external).</li></ul>
+                
+        <details>
+            <summary><strong>Derivation Cohort: Richmond VA-CDW</strong></summary>
+            <div>
+                <ul><li>Source: Veterans Affairs Corporate Data Warehouse (2009-2019).</li><li>Population: 432 cirrhosis inpatients w/ MELD3.0 score ≥ 15.</li><li>Notes Analyzed: 4,048.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Internal Validation Cohort: Richmond VA NACSELD</strong></summary>
+            <div>
+                <ul><li>Source: North American Consortium for the Study of End-stage Liver Disease (NACSELD) registry (2011-2016).</li><li>Population: 164 independent VA patients.</li><li>Notes Analyzed: 1,536.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>External Validation Cohort: VCU NACSELD</strong></summary>
+            <div>
+                <ul><li>Source: NACSELD registry at Virginia Commonwealth University (2011-2016).</li><li>Population: 145 patients.</li><li>Notes Analyzed: 6,547.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>HE Diagnosis (Gold Standard)</strong></summary>
+            <div>
+                <ul><li>Based on clinical assessment, not just codes, to avoid bias.</li><li>Required agreement between two independent assessors.</li></ul>
+                
+        <details>
+            <summary><strong>Assessment Criteria</strong></summary>
+            <div>
+                <ul><li>Clinical exam: Documented asterixis or altered mental status (AMS).</li><li>Context: Lab features &amp; history suggesting a precipitating factor.</li><li>Treatment: Initiation or continuation of lactulose and/or rifaximin.</li><li>Response: Judgement of mental status response to therapies.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>NLP &amp; Machine Learning Process</strong></summary>
+            <div>
+                <ul><li>NLP extracted characteristics from raw text, accounting for negations/misspellings.</li><li>ML (XGBoost algorithm) assessed the relative contribution of each text-derived feature.</li><li>Two independent methods (univariable analysis &amp; ML) were used to identify key predictors.</li></ul>
+                
+        <details>
+            <summary><strong>Term Selection &amp; Refinement</strong></summary>
+            <div>
+                <ul><li>Initial terms derived from HE guidelines by GI societies.</li><li>Most frequent terms were sent to liver transplant physicians for review.</li><li>Non-specific terms (e.g., anxiety, depression) were removed from final analysis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Analysis Focus</strong></summary>
+            <div>
+                <ul><li>Focused on top 5 terms with the strongest association between HE vs. no-HE groups.</li><li>Primary metrics: Sensitivity &amp; Negative Predictive Value (NPV) to effectively rule out HE.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Key Findings &amp; Results</strong></summary>
+            <div>
+                <ul><li>Five key text-based variables consistently identified HE across all three cohorts.</li><li>These variables were: asterixis, altered mental status (AMS), confusion, initiation of HE meds, &amp; continuation of HE meds.</li><li>The combination of these terms was superior to any individual term in defining HE.</li></ul>
+                
+        <details>
+            <summary><strong>Derivation Cohort (Richmond VA-CDW)</strong></summary>
+            <div>
+                <ul><li>N=432 Veterans; 34.3% diagnosed w/ HE.</li><li>HE patients had significantly ↑ MELD-Na scores &amp; ↓ serum albumin.</li><li>Top 5 terms showed strong association w/ HE (all p&lt;0.001).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Performance (Any of 5 Terms)</strong></summary>
+            <div>
+                <ul><li>Sensitivity: 85.8%</li><li>NPV: 82.1%</li><li>Specificity: 33.8%</li><li>PPV: 40.3%</li></ul>
+                
+        <details>
+            <summary><strong>Performance of Subsets</strong></summary>
+            <div>
+                <ul><li>Removing asterixis: No Δ in sensitivity/NPV.</li><li>Removing asterixis + initiation of meds: Sensitivity/NPV ↓ to 85%/81%.</li><li>Continuation of meds alone: Sensitivity/NPV ↓ to 47%/73%.</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Machine Learning: Feature Importance</strong></summary>
+            <div>
+                <ul><li>1. Asterixis: 32.5%</li><li>2. Continuation of Lactulose/Rifaximin: 17.8%</li><li>3. Initiation of Lactulose/Rifaximin: 11.0%</li><li>4. Confusion: 8.9%</li><li>5. Excessive sleepiness: 8.1%</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Internal Validation Cohort (Richmond VA NACSELD)</strong></summary>
+            <div>
+                <ul><li>N=164 patients; 26.2% diagnosed w/ HE.</li><li>HE patients had significantly ↑ MELD-Na scores.</li><li>The same 5 terms from the derivation cohort were most strongly associated w/ HE.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Performance (Any of 5 Terms)</strong></summary>
+            <div>
+                <ul><li>Sensitivity: 100%</li><li>NPV: 100%</li><li>Specificity: 25.6%</li><li>PPV: 32.3%</li><li>Note: Overly optimistic results may be due to homogenous cohort (~95% male).</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Machine Learning: Feature Importance</strong></summary>
+            <div>
+                <ul><li>1. Asterixis: 32.3%</li><li>2. Confusion: 11.4%</li><li>3. Altered Mental Status: 10.6%</li><li>4. Continuation of lactulose/rifaximin: 9.9%</li><li>5. Initiation of Lactulose/Rifaximin: 9.3%</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>External Validation Cohort (VCU NACSELD)</strong></summary>
+            <div>
+                <ul><li>N=145 patients; 35.2% diagnosed w/ HE.</li><li>HE patients had ↑ MELD-Na, longer length of stay, &amp; were more likely to be intubated.</li><li>Application of the 5 VA-derived terms remained highly effective.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Performance (VA-Derived 5 Terms)</strong></summary>
+            <div>
+                <ul><li>Sensitivity: 92.2%</li><li>NPV: 83.3%</li><li>Specificity: 21.3%</li><li>PPV: 38.8%</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Machine Learning: Feature Importance</strong></summary>
+            <div>
+                <ul><li>1. Continuation of Lactulose/Rifaximin: 25.7%</li><li>2. Delirium: 16.6%</li><li>3. Altered Mental Status: 10.3%</li><li>4. Asterixis: 8.1%</li><li>5. Initiation of Lactulose/Rifaximin: 7.6%</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Discussion &amp; Clinical Implications</strong></summary>
+            <div>
+                <ul><li>Simple terms spanning signs, symptoms, &amp; treatment decisions can objectively define HE.</li><li>This NLP-based approach can be validated across different hospital systems (Veteran and non-Veteran).</li><li>The combination of factors is more powerful than their individual presence.</li></ul>
+                
+        <details>
+            <summary><strong>Application for LT Priority</strong></summary>
+            <div>
+                <ul><li>Provides an objective, automated tool to operationalize HE diagnosis.</li><li>Could help ensure faith in the LT system by providing consistent measures.</li><li>May reduce potential for &quot;gaming the system&quot; if HE is tied to LT priority points.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Application for Clinical Trials</strong></summary>
+            <div>
+                <ul><li>Can standardize the definition of HE as a trial endpoint.</li><li>Useful for adjudication in remotely obtained charts, especially for off-site HE events.</li><li>Aligns with FDA definitions requiring an amalgamation of symptoms, signs, and treatment decisions.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Challenge of Non-Specific Symptoms</strong></summary>
+            <div>
+                <ul><li>Many terms in notes are non-specific: depression, anxiety, tremors, agitation, fatigue, slurred speech.</li><li>These terms were either not significantly different or deemed non-specific by clinicians.</li><li>This highlights the difficulty of a purely symptom-based HE diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        
+        <details>
+            <summary><strong>Study Limitations</strong></summary>
+            <div>
+                <ul><li>Relatively modest number of patients.</li><li>Inability to determine specific HE grades.</li><li>Gold standard was based on clinical assessment, which has potential for bias (mitigated by using 2 assessors).</li></ul>
+                
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+            </div>
+        </details>
+        
+    </div>
+    
+</div>
+
+
+<script>
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+
+    // Close all
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+
+    // Open based on depth
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') depth++;
+            parent = parent.parentElement;
+        }
+        if (depth < level) detail.setAttribute('open', '');
+    });
+}
+
+// Automatically open to level 1 on page load
+window.addEventListener('DOMContentLoaded', () => {
+    setMindmapLevel(1);
+});
+
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    const onMouseDown = (e) => {
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+
+    const elementDrag = (e) => {
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none"; // cancel centering transform
+        elmnt.style.bottom = "auto"; // cancel fixed bottom
+    };
+
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+
+    onMouseDown(event);
+}
+</script>
+
+
+</body>
+</html>
