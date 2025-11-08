@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Large Language Model for Interpreting the Paris Classification of Colorectal Polyps</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Large Language Model for Interpreting the Paris Classification of Colorectal Polyps</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> Endosc Int Open 2025; 13: a27030209</li><li>- <b>Publication Date:</b> 2025-10-09</li><li>- <b>DOI:</b> 10.1055/a-2703-0209</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What was the M-LLM's accuracy in differentiating <b>sessile</b> from <b>pedunculated</b> lesions?</li><li>- What was the M-LLM's <b>specificity</b> for the same task (differentiating sessile from pedunculated lesions)?</li><li>- What percentage of pedunculated lesions were misclassified by the M-LLM as sessile?</li><li>- What was the Fleiss' κ for interobserver agreement among <b>expert</b> endoscopists?</li><li>- What was the primary reason suggested for the M-LLM's failure to identify pedunculated morphology?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Background & Objective</strong></summary>
+            <div>
+                <ul><li>- The <b>Paris classification</b> is used for clinically relevant morphological definition of colorectal neoplasia.</li><li>- However, its application suffers from <u>significant interobserver variability</u>, especially for non-polypoid lesions.</li><li>- This study aimed to evaluate a Multimodal Large Language Model (<b>M-LLM</b>), GPT-4o, in classifying colorectal polyps according to the Paris classification compared to human endoscopists.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Study Design & Cohort (SUN Database)</strong></summary>
+            <div>
+                <ul><li>- The study utilized the <b>SUN database</b> from Showa University Northern Yokohama Hospital, Japan.</li><li>- It included colonoscopy videos of <q><b>100</b></q> unique polyps from <q><b>99</b></q> patients.</li><li>- An M-LLM (GPT-4o) and six endoscopists (3 expert, 3 non-expert) classified the polyps based on five representative frames per lesion.</li></ul>
+                
+        <details>
+            <summary><strong>SUN Database Characteristics (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Median Polyp Size:</b> <q><b>5mm</b></q> (IQR 3–7 mm).</li><li>- <b>Diminutive Polyps (≤5mm):</b> <q><b>60%</b></q> of the dataset.</li><li>- <b>Histology:</b> <q><b>87%</b></q> were adenomas.</li><li>- <b>Polypoid/Non-polypoid Ratio:</b> <q><b>66/34</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Paris Classification Distribution</strong></summary>
+            <div>
+                <ul><li>- <b>Is (Sessile):</b> <q><b>49</b></q></li><li>- <b>IIa (Superficial elevated):</b> <q><b>34</b></q></li><li>- <b>Isp (Semi-pedunculated):</b> <q><b>9</b></q></li><li>- <b>Ip (Pedunculated):</b> <q><b>8</b></q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Protruded Lesions Breakdown</strong></summary>
+            <div>
+                <ul><li>- <b>Pedunculated (Ip/Isp):</b> <q><b>17</b></q> lesions.</li><li>- <b>Sessile (Is):</b> <q><b>49</b></q> lesions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Primary Outcome: Differentiating <u>Non-Polypoid</u> vs. <u>Polypoid</u> Lesions</strong></summary>
+            <div>
+                <ul><li>- This task involved distinguishing <b>non-polypoid</b> lesions (Paris IIa, IIc) from <b>polypoid/protruded</b> lesions (Paris Is, Ip, Isp).</li><li>- Performance metrics are detailed in <b>Table 2</b> and <b>Fig 1 & 2</b>.</li></ul>
+                
+        <details>
+            <summary><strong>M-LLM Performance</strong></summary>
+            <div>
+                <ul><li>- <b>Accuracy:</b> <q><b>73%</b></q> (95% CI 63%-81%)</li><li>- <b>Sensitivity:</b> <q><b>35%</b></q> (95% CI 20%-54%) ---> <u>Low ability to correctly identify non-polypoid lesions</u>.</li><li>- <b>Specificity:</b> <q><b>92%</b></q> (95% CI 83%-97%) ---> <u>High ability to correctly identify polypoid lesions</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human Endoscopist Performance</strong></summary>
+            <div>
+                <ul><li>- <b>Experts:</b> Accuracy <q><b>75%</b></q>, Sensitivity <q><b>53%</b></q>, Specificity <q><b>86%</b></q>.</li><li>- <b>Non-Experts:</b> Accuracy <q><b>77%</b></q>, Sensitivity <q><b>56%</b></q>, Specificity <q><b>88%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Conclusion:</b> Comparable Performance</strong></summary>
+            <div>
+                <ul><li>- M-LLM performance was <u>statistically comparable</u> to both experts (P=0.84) and non-experts (P=0.52).</li><li>- <b>Key Issue:</b> All groups showed <u>high specificity</u> but <u>low sensitivity</u>, meaning non-polypoid lesions were frequently misclassified as polypoid.</li><li>- This may be due to the inherent ambiguity of the Paris classification for small lesions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Secondary Outcome: Differentiating <u>Sessile</u> vs. <u>Pedunculated</u> Lesions</strong></summary>
+            <div>
+                <ul><li>- This task, performed within the subset of protruded lesions, involved distinguishing <b>sessile</b> (Is) from <b>pedunculated</b> (Ip, Isp) morphologies.</li><li>- Performance metrics are detailed in <b>Table 2</b> and <b>Fig 1 & 2</b>.</li></ul>
+                
+        <details>
+            <summary><strong>M-LLM Performance: <u>Major Failure</u></strong></summary>
+            <div>
+                <ul><li>- <b>Accuracy:</b> <q><b>55%</b></q> (95% CI 42%-67%)</li><li>- <b>Sensitivity:</b> <q><b>69%</b></q> (95% CI 55%-82%)</li><li>- <b>Specificity:</b> <u>Extremely poor</u> at <q><b>12%</b></q> (95% CI 1%-36%) ---> <u>Failed to correctly identify pedunculated lesions</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Misclassification Details</strong></summary>
+            <div>
+                <ul><li>- The M-LLM misclassified <q><b>15 out of 17</b></q> (88%) pedunculated polyps as sessile (Is).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human Endoscopist Performance</strong></summary>
+            <div>
+                <ul><li>- <b>Experts:</b> Accuracy <q><b>76%</b></q>, Specificity <q><b>82%</b></q>.</li><li>- <b>Non-Experts:</b> Accuracy <q><b>77%</b></q>, Specificity <q><b>88%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Conclusion:</b> M-LLM Underperformed Significantly</strong></summary>
+            <div>
+                <ul><li>- M-LLM accuracy was <u>significantly lower</u> than experts (P=0.02) and non-experts (P=0.01).</li><li>- The failure was driven by the <u>abysmal specificity</u> (P < 0.01 vs. both human groups).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interobserver Agreement</strong></summary>
+            <div>
+                <ul><li>- Agreement was measured to assess consistency within each group of raters.</li></ul>
+                
+        <details>
+            <summary><strong>M-LLM (3 context-reset runs)</strong></summary>
+            <div>
+                <ul><li>- <b>Fleiss’ κ:</b> <q><b>0.522</b></q></li><li>- <b>Mean Pair-wise Agreement:</b> <q><b>0.767</b></q></li><li>- Showed the <u>highest internal consistency</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expert Endoscopists</strong></summary>
+            <div>
+                <ul><li>- <b>Fleiss’ κ:</b> <q><b>0.500</b></q> (Moderate concordance)</li><li>- <b>Mean Pair-wise Agreement:</b> <q><b>0.673</b></q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Non-Expert Endoscopists</strong></summary>
+            <div>
+                <ul><li>- <b>Fleiss’ κ:</b> <q><b>0.462</b></q></li><li>- <b>Mean Pair-wise Agreement:</b> <q><b>0.640</b></q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Explaining M-LLM Pitfalls: Generative AI Insights</strong></summary>
+            <div>
+                <ul><li>- To understand why the M-LLM failed to identify pedunculated lesions, its generative capabilities were used to visualize its 'understanding' of polyp morphology (<b>Fig. 3</b>).</li></ul>
+                
+        <details>
+            <summary><strong>Key Finding: Flawed Internal Representation</strong></summary>
+            <div>
+                <ul><li>- The M-LLM has an <u>oversimplified and non-physiological</u> internal representation of a polyp stalk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Characteristics of Generated Images</strong></summary>
+            <div>
+                <ul><li>- Stalks were depicted as <b>geometrical, rigid, and unnaturally cylindrical</b>.</li><li>- The images lacked realistic physical properties like <b>gravity and tissue pliability</b>.</li><li>- This contrasts with real endoscopic images where stalks often bend or lie along the mucosal surface.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Study Limitations</strong></summary>
+            <div>
+                <ul><li>- <b>Paris Classification Ambiguity:</b> Inherent complexity and subtlety of the classification, especially for small polyps.</li><li>- <b>Small Cohort:</b> Modest, single-center dataset of <q><b>100</b></q> polyps limits generalizability.</li><li>- <b>Exploratory Design:</b> No multiplicity correction was applied, risking type-I error.</li><li>- <b>No Height Estimation Tool:</b> Lack of biopsy forceps for scale, a limitation that affects both AI and human raters in clinical practice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Implications & Future Directions</strong></summary>
+            <div>
+                <ul><li>- M-LLMs show potential for endoscopic assessment despite current limitations, particularly their failure with underrepresented morphologies.</li></ul>
+                
+        <details>
+            <summary><strong>Potential Clinical Applications</strong></summary>
+            <div>
+                <ul><li>- <b>Real-time Support:</b> Could run with CADe systems to highlight subtle non-polypoid features.</li><li>- <b>Automated Reporting:</b> Could write the corresponding Paris code directly into structured reports.</li><li>- <b>Quality Assurance:</b> Post-procedure mining of videos to populate morphology-based quality dashboards.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Required Future Improvements</strong></summary>
+            <div>
+                <ul><li>- <b>Targeted Fine-Tuning:</b> M-LLMs need further training on balanced, domain-specific, annotated datasets.</li><li>- <b>Focus on Underrepresented Features:</b> Special emphasis is needed on features like <u>stalk morphology</u> to improve performance on less common polyp types.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
