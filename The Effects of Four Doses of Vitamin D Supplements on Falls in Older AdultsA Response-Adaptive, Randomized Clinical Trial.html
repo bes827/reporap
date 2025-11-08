@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Effects of Four Doses of Vitamin D Supplements on Falls in Older Adults
+A Response-Adaptive, Randomized Clinical Trial</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Effects of Four Doses of Vitamin D Supplements on Falls in Older Adults</strong><br><em>A Response-Adaptive, Randomized Clinical Trial</em></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> Ann Intern Med. 2021;174:145–156.</li><li>- <b>Publication Date:</b> 8 December 2020.</li><li>- <b>DOI:</b> 10.7326/M20-3812</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What was the serum 25-hydroxyvitamin D [25-(OH)D] level range for trial participants?</li><li>- Which dose of Vitamin D3 was ultimately selected as the 'best dose' for preventing falls during the dose-finding stage?</li><li>- In the final analysis, what was the hazard ratio for a <u>serious fall</u> in the group receiving 1000 IU/d or more compared to the 200 IU/d group?</li><li>- What was the hazard ratio for a <u>fall with hospitalization</u> in the group receiving 1000 IU/d or more compared to the 200 IU/d group?</li><li>- What was the final conclusion regarding vitamin D supplementation at doses of 1000 IU/d or higher for fall prevention in this population?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Objective & Background</strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> To compare the effects of 4 different doses of vitamin D3 supplements on falls in older adults.</li><li>- <b>Background:</b> Evidence for vitamin D in fall prevention is inconsistent, possibly due to differences in dosage, administration, and study design.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Hypothesis</strong></summary>
+            <div>
+                <ul><li>- The primary hypothesis was that <u>high-dose</u> vitamin D supplementation would reduce the risk for falls.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Study Design (STURDY Trial)</strong></summary>
+            <div>
+                <ul><li>- <b>Design:</b> 2-stage Bayesian, response-adaptive, randomized trial.</li><li>- <b>Setting:</b> 2 community-based research units in Maryland.</li></ul>
+                
+        <details>
+            <summary><strong>Participants</strong></summary>
+            <div>
+                <ul><li>- <b>Total:</b> <q>688</q> participants.</li><li>- <b>Age:</b> <q>70 years and older</q>.</li><li>- <b>Criteria:</b> Elevated fall risk and low serum 25-hydroxyvitamin D [25-(OH)D] levels.</li></ul>
+                
+        <details>
+            <summary><strong>Inclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Serum 25-(OH)D level: <q><b>25 to 72.5 nmol/L</b></q>.</li><li>- <b>Elevated fall risk defined by self-report of one or more:</b></li><li>- ≥2 falls or ≥1 injurious fall in the past year.</li><li>- Fear of falling due to balance or walking problems.</li><li>- Difficulty maintaining balance.</li><li>- Use of an assistive device when walking.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Exclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Cognitive impairment.</li><li>- Hypercalcemia.</li><li>- Kidney, bladder, or ureteral stones.</li><li>- Use of supplemental vitamin D > <q>1000 IU/d</q> or calcium > <q>1200 mg/d</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intervention & Trial Stages</strong></summary>
+            <div>
+                <ul><li>- The trial involved four daily doses of vitamin D3 and was conducted in two stages.</li></ul>
+                
+        <details>
+            <summary><strong>Dose Groups</strong></summary>
+            <div>
+                <ul><li>- <b>Control:</b> <q>200 IU/d</q>.</li><li>- <b>Non-control:</b> <q>1000 IU/d</q>, <q>2000 IU/d</q>, and <q>4000 IU/d</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Rationale for Doses</strong></summary>
+            <div>
+                <ul><li>- <b>200 IU/d (Control):</b> To ensure average total daily intake would be at least <q>800 IU</q> (RDA).</li><li>- <b>1000 IU/d:</b> Seemed to prevent falls in previous studies.</li><li>- <b>2000 IU/d:</b> Dose used in the VITAL trial.</li><li>- <b>4000 IU/d:</b> Maximum tolerable daily allowance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Stage 1: Dose-Finding</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Identify which of the 3 non-control doses was most effective (the 'best dose') for preventing falls.</li><li>- Participants were randomly assigned to one of the 4 doses.</li><li>- The probability of assignment to the control dose (200 IU/d) was fixed at <q>0.50</q> throughout the trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Stage 2: Confirmatory</strong></summary>
+            <div>
+                <ul><li>- After the 'best dose' was identified:</li><li>- Participants on other non-control doses were switched to the 'best dose'.</li><li>- New participants were randomly assigned 1:1 to the 'best dose' or the control dose.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes</strong></summary>
+            <div>
+                <ul><li>- The trial measured primary, secondary, and safety outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Outcome</strong></summary>
+            <div>
+                <ul><li>- <u>Time to first fall or death</u> over 2 years, whichever occurred first.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Secondary Outcome</strong></summary>
+            <div>
+                <ul><li>- Gait speed, measured at baseline and at 3, 12, and 24 months.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Safety Outcomes</strong></summary>
+            <div>
+                <ul><li>- Rates of serious adverse events (SAEs).</li><li>- <b>Serious falls</b> (resulting in fracture, dislocation, or associated with hospitalization/SAE).</li><li>- Falls with hospitalization.</li><li>- Events potentially related to vitamin D supplementation (e.g., hypercalcemia, kidney stones).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Results</strong></summary>
+            <div>
+                <ul><li>- The trial was terminated early due to futility after a recommendation from the Data and Safety Monitoring Board (DSMB).</li></ul>
+                
+        <details>
+            <summary><strong>Participant Characteristics</strong></summary>
+            <div>
+                <ul><li>- Mean age: <q>77.2 years</q>.</li><li>- Sex: <q>56.4%</q> men.</li><li>- Race: <q>18.2%</q> Black.</li><li>- Mean baseline total 25-(OH)D level: <q>55.3 nmol/L</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dose-Finding Stage Results</strong></summary>
+            <div>
+                <ul><li>- The <q><b>1000 IU/d</b></q> dose was declared the 'best dose' based on having the lowest rate of the primary outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Outcome Rates (per 100 Person-Years)</strong></summary>
+            <div>
+                <ul><li>- <b>1000 IU/d:</b> <q>72.1</q> (lowest rate).</li><li>- <b>2000 IU/d:</b> <q>108.0</q>.</li><li>- <b>4000 IU/d:</b> <q>99.4</q>.</li><li>- <b>200 IU/d (Control):</b> <q>90.5</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hazard Ratios vs. 1000 IU/d</strong></summary>
+            <div>
+                <ul><li>- <b>2000 IU/d:</b> HR <q>1.54</q> (95% CI, 1.01–2.34).</li><li>- <b>4000 IU/d:</b> HR <q>1.41</q> (95% CI, 0.92–2.16).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>DSMB Intervention</strong></summary>
+            <div>
+                <ul><li>- The DSMB recommended ending randomization to the 2000 IU/d and 4000 IU/d groups due to higher event rates and safety concerns, even though pre-specified statistical thresholds were not met.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Confirmatory Stage Results</strong></summary>
+            <div>
+                <ul><li>- This stage compared the 'experience-with-best-dose' group (those receiving 1000 IU/d) against the control group (200 IU/d).</li></ul>
+                
+        <details>
+            <summary><strong>Primary Outcome: First Fall or Death</strong></summary>
+            <div>
+                <ul><li>- <b><u>No statistically significant difference</u></b> was found.</li><li>- Hazard Ratio (HR): <q>0.94</q> (95% CI, 0.76 to 1.15; P = 0.54).</li><li>- Event Rate (per 100 PY): 76.9 (1000 IU/d) vs. 76.0 (200 IU/d).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Secondary Outcome: Gait Speed</strong></summary>
+            <div>
+                <ul><li>- There was <u>no significant difference</u> in the change in gait speed between the pooled higher-doses group and the 200 IU/d group (P=<q>0.153</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Achieved 25-(OH)D Levels</strong></summary>
+            <div>
+                <ul><li>- Serum levels increased progressively with higher doses.</li></ul>
+                
+        <details>
+            <summary><strong>Mean Levels at 3 Months</strong></summary>
+            <div>
+                <ul><li>- 200 IU/d: <q>67.1 nmol/L</q></li><li>- 1000 IU/d: <q>80.3 nmol/L</q></li><li>- 2000 IU/d: <q>87.3 nmol/L</q></li><li>- 4000 IU/d: <q>119.2 nmol/L</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Adverse Events & Safety Concerns</strong></summary>
+            <div>
+                <ul><li>- Several analyses raised <b>safety concerns</b> about vitamin D3 doses of 1000 IU/d and higher.</li></ul>
+                
+        <details>
+            <summary><strong>Serious Falls</strong></summary>
+            <div>
+                <ul><li>- <u>Significantly more likely</u> in the experience-with-best-dose (≥1000 IU/d) group compared to the 200 IU/d group.</li><li>- HR: <q><b>1.87</b></q> (95% CI, 1.03 to 3.41).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Falls with Hospitalization</strong></summary>
+            <div>
+                <ul><li>- <u>Significantly more likely</u> in the experience-with-best-dose (≥1000 IU/d) group compared to the 200 IU/d group.</li><li>- HR: <q><b>2.48</b></q> (95% CI, 1.13 to 5.46).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion & Clinical Implications</strong></summary>
+            <div>
+                <ul><li>- In older persons with elevated fall risk and low serum 25-(OH)D levels, high-dose vitamin D supplementation (≥1000 IU/d) did <u>not</u> prevent falls compared with 200 IU/d.</li></ul>
+                
+        <details>
+            <summary><strong>Key Takeaways</strong></summary>
+            <div>
+                <ul><li>- There was <b>no beneficial effect</b> on fall prevention from supplemental vitamin D at doses of 1000 IU/d or higher.</li><li>- Several analyses raised <b><u>safety concerns</u></b> about vitamin D3 doses of 1000 IU/d and higher, with increased risk of serious falls and falls with hospitalization.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Study Limitations</strong></summary>
+            <div>
+                <ul><li>- The control group received <q>200 IU</q> of vitamin D per day, not a placebo.</li><li>- The dose-finding stage ended before pre-specified thresholds for dose selection were reached.</li><li>- The trial was stopped early based on conditional power analyses that were not pre-specified.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Implications for Practice</strong></summary>
+            <div>
+                <ul><li>- Findings support guidelines (e.g., 2018 U.S. Preventive Services Task Force) that do <u>not</u> recommend vitamin D supplementation for fall prevention in older adults without osteoporosis or vitamin D deficiency.</li><li>- Suggests a lack of benefit even in persons with baseline 25-(OH)D levels of <q>25 to 72.5 nmol/L</q>.</li><li>- Policymakers should re-evaluate the upper dose limit considered safe, given the widespread use of high-dose vitamin D.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
