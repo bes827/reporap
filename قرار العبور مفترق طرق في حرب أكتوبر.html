@@ -1,0 +1,653 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>قرار العبور: مفترق طرق في حرب أكتوبر</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>قرار العبور: مفترق طرق في حرب أكتوبر</strong></summary>
+            <div>
+                <ul><li>- تحليل للعملية الفكرية والسياسية وراء قرار إسرائيل بعبور قناة السويس في حرب أكتوبر ١٩٧٣.</li></ul>
+                
+        <details>
+            <summary><strong>اختبار المعرفة</strong></summary>
+            <div>
+                <ul><li>- ما هو الهدف الاستراتيجي الرئيسي الذي حدده رئيس الأركان إليعازر بعد الأسبوع الأول من الحرب؟</li><li>- ما هو الاقتراح البديل الذي قدمه موشيه ديان لإجبار سوريا ومصر على وقف إطلاق النار؟</li><li>- ما هي المعلومة الاستخباراتية الحاسمة التي غيرت مسار اجتماع مجلس الوزراء الإسرائيلي المصغر؟</li><li>- لماذا اعترض الجنرالان المصريان سعد مأمون وعبد المنعم واصل على أمر تطوير الهجوم شرقاً؟</li><li>- ما هو الموعد الجديد الذي تم تحديده للهجوم المصري بعد تأجيله؟</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>الضغوط والإرهاق في القيادة الإسرائيلية</strong></summary>
+            <div>
+                <ul><li>- في ليلة <u>الخميس ١١ أكتوبر</u>، وبعد ستة أيام من إدارة حرب على جبهتين، ظهر الإرهاق الشديد على رئيس الأركان <b>دافيد إليعازر</b>.</li><li>- كان يواجه ضرورة اتخاذ قرار استراتيجي حاسم خلال الساعات القادمة بشأن الجبهة المصرية.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>التحول في الهدف الاستراتيجي الإسرائيلي</strong></summary>
+            <div>
+                <ul><li>- لم يعد هدف <b>إليعازر</b> تحقيق نصر ساحق، بل الوصول إلى <u>وقف إطلاق نار مستقر</u>.</li><li>- الهدف الأساسي ---> السماح للجيش الإسرائيلي بإعادة بناء قواته.</li><li>- كان هذا اعترافًا مؤلمًا بأن هزيمة مصر لم تعد خيارًا ممكنًا على المدى القريب.</li></ul>
+                
+        <details>
+            <summary><strong>منطق عبور القناة</strong></summary>
+            <div>
+                <ul><li>- اعتقد <b>إليعازر</b> أن <b>السادات</b> لن يقبل بوقف إطلاق النار دون خطوة عسكرية إسرائيلية كبرى وصادمة.</li><li>- الخطوة المقترحة كانت <u>عبور قناة السويس</u>.</li><li>- مع ذلك، كان يخشى من أن يؤدي العبور إلى حرب استنزاف طويلة، مما يضع الجيش الإسرائيلي في وضع ضعيف على ضفتي القناة.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>نقاشات القيادة العليا (صباح الجمعة ١٢ أكتوبر)</strong></summary>
+            <div>
+                <ul><li>- عقد <b>إليعازر</b> اجتماعًا مع كبار الضباط لمناقشة الخيارات في سيناء قبل وصول توصيات قائد الجبهة الجنوبية <b>بارليف</b>.</li><li>- توقع رئيس المخابرات <b>زئيرا</b> وقائد القوات الجوية <b>بيني بيليد</b> صدور قرار من مجلس الأمن بوقف إطلاق النار خلال <q><b>٤٨ ساعة</b></q>، وحثا على الهجوم قبل ذلك.</li></ul>
+                
+        <details>
+            <summary><strong>استراتيجية الانتظار</strong></summary>
+            <div>
+                <ul><li>- اتفق الجنرالات على أن الخيار الأفضل هو انتظار الهجوم المصري المدرع المتوقع.</li><li>- هذا سيسمح للجيش الإسرائيلي بمواجهة الدبابات المصرية من مواقع دفاعية مُعدة مسبقًا داخل سيناء.</li><li>- كان هذا مبنيًا على افتراض أن خطة الحرب المصرية القديمة ما زالت سارية، على الرغم من أن المخابرات كانت قد أبلغت بتغييرها.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>خطط العبور المقترحة</strong></summary>
+            <div>
+                <ul><li>- كانت هناك ثلاث خطط معدة مسبقًا على الطاولة:</li></ul>
+                
+        <details>
+            <summary><strong>خطة محدودة</strong></summary>
+            <div>
+                <ul><li>- هجوم يستهدف الاستيلاء على <q><b>بورسعيد</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>هجوم مركّز</strong></summary>
+            <div>
+                <ul><li>- هجوم بفرقتين عند منطقة <u>الدفرسوار</u> في القطاع الأوسط.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>هجوم منقسم</strong></summary>
+            <div>
+                <ul><li>- هجوم بفرقتين، واحدة عند <u>القنطرة</u> شمالًا والأخرى عند <u>الدفرسوار</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>توصية بارليف</strong></summary>
+            <div>
+                <ul><li>- عند وصوله، أيّد <b>حاييم بارليف</b> بقوة فكرة العبور.</li><li>- رأى أن محاولة تدمير رؤوس الجسور المصرية في سيناء ستكون مكلفة وستستنزف قوة الجيش.</li><li>- اقترح هجومًا بفرقتين بقوة <q><b>٣٠٠ إلى ٣٥٠ دبابة</b></q> عند <u>الدفرسوار</u>، مستفيدًا من حماية البحيرات المرة للجناح الأيسر.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>مخاوف واعتراضات</strong></summary>
+            <div>
+                <ul><li>- اعترض الجنرال <b>يسرائيل طال</b>، معتبرًا أن الخطة تعتمد بشكل خطير على الارتجال.</li><li>- حذر من صعوبة إيصال معدات التجسير ومخاطر مواجهة قوات مصرية متفوقة عدديًا على الضفة الغربية.</li><li>- ادعى <b>بيني بيليد</b> أن القوات الجوية اقتربت من "خطها الأحمر" للضغط من أجل اتخاذ قرار سريع (اعترف لاحقًا بأن هذا كان تضخيمًا للوضع).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>دور ديان والبعد السياسي</strong></summary>
+            <div>
+                <ul><li>- أصر <b>إليعازر</b> على أن يتخذ المستوى السياسي، ممثلاً بوزير الدفاع <b>موشيه ديان</b>، القرار النهائي بسبب تبعاته السياسية.</li><li>- كان هناك خلاف جوهري في التقييم:</li></ul>
+                
+        <details>
+            <summary><strong>رأي إليعازر</strong></summary>
+            <div>
+                <ul><li>- العبور سيصدم مصر ويدفعها لقبول <u>وقف إطلاق النار</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>رأي ديان</strong></summary>
+            <div>
+                <ul><li>- العبور سيجعل مصر <u>أقل احتمالًا</u> لقبول وقف إطلاق النار، لأن القاهرة ستكون مهددة بشكل مباشر.</li></ul>
+                
+        <details>
+            <summary><strong>اقتراح ديان البديل</strong></summary>
+            <div>
+                <ul><li>- رأى أن أفضل طريقة لفرض وقف إطلاق النار هي التقدم في الجبهة الشمالية لوضع دمشق في مرمى <q><b>المدفعية الإسرائيلية</b></q>.</li><li>- كان يعتقد أن هذا سيجبر الاتحاد السوفيتي على التدخل والضغط من أجل وقف القتال.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>المعضلة في القيادة المصرية</strong></summary>
+            <div>
+                <ul><li>- في نفس الوقت، كان رئيس الأركان المصري الفريق <b>سعد الدين الشاذلي</b> يواجه ضغوطًا لتغيير استراتيجية الحرب الناجحة حتى تلك اللحظة.</li><li>- نجحت خطة "بدر" لأنها أبقت القوات المصرية تحت مظلة الحماية الفعالة لصواريخ الدفاع الجوي (سام).</li></ul>
+                
+        <details>
+            <summary><strong>قرار السادات بتطوير الهجوم</strong></summary>
+            <div>
+                <ul><li>- جاء القرار مباشرة من الرئيس <b>السادات</b> استجابة لطلب عاجل من الرئيس السوري <b>حافظ الأسد</b> لتخفيف الضغط العسكري الإسرائيلي على دمشق.</li><li>- هذا القرار أجبر القيادة المصرية على التخلي عن نهجها الحذر والمخاطرة بالتقدم خارج نطاق تغطية الدفاع الجوي.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>معارضة القادة الميدانيين</strong></summary>
+            <div>
+                <ul><li>- اعترض <b>الشاذلي</b> بشدة على الأمر، وكذلك قائدا الجيشين الثاني والثالث، الفريق <b>سعد مأمون</b> والفريق <b>عبد المنعم واصل</b>.</li><li>- عرض الفريق <b>مأمون</b> استقالته، لكنها رُفضت.</li><li>- نتيجة للنقاش، تم تأجيل الهجوم الذي كان مقررًا ليوم السبت إلى صباح <q><b>يوم الأحد</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>الاجتماع الحاسم لمجلس الوزراء المصغر</strong></summary>
+            <div>
+                <ul><li>- مساء الجمعة، اجتمع <b>إليعازر</b> و<b>بارليف</b> مع رئيسة الوزراء <b>جولدا مائير</b> ومجلسها الوزاري المصغر.</li><li>- تم استعراض خطة العبور ومخاطرها، مع التأكيد على أن استمرار الوضع الراهن سيؤدي إلى تآكل قوة الجيش.</li></ul>
+                
+        <details>
+            <summary><strong>المعلومة الاستخباراتية التي غيرت كل شيء</strong></summary>
+            <div>
+                <ul><li>- أثناء الاجتماع، تلقى رئيس الموساد <b>تسفي زامير</b> رسالة عاجلة من عميل في مصر.</li><li>- نصت الرسالة على أن مصر ستشن هجومًا بالمظليين على <q><b>ممر متلا وقاعدة رفيديم</b></q> ليلة السبت أو يوم الأحد، تمهيدًا لعبور الفرق المدرعة.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>الأثر الفوري للمعلومة</strong></summary>
+            <div>
+                <ul><li>- اعتبر <b>إليعازر</b> هذه المعلومة "أفضل الأخبار الممكنة".</li><li>- منحت هذه المعلومة الجيش الإسرائيلي فرصة ذهبية لتدمير جزء كبير من المدرعات المصرية في معركة مفتوحة <u>داخل سيناء</u> قبل المخاطرة بعبور القناة.</li><li>- قرر مجلس الوزراء <b>تأجيل قرار العبور الإسرائيلي</b> والتركيز على صد الهجوم المصري أولاً.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>المناورة الدبلوماسية واستعادة المبادرة</strong></summary>
+            <div>
+                <ul><li>- اقترح <b>ديان</b> خطوة دبلوماسية ذكية: إبلاغ الولايات المتحدة بأن إسرائيل لم تعد تعارض وقف إطلاق النار.</li><li>- الهدف ---> كسب الوقت اللازم لتنفيذ الضربة المضادة، وتحسين صورة إسرائيل، وتسهيل طلبات الأسلحة المستقبلية.</li><li>- بهذا، استعادت إسرائيل زمام المبادرة الاستراتيجية على جبهة سيناء.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
