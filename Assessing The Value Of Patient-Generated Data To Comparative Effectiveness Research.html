@@ -1,0 +1,716 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assessing The Value Of Patient-Generated Data To Comparative Effectiveness Research</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Assessing The Value Of Patient-Generated Data To Comparative Effectiveness Research</strong></summary>
+            <div>
+                <ul><li>- Health Affairs, 33, no.7 (2014):1220-1228</li><li>- doi: 10.1377/hlthaff.2014.0225</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What are the '3 Vs' of big data mentioned in the text?</li><li>- What percentage of cancer patients in an outpatient oncology clinic example had persistent pain for more than two visits?</li><li>- What is the trigger for a patient support services consult in the PRO-driven triage example?</li><li>- How many patient-powered research networks and clinical data research networks did PCORnet initially fund?</li><li>- What is a key requirement for stage 2 meaningful-use certification for EHRs that facilitates PRO collection?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Comparative Effectiveness Research (CER) & Data</strong></summary>
+            <div>
+                <ul><li>- <b>Goal of CER:</b> Develop evidence to aid patients, providers, payers, and policymakers in choosing the most appropriate and cost-effective care.</li><li>- Aims to deliver the <u>right treatment</u> to the <u>right patient</u> at the <u>right time</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of Randomized Controlled Trials (RCTs)</strong></summary>
+            <div>
+                <ul><li>- RCTs are the <b>gold standard</b> for determining treatment <u>efficacy</u>.</li><li>- <b>Problem:</b> Generalizability to larger, heterogeneous populations is often poor.</li><li>- <b>Time & Cost:</b> Can take over a <q>decade</q> from idea to actionable information, and many questions are never addressed due to cost and complexity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rise of Real-World Data (RWD)</strong></summary>
+            <div>
+                <ul><li>- A compelling alternative to RCTs is aggregating and analyzing RWD directly from clinical care.</li><li>- Historically relied on <b>claims data</b>.</li><li>- Now shifting towards <b>Electronic Health Records (EHRs)</b> and novel informatics approaches.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The 'Big Data' Vision</strong></summary>
+            <div>
+                <ul><li>- Involves integrating data from EHRs, administrative data, public health records, biometric sensors, etc.</li><li>- Characterized by the <b>'3 Vs'</b>: high <q><u>Volume</u></q>, high <q><u>Velocity</u></q>, and a wide <q><u>Variety</u></q> of data.</li><li>- The individual patient's experience is a central linking concept within these data streams.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Patient-Generated Data (PGD)</strong></summary>
+            <div>
+                <ul><li>- Data created, recorded, gathered, or inferred by or from patients or their designees to address a health concern.</li><li>- Represents a shift from clinician-interpreted patient reports to direct data capture from the patient.</li></ul>
+                
+        <details>
+            <summary><strong>PCORI's Formal Definition</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> "health-related data—including health history, symptoms, biometric data, treatment history, lifestyle choices, and other information—created, recorded, gathered, or inferred by or from patients or their designees (i.e., care partners or those who assist them) to help address a health concern."</li><li>- Acknowledges the role of <u>proxies</u> (care partners), but stresses they should not provide interpretation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Patient-Reported Outcomes (PROs)</strong></summary>
+            <div>
+                <ul><li>- PROs are a subset of PGD, typically collected using formalized, validated measurement instruments.</li><li>- The term was coined by the <q><b>FDA</b></q> in a regulatory context.</li><li>- PROs are not always 'outcomes'; they can also be descriptive, explanatory, or prognostic.</li></ul>
+                
+        <details>
+            <summary><strong>Spectrum of PROs</strong></summary>
+            <div>
+                <ul><li>- Ranges from precise, psychometrically validated instruments (e.g., <q>NIH's PROMIS short forms</q>) to basic screening questions with only face validity (e.g., "Do you have pain?").</li><li>- <b>Electronic PROs (ePROs):</b> PRO data collected electronically or efficiently embedded into databases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>PGD vs. Traditional PROs in 'Big Data'</strong></summary>
+            <div>
+                <ul><li>- Traditional PRO collection is often highly structured, captured at discrete intervals, and may not meet the <u>volume</u> and <u>velocity</u> goals of big data.</li><li>- Newer approaches (social media, sensors) better meet all three 'V's, but may conflict with FDA expectations for validated measures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Applications of PROs</strong></summary>
+            <div>
+                <ul><li>- PROs have roles in clinical research, immediate patient care, and population health management.</li></ul>
+                
+        <details>
+            <summary><strong>Individual Patient Care</strong></summary>
+            <div>
+                <ul><li>- PROs transform a qualitative patient story into discrete, analyzable data points that can be trended over time.</li><li>- <b>Example (Joe, lung cancer):</b></li><li>-  Dyspnea assessed on a standard <q>0-10 scale</q>.</li><li>-  Score changes from <b>4</b> ---> <b>0-1</b> with inhalers, then rises to <b>7-9</b> with a pleural effusion, and returns to <b>0-1</b> after drainage.</li><li>-  This creates a longitudinal, analyzable history of his personal experience.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immediate Clinical Impact</strong></summary>
+            <div>
+                <ul><li>- PRO data returned to the clinician in real-time can guide treatment modifications.</li><li>- <b>Example:</b> Worsening mouth pain scores may signal accumulating oral toxicity from chemotherapy, prompting intervention.</li><li>- Helps focus clinical attention on the most challenging problems for the patient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Population Health & Care Redesign</strong></summary>
+            <div>
+                <ul><li>- Aggregate PRO data can identify system-level issues and drive quality improvement.</li><li>- <b>Example (Oncology Clinic):</b></li><li>-  A review of aggregate pain scores showed <q><b>20%</b></q> of all patients had persistent pain (<u>>3 on a 0-10 scale</u> for <u>>2 visits</u>).</li><li>-  Linking this to claims data revealed these patients were also high users of the <b>Emergency Department (ED)</b>.</li><li>-  This insight led to a care redesign program, such as increasing pain clinic staffing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of mHealth Technologies</strong></summary>
+            <div>
+                <ul><li>- Mobile health (mHealth) platforms (apps, tablets) make real-time PRO collection and reporting easier.</li><li>- Clinicians value real-time reports for improving efficiency and guiding decisions.</li></ul>
+                
+        <details>
+            <summary><strong>Automated Clinical Actions</strong></summary>
+            <div>
+                <ul><li>- PRO results can trigger <b>tailored patient education</b> (e.g., videos on pain and fatigue).</li><li>- Can drive clinical triage actions, such as a consult to patient support services triggered by a <q>distress score of greater than 4</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Data Quality & Precision</strong></summary>
+            <div>
+                <ul><li>- A primary concern with PGD has been data quality, historically considered unreliable due to subjectivity.</li></ul>
+                
+        <details>
+            <summary><strong>Improving Reliability</strong></summary>
+            <div>
+                <ul><li>- Use of <b>reliable and valid</b> measurement instruments is key.</li><li>- <b>Longitudinal capture</b> improves reliability, as a person's understanding of a concept (e.g., their '10/10' pain) is likely to remain consistent over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Addressing Missing Data</strong></summary>
+            <div>
+                <ul><li>- Missing data is a substantial problem that threatens the reliability of results.</li><li>- <b>Key Insight:</b> When patients see that the information they provide is meaningful to their own care, they are more likely to report it.</li><li>- <b>Clinician Reinforcement:</b> Simple statements like "I looked at your symptom report..." can <q><u>markedly decrease</u></q> the frequency of missing data.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>National Efforts to Mobilize PGD</strong></summary>
+            <div>
+                <ul><li>- Several national organizations are creating infrastructure to incorporate widely collected PRO data.</li></ul>
+                
+        <details>
+            <summary><strong>NIH Collaboratory</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Create infrastructure to optimize healthcare delivery by leveraging electronically enabled health systems.</li><li>- <b>Focus:</b> Pragmatic clinical trials (e.g., cluster randomized trials).</li></ul>
+                
+        <details>
+            <summary><strong>Example Project: Chronic Pain in Primary Care</strong></summary>
+            <div>
+                <ul><li>- Relies on routinely collected PROs like the <b>Brief Pain Inventory (BPI)</b>.</li><li>- <b>Key Finding:</b> Data quality improves when collection is aligned with clinical process. For example, BPI data is more likely to be complete when a pharmacist <q>requires it before dispensing opioid medications</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>PCORI & PCORnet</strong></summary>
+            <div>
+                <ul><li>- <b>Patient-Centered Outcomes Research Institute (PCORI)</b> aims to advance CER with a central focus on the patient's voice.</li><li>- <b>PCORnet:</b> A national patient-centered clinical research network funded by PCORI.</li></ul>
+                
+        <details>
+            <summary><strong>PCORnet Structure</strong></summary>
+            <div>
+                <ul><li>- Comprised of <q><b>18</b> patient-powered research networks</q> and <q><b>11</b> clinical data research networks</q>.</li><li>- Each clinical data network includes over a million patients.</li><li>- <b>Mandate:</b> All funded projects <u>must include patient-generated data</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Professional Societies: ASCO's CancerLinQ</strong></summary>
+            <div>
+                <ul><li>- An effort by the <b>American Society of Clinical Oncology (ASCO)</b>.</li><li>- <b>Goal:</b> Create a true <u>rapid-learning system</u> for cancer care.</li></ul>
+                
+        <details>
+            <summary><strong>CancerLinQ Functions</strong></summary>
+            <div>
+                <ul><li>- Aggregates and analyzes data from community and academic cancer centers.</li><li>- Aims to: define care delivery, benchmark quality, improve outcomes, and provide <b>real-time clinical decision support</b>.</li><li>- Includes a national effort to incorporate PRO data collection into routine oncology practice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Policy Implications</strong></summary>
+            <div>
+                <ul><li>- A supportive health and information policy agenda is critical for the wide-scale collection and use of PRO data.</li></ul>
+                
+        <details>
+            <summary><strong>Key Policy Issues</strong></summary>
+            <div>
+                <ul><li>- <b>Interoperability:</b> Data must be able to traverse the boundaries of different EHRs and health systems.</li><li>- <b>Data Governance, Security, Privacy, & Ethics:</b> Must be addressed to enable data aggregation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Technical & Standardization Needs</strong></summary>
+            <div>
+                <ul><li>- PRO data elements must map to <b>standardized ontologies</b> to ensure they represent well-documented constructs.</li><li>- Need to support integration of mHealth data into EHRs via <b>Application Programming Interfaces (APIs)</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>EHR Meaningful Use</strong></summary>
+            <div>
+                <ul><li>- Most EHRs are now equipped with <b>patient portals</b>, which often have survey capabilities.</li><li>- This is a requirement for <q>stage 2 meaningful-use certification</q>, which is needed to qualify for CMS funding.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
