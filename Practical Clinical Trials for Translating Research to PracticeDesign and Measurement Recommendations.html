@@ -1,0 +1,789 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Practical Clinical Trials for Translating Research to Practice
+Design and Measurement Recommendations</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Practical Clinical Trials for Translating Research to Practice</strong><br><em>Design and Measurement Recommendations</em></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Med Care, June 2005 (Glasgow et al.) & JAMA, September 2003 (Tunis et al.)</li><li>- <b>Objective:</b> Provide recommendations for designing and reporting Practical Clinical Trials (PCTs) to enhance external validity and bridge the gap between research and practice.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of recommended care do patients typically receive, highlighting the 'chasm' between evidence and practice?</li><li>- In the SWEAT trial, what were the 18-month retention rates for the center-based vs. home-based exercise programs?</li><li>- How many of the 22 original CONSORT criteria specifically address external validity?</li><li>- What is a 'type III error' in the context of intervention implementation?</li><li>- The ALLHAT trial compared inexpensive diuretics to newer agents. How many primary care clinics were involved in this large-scale PCT?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Problem: The Research-Practice Gap</strong></summary>
+            <div>
+                <ul><li>- An enormous gap exists between evidence-based recommendations and actual clinical practice.</li><li>- Patients receive, on average, only <q><b>~50%</b></q> of recommended care (McGlynn et al.).</li><li>- One major cause is that traditional clinical trials are often of little relevance to practicing clinicians and decision-makers.</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of Traditional Trials</strong></summary>
+            <div>
+                <ul><li>- <b>Strict Inclusion Criteria:</b> Exclude patients with comorbidities, non-study medications, or low adherence, who are common in primary care.</li><li>- <b>Setting:</b> Often conducted in tertiary care centers with paid research staff, not representative community settings.</li><li>- <b>Focus:</b> Prioritize internal validity over external validity (generalizability).</li></ul>
+                
+        <details>
+            <summary><strong>Example: Diabetes Prevention Program</strong></summary>
+            <div>
+                <ul><li>- A landmark study that screened over <q><b>158,000</b></q> patients to randomize just <q><b>3,819</b></q>.</li><li>- This highlights the highly selective nature of many efficacy trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Solution: Practical Clinical Trials (PCTs)</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> Trials where the hypothesis and study design are specifically formulated to answer practical questions faced by decision-makers (patients, clinicians, payers).</li><li>- <b>Goal:</b> To evaluate the risks, benefits, and costs of an intervention as it would occur in <u>routine clinical practice</u>.</li></ul>
+                
+        <details>
+            <summary><strong>PCTs vs. Explanatory Trials</strong></summary>
+            <div>
+                <ul><li>- <b>PCTs (Pragmatic):</b> Address practical questions about real-world effectiveness.</li><li>- <b>Explanatory Trials:</b> Aim to understand <u>how and why</u> an intervention works under ideal conditions (efficacy).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Characteristics of PCTs</strong></summary>
+            <div>
+                <ul><li>- PCTs are distinguished by four key features that enhance their relevance and generalizability.</li></ul>
+                
+        <details>
+            <summary><strong>1. Compare Clinically Relevant Alternatives</strong></summary>
+            <div>
+                <ul><li>- <b>Focus:</b> Head-to-head comparisons of viable clinical strategies, rather than treatment vs. placebo.</li><li>- <b>Rationale:</b> Better represents the actual decisions facing clinicians and policymakers.</li><li>- A new/expensive treatment should be shown to be more effective than current or cheaper alternatives.</li></ul>
+                
+        <details>
+            <summary><strong>Example: BPH Treatment</strong></summary>
+            <div>
+                <ul><li>- A VA study compared <q>terazosin, finasteride, or both</q> for BPH symptoms.</li><li>- It found terazosin was more effective than finasteride alone at 1 year, providing direct guidance for clinical choice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Low Back Pain</strong></summary>
+            <div>
+                <ul><li>- Compared <q>physical therapy, chiropractic care, and a self-care educational booklet</q>.</li><li>- While PT and chiropractic care increased satisfaction, there were <u>no differences in function or recurrence rates</u>, and the booklet was substantially less expensive.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Enroll a Broad & Representative Study Population</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Enroll patients with characteristics reflecting the full range seen in routine clinical practice.</li><li>- <b>Method:</b> Use <u>broad inclusion criteria</u> and <u>minimal exclusion criteria</u>.</li><li>- It is critical to document the representativeness of participants vs. non-participants.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Pharmacy Alert Intervention</strong></summary>
+            <div>
+                <ul><li>- Magid et al. evaluated an intervention to detect medication prescribing errors.</li><li>- The project's reach extended to over <q>350,000 patients</q>, with over <q><b>95%</b></q> of the HMO's members participating.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Smoking Cessation in Planned Parenthood</strong></summary>
+            <div>
+                <ul><li>- Glasgow et al. identified smoking status for <q><b>>99%</b></q> of patients.</li><li>- All smokers were invited to participate, regardless of their desire to quit, achieving a <q><b>76%</b></q> participation rate among low-income smokers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Recruit From a Variety of Practice Settings</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Include a wide range of physicians and settings (e.g., community clinics, private offices) to enhance external validity.</li><li>- <b>Key Question Answered:</b> "Will this program work in settings like ours, with staff and resources similar to ours?"</li><li>- Avoid the temptation to only use large, well-resourced, or research-savvy settings.</li></ul>
+                
+        <details>
+            <summary><strong>Example: ALLHAT Trial</strong></summary>
+            <div>
+                <ul><li>- Compared hypertension treatments in over <q><b>42,000</b></q> patients.</li><li>- Participants were enrolled from <q><b>623</b></q> primary care clinics, many of which had no prior research experience.</li><li>- <b>Finding:</b> Inexpensive diuretics resulted in a lower incidence of major cardiovascular events compared to newer, more expensive agents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Measure a Broad Range of Relevant Health Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b>Focus:</b> Collect data on outcomes most relevant to decision-makers, beyond traditional mortality and morbidity.</li><li>- Includes: <b>Quality of Life (QoL)</b>, symptom severity, patient satisfaction, and <b>costs</b>.</li><li>- <u>Quality-Adjusted Life-Years (QALYs)</u> provide a common metric to compare treatments across different conditions.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Depression Treatment Costs</strong></summary>
+            <div>
+                <ul><li>- A study compared fluoxetine vs. tricyclic antidepressants.</li><li>- Despite fluoxetine's higher drug cost, the <u>total costs of care were no different</u>.</li><li>- This was because fluoxetine patients had <q>fewer adverse effects and fewer physician visits</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Chronic Disease Self-Management</strong></summary>
+            <div>
+                <ul><li>- Lorig et al. demonstrated that self-management programs can <q>improve health status, reduce hospitalizations, and enhance self-efficacy</q> at a relatively low cost.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Design & Reporting Recommendations for PCTs</strong></summary>
+            <div>
+                <ul><li>- Specific recommendations to improve the design, conduct, and reporting of PCTs to maximize their practical value.</li></ul>
+                
+        <details>
+            <summary><strong>Expand CONSORT Criteria for External Validity</strong></summary>
+            <div>
+                <ul><li>- The standard CONSORT criteria are excellent for <u>internal validity</u> but weak on <u>external validity</u>.</li><li>- Only <q><b>1 of the 22</b></q> original criteria addresses generalizability, and it is non-specific.</li><li>- Proposes <b>8 new items</b> to be added to CONSORT to address this gap (See Table 1).</li></ul>
+                
+        <details>
+            <summary><strong>Proposed Additions (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Participants:</b> State target population for patients, clinicians, and settings.</li><li>- <b>Participant Flow (Patients):</b> Report exclusion/participation rates and representativeness.</li><li>- <b>Participant Flow (Staff):</b> Report participation rate and characteristics of interventionists.</li><li>- <b>Participant Flow (Settings):</b> Report exclusion/participation rates and representativeness of settings.</li><li>- <b>Outcomes (Implementation):</b> Report fidelity of intervention delivery.</li><li>- <b>Outcomes (Cost):</b> Report time and costs to deliver the intervention.</li><li>- <b>Outcomes (Sustainability):</b> Report organizational continuance or adaptation of the intervention post-trial.</li><li>- <b>Discussion:</b> Describe barriers and facilitators to implementation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>CONSORT Plus Figure</strong></summary>
+            <div>
+                <ul><li>- An extended flow diagram (See Figure 1) is proposed to visually report on these external validity issues.</li><li>- This would answer many questions about generalization while taking up little additional journal space.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alternative Research Designs</strong></summary>
+            <div>
+                <ul><li>- When randomization is not feasible or acceptable, several viable alternative designs provide high levels of experimental control.</li></ul>
+                
+        <details>
+            <summary><strong>Interrupted Time-Series Design</strong></summary>
+            <div>
+                <ul><li>- Also called a "multiple baseline across settings" design (See Figure 2).</li><li>- Each setting (e.g., clinic) serves as its own control.</li><li>- The intervention is introduced at staggered, different times across settings to control for secular trends and other confounders.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delayed Treatment Design</strong></summary>
+            <div>
+                <ul><li>- All participants eventually receive the intervention, but the timing is staggered (and randomized if possible).</li><li>- Allows for evaluation and refinement of the intervention over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regression-Discontinuity Design</strong></summary>
+            <div>
+                <ul><li>- Useful when groups are selected based on a specific cutoff on a continuous variable (e.g., symptom severity).</li><li>- The cutoff variable is used to statistically model and control for selection effects.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Propensity Scores</strong></summary>
+            <div>
+                <ul><li>- A statistical technique used to model variables that predict selection into a treatment group.</li><li>- The resulting score can be used as a control variable in regression analysis to estimate intervention effects.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Specific Measurement Recommendations (Table 2)</strong></summary>
+            <div>
+                <ul><li>- PCTs should include a broader set of measures to inform clinical and policy decisions.</li></ul>
+                
+        <details>
+            <summary><strong>Key Measurement Areas</strong></summary>
+            <div>
+                <ul><li>- <b>1. Contextual Factors:</b> Organizational culture, setting characteristics.</li><li>- <b>2. Protocol Implementation:</b> Fidelity of intervention delivery. A failure here is a <q><u>Type III error</u></q> (intervention fails because it's not delivered as intended).</li><li>- <b>3. Generalization:</b> Use frameworks like <b>RE-AIM</b> (Reach, Effectiveness, Adoption, Implementation, Maintenance).</li><li>- <b>4. Quality of Life:</b> Patient-centered outcomes.</li><li>- <b>5. Economic Outcomes:</b> Cost-effectiveness, cost-utility, return on investment.</li><li>- <b>6. Behavior Change:</b> At both patient and staff levels.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example of Clinically Relevant Design: SWEAT Trial</strong></summary>
+            <div>
+                <ul><li>- Compared a standard center-based exercise program with a less expensive, home-based program for sedentary women.</li><li>- <b>Results at 18 months:</b></li><li>- Retention: <q><b>81%</b></q> (center-based) vs. <q><b>61%</b></q> (home-based).</li><li>- Adherence: <q><b>65%</b></q> of sessions completed (center-based) vs. <q><b>51%</b></q> (home-based).</li><li>- <b>Conclusion:</b> Provided excellent data for decision-makers, showing the home-based option needed more work before replacing the standard of care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Challenges and Strategies for Improvement</strong></summary>
+            <div>
+                <ul><li>- Despite their importance, the supply of PCTs is inadequate due to funding and structural issues.</li></ul>
+                
+        <details>
+            <summary><strong>Why the Supply of PCTs is Inadequate</strong></summary>
+            <div>
+                <ul><li>- <b>High Cost:</b> Large sample sizes and long follow-up are expensive. The ALLHAT study cost approximately <q><b>$120 million</b></q>.</li><li>- <b>Funding Sources:</b></li><li>- <u>NIH:</u> Primarily focuses on basic biomedical research; lacks a systematic mechanism to prioritize PCTs.</li><li>- <u>Industry:</u> Focuses on trials for FDA regulatory approval (efficacy vs. placebo), not comparative effectiveness.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proposed Strategies for Improvement</strong></summary>
+            <div>
+                <ul><li>- A multi-pronged approach is needed to increase the production and impact of PCTs.</li></ul>
+                
+        <details>
+            <summary><strong>Systematic Prioritization</strong></summary>
+            <div>
+                <ul><li>- Establish a neutral body (e.g., Institute of Medicine) to identify and prioritize key unanswered clinical questions for decision-makers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Demand from Decision-Makers</strong></summary>
+            <div>
+                <ul><li>- Payers, purchasers, and professional societies should consistently demand high-quality evidence from PCTs to inform coverage, payment, and guideline decisions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Create Infrastructure</strong></summary>
+            <div>
+                <ul><li>- Develop and expand durable research networks within primary care settings (e.g., HMO Research Network, practice-based research networks).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Address Methodological & Ethical Issues</strong></summary>
+            <div>
+                <ul><li>- Refine methods for large, simple trials, equivalence trials, and cluster randomization.</li><li>- Develop efficient and adequate consent and IRB procedures for multi-site trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expand Funding</strong></summary>
+            <div>
+                <ul><li>- Explore new funding models, potentially linking research funding to health care spending, as seen in the VA system and other national health services.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
