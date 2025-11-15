@@ -1,0 +1,1418 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EASL Clinical Practice Guidelines on vascular diseases of the liver</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>EASL Clinical Practice Guidelines on vascular diseases of the liver</strong></summary>
+            <div>
+                <ul><li>- European Association for the Study of the Liver</li><li>- Journal of Hepatology, 2025</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended INR target for VKAs in Budd-Chiari syndrome?</li><li>- What AFP level should raise suspicion for HCC in a patient with chronic Budd-Chiari syndrome?</li><li>- In patients with chronic PVT without major risk factors, what D-dimer level after anticoagulation discontinuation was associated with recurrence?</li><li>- What is the mortality rate of the most severe form of SOS in untreated patients?</li><li>- What is the recommended prophylactic dose of ursodeoxycholic acid for SOS?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Aetiological Factors in Primary Budd-Chiari Syndrome (BCS) or Portal Vein Thrombosis (PVT) without Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- <b>PVT</b> is more common in <u>males</u> (median age <q>55 years</q>), while <b>BCS</b> shows <u>no sex difference</u> (median age <q>35-40 years</q>).</li><li>- Can be classified as <b>provoked</b> (local/systemic factors) or <b>unprovoked</b>.</li><li>- In <q>15% to 25%</q> of patients, no predisposing factors are identified.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Factor Work-up</strong></summary>
+            <div>
+                <ul><li>- A thorough work-up for local and systemic risk factors should be initiated rapidly after diagnosis (See Table 3).</li><li>- A local precipitating factor is common in PVT, but not in BCS.</li></ul>
+                
+        <details>
+            <summary><strong>Local Risk Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Solid abdominal cancer</b> is present in up to <q>30%</q> of patients with PVT, especially liver or pancreatic cancer.</li><li>- <b>Intra-abdominal inflammation/infections</b> are reported in <q>20-30%</q> of PVT cases.</li><li>- <b>Abdominal surgery</b> accounts for about <q>10%</q> of PVT cases.</li><li>- Local risk factors are infrequent in BCS (about <q>5%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Systemic Risk Factors</strong></summary>
+            <div>
+                <ul><li>- A comprehensive assessment for systemic risk factors is crucial, especially in the absence of local causes.</li></ul>
+                
+        <details>
+            <summary><strong>Myeloproliferative Neoplasms (MPNs)</strong></summary>
+            <div>
+                <ul><li>- A major and permanent risk factor.</li><li>- Test for <b>JAK2 V617F</b> mutation routinely. If negative, consider next-generation sequencing and bone marrow biopsy.</li><li>- <u>Polycythemia vera</u> is the most common, followed by <u>essential thrombocythemia</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inherited Thrombophilia</strong></summary>
+            <div>
+                <ul><li>- Routinely test for <b>Factor V Leiden</b> and <b>prothrombin gene mutations</b>.</li><li>- Diagnosis of protein C, protein S, and antithrombin deficiency can be hampered by liver dysfunction or acute thrombosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Antiphospholipid Syndrome (APS)</strong></summary>
+            <div>
+                <ul><li>- A major and permanent risk factor.</li><li>- Test for lupus anticoagulant, anticardiolipin, and anti-beta2 glycoprotein 1 antibodies.</li><li>- Testing must be repeated after <q>12 weeks</q> for confirmation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Paroxysmal Nocturnal Haemoglobinuria (PNH)</strong></summary>
+            <div>
+                <ul><li>- Test routinely in <b>BCS</b> via flow cytometry.</li><li>- In <b>PVT</b>, test only if signs of intravascular haemolysis or unexplained cytopenia are present.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Systemic Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Behçet’s disease</b>: Suspect with history of thrombosis and mucocutaneous/ocular/gastrointestinal manifestations.</li><li>- <b>Hormonal factors</b>: Oestrogen-derived oral contraceptives, hormonal replacement therapy, and pregnancy are transient risk factors.</li><li>- <b>Infections</b>: SARS-CoV-2 and Cytomegalovirus are reported risk factors for PVT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Influence of Risk Factors on Therapy</strong></summary>
+            <div>
+                <ul><li>- Risk factors impact the choice of anticoagulant, need for concomitant treatments, and duration of therapy.</li><li>- In <b>MPN</b>, cytoreductive drugs may reduce recurrence risk.</li><li>- In <b>Behçet’s disease</b>, immunosuppressants are pivotal; anticoagulation alone is ineffective.</li><li>- In <b>APS</b> (double/triple positive), <u>DOACs are not recommended</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric Considerations</strong></summary>
+            <div>
+                <ul><li>- The same diagnostic work-up as in adults should be performed.</li><li>- Use <u>age-specific cut-offs</u> for inherited thrombophilia (protein C, S, antithrombin).</li><li>- Common risk factors for PVT in children include umbilical vein catheters, omphalitis, and abdominal infections/cancer.</li><li>- Unprovoked events are less common in children (<q>10%</q>) than in adults.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Primary Budd-Chiari Syndrome (BCS)</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Hepatic venous outflow obstruction from small hepatic venules to the junction of the inferior vena cava (IVC) with the right atrium.</li><li>- <b>Epidemiology</b>: Pooled annual incidence of <q>1 per million</q> inhabitants and prevalence of <q>11 per million</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Presentation</strong></summary>
+            <div>
+                <ul><li>- Highly heterogeneous, from asymptomatic to acute liver failure (ALF).</li><li>- Most common symptoms: <b>ascites</b> (<q>83%</q>), <b>hepatomegaly</b> (<q>67%</q>), and <b>abdominal pain</b> (<q>61%</q>).</li><li>- <b>ALF</b> is rare (<q>6.1%</q>) but has high inpatient mortality (<q>35-58%</q>).</li><li>- A distinguishing feature of ALF in BCS is <u>higher AST than ALT levels</u> in <q>95%</q> of cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- BCS should be systematically sought in patients with acute or chronic liver disease.</li></ul>
+                
+        <details>
+            <summary><strong>Imaging Modalities</strong></summary>
+            <div>
+                <ul><li>- <b>First-line</b>: <u>Doppler ultrasound</u>. Good sensitivity (<q>0.89</q>) but reasonable specificity (<q>0.68</q>).</li><li>- <b>Confirmatory</b>: <u>Contrast-enhanced CT or MRI</u> to confirm diagnosis and assess treatment options.</li><li>- <b>Hepatic venography</b> is recommended if diagnosis remains uncertain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Biopsy</strong></summary>
+            <div>
+                <ul><li>- <b>Recommended</b> for suspected <u>small hepatic vein BCS</u> when imaging shows patent hepatic veins.</li><li>- <b>Not recommended</b> for radiologically confirmed BCS.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management Strategy</strong></summary>
+            <div>
+                <ul><li>- A <b>stepwise management strategy</b> is recommended for non-fulminant BCS, leading to excellent long-term survival (5-year survival <q>74-89%</q>).</li><li>- Patients should be managed in collaboration with expert centers with LT capabilities.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Medical Management</strong></summary>
+            <div>
+                <ul><li>- <b>Anticoagulation</b>: Initiate as soon as possible and continue indefinitely.</li><li>- Start with <b>LMWH</b>, followed by <b>Vitamin K Antagonists (VKAs)</b>, targeting an INR of <q>2.0-3.0</q>.</li><li>- <u>Avoid unfractionated heparin</u> due to high risk of heparin-induced thrombocytopenia (<q>15-28%</q>).</li><li>- <b>DOACs</b> may be considered in patients with preserved liver function.</li><li>- Ensure proper variceal prophylaxis to avoid bleeding.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 2: Percutaneous Angioplasty</strong></summary>
+            <div>
+                <ul><li>- Consider for patients with <u>short-segment stenoses</u> in the IVC or hepatic veins.</li><li>- Technical success is high, but reinterventions are needed in <q>two-thirds</q> of patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 3: TIPS</strong></summary>
+            <div>
+                <ul><li>- Recommended if medical management is insufficient and angioplasty is not an option or has failed.</li><li>- Technically challenging; should be performed in experienced centers.</li><li>- <u>Covered stents</u> are preferred due to lower dysfunction rates compared to bare stents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 4: Liver Transplantation (LT)</strong></summary>
+            <div>
+                <ul><li>- Considered for <b>ALF</b>, <b>HCC</b>, or progressive disease not responding to other therapies.</li><li>- Needed in <q>13-18%</q> of patients.</li><li>- In ALF, attempt <u>emergency TIPS</u> while listing for LT.</li><li>- 10-year patient survival rates are <q>68-84%</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prognostic Scores</strong></summary>
+            <div>
+                <ul><li>- Currently available scores (Clichy, Rotterdam, MELD) are <u>insufficient for individual patient management</u> (best AUC <0.80).</li><li>- Can be used for research purposes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatocellular Carcinoma (HCC) in BCS</strong></summary>
+            <div>
+                <ul><li>- Benign regenerative nodules (FNH-like) are common (<q>27-50%</q>).</li><li>- Annual HCC incidence is <q>0.8-2.8%</q>, justifying surveillance.</li></ul>
+                
+        <details>
+            <summary><strong>Surveillance & Diagnosis</strong></summary>
+            <div>
+                <ul><li>- <b>Surveillance</b>: <u>Ultrasound and AFP measurement every 6 months</u>.</li><li>- An AFP level of <q><b>>15 ng/ml</b></q> should raise suspicion for HCC.</li><li>- <b>MRI</b> with hepatobiliary contrast is recommended to differentiate benign from malignant lesions.</li><li>- <b>Histological confirmation</b> should be obtained for lesions suspected of being HCC.</li></ul>
+                
+        <details>
+            <summary><strong>MRI Differentiating Features</strong></summary>
+            <div>
+                <ul><li>- <b>Benign lesions</b>: Typically hyperintense on T1, hypo/isointense on T2, hyperintense on hepatobiliary phase.</li><li>- <b>Malignant lesions (HCC)</b>: Typically hypointense on T1, hyperintense on T2, hypointense on hepatobiliary phase.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment</strong></summary>
+            <div>
+                <ul><li>- No evidence to recommend a different strategy from other chronic liver diseases.</li><li>- All options (resection, TACE, LT, etc.) should be considered on a case-by-case basis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric BCS Management</strong></summary>
+            <div>
+                <ul><li>- <b>Endovascular management</b> (e.g., angioplasty) is suggested as first-line therapy.</li><li>- Combine with post-procedure anticoagulation to prevent recurrence.</li><li>- LT can be considered if endovascular management fails or is not possible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Portal Vein Thrombosis (PVT) - General</strong></summary>
+            <div>
+                <ul><li>- <b>Recent PVT</b>: Thrombus present for <q><6 months</q>.</li><li>- <b>Chronic PVT</b>: Thrombus present for <q>>6 months</q>.</li><li>- <b>Portal Cavernoma</b>: Porto-portal collaterals that develop following recent PVT.</li></ul>
+                
+        <details>
+            <summary><strong>Standardised Classification</strong></summary>
+            <div>
+                <ul><li>- A standardised description of <b>site</b>, <b>extent</b>, <b>percent occlusion</b>, and <b>time course</b> is required (See Table 4).</li><li>- This allows for consistent assessment of evolution over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Work-up for Underlying Chronic Liver Disease</strong></summary>
+            <div>
+                <ul><li>- Crucial as it impacts management (e.g., portal hypertension persistence, need for HCC screening).</li><li>- Perform a complete clinical evaluation, liver blood tests, imaging, and Liver Stiffness Measurement (LSM).</li></ul>
+                
+        <details>
+            <summary><strong>Role of Liver Biopsy</strong></summary>
+            <div>
+                <ul><li>- Consider biopsy if there is suspicion of cirrhosis or PSVD.</li><li>- <b>Indications</b>: Persistent liver blood test abnormalities, abnormal liver morphology on imaging, or elevated LSM (<q>>10 kPa</q>).</li><li>- Biopsy has a major impact on management if it shows cirrhosis (indicates HCC screening) or PSVD (may favor TIPS with recanalization).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recent PVT without Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- Main goals of treatment are to prevent bowel necrosis and achieve recanalization to prevent long-term portal hypertension.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- Ultrasound is a good initial test.</li><li>- <b>Contrast-enhanced CT or MRI</b> should be used to characterize the <u>extension</u> of PVT.</li><li>- <b>Contrast-enhanced CT</b> is best to assess for signs of <u>intestinal ischemia</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Anticoagulation</b> should be initiated <u>as soon as possible</u>.</li><li>- Early initiation increases the probability of recanalization and may reduce ischemia risk.</li><li>- Continue for at least <q>6 months</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Endovascular Interventions</strong></summary>
+            <div>
+                <ul><li>- Thrombolysis and/or other endovascular interventions are <u>not first-line</u>.</li><li>- Consider in expert centers for patients with signs of intestinal ischemia and <u>no early improvement</u> with anticoagulation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric Recent PVT</strong></summary>
+            <div>
+                <ul><li>- Management is similar to adults, with key exceptions.</li><li>- In the <b>neonatal setting</b> and in <b>premature babies</b>, an <u>expectant management</u> approach is preferred to avoid the risk of intracranial bleeding.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chronic PVT / Portal Cavernoma without Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- Patients are at risk for complications of portal hypertension, such as variceal bleeding.</li></ul>
+                
+        <details>
+            <summary><strong>Anticoagulation</strong></summary>
+            <div>
+                <ul><li>- The decision to use long-term anticoagulation depends on the underlying risk factors for thrombosis.</li></ul>
+                
+        <details>
+            <summary><strong>Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Long-term anticoagulation is recommended</b> for patients with a <u>major and permanent prothrombotic risk factor</u> (e.g., MPN, homozygous mutations, APS).</li><li>- In other patients, anticoagulation can be considered to prevent recurrence. High levels of Factor VIII or D-dimer (<q>>500 ng/ml</q>) may support this decision.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Endovascular Portal Vein Recanalization (+/- TIPS)</strong></summary>
+            <div>
+                <ul><li>- Should be considered in expert centers for specific indications.</li></ul>
+                
+        <details>
+            <summary><strong>Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Recommended</b> for patients with <u>refractory complications</u> of portal hypertension (e.g., recurrent bleeding, refractory ascites) or symptomatic portal cavernoma cholangiopathy.</li><li>- <b>Not generally recommended</b> as a preventive measure in patients without such complications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Portal Cavernoma Cholangiopathy</strong></summary>
+            <div>
+                <ul><li>- Biliary abnormalities seen in <q>>80%</q> of patients, but only symptomatic in about <q>20%</q>.</li><li>- For symptomatic patients (cholangitis, jaundice, pruritus), treatment options include <b>ursodeoxycholic acid</b>, <b>endoscopic/radiological stenting</b>, and/or <b>portal vein recanalization</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric Chronic PVT</strong></summary>
+            <div>
+                <ul><li>- Restoration of portal blood flow is the main objective.</li><li>- <b>Meso-Rex bypass</b> is the recommended procedure in children.</li><li>- If not feasible, manage complications of portal hypertension; surgical shunts may be considered to delay or avoid LT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>PVT with Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- PVT in cirrhosis is often a marker of disease progression.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Factors & Surveillance</strong></summary>
+            <div>
+                <ul><li>- <b>MASLD</b> may be associated with an increased risk of PVT.</li><li>- Work-up for specific thrombotic risk factors (e.g., thrombophilia) is <u>not recommended</u>.</li><li>- <b>Surveillance for PVT</b> (e.g., every 6 months) is recommended for potential <u>LT candidates</u> and suggested for others.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prophylactic Anticoagulation (without PVT)</strong></summary>
+            <div>
+                <ul><li>- In patients with Child-Pugh B and C cirrhosis, prophylactic anticoagulation <u>may reduce morbidity and mortality</u>, but data is limited and safety concerns exist.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Therapeutic Anticoagulation (with PVT)</strong></summary>
+            <div>
+                <ul><li>- Anticoagulation improves recanalization rates and may reduce mortality.</li></ul>
+                
+        <details>
+            <summary><strong>Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Potential LT candidates</b>: Anticoagulation should be used <u>regardless of occlusion degree</u> to improve LT feasibility and outcomes.</li><li>- <b>Non-LT candidates</b>: May be used for PVT with <u>>50% occlusion</u> of the main portal vein. Consider for <50% occlusion if it progresses or extends to the SMV.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Choice of Anticoagulant</strong></summary>
+            <div>
+                <ul><li>- <b>DOACs</b> can be used in patients with <u>Child-Pugh A or B</u> cirrhosis.</li><li>- DOACs are <b>not recommended</b> in <u>Child-Pugh C</u> cirrhosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>TIPS for PVT in Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- TIPS can be considered over anticoagulation alone in specific scenarios.</li></ul>
+                
+        <details>
+            <summary><strong>Indications</strong></summary>
+            <div>
+                <ul><li>- For patients with complications of portal hypertension (e.g., <b>variceal bleeding</b>, recurrent ascites).</li><li>- For patients whose PVT <b>progresses despite anticoagulation</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-TIPS Management</strong></summary>
+            <div>
+                <ul><li>- Routine anticoagulation after TIPS is <u>not recommended</u> to improve recanalization rates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-LT Management</strong></summary>
+            <div>
+                <ul><li>- For patients with pre-existing PVT at the time of LT:</li><li>- Anticoagulation after LT is <u>not suggested</u> for Yerdel grade 1 or 2 PVT.</li><li>- No recommendation can be made for Yerdel grade 3 or 4 PVT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Porto-sinusoidal Vascular Disorder (PSVD)</strong></summary>
+            <div>
+                <ul><li>- A group of vascular entities damaging intrahepatic portal venules and/or sinusoids, causing portal hypertension <u>without cirrhosis</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Suspicion</strong></summary>
+            <div>
+                <ul><li>- Suspect PSVD in patients with signs of portalhypertension, especially with <b>LSM <q>10 kPa</q></b>, <b>HVPG <q><10 mmHg</q></b>, and a smooth liver surface.</li><li>- Unexplained liver blood test abnormalities, particularly in the presence of associated disorders (Table 5), should also raise suspicion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- A <b>liver biopsy</b> is required to establish the diagnosis of PSVD.</li><li>- The biopsy should be of good quality (ideally <q>>20 mm</q> in length).</li><li>- Diagnosis is based on excluding cirrhosis and identifying characteristic histological lesions (See Table 7).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Criteria</strong></summary>
+            <div>
+                <ul><li>- Diagnosis requires exclusion of cirrhosis plus one of the following:</li><li>- 1. At least one <u>specific sign of portal hypertension</u> (e.g., varices, collaterals).</li><li>- 2. At least one <u>specific histological lesion</u>.</li><li>- 3. At least one <u>non-specific sign of portal hypertension</u> AND at least one <u>non-specific histological lesion</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Specific Histological Lesions</strong></summary>
+            <div>
+                <ul><li>- <b>Obliterative portal venopathy</b> (portal vein stenosis).</li><li>- <b>Nodular regenerative hyperplasia</b>.</li><li>- <b>Incomplete septal fibrosis/cirrhosis</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Non-Specific Histological Lesions</strong></summary>
+            <div>
+                <ul><li>- Herniated portal vein branches.</li><li>- Hypervascularised portal tracts.</li><li>- Sinusoidal dilatation.</li><li>- Mild perisinusoidal fibrosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Work-up for Associated Conditions</strong></summary>
+            <div>
+                <ul><li>- An extensive work-up is recommended to identify conditions associated with PSVD (See Table 5).</li><li>- Common associations include <b>immune disorders</b> (up to <q>32%</q>), <b>HIV infection</b> (<q>8%</q>), <b>prothrombotic conditions</b>, and exposure to drugs like <b>azathioprine</b> and <b>oxaliplatin</b>.</li><li>- Routine genetic testing is not systematically recommended.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Surveillance</strong></summary>
+            <div>
+                <ul><li>- The risk of developing PVT is substantial (<q>16-33%</q> at 5 years).</li><li>- <b>Surveillance for PVT</b> every <q>6 months</q> is recommended.</li><li>- <b>Surveillance for HCC</b> is <u>not recommended</u> as it is exceptionally rare.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- Management focuses on complications of portal hypertension and associated conditions.</li></ul>
+                
+        <details>
+            <summary><strong>Prophylactic Anticoagulation for PVT</strong></summary>
+            <div>
+                <ul><li>- No recommendation can be made regarding prophylactic anticoagulation due to a lack of data.</li><li>- An RCT is ongoing (NCT04007289).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Severe/Refractory Complications</strong></summary>
+            <div>
+                <ul><li>- <b>TIPS</b> and/or <b>LT</b> are recommended for severe or refractory portal hypertension-related complications.</li><li>- <b>TIPS</b>: 2-year survival rate is <q>80%</q>. HE occurs in up to <q>31%</q>.</li><li>- <b>LT</b>: 5-year survival rate is <q>69%</q> (up to <q>85%</q> without severe associated conditions).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric PSVD</strong></summary>
+            <div>
+                <ul><li>- Diagnosis and management in children may follow the recommendations for adults.</li><li>- Associated with conditions like cystic fibrosis, Turner syndrome, and specific genetic mutations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Non-obstructive Sinusoidal Dilatation (NO-SD) and Peliosis Hepatis</strong></summary>
+            <div>
+                <ul><li>- A spectrum of vascular disorders affecting the liver sinusoids.</li></ul>
+                
+        <details>
+            <summary><strong>Non-obstructive Sinusoidal Dilatation (NO-SD)</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Enlargement of the sinusoidal lumen without sinusoidal or post-sinusoidal obstruction.</li><li>- Clinical presentation is variable and depends on associated conditions.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- Suspected on imaging when a <b>"mosaic enhancement pattern"</b> is seen on CT/MRI in the absence of hepatic venous outflow obstruction.</li><li>- <b>Liver biopsy</b> is <u>not systematically recommended</u> but can be considered if findings persist after removing potential causes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Associated Conditions & Management</strong></summary>
+            <div>
+                <ul><li>- Work-up should screen for associated conditions like drug use (<b>oxaliplatin</b>, <b>azathioprine</b>, <b>oral contraceptives</b>), solid tumors, infections, and inflammatory disorders.</li><li>- Long-term outcomes are unknown; follow-up should focus on the associated condition.</li><li>- Discontinuation of <b>platinum-based chemotherapy</b> is <u>not recommended</u>.</li><li>- Discontinuation of <b>oral contraceptives</b> <u>may be considered</u> to reverse sinusoidal dilatation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Peliosis Hepatis</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Rare disorder with blood-filled spaces randomly distributed in the liver parenchyma.</li><li>- Often asymptomatic but can lead to hepatic failure, portal hypertension, or liver rupture.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- No specific imaging features; it is a great mimic of other lesions.</li><li>- Diagnosis requires a <b>liver biopsy</b> showing blood-filled spaces not entirely lined with endothelial cells.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- Remove predisposing conditions when feasible (e.g., stop anabolic steroids, treat infections like Bartonella henselae).</li><li>- <b>MRI</b> is suggested to monitor disease progression.</li><li>- For complications like hemorrhage, management should be discussed in expert centers (surveillance, interventional radiology, or surgery).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric Considerations</strong></summary>
+            <div>
+                <ul><li>- Management in children should follow adult recommendations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sinusoidal Obstruction Syndrome (SOS)</strong></summary>
+            <div>
+                <ul><li>- Also known as veno-occlusive disease (VOD), a potentially life-threatening complication, typically after haematopoietic stem cell transplantation (HSCT).</li><li>- Severe forms with multiorgan failure have a mortality rate of <q>>80%</q> if untreated.</li></ul>
+                
+        <details>
+            <summary><strong>Prophylaxis in HSCT</strong></summary>
+            <div>
+                <ul><li>- Focuses on reducing modifiable risk factors and pharmacological prevention.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended</strong></summary>
+            <div>
+                <ul><li>- <b>Ursodeoxycholic acid</b> is recommended in all patients.</li><li>- Suggested dose is <q>12 to 15 mg/kg</q> divided into two doses, starting the day before conditioning and continuing for 3 months post-HSCT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Not Recommended</strong></summary>
+            <div>
+                <ul><li>- <b>Defibrotide</b> prophylaxis is generally <u>not recommended</u> based on recent phase III trial data (HARMONY trial).</li><li>- <b>Heparins</b> are not recommended due to lack of efficacy and potential side effects.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis in HSCT</strong></summary>
+            <div>
+                <ul><li>- Suspicion arises from clinical signs, elevated LSM, and ultrasound findings, typically within 21 days post-HSCT (classical SOS) but can be later (late-onset SOS).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Criteria</strong></summary>
+            <div>
+                <ul><li>- Use criteria adjusted from <b>EBMT 2023</b> (Table 9).</li><li>- Three degrees of certainty: <b>probable</b>, <b>clinical</b>, and <b>histologically proven</b>.</li><li>- A proven diagnosis should be restricted to histologically confirmed cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment in HSCT</strong></summary>
+            <div>
+                <ul><li>- Management depends on the severity of SOS.</li></ul>
+                
+        <details>
+            <summary><strong>Medical Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Defibrotide</b> is recommended for <u>severe SOS</u> to improve survival.</li><li>- It can be considered for <u>moderate SOS</u>.</li><li>- Early initiation after diagnosis may be preferable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interventional Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>TIPS</b> may be considered in severe/very severe SOS with rapid clinical deterioration despite medical treatment.</li><li>- <b>LT</b> may be discussed in very severe SOS for patients with a favorable haematological prognosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Long-Term Follow-up after SOS</strong></summary>
+            <div>
+                <ul><li>- Patients can develop intrahepatic non-cirrhotic portal hypertension (PSVD) in the long term.</li><li>- Follow-up with liver blood tests and imaging may be considered.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>SOS Outside the HSCT Setting</strong></summary>
+            <div>
+                <ul><li>- Most commonly associated with <b>oxaliplatin-based chemotherapy</b>.</li><li>- Other drugs are also implicated (Box 1).</li><li>- Diagnosis requires a <b>liver biopsy</b> as signs are non-specific.</li><li>- Management involves stopping the offending drug whenever possible. TIPS may be considered for severe portal hypertension complications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric SOS</strong></summary>
+            <div>
+                <ul><li>- Mortality rate is high (<q>80%</q>).</li><li>- In contrast to adults, <b>defibrotide</b> should be initiated <u>as soon as SOS is suspected</u> in children, regardless of severity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Aneurysms of Splanchnic Arteries (SAAs)</strong></summary>
+            <div>
+                <ul><li>- Rare vascular diseases affecting arteries of the celiac trunk and mesenteric systems.</li><li>- Must distinguish <b>true aneurysms</b> (all 3 vessel layers intact) from <b>pseudoaneurysms</b> (vessel wall injury).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis & Work-up</strong></summary>
+            <div>
+                <ul><li>- <b>Contrast-enhanced CT</b> is recommended over ultrasound for diagnosis and treatment planning.</li><li>- Work-up should identify risk factors: portal hypertension, arterial wall diseases, and causes of pseudoaneurysm (trauma, surgery, infection).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management Strategy</strong></summary>
+            <div>
+                <ul><li>- Treatment decisions are guided by aneurysm type, size, location, and symptoms (Fig. 5).</li></ul>
+                
+        <details>
+            <summary><strong>Conservative Treatment</strong></summary>
+            <div>
+                <ul><li>- Recommended for <b>small</b> (<q><2-2.5 cm</q>), <b>asymptomatic</b>, <b>true</b> SAAs.</li><li>- Follow-up with CT at 6-12 months, then every 3 years if stable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interventional Treatment</strong></summary>
+            <div>
+                <ul><li>- Recommended for <b>all pseudoaneurysms</b> (high rupture risk).</li><li>- Recommended for true aneurysms that are <b>symptomatic</b>, <b>large</b> (<q>>2-2.5 cm</q>), or <b>fast-growing</b>.</li><li>- <b>Endovascular treatment</b> is preferred over open surgery.</li></ul>
+                
+        <details>
+            <summary><strong>Special Populations Requiring Intervention</strong></summary>
+            <div>
+                <ul><li>- <b>Splenic aneurysms</b> of any size in <u>women of child-bearing potential</u> or <u>LT candidates</u>.</li><li>- <b>Gastro/peripancreatic aneurysms</b> related to celiac axis occlusion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric SAAs</strong></summary>
+            <div>
+                <ul><li>- Management should be the same as in adult patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatic Arteriovenous Fistula (HAVF)</strong></summary>
+            <div>
+                <ul><li>- Rare vascular communications between a hepatic artery branch and a portal or hepatic vein branch.</li><li>- Can be congenital (AVMs) or acquired (iatrogenic, trauma, tumor-related).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis & Work-up</strong></summary>
+            <div>
+                <ul><li>- <b>Doppler ultrasound</b> and <b>contrast-enhanced CT</b> are both useful and may be complementary.</li><li>- Work-up should search for a history of liver biopsy/trauma, features of HHT (multiple fistulae), malignancy, or chronic liver disease.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Conservative approach</b> is recommended for <u>asymptomatic</u> patients (many post-biopsy fistulae resolve spontaneously).</li><li>- <b>Closure at diagnosis</b> is recommended for <u>symptomatic</u> patients.</li><li>- <b>Endovascular closure</b> is the method of choice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pediatric HAVF</strong></summary>
+            <div>
+                <ul><li>- General approach is similar to adults, but two key differences:</li><li>- 1. Must rule out <b>congenital hemangioma</b>, which is managed medically with propranolol.</li><li>- 2. Use caution with embolic agent volume in infants due to risk of migration.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Issues Common to Vascular Liver Diseases</strong></summary>
+            <div>
+                <ul><li>- This section covers management principles applicable across various vascular liver diseases.</li></ul>
+                
+        <details>
+            <summary><strong>Portal Hypertension & Varices</strong></summary>
+            <div>
+                <ul><li>- Surveillance for varices is recommended when portal hypertension is suspected.</li><li>- If no varices, repeat endoscopy in <q>2 years</q>. If small varices, repeat in <q>1 year</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Bleeding Prophylaxis</strong></summary>
+            <div>
+                <ul><li>- <b>Primary prophylaxis</b>: <u>NSBBs or endoscopic treatment</u> are recommended for high-risk varices.</li><li>- <b>Secondary prophylaxis</b>: <u>Both NSBBs and endoscopic treatment</u> are recommended.</li><li>- <b>Refractory bleeding</b>: <u>TIPS</u> is recommended.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anticoagulation</strong></summary>
+            <div>
+                <ul><li>- In patients with PVT or BCS <u>without cirrhosis</u>:</li></ul>
+                
+        <details>
+            <summary><strong>DOACs vs. VKAs/LMWH</strong></summary>
+            <div>
+                <ul><li>- <b>Recent PVT</b>: DOACs are suggested as an alternative to LMWH/VKAs.</li><li>- <b>Chronic PVT</b>: DOACs may be preferred over VKAs for adherence and safety.</li><li>- <b>BCS</b>: DOACs may be considered if liver function is preserved.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Contraception</strong></summary>
+            <div>
+                <ul><li>- <b>Oestrogen-containing oral contraceptives</b> should be avoided due to increased thrombotic risk.</li><li>- <b>Preferred methods</b>: Intrauterine devices, mechanical contraception, and microprogestatives.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Drugs to Avoid</strong></summary>
+            <div>
+                <ul><li>- Avoid or discontinue drugs known to be associated with specific vascular liver disorders (Table 11).</li><li>- Use drugs with high first-pass effect or liver metabolism with caution, especially with impaired liver function or shunting (Table 12).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pregnancy Management</strong></summary>
+            <div>
+                <ul><li>- Pregnancy should be planned when the liver disease is well-controlled.</li></ul>
+                
+        <details>
+            <summary><strong>Anticoagulation during Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Switch VKAs or DOACs to <b>LMWH</b> as soon as pregnancy is confirmed (before <q>4th week</q>).</li><li>- Continue LMWH throughout the pregnancy.</li><li>- Prophylactic LMWH may be considered for <q>6 weeks</q> post-partum in patients not on anticoagulants.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery & Post-partum</strong></summary>
+            <div>
+                <ul><li>- <b>Vaginal delivery</b> is preferred over caesarean section.</li><li>- Safe platelet counts: <q>>20x10^9/L</q> for vaginal, <q>>50x10^9/L</q> for caesarean, <q>>75x10^9/L</q> for epidural.</li><li>- <b>Warfarin</b> and <b>beta-blockers</b> are compatible with breastfeeding; other VKAs and DOACs are contraindicated.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychosocial Support & Expertise</strong></summary>
+            <div>
+                <ul><li>- Systematically assess the psychological and social impact of the disease.</li><li>- Refer patients to dedicated professionals and patient associations.</li><li>- Management requires a <b>multidisciplinary team</b> in an expert referral center with expertise in TIPS, LT, and critical care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
