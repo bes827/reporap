@@ -1,0 +1,986 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lawn Care For Dummies</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Lawn Care For Dummies</strong></summary>
+            <div>
+                <ul><li>- Pocket Edition by Lance Walheim and the Editors of the National Gardening Association.</li><li>- Published by Wiley Publishing, Inc. © 2009.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the ideal watering depth for most grass roots to encourage a healthy lawn?</li><li>- What is the "one-third rule" for mowing?</li><li>- Leaving clippings on the lawn can reduce the need for fertilizer by how much?</li><li>- What is the most important nutrient for sustaining healthy grass growth?</li><li>- To avoid runoff on clay soil, what is the recommended duration for watering intervals?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chapter 1: Designing Your Perfect Lawn</strong></summary>
+            <div>
+                <ul><li>- This chapter helps you decide what you want your lawn to do for you and your landscape.</li></ul>
+                
+        <details>
+            <summary><strong>What Is a Lawn?</strong></summary>
+            <div>
+                <ul><li>- A lawn is a crowded city of grasses forming a resilient, soft, even carpet of green.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits of Lawns</strong></summary>
+            <div>
+                <ul><li>- <b>Ideal ground cover</b> for walking and playing.</li><li>- <b>Soothes harsh environments</b>: absorbs CO2, produces oxygen, traps dust, and cools the air.</li><li>- <b>Aesthetically pleasing</b>: ties the house and landscape together.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Downsides of Lawns</strong></summary>
+            <div>
+                <ul><li>- Significant consumers of limited resources like <b>fertilizers, pesticides, and water</b>.</li><li>- Can be <b>high maintenance</b>, requiring time and energy for mowing, watering, etc.</li><li>- Potential for pollution if chemicals are misapplied and enter water sources.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lawn Decisions</strong></summary>
+            <div>
+                <ul><li>- Involves practical decisions that influence cost, ease of care, and maintenance.</li></ul>
+                
+        <details>
+            <summary><strong>Key Considerations</strong></summary>
+            <div>
+                <ul><li>- <b>Cost</b>: Varies with size and planting method (seed is cheaper, sod is instant).</li><li>- <b>Climate</b>: Influences grass choice and watering needs (e.g., a permanent irrigation system adds cost but saves time).</li><li>- <b>Maintenance</b>: Time and expense increase with lawn size.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How large a lawn do you really need?</strong></summary>
+            <div>
+                <ul><li>- Reducing lawn size is the best way to conserve time, water, and resources.</li><li>- For a small play or lounging area, <q><b>600 to 800 square feet</b></q> is often sufficient.</li><li>- For games like volleyball, a rectangle of <q><b>45 x 80 feet (3,600 sq ft)</b></q> is plenty.</li><li>- In areas with common summer rainfall, an average lawn is <q><b>7,000 to 10,000 square feet</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lawn Shape</strong></summary>
+            <div>
+                <ul><li>- Non-square shapes (circular, kidney-shaped) are often more visually interesting.</li><li>- <u>Caution</u>: Overly complex shapes can make mowing and watering difficult.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lawn Placement</strong></summary>
+            <div>
+                <ul><li>- <b>Backyard</b>: A natural spot for play and relaxation, offering privacy.</li><li>- <b>Front yard</b>: Enhances curb appeal, but consider its actual use. If only used for mowing, a ground cover might be a better, lower-maintenance choice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Designing a Low-Maintenance Lawn</strong></summary>
+            <div>
+                <ul><li>- Incorporate design techniques to make your lawn easier to care for.</li></ul>
+                
+        <details>
+            <summary><strong>Key Techniques</strong></summary>
+            <div>
+                <ul><li>- <b>Mowing strips</b>: Cement or wood borders that allow mower wheels to run up to the edge, eliminating hand trimming.</li><li>- <b>Edgings</b>: Thinner strips that keep grass in bounds and create a clean edge.</li><li>- <b>Avoid awkward areas</b>: Don't plant grass in narrow strips (e.g., between street and sidewalk) that are hard to mow and water.</li><li>- <b>Avoid steep slopes</b>: Dangerous to mow and difficult to water without runoff.</li><li>- <b>Avoid heavy shade</b>: Grass struggles for light, and tree roots compete for water and nutrients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chapter 2: Watering Your Lawn</strong></summary>
+            <div>
+                <ul><li>- <u>Proper watering</u> is the most important aspect of caring for your lawn.</li></ul>
+                
+        <details>
+            <summary><strong>The Basics of Lawn Watering</strong></summary>
+            <div>
+                <ul><li>- Healthy roots are the key to a healthy lawn. They need a balance of moisture and air.</li></ul>
+                
+        <details>
+            <summary><strong>Watering Strategy</strong></summary>
+            <div>
+                <ul><li>- <b>Deep watering</b> ---> encourages deep roots.</li><li>- Deep roots ---> access a larger soil reservoir of water.</li><li>- Larger reservoir ---> lawn needs to be watered <u>less frequently</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Watering Pitfalls</strong></summary>
+            <div>
+                <ul><li>- <b>Overwatering</b>: Waterlogged soil lacks air, leading to shallow roots that can drown.</li><li>- <b>Shallow watering</b>: Wetting only the top few inches of soil also creates shallow roots, making the lawn dry out quickly.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Factors Affecting Watering Needs</strong></summary>
+            <div>
+                <ul><li>- Several conditions influence how much water your lawn requires.</li></ul>
+                
+        <details>
+            <summary><strong>Soil Conditions</strong></summary>
+            <div>
+                <ul><li>- Different soil types have different water-holding capacities and absorption rates.</li></ul>
+                
+        <details>
+            <summary><strong>Sandy Soils</strong></summary>
+            <div>
+                <ul><li>- Hold the <u>least</u> moisture and dry out the fastest.</li><li>- Need <u>more frequent</u> watering, but with less water per application.</li><li>- To wet to 6-8 inches: requires <q><b>0.5 inch</b></q> of water, takes approx. <q><b>30 minutes</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clay Soils</strong></summary>
+            <div>
+                <ul><li>- Hold water tightly; slow to absorb and slow to dry.</li><li>- Need <u>less frequent</u> watering, but with more water per application.</li><li>- To wet to 6-8 inches: requires <q><b>1 to 1.5 inches</b></q> of water, takes approx. <q><b>5 hours</b></q>.</li><li>- <u>Water slowly</u> in cycles to prevent runoff.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Loam Soil</strong></summary>
+            <div>
+                <ul><li>- An ideal mixture with good aeration and moisture retention.</li><li>- To wet to 6-8 inches: requires <q><b>1 inch</b></q> of water, takes approx. <q><b>2 hours</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Weather</b>: More water needed in hot, sunny, windy conditions.</li><li>- <b>Shade</b>: Grass in shade needs less water, UNLESS shaded by trees, whose roots can dry the soil quickly.</li><li>- <b>Cultural Practices</b>: Lawns mown <u>short</u> or heavily <u>fertilized</u> need more water.</li><li>- <b>Type of Grass</b>: Warm-season grasses (Bermuda, Zoysia) are generally more drought-tolerant than cool-season grasses (Kentucky bluegrass).</li></ul>
+                
+        <details>
+            <summary><strong>Grass Water Needs (See Table 2-2)</strong></summary>
+            <div>
+                <ul><li>- <b>Least Water</b>: <q>Buffalo grass</q>, Bermuda grass, Zoysia grass.</li><li>- <b>Most Water</b>: <q>Kentucky bluegrass</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Watering Best Practices</strong></summary>
+            <div>
+                <ul><li>- In midsummer, most lawns need <q><b>1 to 2 inches</b></q> of water per week, typically split into two applications.</li></ul>
+                
+        <details>
+            <summary><strong>Key Principles</strong></summary>
+            <div>
+                <ul><li>- <b>Water to the proper depth</b>: Moisture should penetrate <q><b>6 to 8 inches</b></q> deep.</li><li>- <b>Allow partial drying between waterings</b>: Look for signs of thirst (footprints remain, color dulls to grayish-blue) to ensure good soil aeration.</li><li>- <b>Avoid runoff</b>: On dense soils, water in short intervals of <q><b>10-15 minutes</b></q>, allowing water to soak in between cycles.</li><li>- <b>Water in the morning</b>: This is the best time due to less evaporation and wind. It also allows grass to dry before nightfall, reducing disease risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Can Test</strong></summary>
+            <div>
+                <ul><li>- A simple method to measure how much water your sprinklers apply over a given time.</li></ul>
+                
+        <details>
+            <summary><strong>Procedure</strong></summary>
+            <div>
+                <ul><li>- Place 5-7 straight-sided cans randomly in the sprinkler's coverage area.</li><li>- Run sprinklers for a set time, like <q><b>10 or 15 minutes</b></q>.</li><li>- Measure the water in each can to determine the application rate.</li><li>- <u>Important</u>: Use the can that has accumulated the <u>least</u> amount of water to calculate your total watering time to ensure the whole lawn gets enough.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lawn Care During Drought</strong></summary>
+            <div>
+                <ul><li>- Strategies to conserve water and help your lawn survive dry periods.</li></ul>
+                
+        <details>
+            <summary><strong>Conservation Techniques</strong></summary>
+            <div>
+                <ul><li>- <b>Mow higher</b> to encourage deeper roots and shade the soil.</li><li>- <b>Fertilize less</b> to slow growth and reduce water needs.</li><li>- <b>Water less frequently</b>, but still water deeply when you do.</li><li>- <b>Let the lawn go brown</b>: Many grasses can go dormant for <q><b>two or three weeks</b></q> or longer and recover when rains return.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chapter 3: Fertilizing Your Lawn</strong></summary>
+            <div>
+                <ul><li>- A well-fed lawn allows grasses to thrive and grow close together, keeping it green and reducing weeds.</li></ul>
+                
+        <details>
+            <summary><strong>Nitrogen Counts the Most</strong></summary>
+            <div>
+                <ul><li>- Of the 16 essential nutrients, <b>Nitrogen (N)</b> is the most important for lawn health and is needed in the largest amounts.</li></ul>
+                
+        <details>
+            <summary><strong>Role of Nitrogen</strong></summary>
+            <div>
+                <ul><li>- Keeps grass green and vigorous.</li><li>- <u>Deficiency signs</u>: Pale/yellow color, slow growth, thinning lawn.</li><li>- <u>Excess application</u>: Can burn the lawn, cause weak/lush growth prone to disease, and pollute water runoff.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Forms of Nitrogen in Fertilizers</strong></summary>
+            <div>
+                <ul><li>- <b>Quick-release</b>: Immediately available for rapid green-up but is used up quickly (e.g., urea, ammonium nitrate).</li><li>- <b>Slow-release</b>: Provides more consistent, sustained growth over a longer period (e.g., sulfur-coated urea, organic materials).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How Much Fertilizer to Apply</strong></summary>
+            <div>
+                <ul><li>- Recommendations are based on the amount of <u>actual nitrogen</u> a lawn needs per year.</li></ul>
+                
+        <details>
+            <summary><strong>Factors Determining Amount</strong></summary>
+            <div>
+                <ul><li>- <b>Type of Grass</b>: Different grasses have different needs. High-need grasses include <q>Kentucky bluegrass and hybrid Bermuda grass (4-6 lbs N/1000 sq ft)</q>, while low-need grasses include <q>Buffalo grass and Centipede grass (0-2 lbs N/1000 sq ft)</q>. (See Table 3-1)</li><li>- <b>Length of Growing Season</b>: Use the lower end of the recommended range for short seasons and the upper end for long seasons.</li><li>- <b>Lawn Clippings</b>: Leaving clippings on the lawn can reduce fertilizer needs by <q><b>25% or more</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>When to Fertilize</strong></summary>
+            <div>
+                <ul><li>- Apply fertilizer during seasons of active growth. <u>Never</u> apply more than <q><b>1 pound of actual nitrogen per 1,000 sq ft</b></q> with each application.</li></ul>
+                
+        <details>
+            <summary><strong>Warm-Season Grasses (e.g., Bermuda)</strong></summary>
+            <div>
+                <ul><li>- Feed from <b>late spring to early fall</b>.</li><li>- Avoid early spring feeding (promotes weeds) and late fall feeding (reduces winter hardiness).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cool-Season Grasses (e.g., Fescue)</strong></summary>
+            <div>
+                <ul><li>- Most important feeding times are <b>fall and spring</b>.</li><li>- <u>Fall feeding is critical</u> for building reserves for a quick green-up in spring.</li><li>- Avoid fertilizing during the heat of midsummer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How to Apply Fertilizer</strong></summary>
+            <div>
+                <ul><li>- Use a spreader for even application to avoid uneven greening or burning the grass.</li></ul>
+                
+        <details>
+            <summary><strong>Application Steps & Safety</strong></summary>
+            <div>
+                <ul><li>- <b>1. Set spreader</b> according to fertilizer label.</li><li>- <b>2. Fill spreader</b> on a hard surface and sweep up spills.</li><li>- <b>3. Apply to edges first</b>, then move back and forth, slightly overlapping paths.</li><li>- <b>4. Water thoroughly</b> after fertilizing to wash nutrients into the soil.</li><li>- <b>5. Clean spreader</b> over the lawn area when finished.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Critical Pitfalls to Avoid</strong></summary>
+            <div>
+                <ul><li>- <u>Never</u> apply fertilizer to a <b>dry lawn</b>.</li><li>- Do not fertilize during <b>very hot weather</b>.</li><li>- If you spill fertilizer, clean it up as best you can and <b>flood the area with water</b> to prevent chemical burns.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fertilizing without Polluting</strong></summary>
+            <div>
+                <ul><li>- Responsible application protects groundwater, lakes, and streams.</li></ul>
+                
+        <details>
+            <summary><strong>Best Practices</strong></summary>
+            <div>
+                <ul><li>- Use <b>slow-release</b> forms of nitrogen, as they are less likely to leach.</li><li>- Calibrate spreaders correctly to avoid over-application.</li><li>- <b>Avoid getting fertilizer on hard surfaces</b> like driveways or streets where it can wash into storm drains.</li><li>- Sweep up any spills immediately.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chapter 4: Mowing Your Lawn</strong></summary>
+            <div>
+                <ul><li>- Proper mowing is one of the most important practices for keeping your lawn healthy.</li></ul>
+                
+        <details>
+            <summary><strong>Why Mowing Matters</strong></summary>
+            <div>
+                <ul><li>- Clipping the growing tips of grass causes the plants to branch out and become denser.</li><li>- This process is what turns thousands of individual grass plants into a tightly woven turf.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lawn Mower Safety</strong></summary>
+            <div>
+                <ul><li>- Power lawn mowers can be dangerous. Always follow safety precautions.</li></ul>
+                
+        <details>
+            <summary><strong>Key Safety Tips</strong></summary>
+            <div>
+                <ul><li>- <b>Check the lawn</b> for rocks or debris before mowing.</li><li>- Keep pets and children away while mowing.</li><li>- On gentle slopes, mow <b>across the slope</b>, not up and down.</li><li>- Wear <b>heavy shoes and long pants</b> for protection.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How High to Mow</strong></summary>
+            <div>
+                <ul><li>- Each grass type has an ideal cutting height range. Taller grass generally means deeper roots and a healthier lawn.</li></ul>
+                
+        <details>
+            <summary><strong>The One-Third Rule</strong></summary>
+            <div>
+                <ul><li>- This isa critical guideline for lawn health: <u>never cut away more than one-third</u> of the grass blade in any one mowing.</li></ul>
+                
+        <details>
+            <summary><strong>Handling Overgrown Grass</strong></summary>
+            <div>
+                <ul><li>- If grass gets too long, raise the mower to its <b>highest possible setting</b> and mow.</li><li>- Rake up the long clippings if they are too heavy.</li><li>- A few days later, mow again at the normal cutting height.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recommended Mowing Heights</strong></summary>
+            <div>
+                <ul><li>- <b>Cool-season grasses</b> (Fescues, Kentucky bluegrass) are generally cut higher.</li><li>- <b>Warm-season grasses</b> (Bermuda, Zoysia) are cut lower.</li></ul>
+                
+        <details>
+            <summary><strong>Specific Heights</strong></summary>
+            <div>
+                <ul><li>- <b>Tall Fescue</b>: <q>2 to 3 inches</q></li><li>- <b>Kentucky Bluegrass</b>: <q>1.5 to 2.5 inches</q></li><li>- <b>Bermuda grass (common)</b>: <q>1 to 1.5 inches</q></li><li>- <b>Zoysia grass</b>: <q>1 to 2 inches</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mowing Strategy for Stressful Conditions</strong></summary>
+            <div>
+                <ul><li>- Mow at the <b>upper end</b> of the recommended range during hot weather or drought.</li><li>- Taller grass shades the soil, keeping it cooler and reducing evaporation.</li><li>- Also cut higher in shady areas to maximize light absorption.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Protecting Trees from 'Lawn-Mower Disease'</strong></summary>
+            <div>
+                <ul><li>- Repeatedly hitting a tree trunk with a mower or weed whip can seriously damage or kill it, especially young trees.</li><li>- The damage can girdle the trunk, making it weak and prone to snapping.</li></ul>
+                
+        <details>
+            <summary><strong>Prevention</strong></summary>
+            <div>
+                <ul><li>- Create a grassless ring at least <q><b>3 feet wide</b></q> around the trunk.</li><li>- Cover this area with a thick layer (<q>3 to 6 inches</q>) of organic mulch, keeping it a few inches from the trunk base.</li><li>- Alternatively, use plastic trunk protectors from a garden center.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Setting Mower Height</strong></summary>
+            <div>
+                <ul><li>- A simple procedure to ensure you're cutting at the correct height.</li></ul>
+                
+        <details>
+            <summary><strong>Procedure</strong></summary>
+            <div>
+                <ul><li>- <b>1.</b> Place the mower on a hard, flat surface (e.g., driveway).</li><li>- <b>2.</b> Use a ruler to measure the distance from the mower blade to the ground.</li><li>- <b>3.</b> Adjust the wheels/lever to the desired height.</li><li>- <b>4.</b> Make a test pass on the lawn and measure the cut grass to confirm the height.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Knowing How Often to Mow</strong></summary>
+            <div>
+                <ul><li>- Frequency depends on how quickly the grass grows, which is influenced by fertilization, watering, and time of year.</li></ul>
+                
+        <details>
+            <summary><strong>The Guiding Rule</strong></summary>
+            <div>
+                <ul><li>- Mow when the grass reaches about <b>one-third higher</b> than your set mowing height.</li><li>- <u>Example</u>: If you cut your lawn to 2 inches, you should mow it when the grass is about <q><b>3 inches</b></q> high.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dangers of Mowing Overgrown Grass</strong></summary>
+            <div>
+                <ul><li>- <b>Sunburn</b>: The lower, previously shaded parts of the grass blades get exposed to sun and can burn.</li><li>- <b>Root Shock</b>: Whacking off a large portion of the top cuts off the food supply and hurts the roots.</li><li>- <b>Messy Clippings</b>: Extra-long clippings can smother the grass below and look terrible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
