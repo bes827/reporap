@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Actionable Clinical Features and Biomarkers to Facilitate the Management of Irritable Bowel Syndrome</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Actionable Clinical Features and Biomarkers to Facilitate the Management of Irritable Bowel Syndrome</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> American Journal of Gastroenterology</li><li>- <b>Publication:</b> Publish Ahead of Print</li><li>- <b>DOI:</b> 10.14309/ajg.0000000000003859</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended daily fluid and salt intake for IBS patients with autonomic dysfunction?</li><li>- What percentage of patients with DGBIs and diarrhea have bile acid malabsorption (BAM)?</li><li>- What is the clinical response rate to bile acid sequestrant therapy in patients with elevated stool bile acids?</li><li>- What percentage of IBS patients (typically IBS-D) have sucrase-isomaltase (SI) deficiency?</li><li>- In the L/M test for intestinal permeability, what is the more reliable marker and its measurement window?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Paradigm Shift in IBS Management</strong></summary>
+            <div>
+                <ul><li>- Current care for Irritable Bowel Syndrome (IBS) is often a 'trial and error' approach based on symptom subtypes (IBS-C, IBS-D, etc.).</li><li>- There is a major clinical need for a <u>personalized medicine approach</u> that targets specific underlying pathophysiological mechanisms.</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of Rome IV Criteria</strong></summary>
+            <div>
+                <ul><li>- The Rome IV criteria are excellent for making a positive diagnosis of IBS and reducing unnecessary testing.</li><li>- However, they do not identify the specific mechanisms operating in an individual patient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Traits as Actionable Biomarkers</strong></summary>
+            <div>
+                <ul><li>- Clinicians can identify distinct clinical phenotypes within the IBS population that go beyond the traditional Rome-based classifications.</li><li>- Recognizing these traits can guide initial therapy choices. (See Figure 1)</li></ul>
+                
+        <details>
+            <summary><strong>🧠 <b>Psychological Comorbidity</b></strong></summary>
+            <div>
+                <ul><li>- A significant phenotypic biomarker in IBS, heavily associated with care-seeking and treatment outcomes.</li><li>- Latent class analysis identified stable clusters of IBS patients distinguished by psychological burden.</li></ul>
+                
+        <details>
+            <summary><strong><u>Treatment Implications</u></strong></summary>
+            <div>
+                <ul><li>- Early identification of patients with significant psychological comorbidity should prompt a different initial care plan.</li><li>- Offer <b>brain-gut behavior therapies</b> and/or <b>centrally-acting neuromodulators</b> early, not just after other therapies fail.</li><li>- Refer to mental health specialists for specific conditions like eating disorders, severe anxiety, PTSD, or OCD.</li></ul>
+                
+        <details>
+            <summary><strong>Neuromodulator Selection (Table 1)</strong></summary>
+            <div>
+                <ul><li>- The optimal choice should consider the agent's peripheral effects on gut function.</li><li>- Example: <b>Mirtazapine</b> may be useful in those with prominent dyspepsia and/or nausea.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚡ <b>Autonomic & Neurologic Burden</b></strong></summary>
+            <div>
+                <ul><li>- Unique clusters of IBS patients exist with increased neurological burden, including migraines and autonomic dysfunction.</li><li>- A common manifestation is <b>Postural Orthostatic Tachycardia Syndrome (POTS)</b>.</li></ul>
+                
+        <details>
+            <summary><strong>POTS Profile</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> Chronic orthostatic intolerance with excessive tachycardia <u>without hypotension</u>.</li><li>- <b>Symptoms:</b> Orthostatic (blurred vision, lightheadedness, syncope) and non-orthostatic (urinary retention, dyspepsia, nausea).</li><li>- <b>Classic Patient:</b> Typically a <q>young female</q> with overlapping fibromyalgia, migraines, and/or chronic fatigue syndrome.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment Strategies for Autonomic Dysfunction</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Non-pharmacologic:</b> Physical conditioning, exercise, increased fluid (<q><b>2L/day</b></q>) and salt (<q><b>10g/day</b></q>) intake.</li><li>- <b>Pharmacologic:</b> <b>Pyridostigmine</b> can be a useful addition to the gastroenterologist's arsenal.</li></ul>
+                
+        <details>
+            <summary><strong><b>Pyridostigmine</b> Details</strong></summary>
+            <div>
+                <ul><li>- Improves non-GI POTS symptoms while also improving GI symptoms like <q>constipation</q>.</li><li>- Dose: up to <q><b>60 mg PO TID</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🧬 <b>Hypermobility, POTS & Mast Cell Activation ('The Triad')</b></strong></summary>
+            <div>
+                <ul><li>- <b>Hypermobility Spectrum Disorders (HSD)</b> are highly associated with IBS.</li><li>- HSD are non-inflammatory connective tissue disorders from abnormal collagen synthesis, clinically assessed using the <b>Beighton score</b>.</li><li>- Nearly <q><u>one third</u></q> of patients in GI clinics have undiagnosed HSD.</li></ul>
+                
+        <details>
+            <summary><strong>The 'Triad' as a Biomarker</strong></summary>
+            <div>
+                <ul><li>- A recognizable subtype of IBS patient is characterized by a triad of clinical traits: <q><b>hEDS (hypermobile Ehlers-Danlos), POTS, and Mast Cell Activation</b></q>.</li><li>- These patients often have rashes, asthma-like symptoms, and a history of intolerance to many medications and foods.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mast Cell Activation & Treatment (Table 1)</strong></summary>
+            <div>
+                <ul><li>- Mast cell activation in the gut is a key pathophysiological mechanism in this subgroup.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Assays</strong></summary>
+            <div>
+                <ul><li>- <b>Serum:</b> <q>Tryptase</q>.</li><li>- <b>Urine:</b> <q>Histamine, leukotriene C4, and prostaglandin D2</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment Strategies</u></strong></summary>
+            <div>
+                <ul><li>- <b>Histaminergic Blockade:</b> A non-sedating H1-receptor antagonist (e.g., <q>cetirizine</q>) AND an H2-receptor antagonist (e.g., <q>famotidine</q>).</li><li>- <b>Leukotriene-receptor Antagonists:</b> e.g., <q>montelukast sodium</q>.</li><li>- <b>Mast Cell Stabilizers:</b> Gut-selective agents like oral <q>cromolyn</q> (<q>100-200 mg PO TID</q> with meals and at bedtime).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physiological Biomarkers</strong></summary>
+            <div>
+                <ul><li>- Objective tests can help identify underlying mechanisms and guide more targeted therapies.</li></ul>
+                
+        <details>
+            <summary><strong>🧪 <b>Bile Acid Malabsorption (BAM)</b></strong></summary>
+            <div>
+                <ul><li>- Occurs in <q>a quarter to a third (25-33%)</q> of patients with DGBIs and diarrhea.</li><li>- Excess colonic bile acids increase colonic motility and secretion.</li><li>- Normally, <q>~95%</q> of bile acids are reabsorbed in the terminal ileum.</li></ul>
+                
+        <details>
+            <summary><strong><u>Testing for BAM</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Stool:</b> Elevated total and primary bile acids in a 48-hour collection.</li><li>- <b>Combined Serum/Stool:</b> Fasting serum <b>C4 level</b> combined with % primary bile acids from a single stool sample.</li><li>- <b>Imaging:</b> 75SeHCAT retention test (not available in the US).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment & Response</u></strong></summary>
+            <div>
+                <ul><li>- Testing for BAM predicts benefit from <b>bile acid sequestrants</b> (e.g., cholestyramine, colestipol, colesevelam).</li><li>- Patients with elevated stool bile acids have a clinical response rate of <q><b>~70%</b></q>.</li><li>- Emerging therapy: <b>GLP-1 agonists</b> (e.g., liraglutide) may be useful, especially in obese patients with BAM.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🥖 <b>Gut Luminal Interactions with Food</b></strong></summary>
+            <div>
+                <ul><li>- Focuses on the role of diet and gut microbiome interactions in generating IBS symptoms.</li></ul>
+                
+        <details>
+            <summary><strong>FODMAPs</strong></summary>
+            <div>
+                <ul><li>- Diets low in <b>F</b>ermentable <b>O</b>ligo-, <b>D</b>i-, <b>M</b>ono-saccharides <b>A</b>nd <b>P</b>olyols are an established treatment.</li><li>- Effective for many patients, regardless of IBS subtype.</li><li>- Evidence is mixed on whether any clinical feature can predict responsiveness.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Sucrase-Isomaltase Deficiency (SID)</b></strong></summary>
+            <div>
+                <ul><li>- Affects <q>~5%-10%</q> of IBS patients, typically with IBS-D.</li><li>- Deficiency in brush border enzymes impedes digestion of disaccharides and starches, leading to laxative effects and fermentation.</li></ul>
+                
+        <details>
+            <summary><strong><u>Testing for SID</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Invasive:</b> Disaccharidase enzymatic assays or immunostaining of duodenal biopsies.</li><li>- <b>Non-invasive:</b> Breath testing using a <q>sucrose substrate</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment for SID</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- Reduced dietary sucrose intake.</li><li>- <q>Sacrosidase enzyme</q> replacement therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>SIBO & IMO</b></strong></summary>
+            <div>
+                <ul><li>- Small Intestinal Bacterial Overgrowth (SIBO) and Intestinal Methanogen Overgrowth (IMO) are linked to IBS subtypes.</li></ul>
+                
+        <details>
+            <summary><strong>Gas Associations</strong></summary>
+            <div>
+                <ul><li>- Hydrogen sulfide overproduction is linked to <q>diarrhea</q>.</li><li>- Methane overproduction is linked to <q>constipation</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Testing & Treatment</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Testing:</b> Hydrogen, methane, and hydrogen sulfide breath tests are widely available.</li><li>- <b>Treatment:</b> Positive breath tests predict an increased clinical response to <q><b>rifaximin</b></q> in IBS-D.</li><li>- Other strategies include <q>elemental diets</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🦠 <b>Post-Infection IBS (PI-IBS)</b></strong></summary>
+            <div>
+                <ul><li>- A history of GI infection is a major risk factor, but many patients cannot recall a specific event.</li></ul>
+                
+        <details>
+            <summary><strong>Biomarkers for PI-IBS</strong></summary>
+            <div>
+                <ul><li>- Pathophysiology involves the bacterial neurotoxin <b>CdtB</b> and the human protein <b>vinculin</b>.</li><li>- Antibody titers to <q><b>CdtB and vinculin</b></q> are significantly higher in patients with IBS-D compared to controls.</li><li>- These markers have a reasonably high predictive value for IBS-D but await validation in broader IBS populations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment Implications</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- Specific treatment for PI-IBS: <q><b>Glutamine</b></q> therapy.</li><li>- Consider enhanced prophylaxis for traveler's diarrhea in these patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🧱 <b>Intestinal Epithelial Permeability ('Leaky Gut')</b></strong></summary>
+            <div>
+                <ul><li>- Altered intestinal barrier function has been linked to visceral hypersensitivity and pain in IBS.</li></ul>
+                
+        <details>
+            <summary><strong>Prevalence of Barrier Dysfunction</strong></summary>
+            <div>
+                <ul><li>- Higher in diarrhea-predominant forms of IBS.</li><li>- IBS-D: <q>37-62%</q></li><li>- PI-IBS: <q>17-50%</q></li><li>- IBS-C: up to <q>25%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Testing Methods</u></strong></summary>
+            <div>
+                <ul><li>- Most tests (e.g., Ussing chambers, biopsy analysis) are not easily applied in clinical settings.</li><li>- Blood/stool markers like zonulin are not sufficiently validated for clinical use.</li><li>- The <b>Lactulose/Mannitol (L/M)</b> oral test is the most common non-invasive method.</li></ul>
+                
+        <details>
+            <summary><strong>L/M Test Refinement</strong></summary>
+            <div>
+                <ul><li>- Recent studies challenge the traditional interpretation of the L/M test.</li><li>- A more reliable and reproducible marker is <q><b>13C-mannitol mass excretion at 0–2 hours</b></q> for small intestinal permeability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Treatment Implications</u> (Table 1)</strong></summary>
+            <div>
+                <ul><li>- There are no FDA-approved treatments specifically for impaired permeability in IBS.</li><li>- A small trial showed that <q><b>Glutamine</b></q> treatment in PI-IBS improved both symptoms and L/M test measures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion: A Framework for Personalized IBS Care</strong></summary>
+            <div>
+                <ul><li>- The goal is not to perform indiscriminate biomarker testing on all IBS patients.</li><li>- Instead, use the discussion of potential mechanisms as a framework for <b>shared decision-making</b> to pursue selective testing.</li><li>- Linking treatments to the most dominant pathophysiological mechanism(s) should increase clinical response rates and patient satisfaction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
