@@ -1,0 +1,698 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Importance of Treatment Timing and Positioning in IBD</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Importance of Treatment Timing and Positioning in IBD</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> Inflammatory Bowel Diseases, 2025</li><li>- <b>DOI:</b> https://doi.org/10.1093/ibd/izaf282</li><li>- <b>Type:</b> Commentary</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What specific genetic marker significantly increases the risk of developing anti-drug antibodies to infliximab and adalimumab in Crohn's disease patients?</li><li>- What term describes the plateau in treatment efficacy maintained by resistant immune cell populations that persist despite biologic therapy?</li><li>- What are two examples of novel cellular immunotherapies proposed to overcome treatment resistance in IBD?</li><li>- What are the three primary categories of mechanisms contributing to the progressive decline in biologic efficacy in IBD?</li><li>- In which IBD subtype is the impact of delayed or suboptimal biologic intervention more pronounced due to its transmural and fibrotic nature?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Problem:</b> Declining Efficacy of Biologic Therapies</strong></summary>
+            <div>
+                <ul><li>- Therapeutic efficacy of biologics <u>progressively reduces</u> as patients move from first- to second- and third-line agents.</li><li>- This decline reveals a major limitation in current IBD management: a limited capacity to recapture durable response after biologic failure.</li></ul>
+                
+        <details>
+            <summary><strong>Multifactorial Basis for Loss of Efficacy</strong></summary>
+            <div>
+                <ul><li>- The decline in response is multifactorial, involving a complex interplay of mechanisms.</li></ul>
+                
+        <details>
+            <summary><strong><b>1. Pharmacologic Mechanisms</b></strong></summary>
+            <div>
+                <ul><li>- <b>Altered Drug Clearance:</b> Leads to sub-therapeutic trough levels.</li><li>- <b>Contributing Factors:</b> <q>Low serum albumin</q>, high inflammatory burden, and altered body composition can exacerbate poor pharmacokinetics.</li><li>- <b>Solution:</b> <u>Therapeutic Drug Monitoring (TDM)</u> is a valuable tool to identify pharmacokinetic failures and guide personalized dosing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>2. Immunologic Mechanisms</b> (Immunogenicity)</strong></summary>
+            <div>
+                <ul><li>- Repeated exposure to biologics can trigger the formation of <u><b>anti-drug antibodies (ADAs)</b></u>.</li><li>- ADAs neutralize therapeutic activity and accelerate drug clearance, leading to reduced drug levels and diminished clinical response.</li></ul>
+                
+        <details>
+            <summary><strong>ADA Risk Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Drug-related:</b> Particularly well-documented for chimeric monoclonal antibodies like <q><b>infliximab</b></q>.</li><li>- <b>Patient-specific:</b> Genetic predisposition and immune burden.</li><li>- <b>Treatment-related:</b> Drug structure, administration route, and concomitant immunosuppressive therapy.</li></ul>
+                
+        <details>
+            <summary><strong>Genetic Predisposition</strong></summary>
+            <div>
+                <ul><li>- Crohn's disease patients with the <q><u><b>HLA-DQA1*05 aplotype</b></u></q> have a significantly increased risk of developing ADAs against <b>infliximab</b> and <b>adalimumab</b>.</li><li>- For these patients, combination therapy with <q>thiopurines</q> might increase persistence on therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>3. Cellular Mechanisms</b> & Disease Refractoriness</strong></summary>
+            <div>
+                <ul><li>- Patients requiring multiple biologics often have more aggressive, treatment-resistant phenotypes (e.g., penetrating CD, extensive UC).</li><li>- These phenotypes may harbor molecular determinants of resistance like altered cytokine profiles, genetic polymorphisms, and dysregulated microbiota.</li></ul>
+                
+        <details>
+            <summary><strong><b>Clonal Immune Resistance</b></strong></summary>
+            <div>
+                <ul><li>- Successive biologic therapies can drive the expansion of resistant immune cell clones (Puca et al.).</li><li>- These clones exhibit features that sustain inflammation despite targeted intervention.</li></ul>
+                
+        <details>
+            <summary><strong>Characteristics of Resistant Clones</strong></summary>
+            <div>
+                <ul><li>- Downregulated cytokine receptor expression.</li><li>- Resistance to apoptosis.</li><li>- Upregulated <q><b>NF-κB signaling</b></q>.</li><li>- These clones can perpetuate disease through alternative inflammatory pathways.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The "<b>Therapeutic Ceiling</b>"</strong></summary>
+            <div>
+                <ul><li>- A concept describing a <u>plateau in treatment efficacy</u> maintained by resistant immune cell populations that persist despite biologic therapy (Neurath et al.).</li><li>- Highlights the limitations of current cytokine blockade strategies.</li></ul>
+                
+        <details>
+            <summary><strong>Overcoming the Ceiling</strong></summary>
+            <div>
+                <ul><li>- Novel cellular immunotherapies may be necessary to overcome this barrier.</li><li>- <b>Examples:</b> <q>CAR-T cells targeting pathogenic T-cell subsets</q> or <q>regulatory T-cell (Treg) infusions</q>.</li><li>- <b>Goal:</b> Reprogram or eliminate resistant clones.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Analogy to Other Diseases</strong></summary>
+            <div>
+                <ul><li>- This clonal evolution mirrors patterns seen in <q>oncology and other autoimmune diseases</q>.</li><li>- Selective pressure from targeted therapies drives the emergence of resistant cellular subtypes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disease-Specific Implications</strong></summary>
+            <div>
+                <ul><li>- The impact of delayed or suboptimal biologic intervention varies between Crohn's disease and ulcerative colitis.</li></ul>
+                
+        <details>
+            <summary><strong><b>Crohn's Disease (CD)</b></strong></summary>
+            <div>
+                <ul><li>- Impact of delay is <u>more pronounced</u> than in UC.</li><li>- Due to CD's <q>transmural and fibrotic nature</q>, leading to a tendency for irreversible structural damage.</li><li>- Patients often present with fibrotic or penetrating phenotypes, which are less responsive to cytokine blockade.</li></ul>
+                
+        <details>
+            <summary><strong>Fibrotic Remodeling</strong></summary>
+            <div>
+                <ul><li>- Chronic inflammation leads to irreversible tissue stiffening.</li><li>- This fibrotic tissue is largely <u>unresponsive</u> to current biologic or small-molecule therapies.</li><li>- Underscores the urgent need for early anti-inflammatory intervention and development of anti-fibrotic therapies.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Ulcerative Colitis (UC)</b></strong></summary>
+            <div>
+                <ul><li>- <u>Mucosal healing</u> remains a more attainable target, even with later treatment initiation.</li><li>- However, prolonged inflammation still correlates with an increased <q><b>colectomy risk</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Clinical Imperative:</b> Timing & Sequencing</strong></summary>
+            <div>
+                <ul><li>- Delays in initiating or changing biologic therapy are linked to worse long-term outcomes.</li><li>- <b>Outcomes:</b> Disease progression, hospitalization, and surgical intervention.</li><li>- In contrast, <u>early intervention</u> is associated with better short- and long-term outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Evidence on Treatment Sequencing</strong></summary>
+            <div>
+                <ul><li>- Real-world data consistently shows that the durability of biologic response <u>declines sharply</u> beyond the first line of therapy.</li><li>- Treatment duration decreases with each subsequent switch, mainly due to loss of response and immune-mediated cross-resistance.</li></ul>
+                
+        <details>
+            <summary><strong>UK IBD BioResource Study</strong></summary>
+            <div>
+                <ul><li>- A large-scale analysis of over <q><b>13,000 patients</b></q>.</li><li>- Provided compelling evidence that treatment outcomes are profoundly influenced by the order in which biologics are used.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Strategic Sequencing Recommendations</strong></summary>
+            <div>
+                <ul><li>- A refined, patient-tailored approach is needed to optimize long-term outcomes.</li></ul>
+                
+        <details>
+            <summary><strong><b>Mechanistic Diversification</b></strong></summary>
+            <div>
+                <ul><li>- Switching to a biologic or small molecule with a <u>distinct mechanism of action</u> may yield superior outcomes after failure.</li><li>- Cycling within the same therapeutic class (e.g., one anti-TNF to another) may offer <q>limited benefit</q> due to shared resistance pathways.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Role of Small Molecules</b></strong></summary>
+            <div>
+                <ul><li>- <b>Examples:</b> <q>JAK inhibitors</q> or <q>S1P receptor modulators</q>.</li><li>- Early real-world data suggest they may retain efficacy even after prior biologic exposure.</li><li>- Their performance may be less affected by treatment delay or sequencing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Variability Across Biologic Classes</strong></summary>
+            <div>
+                <ul><li>- <b>Anti-TNF agents:</b> Showed earlier introduction but <q>higher rates of dose escalation</q>.</li><li>- <b>Newer agents (Vedolizumab, Ustekinumab):</b> Exhibited different persistence profiles.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Therapeutic Frameworks</strong></summary>
+            <div>
+                <ul><li>- Transition from reactive treatment adjustments to <u>proactive, biology-driven</u> therapeutic planning.</li><li>- Integrate molecular predictors of response with clinical decision-making.</li></ul>
+                
+        <details>
+            <summary><strong>Key Components for Future Management</strong></summary>
+            <div>
+                <ul><li>- Immune profiling</li><li>- Clonal tracking</li><li>- Precision immunotherapy</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Conclusion:</b> Key Takeaways</strong></summary>
+            <div>
+                <ul><li>- The progressive decline in biologic efficacy reflects both <u>mechanistic resistance</u> and the <u>biological cost of delayed intervention</u>.</li><li>- Prolonged inflammation, fibrosis, and empirical sequencing contribute to cumulative tissue damage and reduced responsiveness.</li></ul>
+                
+        <details>
+            <summary><strong>Recommendations for Future IBD Management</strong></summary>
+            <div>
+                <ul><li>- <b>Act Early:</b> Integrate early use of biologics or small molecules.</li><li>- <b>Choose Strategically:</b> Use biomarker-guided, mechanism-based sequencing.</li><li>- <b>Anticipate Resistance:</b> Employ tools like Therapeutic Drug Monitoring (TDM).</li><li>- The ultimate message is: "In IBD, <u><b>time is inflammation</b></u>."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
