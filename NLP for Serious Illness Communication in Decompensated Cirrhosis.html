@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NLP for Serious Illness Communication in Decompensated Cirrhosis</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>NLP for Serious Illness Communication in Decompensated Cirrhosis</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> American Journal of Gastroenterology</li><li>- <b>Publication:</b> Publish Ahead of Print</li><li>- <b>DOI:</b> 10.14309/ajg.0000000000003830</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. What was the time saving per patient using NLP vs. manual review?</li><li>- 2. What percentage of decedent patients had NO Serious Illness Communication (SIC) documentation before the last 3 days of life?</li><li>- 3. What was the F1 score for NLP in identifying Goals of Care conversations, palliative care involvement, and hospice assessment?</li><li>- 4. What is the median survival for patients with decompensated cirrhosis without a liver transplant?</li><li>- 5. How many new inclusion keywords were added to create the DC-specific library?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Context: Serious Illness Communication (SIC) in Decompensated Cirrhosis (DC)</strong></summary>
+            <div>
+                <ul><li>- Patients with Decompensated Cirrhosis (DC) have a poor prognosis, with a median survival of <q><u>under two years</u></q> without a liver transplant.</li><li>- DC is the <q>9th leading cause of death</q> in the United States.</li><li>- Despite poor prognosis, patients often receive high-intensity end-of-life care and rarely utilize palliative or hospice services.</li></ul>
+                
+        <details>
+            <summary><strong>What is Serious Illness Communication (SIC)?</strong></summary>
+            <div>
+                <ul><li>- A process where clinicians support patients and families in understanding their illness, prognosis, and care planning.</li><li>- <b>Goal:</b> Ensure medical care is consistent with the patient's informed preferences, goals, and values.</li></ul>
+                
+        <details>
+            <summary><strong>Key Components of SIC</strong></summary>
+            <div>
+                <ul><li>- <b>Goals of Care (GOC)</b> conversations.</li><li>- Preferences for end-of-life care, including <b>code status</b> limitations.</li><li>- Involvement of specialist <b>palliative care</b> and <b>hospice</b> services.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Benefits of Early & Effective SIC</strong></summary>
+            <div>
+                <ul><li>- Improved patient and family satisfaction with communication and care.</li><li>- Reduced emotional distress.</li><li>- Reduced receipt of burdensome and potentially non-beneficial interventions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Challenges in Measuring SIC</strong></summary>
+            <div>
+                <ul><li>- SIC documentation is often unstructured and difficult to track in the Electronic Health Record (EHR).</li><li>- <b>Manual chart review</b> is the traditional gold standard but is inefficient, time-consuming, and resource-intensive.</li><li>- Administrative billing codes are poor proxies for actual SIC conversations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Study: Using NLP to Identify SIC Documentation</strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> To develop and evaluate a semi-automated Natural Language Processing (NLP) approach to identify SIC documentation in clinical notes for patients with DC.</li></ul>
+                
+        <details>
+            <summary><strong>Methods</strong></summary>
+            <div>
+                <ul><li>- A single-center, retrospective cohort study.</li></ul>
+                
+        <details>
+            <summary><strong>Study Population</strong></summary>
+            <div>
+                <ul><li>- N = <q>196</q> unique adult patients with DC who were evaluated for liver transplant and subsequently died.</li><li>- Study period: 1/1/2010 to 12/31/2017, with deaths by 6/30/2018.</li><li>- All inpatient and outpatient notes from <q>one year until three days prior to death</q> were extracted from the EHR.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>NLP Keyword Library Development</strong></summary>
+            <div>
+                <ul><li>- An initial keyword library for cancer patients was adapted for DC using an iterative process.</li><li>- Used <b>ClinicalRegex</b>, an open-source NLP software.</li><li>- A consensus panel of experts refined the library.</li></ul>
+                
+        <details>
+            <summary><strong>Four SIC Domains</strong></summary>
+            <div>
+                <ul><li>- 1. <b>Goals of Care (GOC)</b> conversations.</li><li>- 2. <b>Code status</b> limitations.</li><li>- 3. Specialist <b>palliative care</b> involvement.</li><li>- 4. <b>Hospice</b> assessment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>DC-Specific Adaptations (See Table 1)</strong></summary>
+            <div>
+                <ul><li>- Added keywords for DC-specific decisions: <b>dialysis, pressors, ventilation, and transplant goals</b>.</li><li>- Removed <q>7</q> keywords and added <q><b>45</b></q> new inclusion keywords.</li><li>- <u>Example Removals:</u> 'supportive care' was ambiguous in DC; 'PC' often meant 'primary care', not 'palliative care'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Performance Evaluation</strong></summary>
+            <div>
+                <ul><li>- NLP performance was compared to a <b>gold standard</b> of manual chart review.</li><li>- Gold standard dataset: <q>15</q> randomly selected decedents with <q>1,066</q> clinical notes.</li><li>- Metrics included precision, recall (sensitivity), accuracy, and the <b>F1 score</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Results</strong></summary>
+            <div>
+                <ul><li>- The study included <q>196</q> unique decedents with <q>14,062</q> clinical notes.</li></ul>
+                
+        <details>
+            <summary><strong>Patient Characteristics (See Table 2)</strong></summary>
+            <div>
+                <ul><li>- Average age at death: <q><b>57.7 years</b></q>.</li><li>- <q>62.2%</q> male and <q>81.1%</q> White.</li><li>- <q>55.6%</q> had been listed for liver transplantation.</li><li>- Median MELD-Na score at listing was <q>20</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>NLP Performance vs. Gold Standard (See Table 3)</strong></summary>
+            <div>
+                <ul><li>- NLP was significantly more efficient than manual review.</li><li>- NLP: <q><b>6.8 minutes</b></q> per patient.</li><li>- Manual Review: <q><b>41.5 minutes</b></q> per patient (<u>~6 times faster</u>).</li></ul>
+                
+        <details>
+            <summary><strong>Performance Scores (F1)</strong></summary>
+            <div>
+                <ul><li>- GOC conversations: F1 score of <q><b>1.0</b></q> (perfect agreement).</li><li>- Specialist palliative care: F1 score of <q><b>1.0</b></q>.</li><li>- Hospice assessment: F1 score of <q><b>1.0</b></q>.</li><li>- Code status limitations: F1 score of <q><b>0.91</b></q> (NLP outperformed manual review, identifying one instance missed manually).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overall SIC Documentation Findings (N=196)</strong></summary>
+            <div>
+                <ul><li>- A striking <q><b>48%</b></q> of patients had <u>NO SIC documentation</u> in any domain prior to the last 3 days of life.</li><li>- <q>52.0%</q> (101 patients) had documentation in at least one SIC domain.</li></ul>
+                
+        <details>
+            <summary><strong>Breakdown by SIC Domain (See Figure 2)</strong></summary>
+            <div>
+                <ul><li>- GOC conversations: <q>41.8%</q> of patients.</li><li>- Code status limitations: <q>37.8%</q>.</li><li>- Specialist palliative care involvement: <q>26.0%</q>.</li><li>- Hospice assessment: <q>21.9%</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discussion and Clinical Implications</strong></summary>
+            <div>
+                <ul><li>- This is the <b>first study</b> to apply a semi-automated NLP approach for SIC in patients with DC.</li><li>- The DC-specific keyword library is a key contribution, including language around critical decisions like <b>dialysis and transplant</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Key Finding: NLP is Superior to Manual Review</strong></summary>
+            <div>
+                <ul><li>- NLP is more <b>efficient</b> (<q>~6x faster</q>).</li><li>- NLP is as <b>accurate</b> (or more so) than manual chart review.</li><li>- This method enables large-scale analysis for <u>quality improvement</u> and <u>multisite clinical trials</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Finding: Significant Deficits in SIC</strong></summary>
+            <div>
+                <ul><li>- Nearly <q><u>half</u></q> of this decedent cohort had no documented SIC before the last 3 days of life.</li><li>- This confirms prior studies showing underutilization of palliative and hospice care in DC.</li><li>- Highlights a critical need for interventions to promote early and effective SIC.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Barriers to SIC in DC</strong></summary>
+            <div>
+                <ul><li>- Unpredictable illness trajectory.</li><li>- Limited hepatology clinician training in SIC.</li><li>- Cultural factors and competing demands for clinician time.</li><li>- Perception that transplant care and palliative care are contradictory rather than complementary.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitations of the Study</strong></summary>
+            <div>
+                <ul><li>- <b>Single-center study:</b> Generalizability may require adaptation at other institutions.</li><li>- <b>Documentation-dependent:</b> Cannot capture verbal communication not recorded in the EHR.</li><li>- <b>Presence, not quality:</b> NLP captures the presence of documentation, not the quality of the conversation.</li><li>- <b>Semi-automated:</b> Still requires human annotators for review.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Directions</strong></summary>
+            <div>
+                <ul><li>- Validation in multi-center, contemporary samples across different healthcare systems.</li><li>- Exploring fully automated tools like <b>Large Language Models (LLMs)</b>.</li><li>- Assessing the impact of ambient scribes on NLP performance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>- An NLP keyword library was successfully developed to identify SIC documentation in clinical notes for patients with DC.</li><li>- NLP-assisted chart review is more <b>efficient</b> and as <b>accurate</b> as manual chart review.</li><li>- This method can be used at scale for <u>quality improvement initiatives</u> and <u>clinical trials</u> in cirrhosis care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
