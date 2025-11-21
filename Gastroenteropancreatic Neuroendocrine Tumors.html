@@ -1,0 +1,1130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gastroenteropancreatic Neuroendocrine Tumors</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Gastroenteropancreatic Neuroendocrine Tumors</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> Gastroenterology</li><li>- <b>Publication Date:</b> Available online 14 November 2025</li><li>- <b>DOI:</b> https://doi.org/10.1053/j.gastro.2025.07.004</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the 20-year limited-duration prevalence rate of NETs in the US as of 2012?</li><li>- What is the preferred initial screening test for Carcinoid Syndrome, and what is its sensitivity/specificity for siNETs?</li><li>- What is the rate of lymph node metastases in appendiceal NETs that are between 1 and 2 cm?</li><li>- In the NETTER-1 trial, by what percentage did 177Lu-DOTA-TATE reduce the risk of progression or death compared to high-dose octreotide LAR?</li><li>- What was the median Progression-Free Survival (PFS) for patients receiving temozolomide with capecitabine in the E2211 trial for pNETs?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Definitions</strong></summary>
+            <div>
+                <ul><li>- <b>Neuroendocrine Neoplasms (NENs)</b> are a broad category of tumors originating from neuroendocrine cells.</li><li>- They are subdivided into <b>Neuroendocrine Tumors (NETs)</b> and <b>Neuroendocrine Carcinomas (NECs)</b>.</li></ul>
+                
+        <details>
+            <summary><strong>NETs vs. NECs</strong></summary>
+            <div>
+                <ul><li>- <b>NETs:</b> More common, typically more <u>indolent</u>.</li><li>- <b>NECs:</b> Usually demonstrate <u>aggressive</u> behavior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Gastroenteropancreatic NETs (GEP-NETs)</strong></summary>
+            <div>
+                <ul><li>- The <u>most common subtype</u> of NETs.</li><li>- Occur in the stomach, pancreas, small intestine, appendix, and colorectum.</li><li>- Can be '<b>functional</b>' (hormone-producing with symptoms) or '<b>nonfunctional</b>'.</li></ul>
+                
+        <details>
+            <summary><strong>Key Characteristics</strong></summary>
+            <div>
+                <ul><li>- Typically <u>subepithelial</u>, making complete endoscopic resection challenging.</li><li>- Management often dictated by size (except for aggressive small intestinal NETs).</li><li>- Most GEP-NETs overexpress <b>somatostatin receptors (SSTR)</b>, enabling novel imaging and treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Epidemiology</strong></summary>
+            <div>
+                <ul><li>- Incidence has risen worldwide, with a <q><b>more than 6-fold increase</b></q> in the US between 1973 and 2012.</li><li>- Rising incidence is likely due to increased incidental detection from endoscopy and imaging.</li></ul>
+                
+        <details>
+            <summary><strong>Incidence & Prevalence</strong></summary>
+            <div>
+                <ul><li>- Highest NET incidence is within the GI tract, with a rate of <q><b>3.56 cases per 100,000</b></q>.</li><li>- 20-year limited-duration prevalence increased <u>8-fold</u> between 1993 and 2012.</li><li>- Prevalence rate in 2012 was <q><b>nearly 0.05% (1 in 2000)</b></q> in the US.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Distribution & Demographics</strong></summary>
+            <div>
+                <ul><li>- Highest prevalence GEP-NETs: <b>Rectal NETs (rNETs)</b> (approx. <q>1 in 7000</q>) and <b>Small Intestinal NETs (siNETs)</b> (approx. <q>1 in 11,000</q>).</li><li>- <b>Race:</b> <q><u>Black individuals</u></q> have a higher incidence compared to non-Hispanic Whites and Hispanics in the US.</li></ul>
+                
+        <details>
+            <summary><strong>Geographic Differences</strong></summary>
+            <div>
+                <ul><li>- <b>North America:</b> rNETs and siNETs are most common.</li><li>- <b>Europe:</b> pNETs and siNETs are most common.</li><li>- <b>Asia:</b> rNETs and pNETs are most common.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Survival</strong></summary>
+            <div>
+                <ul><li>- Overall survival (OS) depends on grade, stage, and location.</li><li>- OS has been improving across all NETs, especially metastatic GEP-NETs.</li></ul>
+                
+        <details>
+            <summary><strong>Highest Median OS</strong></summary>
+            <div>
+                <ul><li>- <b>Appendiceal NETs:</b> <q><u>over 30 years</u></q>.</li><li>- <b>Rectal NETs:</b> <q><u>24.6 years</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pathology and Grading</strong></summary>
+            <div>
+                <ul><li>- Pathology is the <u>gold standard</u> for diagnosis.</li><li>- <b>2022 WHO classification</b> focuses on tumor differentiation and grade.</li></ul>
+                
+        <details>
+            <summary><strong>Key Concepts</strong></summary>
+            <div>
+                <ul><li>- <b>Differentiation:</b> How closely cells resemble their endocrine counterpart (<u>well</u> or <u>poorly</u> differentiated).</li><li>- <b>Grade:</b> Biological aggressiveness, measured by <u>Ki-67 index</u> or <u>mitotic count</u>. Higher values mean more aggressive behavior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immunohistochemistry</strong></summary>
+            <div>
+                <ul><li>- Positive staining for <b>INSM1</b>, <b>synaptophysin</b>, and <b>chromogranin-A (CgA)</b> supports diagnosis.</li></ul>
+                
+        <details>
+            <summary><strong>Marker Specifics</strong></summary>
+            <div>
+                <ul><li>- <b>CgA:</b> Highly specific but less sensitive; may be absent in <q><u>rectal NETs</u></q>.</li><li>- <b>INSM1:</b> Both highly sensitive and specific.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Well-Differentiated Grade 3 NETs</strong></summary>
+            <div>
+                <ul><li>- A newer category with survival rates between well-differentiated NETs and poorly differentiated NECs.</li><li>- Distinguishing from NEC can be challenging.</li></ul>
+                
+        <details>
+            <summary><strong>Biomarkers for Differentiation</strong></summary>
+            <div>
+                <ul><li>- <b>Suggests Grade 3 NET:</b> Loss of <u>ATRX</u>, <u>DAXX</u>, <u>menin</u>, or <u>p27</u>.</li><li>- <b>Suggests NEC:</b> Loss of <u>retinoblastoma protein</u>, abnormal <u>p53 expression</u>, and/or loss of <u>SSTR expression</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Considerations</strong></summary>
+            <div>
+                <ul><li>- GEP-NETs can have vague symptoms, leading to substantial diagnostic delays.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Features</strong></summary>
+            <div>
+                <ul><li>- Symptoms can relate to tumor growth or secretion of bioactive amines.</li></ul>
+                
+        <details>
+            <summary><strong>Carcinoid Syndrome (CS)</strong></summary>
+            <div>
+                <ul><li>- Results from hypersecretion of vasoactive amines (serotonin, histamine).</li><li>- Occurs in <q><b>about 30%</b></q> of GI NETs, mainly from <u>siNETs</u>.</li><li>- Rare in localized GI NETs; typically requires <q><u>liver metastases</u></q> to bypass hepatic metabolism.</li></ul>
+                
+        <details>
+            <summary><strong>Classic Symptoms</strong></summary>
+            <div>
+                <ul><li>- <b>Flushing:</b> <q>85%</q></li><li>- <b>Diarrhea:</b> <q>80%</q></li><li>- <b>Abdominal cramps:</b> <q>75%</q></li><li>- <b>Bronchospasm:</b> <q>20%</q></li><li>- <b>Valvular heart disease:</b> <q>40%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Functional Pancreatic NETs (pNETs)</strong></summary>
+            <div>
+                <ul><li>- Produce syndromes related to the predominant hormone secreted.</li></ul>
+                
+        <details>
+            <summary><strong>Examples of Syndromes</strong></summary>
+            <div>
+                <ul><li>- <b>Insulinoma:</b> Hypoglycemia</li><li>- <b>Glucagonoma:</b> Hyperglycemia</li><li>- <b>Gastrinoma (ZES):</b> Chronic diarrhea, GERD, recurrent peptic ulcers</li><li>- <b>VIPoma (Verner-Morrison):</b> Watery diarrhea, hypokalemia, achlorhydria</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Laboratory Tests</strong></summary>
+            <div>
+                <ul><li>- Evaluation of secreted hormone levels is helpful in functional pNETs.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Tests</strong></summary>
+            <div>
+                <ul><li>- Preferred initial screening for CS: <b>24-hour urinary 5-HIAA test</b>.</li><li>- Sensitivity and specificity for siNETs is <q><b>>90%</b></q>.</li><li>- Plasma 5-HIAA performs similarly but is not widely available.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Tests with Limited Value</strong></summary>
+            <div>
+                <ul><li>- <b>Serum serotonin</b> and <b>CgA</b> are <u>not recommended</u> by guidelines for diagnosis.</li><li>- CgA can be falsely elevated by drugs (<u>PPIs</u>, <u>H2 blockers</u>), food, exercise, and comorbidities (atrophic gastritis, renal failure).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Imaging</strong></summary>
+            <div>
+                <ul><li>- Essential for diagnosis and staging.</li></ul>
+                
+        <details>
+            <summary><strong>Anatomic Imaging</strong></summary>
+            <div>
+                <ul><li>- <b>Triple-phase abdominal CT:</b> Recommended to detect small vascular liver metastases.</li><li>- <b>MRI Pancreas:</b> Optimal for assessing pNET resectability.</li><li>- <b>MRI Liver:</b> Best for detecting hepatic metastases (using hepatocyte-specific contrast).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Functional Imaging (SSTR PET)</strong></summary>
+            <div>
+                <ul><li>- <b>68-Gallium</b> or <b>64-Copper DOTA-TATE PET</b> is the <u>preferred modality</u>.</li><li>- Has largely replaced octreotide scans due to superior image quality.</li><li>- Detects significantly more lesions than octreotide scans (<q><b>95% vs 31%</b></q>).</li><li>- A prospective comparison showed <q><u>64Cu-DOTA-TATE</u></q> had a substantially better lesion detection rate.</li></ul>
+                
+        <details>
+            <summary><strong>Compelling Indications for SSTR PET</strong></summary>
+            <div>
+                <ul><li>- Localizing an occult primary tumor.</li><li>- Staging, especially before surgery.</li><li>- Selecting patients for <b>Radioligand Therapy (RLT)</b>.</li><li>- Monitoring patients whose disease is predominantly seen on SSTR PET.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Specific Subtypes of GEP-NETs</strong></summary>
+            <div>
+                <ul><li>- Management strategies vary significantly by tumor location, type, size, and grade.</li></ul>
+                
+        <details>
+            <summary><strong>Gastric NETs (gNETs)</strong></summary>
+            <div>
+                <ul><li>- Classified into three types, with Type 1 being the most common.</li></ul>
+                
+        <details>
+            <summary><strong>Classification</strong></summary>
+            <div>
+                <ul><li>- <b>Type 1:</b> Most common. Arise from <u>chronic atrophic gastritis</u>, driven by <u>hypergastrinemia</u>. Typically multiple, small, and indolent.</li><li>- <b>Type 2:</b> Arise with <u>gastrinomas</u> (often in MEN1). Gastrin-driven, but with <u>low gastric pH</u> (no atrophy). Indolent.</li><li>- <b>Type 3:</b> Gastrin-independent. Typically a single tumor. <u>Aggressive</u>, with distant metastases in <q><b>over half</b></q> of patients at diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of gNETs</strong></summary>
+            <div>
+                <ul><li>- <b>Endoscopic resection is contraindicated if:</b> invasion beyond submucosa, lymph node involvement, distant metastases, or size <q><b>>2 cm</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Type 1 gNETs (Low-Grade)</strong></summary>
+            <div>
+                <ul><li>- <b>≥1 cm:</b> <u>Remove all tumors</u>.</li><li>- <b>1-2 cm:</b> Perform EUS, then endoscopic removal (EMR, ESD, EFTR).</li><li>- <b>>2 cm:</b> <u>Surgical resection</u> is preferred.</li><li>- <b><1 cm:</b> <u>Endoscopic surveillance</u> is safe. Repeat endoscopy at <q>1 year</q>, then every <q>1-2 years</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Type 1 gNETs (Grade 3)</strong></summary>
+            <div>
+                <ul><li>- <b>≥1 cm:</b> Staging (CT/MRI, SSTR PET) followed by <u>surgery</u>.</li><li>- <b><1 cm (superficial):</b> EUS followed by <u>endoscopic resection</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Type 2 & 3 gNETs</strong></summary>
+            <div>
+                <ul><li>- <b>Type 2:</b> Management is similar to Type 1, but focus on resecting the primary gastrinoma.</li><li>- <b>Type 3:</b> <u>Surgery</u> is typically recommended. Endoscopic resection may be considered for select <q>low-grade, superficial, subcentimeter</q> lesions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Duodenal & Ampullary NETs</strong></summary>
+            <div>
+                <ul><li>- Nearly <q><b>90%</b></q> of duodenal NETs (dNETs) are nonfunctioning.</li><li>- Multiple dNETs (<q>~10%</q> of cases) should raise concern for <u>MEN1</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Management of dNETs</strong></summary>
+            <div>
+                <ul><li>- <b><1 cm:</b> Can be managed endoscopically (snare, EMR, ESD, EFTR).</li><li>- <b>1-2 cm (no invasion):</b> Endoscopic resection is increasingly performed, though optimal approach (endoscopic vs. surgical) is unclear.</li><li>- <b>>2 cm, higher grade, or invasion:</b> <u>Surgical resection</u> is indicated.</li><li>- <b><5 mm (Grade 1, non-surgical candidate):</b> Endoscopic surveillance may be appropriate.</li></ul>
+                
+        <details>
+            <summary><strong>Endoscopic Complications</strong></summary>
+            <div>
+                <ul><li>- Bleeding: <q>up to 20%</q></li><li>- Perforation after ESD: <q>up to 13%-67%</q> (most managed endoscopically).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ampullary NETs</strong></summary>
+            <div>
+                <ul><li>- Typically more aggressive with worse survival than dNETs.</li><li>- <b>Recommended treatment:</b> <u>Pancreaticoduodenectomy</u>.</li><li>- <b>Endoscopic ampullectomy:</b> May be reasonable for small, low-grade lesions in non-surgical candidates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pancreatic NETs (pNETs)</strong></summary>
+            <div>
+                <ul><li>- The majority (<q><b>65%-90%</b></q>) are nonfunctional.</li><li>- Multiple pNETs suggest genetic syndromes (MEN1, Von Hippel Lindau, etc.).</li><li>- <b>EUS</b> is crucial, increasing pNET detection by <q><b>>25%</b></q> over CT/MRI.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- <b>EUS-FNA/FNB</b> provides pathologic diagnosis.</li><li>- <b>FNB is favored over FNA</b> for histology and cellularity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of pNETs</strong></summary>
+            <div>
+                <ul><li>- <b>Functional pNETs (localized/resectable mets):</b> <u>Surgery</u> is recommended, regardless of size.</li><li>- <b>Nonfunctional pNETs >2 cm:</b> <u>Surgery</u> is the treatment of choice.</li><li>- <b>Nonfunctional pNETs <1 cm:</b> <u>Surveillance</u> is recommended.</li><li>- <b>Nonfunctional pNETs 1-2 cm:</b> Controversial, but the trend is swinging toward <u>surveillance</u>.</li></ul>
+                
+        <details>
+            <summary><strong>EUS-guided Radiofrequency Ablation (RFA)</strong></summary>
+            <div>
+                <ul><li>- An attractive minimally invasive option for non-surgical candidates.</li><li>- Compared to surgery, EUS-RFA is safer but has a higher relapse rate (<q><b>16.9% vs 0%</b></q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Small Intestine NETs (siNETs)</strong></summary>
+            <div>
+                <ul><li>- Often present with metastatic disease and are most commonly associated with <b>Carcinoid Syndrome</b>.</li><li>- Known to cause a strong <u>desmoplastic reaction</u> in the mesentery.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis & Management</strong></summary>
+            <div>
+                <ul><li>- <b>SSTR PET</b> is the key imaging modality.</li><li>- <b>Surgical resection</b> is the mainstay of therapy for loco-regional disease.</li><li>- Surgery includes <u>segmental small-bowel resection</u> with resection of regional lymph nodes.</li><li>- Prophylactic cholecystectomy should be considered if SSAs are likely to be needed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recurrence & Surveillance</strong></summary>
+            <div>
+                <ul><li>- Rate of metastatic recurrence was <q><b>31%</b></q> after a median follow-up of 7.5 years.</li><li>- Recurrence risk is highest between years <q><b>3 and 8</b></q>.</li><li>- Surveillance: Radiographic/clinical every 6-12 months for year 1, then every 1-2 years for up to <q><b>10 years</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Appendiceal NETs</strong></summary>
+            <div>
+                <ul><li>- Most are found incidentally after appendectomy.</li><li>- The majority (<q><b>70%</b></q>) are localized in the tip of the appendix.</li></ul>
+                
+        <details>
+            <summary><strong>Staging & Risk Factors</strong></summary>
+            <div>
+                <ul><li>- Staging (CT/MRI, SSTR PET) is recommended for tumors <q><b>≥2 cm</b></q> or with incomplete resection/positive nodes.</li><li>- <b>Key pathologic features:</b> size, lymphovascular invasion, depth of mesoappendix invasion, grade.</li></ul>
+                
+        <details>
+            <summary><strong>Lymph Node Metastasis Risk by Size</strong></summary>
+            <div>
+                <ul><li>- <b><1 cm:</b> <q>2.5%</q></li><li>- <b>1-2 cm:</b> <q>31%</q></li><li>- <b>>2 cm:</b> <q>64%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- Primarily surgical resection.</li></ul>
+                
+        <details>
+            <summary><strong>Treatment by Size</strong></summary>
+            <div>
+                <ul><li>- <b>>2 cm:</b> <u>Right hemicolectomy</u> is warranted.</li><li>- <b><1 cm (with negative margins):</b> <u>Appendectomy alone</u> is sufficient.</li><li>- <b>1-2 cm:</b> Controversial. Consider <u>right hemicolectomy</u> for high-risk features (positive margin, mesoappendiceal invasion >3 mm, lymphovascular invasion).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Surveillance</strong></summary>
+            <div>
+                <ul><li>- Recommended for high-risk cases.</li><li>- Anatomic imaging and clinical surveillance every 6-12 months for year 1, then every 1-2 years for up to <q><b>10 years</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Colorectal NETs</strong></summary>
+            <div>
+                <ul><li>- Subdivided into colonic and rectal NETs (rNETs) due to distinct clinical features and management.</li><li>- <b>Colonic NETs</b> are more aggressive than <b>rNETs</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Survival Comparison</strong></summary>
+            <div>
+                <ul><li>- 5-year Overall Survival (OS):</li><li>- <b>Colonic NETs:</b> <q>69%</q></li><li>- <b>Rectal NETs:</b> <q>92%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Colonic NETs Management</strong></summary>
+            <div>
+                <ul><li>- Classically managed with <u>surgery</u> due to aggressiveness.</li><li>- Recent ENETS guidelines allow for <u>endoscopic resection</u> of select grade 1 colonic NETs that are <q><b>≤1 cm</b></q>.</li><li>- However, the C-NET study showed lymphovascular involvement in <q><b>26.4%</b></q> of lesions <5 mm.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rectal NETs (rNETs) Management</strong></summary>
+            <div>
+                <ul><li>- Management depends on size, grade, and depth of invasion.</li></ul>
+                
+        <details>
+            <summary><strong>By Size</strong></summary>
+            <div>
+                <ul><li>- <b><1 cm:</b> <u>Endoscopic removal</u> (EMR, ESD, EFTR). No further follow-up needed for completely resected grade 1 tumors.</li><li>- <b>1-2 cm:</b> Perform EUS and/or pelvic MRI. <u>Endoscopic resection</u> can be considered for localized tumors.</li><li>- <b>>2 cm:</b> <u>Surgical excision</u> is preferred.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Incomplete Resection</strong></summary>
+            <div>
+                <ul><li>- Repeat endoscopic removal of residual tumor should be considered.</li><li>- EUS has <q><b>94% sensitivity</b></q> for detecting residual rNET.</li><li>- Some studies suggest positive resection margins after ESD may not impact survival.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Therapy for Advanced GEP-NETs</strong></summary>
+            <div>
+                <ul><li>- Sequencing of therapy is challenging and requires shared decision-making.</li><li>- <b>Watchful waiting</b> is a widely accepted strategy for asymptomatic patients with low-volume, low-grade disease.</li></ul>
+                
+        <details>
+            <summary><strong>Management of Hormonal Symptoms</strong></summary>
+            <div>
+                <ul><li>- <b>Acute CS symptoms:</b> Short-acting octreotide.</li><li>- <b>Chronic CS symptoms:</b> Octreotide LAR and lanreotide.</li><li>- <b>Octreotide-refractory CS diarrhea:</b> <u>Telotristat ethyl</u>, which reduces peripheral serotonin.</li></ul>
+                
+        <details>
+            <summary><strong>Carcinoid Crisis</strong></summary>
+            <div>
+                <ul><li>- A life-threatening condition from massive release of vasoactive compounds.</li><li>- Prophylactic octreotide before procedures is debated.</li><li>- <b>Treatment:</b> IV fluids, vasopressors, and IV octreotide.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Locoregional Options (Liver-Dominant Disease)</strong></summary>
+            <div>
+                <ul><li>- <b>Resectable disease:</b> <u>Surgical debulking</u> can improve survival and control symptoms.</li><li>- <b>Unresectable disease:</b> Transarterial therapies (bland, chemo-, or radio-embolization).</li><li>- Objective response rate for transarterial therapy is <q><b>>50%</b></q> decrease in size.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Somatostatin Analogues (SSAs)</strong></summary>
+            <div>
+                <ul><li>- <u>First-line therapy</u> for metastatic, well-differentiated GEP-NETs with progression or high-risk features.</li></ul>
+                
+        <details>
+            <summary><strong>Key Trials</strong></summary>
+            <div>
+                <ul><li>- <b>PROMID (Octreotide LAR):</b> Improved median PFS to <q><b>14.3 months</b></q> vs 6 months with placebo.</li><li>- <b>CLARINET (Lanreotide):</b> Increased 2-year PFS rates to <q><b>65%</b></q> vs 33% with placebo.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Radioligand Therapy (RLT)</strong></summary>
+            <div>
+                <ul><li>- <b>177Lu-DOTA-TATE</b> delivers targeted radioisotope to SSTR-expressing tumors.</li></ul>
+                
+        <details>
+            <summary><strong>Key Trials</strong></summary>
+            <div>
+                <ul><li>- <b>NETTER-1:</b> Reduced risk of progression or death by <q><b>79%</b></q> compared to high-dose octreotide. Median PFS was <q><b>28.4 months</b></q> vs 8.4 months.</li><li>- <b>NETTER-2 (High-risk G2-G3):</b> Improved PFS to <q><b>23 months</b></q> vs 9 months with SSAs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Toxicities</strong></summary>
+            <div>
+                <ul><li>- Renal insufficiency</li><li>- Leukemia/myelodysplastic syndromes (<q><b><3% risk</b></q>)</li><li>- Small-bowel obstruction and abdominal pain</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Everolimus (mTOR Inhibitor)</strong></summary>
+            <div>
+                <ul><li>- Approved for well-differentiated NETs regardless of primary site.</li></ul>
+                
+        <details>
+            <summary><strong>Key Trials</strong></summary>
+            <div>
+                <ul><li>- <b>RADIANT-3 (pNETs):</b> Improved median PFS to <q><b>11 months</b></q> vs 4.6 months with placebo.</li><li>- <b>RADIANT-4 (Nonfunctional GI/Lung NETs):</b> Improved median PFS to <q><b>11 months</b></q> vs 3.9 months with placebo.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Antiangiogenic Drugs</strong></summary>
+            <div>
+                <ul><li>- Target tumor blood supply.</li></ul>
+                
+        <details>
+            <summary><strong>Key Trials</strong></summary>
+            <div>
+                <ul><li>- <b>Sunitinib (pNETs):</b> Improved PFS to <q><b>11 months</b></q> vs 5.5 months with placebo.</li><li>- <b>CABINET (Cabozantinib):</b> Extended PFS for pNETs (<q>11 vs 3 months</q>) and extrapancreatic NETs (<q>8 vs 3 months</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chemotherapy</strong></summary>
+            <div>
+                <ul><li>- Alkylating agents have shown activity, primarily in <u>pNETs</u>.</li><li>- Cytotoxic chemotherapy has <u>negligible activity</u> in midgut NETs.</li></ul>
+                
+        <details>
+            <summary><strong>Key Trial</strong></summary>
+            <div>
+                <ul><li>- <b>E2211 (pNETs):</b> Temozolomide with capecitabine improved PFS compared to temozolomide alone (<q><b>22.7 vs 14.4 months</b></q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusions</strong></summary>
+            <div>
+                <ul><li>- GEP-NETs present diverse challenges due to variable behavior and often indolent course.</li><li>- Gastroenterologists are central to diagnosis, often finding GEP-NETs incidentally.</li><li>- Endoscopy plays an increasingly important role in management, with advanced resection techniques offering definitive therapy for select localized tumors.</li><li>- Outcomes for advanced disease have improved with targeted therapies, but optimal sequencing needs refinement.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
