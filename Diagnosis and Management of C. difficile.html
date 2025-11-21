@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Diagnosis and Management of C. difficile</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Diagnosis and Management of C. difficile</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> American Journal of Gastroenterology</li><li>- <b>Publication Date:</b> Publish Ahead of Print</li><li>- <b>DOI:</b> 10.14309/ajg.0000000000003844</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the number needed to treat with conventional FMT to prevent one death in severe/fulminant CDI?</li><li>- What is the minimum concentration of Bacteroides in RBL (Rebyota)?</li><li>- What was the 8-week response rate for VOS (Vowst) in the ECOSPOR III trial?</li><li>- What is the total duration of the recommended vancomycin taper-pulse regimen for a first recurrence?</li><li>- Toxin enzyme immunoassays (EIA) can miss up to what percentage of true CDI infections?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis of C. difficile Infection (CDI)</strong></summary>
+            <div>
+                <ul><li>- Diagnosis is not always straightforward due to the high prevalence of asymptomatic colonization.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Challenges</strong></summary>
+            <div>
+                <ul><li>- Differentiating active infection from colonization is a key challenge, especially in certain populations.</li></ul>
+                
+        <details>
+            <summary><strong>Colonization vs. Infection</strong></summary>
+            <div>
+                <ul><li>- <u>Asymptomatic colonization</u> is common, especially in recently hospitalized patients or residents of long-term care facilities.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Infection IBS</strong></summary>
+            <div>
+                <ul><li>- Patients may have ongoing loose stools after CDI treatment due to post-infection IBS.</li><li>- <b>C. difficile PCR</b> may remain positive for a period after the infection has resolved, making it less reliable for confirming recurrence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Chronic Diarrhea from Other Etiologies</strong></summary>
+            <div>
+                <ul><li>- Patients with chronic diarrhea from other causes (e.g., IBD) might be colonized with C. difficile, complicating the diagnostic picture.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Testing Modalities</strong></summary>
+            <div>
+                <ul><li>- No single test is perfect; each has distinct limitations and strengths.</li></ul>
+                
+        <details>
+            <summary><strong>Nucleic Acid Amplification Tests (NAAT/PCR)</strong></summary>
+            <div>
+                <ul><li>- Detects the presence of a toxigenic (pathogenic) strain.</li><li>- <u>Cannot differentiate</u> whether toxin is actually being produced.</li><li>- <b>High sensitivity</b> led to its widespread adoption and a rise in 'CDI diagnoses' that may represent colonization.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Toxin Enzyme Immunoassays (EIA)</strong></summary>
+            <div>
+                <ul><li>- Detects free toxin in the stool.</li><li>- <b>More specific</b> for actual infection but lacks sensitivity.</li><li>- Can miss up to <q><u>15%</u></q> of true infections, especially early in the course.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Glutamate Dehydrogenase Assay (GDH)</strong></summary>
+            <div>
+                <ul><li>- Used as a first-line screening assay as all C. difficile strains produce this enzyme.</li><li>- <u>Cannot be a stand-alone test</u> because non-toxigenic strains also produce GDH.</li><li>- Positive results require confirmatory testing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recommended Algorithmic Testing</strong></summary>
+            <div>
+                <ul><li>- An algorithmic approach is recommended for the best diagnostic accuracy (See Figure 1).</li></ul>
+                
+        <details>
+            <summary><strong>Algorithm Steps</strong></summary>
+            <div>
+                <ul><li>- <b>Step 1:</b> Start with a highly sensitive test (<b>PCR</b> or <b>GDH</b>).</li><li>- <b>Step 2:</b> If positive, reflex to the more specific <b>EIA</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interpretation of Results</strong></summary>
+            <div>
+                <ul><li>- <b>PCR/GDH Negative:</b> No further testing or treatment is warranted.</li><li>- <b>PCR/GDH Positive + EIA Positive:</b> True, toxin-producing symptomatic CDI is likely.</li><li>- <b>Discordant (PCR/GDH Positive + EIA Negative):</b> The clinical picture is critical.</li></ul>
+                
+        <details>
+            <summary><strong>Managing Discordant Results</strong></summary>
+            <div>
+                <ul><li>- One of the best clinical indicators of true infection is <u>response to vancomycin</u>.</li><li>- If symptoms persist without signs of severe disease (e.g., leukocytosis, megacolon), question the CDI diagnosis and explore other causes.</li><li>- <b>Lower endoscopy with biopsies</b> can be helpful; normal findings exclude CDI, and alternate diagnoses like microscopic colitis or IBD might be found.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment of C. difficile Infection (CDI)</strong></summary>
+            <div>
+                <ul><li>- Treatment must address two phases of the infection.</li></ul>
+                
+        <details>
+            <summary><strong>Phases of Infection</strong></summary>
+            <div>
+                <ul><li>- <b>Vegetative Phase:</b> Releases toxins, causing symptoms. Best controlled with <u>antimicrobials</u>.</li><li>- <b>Spore Phase:</b> Associated with recurrence and transmission. Requires a <u>healthy, diverse microbiota</u> to be eradicated.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Antimicrobial Therapy</strong></summary>
+            <div>
+                <ul><li>- Three main antimicrobials are used: metronidazole, vancomycin, and fidaxomicin.</li></ul>
+                
+        <details>
+            <summary><strong>Initial Infection</strong></summary>
+            <div>
+                <ul><li>- Guidelines from ACG and IDSA/SHEA offer slightly different approaches.</li></ul>
+                
+        <details>
+            <summary><strong>ACG Guideline (Severity-Based)</strong></summary>
+            <div>
+                <ul><li>- Triages patients based on severity criteria.</li><li>- <b>Non-severe criteria:</b> WBC count < <q>15,000/mL³</q> AND Creatinine < <q>1.5 mg/dL</q>.</li><li>- <b>Treatment Options for Non-Severe:</b></li><li>- <b>Metronidazole</b> <q>500 mg TID for 10 days</q></li><li>- <b>Vancomycin</b> <q>125 mg PO QID for 10 days</q></li><li>- <b>Fidaxomicin</b> <q>200 mg PO BID for 10 days</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>IDSA/SHEA Guideline (Cost-Agnostic)</strong></summary>
+            <div>
+                <ul><li>- <b>Preferred:</b> <u>Fidaxomicin</u> <q>200 mg PO BID for 10 days</q>.</li><li>- <b>Acceptable Alternative:</b> <u>Vancomycin</u> <q>125 mg PO QID for 10 days</q>.</li><li>- <b>Recommended only if others unavailable:</b> <u>Metronidazole</u> <q>500 mg PO TID for 10 days</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Drug-Specific Considerations</strong></summary>
+            <div>
+                <ul><li>- <b>Metronidazole:</b></li><li>- Significant side effects (metallic taste, nausea) and high recurrence risk.</li><li>- Shown to be inferior in older patients, hospitalized patients, and those with multiple comorbidities.</li><li>- Has largely fallen out of favor for primary treatment.</li><li>- <b>Vancomycin:</b></li><li>- Current 'go-to' treatment; inexpensive and effective.</li><li>- Initial treatment response is similar to fidaxomicin (<q>85.8%</q> in one trial).</li><li>- Associated with recurrence rates of ~<q>25.3%</q>.</li><li>- <b>Fidaxomicin:</b></li><li>- Targeted spectrum of activity, preserving beneficial microbiota.</li><li>- Significantly lower recurrence rates (<q>15.4%</q> in pivotal trial).</li><li>- Main challenge has been <u>cost</u>, but a generic version was recently approved.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fulminant Disease</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> Hypotension, shock, ileus, and/or megacolon.</li><li>- <b>Management:</b> Requires ICU care and surgical consultation.</li></ul>
+                
+        <details>
+            <summary><strong>Antimicrobial Regimen</strong></summary>
+            <div>
+                <ul><li>- <b>Vancomycin</b> <q>500 mg PO QID</q></li><li>- <b>AND Metronidazole</b> <q>500 mg IV TID</q></li><li>- <b>If ileus is present:</b> Add Vancomycin enema <q>500 mg QID</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recurrent Infection (rCDI)</strong></summary>
+            <div>
+                <ul><li>- Treatment strategies evolve with subsequent recurrences.</li></ul>
+                
+        <details>
+            <summary><strong>First Recurrence (2nd Episode)</strong></summary>
+            <div>
+                <ul><li>- <b>Fidaxomicin:</b> Recommended if not used initially.</li><li>- Standard: <q>200 mg BID for 10 days</q>.</li><li>- EXTEND regimen: <q>200 mg BID for 5 days</q>, then one tablet every other day on days <q>7-25</q>. This reduced 90-day recurrence by <q>11%</q> over standard vancomycin.</li><li>- <b>Vancomycin Taper-Pulse:</b> An acceptable alternative.</li><li>- Regimen: 125 mg QID x 14 days ---> BID x 7 days ---> daily x 7 days ---> every 2nd day x 8 days ---> every 3rd day x 15 days (total duration <q>7 weeks</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Second or Further Recurrence (≥3rd Episode)</strong></summary>
+            <div>
+                <ul><li>- Warrants adjunctive therapy targeting the spore phase.</li><li>- <b>Treatment:</b> Standard antimicrobial course (Vancomycin or Fidaxomicin) <u>FOLLOWED BY</u> microbiota restoration therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prophylaxis for Subsequent Antibiotic Needs</strong></summary>
+            <div>
+                <ul><li>- For patients cured of rCDI who require another antimicrobial within the subsequent <q>6 months</q>.</li></ul>
+                
+        <details>
+            <summary><strong>ACG Recommendation</strong></summary>
+            <div>
+                <ul><li>- Conditionally recommends <b>vancomycin prophylaxis</b> with a low level of evidence.</li><li>- <b>Dose:</b> Oral vancomycin <q>125 mg once daily</q> for the duration of the other antimicrobial, plus for <q>5 days</q> thereafter.</li><li>- <b>Rationale:</b> Believed to be safe and potentially effective for patients at greatest risk for future recurrence (≥ 2 risk factors).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Factors for Recurrence</strong></summary>
+            <div>
+                <ul><li>- Age > <q>65</q></li><li>- Chronic proton pump inhibitor usage</li><li>- Immunocompromised status (e.g., CKD, Diabetes, Active chemo)</li><li>- Likely future concomitant antimicrobial usage</li><li>- Residence in a skilled nursing facility</li><li>- Severe underlying illness</li><li>- Significant inpatient hospital time</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Microbiota Restoration Therapy</strong></summary>
+            <div>
+                <ul><li>- Therapies designed to restore a healthy gut microbiota to prevent recurrence.</li></ul>
+                
+        <details>
+            <summary><strong>Conventional Fecal Microbiota Transplantation (FMT)</strong></summary>
+            <div>
+                <ul><li>- Highly effective for preventing rCDI but faces regulatory and access challenges.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy & Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Efficacy:</b> Meta-analysis showed rCDI prevention in <q>74.2%</q> of FMT patients vs. <q>51.7%</q> of controls (RR 1.59).</li><li>- <b>NNT:</b> The number needed to treat to prevent one infection was <q>3</q>.</li><li>- <b>Indication:</b> Recommended after a <u>2nd recurrence (3rd episode)</u> or earlier in high-risk patients.</li><li>- <b>Timing:</b> Administer after a standard 10-day anti-CDI course followed by a <q>48-72 hour</q> washout period.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Administration Routes</strong></summary>
+            <div>
+                <ul><li>- <b>Colonoscopy:</b> Allows for mucosal examination.</li><li>- <b>Encapsulated (Oral):</b> Preferred by most patients; cannot be used in those with dysphagia.</li><li>- <b>Enema:</b> Lower cost and avoids procedural risks but is less effective and may require repeat dosing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Use in Special Populations</strong></summary>
+            <div>
+                <ul><li>- <b>Mild-to-Moderately Immunocompromised:</b> Efficacy and safety appear comparable to immunocompetent patients.</li><li>- <b>Severely Immunocompromised:</b> High risk for life-threatening infection. Experts recommend delaying FMT in favor of extended antibiotic therapy until immune recovery.</li><li>- <b>Severe/Fulminant CDI:</b> Effective in hospitalized patients not responding to antibiotics. Meta-analysis of observational studies showed reduced mortality (RR <q>0.37</q>), with an NNT of <q>4</q> to prevent one death.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regulatory Status & Access Issues</strong></summary>
+            <div>
+                <ul><li>- FDA regulates FMT as a biologic drug.</li><li>- A Nov 2022 FDA guidance stated that use of material from stool banks (like OpenBiome) is <u>no longer permissible</u> under 'enforcement discretion'.</li><li>- This has greatly impacted FMT use, especially for fulminant CDI.</li><li>- <b>What is still permitted:</b> Local/institutional stool banks and <u>directed donor FMT</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Directed Donor FMT for Fulminant CDI</strong></summary>
+            <div>
+                <ul><li>- Recommended if no response to standard antibiotics within <q>2-5 days</q>.</li><li>- <b>Donor Screening:</b> Choose a healthy donor with no recent (<q>90 days</q>) antibiotic use and limited comorbidities. Conduct expeditious screening for viral/enteric infections (See Table 3).</li><li>- <b>Protocol:</b> Antibiotics are typically continued. Repeated FMTs (2 or 3) may be needed until clinical recovery (Fischer protocol).</li><li>- <b>Contraindications:</b> Bowel perforation, obstruction, or severe immunocompromise.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>FDA-Approved Microbiota Therapies</strong></summary>
+            <div>
+                <ul><li>- Commercially available, standardized products for preventing rCDI.</li></ul>
+                
+        <details>
+            <summary><strong>Fecal Microbiota, live-jslm (<u>Rebyota®, RBL</u>)</strong></summary>
+            <div>
+                <ul><li>- <b>Formulation:</b> Broad consortium of spore and non-spore forming bacteria. Minimum of <q>1.5 x 10⁷</q> Bacteroides.</li><li>- <b>Administration:</b> Single <q>150 ml</q> enema following antibiotic course and a <q>1-3 day</q> washout period.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy & Safety</strong></summary>
+            <div>
+                <ul><li>- <b>PUNCH-CD3 Trial:</b> 8-week response was <q>70.6%</q> for RBL vs. <q>57.5%</q> for placebo. Of responders, <q>92.1%</q> remained responsive at 6 months.</li><li>- <b>Open Label Study:</b> Showed consistent safety and efficacy in patients with IBD, IBS, and mild-moderate immunocompromise.</li><li>- <b>Indication:</b> Patients at greatest risk for recurrence (≥ 2 risk factors with 1st recurrence, or anyone with ≥ 2nd recurrence).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fecal Microbiota spores, live-brpk (<u>Vowst®, VOS</u>)</strong></summary>
+            <div>
+                <ul><li>- <b>Formulation:</b> Defined consortium of Firmicutes spores isolated via an ethanol purification process.</li><li>- <b>Administration:</b> <q>4 capsules daily for 3 days</q> following antibiotic course, a <q>2-4 day</q> washout, and a bowel lavage.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy & Safety</strong></summary>
+            <div>
+                <ul><li>- <b>ECOSPOR III Trial:</b> At 8 weeks, <q>88%</q> of VOS patients remained responsive vs. <q>60%</q> in the placebo group. 6-month sustained response was <q>79%</q> vs <q>53%</q>.</li><li>- <b>Open Label Study:</b> 8-week response was <q>91%</q> overall, and <q>94%</q> in those with a first recurrence.</li><li>- <b>Indication:</b> Patients at greatest risk for recurrence who are not severely immunocompromised and can swallow pills. Note: Patients with IBD, IBS, and immunocompromise were excluded from phase 3 trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>- Diagnosis of CDI relies on <b>testing algorithms</b> (GDH/PCR screen with EIA confirmation) due to the lack of an ideal standalone test.</li><li>- <b>Vancomycin</b> and <b>fidaxomicin</b> are the mainstays of antibiotic therapy.</li><li>- <b>Microbiota restoration therapy</b> (RBL or VOS) is essential to prevent recurrence in high-risk patients.</li><li>- The future is promising, with a pipeline of new antibiotics and microbiota-based therapies in clinical trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
