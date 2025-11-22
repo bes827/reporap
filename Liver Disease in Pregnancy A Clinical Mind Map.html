@@ -1,0 +1,1382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Liver Disease in Pregnancy: A Clinical Mind Map</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Liver Disease in Pregnancy: A Clinical Mind Map</strong></summary>
+            <div>
+                <ul><li>- This mind map synthesizes clinically critical information from two key sources:</li><li>- <b>Brady CW. Liver Disease in Pregnancy: What’s New. Hepatology Communications, 2020.</b></li><li>- <b>EASL Clinical Practice Guidelines on the management of liver diseases in pregnancy. Journal of Hepatology, 2023.</b></li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- Test your knowledge on key aspects of liver disease in pregnancy before you begin.</li></ul>
+                
+        <details>
+            <summary><strong>Question 1</strong></summary>
+            <div>
+                <ul><li>- In Intrahepatic Cholestasis of Pregnancy (ICP), at what serum bile acid level does the risk of stillbirth significantly increase, prompting consideration for delivery around 35-36 weeks?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Question 2</strong></summary>
+            <div>
+                <ul><li>- For a pregnant woman with chronic Hepatitis B, what is the HBV DNA level cutoff above which antiviral therapy is recommended to reduce mother-to-child transmission?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Question 3</strong></summary>
+            <div>
+                <ul><li>- Mycophenolate mofetil is a teratogenic immunosuppressant used in some autoimmune conditions. How long before conception should it be stopped?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Question 4</strong></summary>
+            <div>
+                <ul><li>- What is the definitive, curative therapy for both HELLP syndrome and Acute Fatty Liver of Pregnancy (AFLP)?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Question 5</strong></summary>
+            <div>
+                <ul><li>- In a pregnant woman with cirrhosis, a pre-conception MELD score above what value is predictive of hepatic decompensation during pregnancy?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>General Considerations & Physiology</strong></summary>
+            <div>
+                <ul><li>- Understanding baseline changes is crucial for accurate diagnosis.</li></ul>
+                
+        <details>
+            <summary><strong>Epidemiology</strong></summary>
+            <div>
+                <ul><li>- Rates of chronic liver disease (CLD) in women of childbearing age (15-39 years) are rising, from <q>10.4%</q> (1988-1994) to <q>24.9%</q> (2007-2012) (Brady, citing NHANES).</li></ul>
+                
+        <details>
+            <summary><strong>Most Common Liver Diseases</strong></summary>
+            <div>
+                <ul><li>- <b>Gestational Liver Disorders:</b> Affect <q>3%</q> of pregnancies (EASL).</li><li>- <b>NAFLD/MASLD:</b> Most common CLD, prevalence rose from <q>6.8%</q> to <q>18.1%</q> in women 15-39 (Brady).</li><li>- <b>Gallstone Disease:</b> Second most common hepatic issue during pregnancy hospitalizations (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physiological Changes in Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Pregnancy induces a hyperdynamic circulatory state mimicking CLD signs (e.g., palmar erythema, spider naevi) due to increased cardiac output and hyper-oestrogenic state (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Expected Laboratory Changes</strong></summary>
+            <div>
+                <ul><li>- <b><u>Increase</u>:</b> Alkaline Phosphatase (placental origin), plasma volume.</li><li>- <b><u>Decrease</u>:</b> Albumin, peripheral vascular resistance.</li><li>- <b><u>No Change / Slight Decrease</u>:</b> AST, ALT, Bilirubin, GGT, Platelets, Prothrombin Time (Brady, Table 1; EASL, Table 2).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Modalities</strong></summary>
+            <div>
+                <ul><li>- Initial assessment should always begin with non-invasive testing (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Imaging</strong></summary>
+            <div>
+                <ul><li>- <b>Ultrasound:</b> <u>First-line and safe</u> at any gestation (Brady & EASL).</li><li>- <b>MRI:</b> Acceptable <u>without contrast</u>. Gadolinium is associated with teratogenicity and should be avoided (Brady).</li><li>- <b>CT Scan:</b> Use must be weighed against risks of ionizing radiation, especially between <q>8-15 weeks</q> gestation (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Invasive Procedures</strong></summary>
+            <div>
+                <ul><li>- <b>Endoscopy (OGD):</b> Acceptable, typically recommended in the <u>second trimester</u>. Patient should be in left lateral decubitus position to avoid IVC compression (Brady & EASL).</li><li>- <b>Liver Biopsy:</b> Can be performed if clinically necessary and benefits outweigh risks. Transjugular route confers radiation exposure (Brady & EASL).</li><li>- <b>ERCP:</b> Can be performed, ideally in 2nd/3rd trimester. Fetal radiation is well below the teratogenic threshold of <q>50 mGy</q> (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Transient Elastography (FibroScan)</strong></summary>
+            <div>
+                <ul><li>- <u>Not FDA-approved</u> for use in pregnancy (Brady).</li><li>- EASL notes it is safe, but liver stiffness may physiologically increase in the third trimester (mean <q>4.5 kPa</q> in 2nd trimester to <q>6.0 kPa</q> in 3rd).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Diseases Unique to Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Disorders that arise specifically due to the pregnant state.</li></ul>
+                
+        <details>
+            <summary><strong>Hyperemesis Gravidarum (HG)</strong></summary>
+            <div>
+                <ul><li>- Intractable nausea and vomiting, occurring in <q>0.3-3%</q> of pregnancies (Brady & EASL).</li><li>- Typically presents in the <b>first trimester</b> and resolves by <q>20 weeks</q> gestation (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Liver Involvement</strong></summary>
+            <div>
+                <ul><li>- Occurs in <q>40-60%</q> of patients with HG (Brady & EASL).</li><li>- <b>Biochemistry:</b> Mildly elevated AST/ALT, but can rise to <q>1,000 IU/L</q>. Jaundice is rare (Brady).</li><li>- Liver enzymes normalize after HG resolves; no long-term sequelae (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Supportive Care:</b> IV fluids, antiemetics, vitamin/mineral supplementation.</li><li>- <b>Key Supplements:</b> Emphasize <u>Thiamine</u> and <u>Folic Acid</u> to prevent complications like Wernicke's encephalopathy (Brady & EASL).</li><li>- <b>Antiemetics:</b> Metoclopramide, promethazine, ondansetron are considered compatible (Brady). EASL provides a tiered approach (See Fig 6).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hypertensive Disorders of Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Includes preeclampsia/eclampsia and HELLP syndrome.</li></ul>
+                
+        <details>
+            <summary><strong>Preeclampsia / Eclampsia</strong></summary>
+            <div>
+                <ul><li>- <b>Preeclampsia:</b> New onset hypertension (≥<q>140/90 mmHg</q>) after 20 weeks with proteinuria (>300mg/day) or end-organ dysfunction (Brady & EASL).</li><li>- <b>Eclampsia:</b> Development of generalized seizures during preeclampsia (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Prevention in High-Risk Patients</strong></summary>
+            <div>
+                <ul><li>- <b>Low-dose aspirin (81-150mg daily):</b> Recommended to be started between <q>12 and 16 weeks</q> gestation (Brady & EASL).</li><li>- Reduces risks of preeclampsia, fetal growth restriction, and fetal death (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>HELLP Syndrome</strong></summary>
+            <div>
+                <ul><li>- <b>H</b>emolysis, <b>E</b>levated <b>L</b>iver enzymes, <b>L</b>ow <b>P</b>latelets.</li><li>- Occurs in <q>0.2-0.9%</q> of pregnancies, complicates <q>10-20%</q> of severe preeclampsia cases (Brady & EASL).</li><li>- Typically presents in the 3rd trimester (<q>28-36 weeks</q>), but <q>30%</q> of cases are postpartum (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis & Classification</strong></summary>
+            <div>
+                <ul><li>- Considered a manifestation of severe preeclampsia (EASL).</li><li>- Two main classification systems exist (Brady, Table 3).</li></ul>
+                
+        <details>
+            <summary><strong>Tennessee Classification</strong></summary>
+            <div>
+                <ul><li>- <b>Complete HELLP:</b> AST ≥70, LDH ≥600, Platelets ≤<q>50 x 10⁹/L</q>.</li><li>- <b>Partial HELLP:</b> One or two of the above criteria.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mississippi Triple Class System</strong></summary>
+            <div>
+                <ul><li>- <b>Class 1 (Severe):</b> Platelets ≤<q>50 x 10⁹/L</q>.</li><li>- <b>Class 2 (Moderate):</b> Platelets <q>50-100 x 10⁹/L</q>.</li><li>- <b>Class 3 (Mild):</b> Platelets <q>100-150 x 10⁹/L</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prognostic Markers</strong></summary>
+            <div>
+                <ul><li>- <b>Platelet Count:</b> A count < <q>100 x 10⁹/L</q> is associated with increased risk of abnormal coagulation and adverse maternal outcomes (EASL).</li><li>- <b>Liver Enzymes:</b> Raised enzymes predict adverse maternal outcomes better than fetal outcomes, but should not be used in isolation (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b><u>Definitive therapy is delivery of the fetus</u></b> (Brady & EASL).</li><li>- Labs may worsen for <q>48-72 hours</q> postpartum before improving (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Medical Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Antihypertensives:</b> To maintain BP below <q>160/110 mmHg</q>. Options include labetalol, nifedipine (Brady & EASL).</li><li>- <b>Magnesium Sulfate:</b> For seizure prevention (Brady & EASL).</li><li>- <b>Corticosteroids:</b> <u>NOT</u> for improving maternal outcomes. Used for fetal lung maturity if delivery is planned before <q>35 weeks</q> (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatic Complications</strong></summary>
+            <div>
+                <ul><li>- Subcapsular hematoma or hepatic rupture are rare but life-threatening.</li><li>- Requires surgical intervention or hepatic arterial embolization (Brady).</li><li>- Ultrasound is recommended for patients with severe RUQ/epigastric pain to screen for hematoma (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Acute Fatty Liver of Pregnancy (AFLP)</strong></summary>
+            <div>
+                <ul><li>- Rare (<q>1:7,000 to 1:15,000</q> pregnancies) but severe disorder of microvesicular fat deposition in the liver, leading to hepatic failure (Brady).</li><li>- Typically occurs in the <b>third trimester</b> (Brady & EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Pathophysiology</strong></summary>
+            <div>
+                <ul><li>- Caused by inherited defects in fetal mitochondrial fatty acid oxidation, most commonly <b>LCHAD deficiency</b> (long-chain 3-hydroxyacyl-coenzyme A dehydrogenase) (Brady).</li><li>- Toxic fatty acid metabolites accumulate in the mother, causing hepatotoxicity (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Presentation & Diagnosis</strong></summary>
+            <div>
+                <ul><li>- Presents with nausea, vomiting, abdominal pain, anorexia, and signs of liver failure (jaundice, encephalopathy, coagulopathy) (Brady & EASL).</li><li>- Can overlap with HELLP, but AFLP typically shows more profound <u>hepatic synthetic dysfunction</u> (coagulopathy, hypoglycemia, hyperammonemia) (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Swansea Criteria</strong></summary>
+            <div>
+                <ul><li>- Diagnostic tool combining clinical, lab, and imaging features.</li><li>- Diagnosis made if ≥<q>6 features</q> are present (Brady, Table 4).</li><li>- High sensitivity (<q>100%</q>) and negative predictive value (<q>100%</q>) (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prognostic Markers</strong></summary>
+            <div>
+                <ul><li>- Poor prognosis associated with:</li><li>- Encephalopathy</li><li>- Elevated serum lactate (> <q>2.8 mg/dl</q>)</li><li>- MELD score > <q>30</q></li><li>- Swansea score > <q>7</q> (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b><u>Prompt delivery of the fetus is the cornerstone of management</u></b> (Brady & EASL).</li><li>- Clinical abnormalities may persist for up to a week postpartum (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Supportive Care</strong></summary>
+            <div>
+                <ul><li>- Requires intensive care for managing coagulopathy, hypoglycemia, renal failure, and other complications.</li><li>- <b>Plasma exchange:</b> May be considered post-delivery to improve recovery time in severe cases (EASL).</li><li>- <b>N-acetylcysteine:</b> No specific data for AFLP, but can be considered in ICU setting for non-paracetamol acute liver failure (EASL).</li><li>- <b>Liver Transplantation:</b> Required in rare cases of progression to irreversible liver failure (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fetal & Recurrence Risk</strong></summary>
+            <div>
+                <ul><li>- Fetuses are at risk for liver failure, cardiomyopathy, and myopathy (Brady).</li><li>- Recurrence risk exists; up to <q>25%</q> of children born to mothers with AFLP will carry a fatty acid oxidation defect (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intrahepatic Cholestasis of Pregnancy (ICP)</strong></summary>
+            <div>
+                <ul><li>- Most common pregnancy-related liver disease, prevalence <q>0.1-2%</q> (Brady).</li><li>- Presents in 2nd or 3rd trimester with <b>pruritus</b> (classic symptom) and elevated serum bile acids (Brady & EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Pathophysiology</strong></summary>
+            <div>
+                <ul><li>- Thought to be due to genetic mutations in bile salt transporters (e.g., <b>ABCB4</b>, <b>ABCB11</b>) unmasked by hormonal changes of pregnancy (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Stratification & Fetal Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b><u>Serum bile acid level is the key predictor of fetal risk</u></b>. Transaminases and bilirubin are not significant predictors (Brady & EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Bile Acid Thresholds</strong></summary>
+            <div>
+                <ul><li>- <b>> <q>40 μmol/L</q>:</b> Increased risk of spontaneous preterm birth, meconium-stained fluid, and fetal distress (Brady & EASL).</li><li>- <b>> <q>100 μmol/L</q>:</b> <u>Significantly increased risk of stillbirth</u>. Risk rises markedly after <q>35 weeks</q> gestation (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- Goal is to manage symptoms and mitigate fetal risk.</li></ul>
+                
+        <details>
+            <summary><strong>Pharmacotherapy: Ursodeoxycholic Acid (UDCA)</strong></summary>
+            <div>
+                <ul><li>- Standard dose is <q>10-15 mg/kg/day</q> (Brady).</li><li>- <b>Brady (2020):</b> Notes that UDCA reduces pruritus and improves LFTs, but a recent trial (PITCHES) showed it did not significantly reduce adverse perinatal outcomes.</li><li>- <b>EASL (2023):</b> Recommends UDCA for pruritus and notes it should be offered for women with bile acids > <q>40 μmol/L</q> to reduce spontaneous preterm birth risk and may also protect against stillbirth.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery Planning</strong></summary>
+            <div>
+                <ul><li>- This is the intervention with clearly demonstrated benefit (Brady).</li><li>- <b>Bile acids > 100 μmol/L:</b> Plan delivery at <q>35-36 weeks</q> (EASL).</li><li>- <b>Bile acids 40-99 μmol/L:</b> Consider delivery by <q>37-39 weeks</q> (Brady & EASL).</li><li>- <b>Bile acids < 40 μmol/L:</b> Consider induction by <q>39 weeks</q> (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Long-term Maternal Risks</strong></summary>
+            <div>
+                <ul><li>- A history of ICP is associated with later development of hepatobiliary cancer, cardiovascular disease, and immune-related diseases (e.g., diabetes, thyroid disease) (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pre-existing Liver Diseases in Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Management of chronic or acute liver diseases that occur coincidentally with pregnancy.</li></ul>
+                
+        <details>
+            <summary><strong>Viral Hepatitis</strong></summary>
+            <div>
+                <ul><li>- Management focuses on maternal health and preventing mother-to-child transmission (MTCT).</li></ul>
+                
+        <details>
+            <summary><strong>Hepatitis A (HAV)</strong></summary>
+            <div>
+                <ul><li>- MTCT is rare. Caesarean section and avoidance of breastfeeding are not recommended (EASL).</li><li>- Infection in 2nd/3rd trimester can cause complications like preterm labor (EASL).</li><li>- <b>Post-exposure prophylaxis:</b> Both HAV vaccine and immunoglobulin can be used in pregnancy (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatitis B (HBV)</strong></summary>
+            <div>
+                <ul><li>- Obstetric outcomes not significantly affected, but MTCT is a major concern (Brady).</li><li>- Risk of MTCT is highest with positive HBeAg and high HBV DNA (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Preventing MTCT</strong></summary>
+            <div>
+                <ul><li>- <b>Infant Immunoprophylaxis:</b> <u>Crucial</u>. Hepatitis B immunoglobulin (HBIG) and HBV vaccine within <q>12 hours</q> of birth reduces transmission to <q>5-10%</q> (Brady & EASL).</li><li>- <b>Maternal Antiviral Therapy:</b> Recommended for mothers with HBV DNA > <q>200,000 IU/mL</q> (or >5.3 log10 IU/mL) (Brady & EASL).</li><li>- <b>Timing:</b> Start at <q>24-28 weeks</q> gestation and continue up to 12 weeks postpartum (EASL).</li><li>- <b>Preferred Agent:</b> <u>Tenofovir</u> is preferred due to potency and low resistance (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery & Breastfeeding</strong></summary>
+            <div>
+                <ul><li>- <b>Delivery:</b> Caesarean section is <u>not</u> routinely recommended to reduce MTCT (EASL).</li><li>- <b>Breastfeeding:</b> <u>Not contraindicated</u> if the infant has received immunoprophylaxis, even if the mother is on antiviral therapy (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Amniocentesis</strong></summary>
+            <div>
+                <ul><li>- Associated with a higher risk of MTCT, especially with high maternal viral load. Non-invasive prenatal testing is preferred (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatitis C (HCV)</strong></summary>
+            <div>
+                <ul><li>- Prevalence is increasing in women of childbearing age due to injection drug use (Brady).</li><li>- MTCT risk is <q>5-6%</q> with HCV monoinfection, but rises to <q>22%</q> with HIV co-infection (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Screening & Treatment</strong></summary>
+            <div>
+                <ul><li>- Universal HCV screening for all pregnant women is recommended (Brady & EASL).</li><li>- <b>Treatment:</b> Direct-acting antivirals (DAAs) are generally not recommended during pregnancy due to lack of safety data. Treatment should occur before pregnancy or after delivery/breastfeeding (Brady & EASL).</li><li>- Emerging data (e.g., ledipasvir/sofosbuvir) show promise for safety and efficacy in pregnancy, but more research is needed (Brady & EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery & Breastfeeding</strong></summary>
+            <div>
+                <ul><li>- <b>Delivery:</b> Mode of delivery based on obstetric indications. Avoid fetal scalp monitoring (Brady).</li><li>- <b>Breastfeeding:</b> <u>Not discouraged</u>. No association with transmission risk (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatitis D (HDV)</strong></summary>
+            <div>
+                <ul><li>- MTCT is exceptional. Measures to prevent HBV transmission are effective for preventing HDV (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatitis E (HEV)</strong></summary>
+            <div>
+                <ul><li>- High mortality in pregnancy, especially with genotype 1 in endemic areas (EASL).</li><li>- Can cause acute liver failure, particularly in the third trimester (EASL).</li><li>- <b>Management of Severe HEV:</b> Early delivery/termination of pregnancy can be considered to reduce maternal mortality in cases with severe hepatitis and encephalopathy (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Autoimmune Hepatitis (AIH)</strong></summary>
+            <div>
+                <ul><li>- AIH activity is variable during pregnancy.</li></ul>
+                
+        <details>
+            <summary><strong>Flares</strong></summary>
+            <div>
+                <ul><li>- Flares can occur during pregnancy (<q>20%</q>) but are more common postpartum (<q>30-50%</q>) (Brady).</li><li>- Risk is higher if AIH was not well-controlled in the year before pregnancy (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b><u>Continue immunosuppression</u></b>. Do not stop therapy. Dose may need to be increased postpartum to prevent flares (Brady & EASL).</li><li>- <b>Safe Medications:</b> Corticosteroids (Prednisone/Prednisolone), Azathioprine, Budesonide (in non-cirrhotics) (Brady & EASL).</li><li>- <b>Unsafe Medication:</b> <u>Mycophenolate mofetil is teratogenic</u> and must be stopped at least <q>12 weeks</q> before conception (EASL). Switch to Azathioprine (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Maternal & Fetal Outcomes</strong></summary>
+            <div>
+                <ul><li>- Increased rates of gestational diabetes, hypertensive disorders, preterm birth, and fetal growth restriction (EASL).</li><li>- Outcomes are worse in women with AIH-related cirrhosis (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pre-existing Cholestatic Liver Disease (PBC, PSC)</strong></summary>
+            <div>
+                <ul><li>- Includes Primary Biliary Cholangitis (PBC) and Primary Sclerosing Cholangitis (PSC).</li></ul>
+                
+        <details>
+            <summary><strong>Maternal Outcomes</strong></summary>
+            <div>
+                <ul><li>- ~<q>50%</q> experience worsening or de novo pruritus during pregnancy (EASL).</li><li>- Up to <q>70%</q> have postnatal deterioration of liver tests (EASL).</li><li>- In PSC, worsening cholestasis should prompt imaging (US or MRCP) to rule out dominant strictures (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fetal Outcomes</strong></summary>
+            <div>
+                <ul><li>- Impaired outcomes with lower live birth rates (<q>58-76%in PBC) and increased preterm delivery (<q>6-33%</q>) (EASL).</li><li>- Higher maternal bile acids are associated with shorter gestation length (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- Focuses on symptom control and maintaining stable liver function.</li></ul>
+                
+        <details>
+            <summary><strong>Medications</strong></summary>
+            <div>
+                <ul><li>- <b>UDCA:</b> <u>Should be continued</u> during pregnancy and breastfeeding. It is safe and associated with stable liver tests (EASL).</li><li>- <b>Obeticholic Acid:</b> <u>Not recommended</u> due to lack of safety data (EASL).</li><li>- <b>Fibrates (e.g., Bezafibrate):</b> May be used after the first trimester if benefits outweigh risks (EASL).</li><li>- <b>Rifampicin:</b> For pruritus, can be used at <q>300-600 mg</q> daily. Neonates should receive vitamin K (EASL).</li><li>- <b>Anion Exchange Resins (Cholestyramine):</b> For pruritus. Give at least <q>4 hours</q> after UDCA (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>NAFLD / MASLD</strong></summary>
+            <div>
+                <ul><li>- Metabolic Dysfunction-Associated Steatotic Liver Disease (MASLD), formerly NAFLD.</li><li>- Incidence in women of childbearing age is at least <q>10%</q> (Brady & EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Pathophysiology & Associations</strong></summary>
+            <div>
+                <ul><li>- Pregnancy-related insulin resistance and changes in lipid metabolism may predispose to or worsen MASLD (Brady).</li><li>- Strongly associated with polycystic ovary syndrome (PCOS) (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Maternal & Fetal Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b>Maternal:</b> Increased risk of <u>gestational diabetes</u> and <u>preeclampsia</u> (Brady & EASL).</li><li>- <b>Fetal:</b> Associated with increased odds of preterm birth, cesarean section, and low birth weight (Brady).</li><li>- Maternal obesity/MASLD is associated with future MASLD in the offspring (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Preconception:</b> Optimize metabolic comorbidities (diabetes, obesity) (EASL).</li><li>- <b>During Pregnancy:</b> Lifestyle modifications (diet, avoiding excessive weight gain) are advised (EASL).</li><li>- <b>Postpartum:</b> <u>Breastfeeding is encouraged</u> as it is associated with a lower incidence of metabolic syndrome and MASLD in the mother (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cirrhosis and Portal Hypertension</strong></summary>
+            <div>
+                <ul><li>- Pregnancy is less common due to cirrhosis-related anovulation but rates are rising (Brady & EASL).</li><li>- Portal pressures increase due to plasma volume expansion and IVC compression (Brady).</li></ul>
+                
+        <details>
+            <summary><strong>Risk Stratification (Pre-conception)</strong></summary>
+            <div>
+                <ul><li>- <b>MELD Score:</b> Score ≥<q>10</q> is a significant predictor of liver-related adverse events (variceal hemorrhage, ascites, encephalopathy) (Brady).</li><li>- <b>Albumin-Bilirubin (ALBI) Score:</b> Score < <q>-2.7</q> (Grade 1) is predictive of a live birth (Brady).</li><li>- <b>Platelet Count:</b> < <q>110 x 10⁹/L</q> predicts the presence of varices on second-trimester endoscopy (Brady).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Variceal Hemorrhage</strong></summary>
+            <div>
+                <ul><li>- Historically high rates reported, but recent data suggest a lower rate of <q>5%</q> (Brady).</li><li>- Mortality from bleeding is < <q>20%</q> in recent series (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Management of Varices</strong></summary>
+            <div>
+                <ul><li>- <b>Screening Endoscopy:</b> Recommended in the <u>second trimester</u> if not performed within 1 year of conception (Brady & EASL).</li><li>- <b>Prophylaxis:</b> Non-selective beta-blockers can be used. <u>Propranolol</u> is preferred over Nadolol (Brady). Carvedilol may also be used (EASL).</li><li>- <b>Treatment:</b> Endoscopic band ligation should be performed for high-risk varices with a goal of eradication (Brady & EASL).</li><li>- <b>Acute Bleed:</b> Manage with octreotide, antibiotics, and band ligation. <u>Avoid terlipressin</u> due to risk of uterine contraction (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery</strong></summary>
+            <div>
+                <ul><li>- <b>Vaginal delivery is preferred</b> where possible (EASL).</li><li>- A <u>shortened second stage of labor</u> (e.g., with instrumental assistance) is recommended to reduce Valsalva and bleeding risk (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Wilson's Disease</strong></summary>
+            <div>
+                <ul><li>- Autosomal recessive disorder of copper metabolism.</li></ul>
+                
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b><u>Therapy must be continued</u></b>. Discontinuation is associated with hepatic deterioration and death (EASL).</li><li>- <b>Zinc:</b> Considered safe and can be continued (EASL).</li><li>- <b>Chelators (D-penicillamine, trientine):</b> Continue, but with dose reduction in the 2nd and 3rd trimesters to avoid fetal copper deficiency (EASL).</li><li>- <b>Breastfeeding:</b> <u>Not discouraged</u>, as copper/zinc levels in breastmilk are normal (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Vascular Liver Disease</strong></summary>
+            <div>
+                <ul><li>- Includes Budd-Chiari syndrome and portal vein thrombosis (PVT).</li><li>- Pregnancy is a prothrombotic state, and these disorders may first manifest during or after pregnancy (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Outcomes</strong></summary>
+            <div>
+                <ul><li>- Associated with high rates of preterm birth (<q>76%</q> in one Budd-Chiari study) and fetal loss (EASL).</li><li>- Maternal mortality is low in well-controlled, pre-existing cases (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Thromboprophylaxis</b> with low molecular weight heparin is advisable in most cases throughout pregnancy (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatic Tumors</strong></summary>
+            <div>
+                <ul><li>- Majority are benign and managed conservatively.</li></ul>
+                
+        <details>
+            <summary><strong>Hepatocellular Adenoma (HCA)</strong></summary>
+            <div>
+                <ul><li>- Benign tumors, strongly associated with oral contraceptive use and metabolic disorders (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Risk Based on Size</strong></summary>
+            <div>
+                <ul><li>- <b>< 5 cm:</b> Low risk. Pregnancy does not increase complications. Growth occurs in <q>~25%</q> of cases, so ultrasound monitoring is recommended (EASL).</li><li>- <b>> 5 cm:</b> Increased risk of enlargement and hemorrhage (<q>25-30%</q> risk). <u>Treatment prior to pregnancy is recommended</u> (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hemangioma</strong></summary>
+            <div>
+                <ul><li>- Most common benign liver tumor. Pregnancy is not precluded (EASL).</li><li>- Can increase in size. Risk of rupture is low (<q>3.2%</q> for giant >4cm tumors), but higher for large, peripheral, or exophytic lesions. Monitoring with ultrasound is recommended for high-risk cases (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Focal Nodular Hyperplasia (FNH)</strong></summary>
+            <div>
+                <ul><li>- Second most common benign tumor. A benign course is expected during pregnancy (EASL).</li><li>- Pregnancy is not contraindicated, and routine imaging to monitor size is not recommended (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatocellular Carcinoma (HCC)</strong></summary>
+            <div>
+                <ul><li>- Rare in pregnancy, associated with poor outcomes and risk of spontaneous rupture (<q>12.5%</q>) (EASL).</li><li>- Management is individualized and may include surgery or radiofrequency ablation (EASL).</li><li>- Ultrasound surveillance should be maintained in at-risk patients (e.g., cirrhosis) during pregnancy (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Drug-Induced Liver Injury (DILI)</strong></summary>
+            <div>
+                <ul><li>- A diagnosis of exclusion. A careful history of all medications and supplements is critical (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Common Culprits in Pregnancy</strong></summary>
+            <div>
+                <ul><li>- <b>Antihypertensives:</b> Methyldopa, hydralazine.</li><li>- <b>Antithyroid:</b> Propylthiouracil.</li><li>- <b>Antibiotics:</b> Tetracycline, amoxicillin-clavulanic acid (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alcohol-Related Liver Disease (ALD)</strong></summary>
+            <div>
+                <ul><li>- Alcohol use is increasing among women of childbearing age (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Screening:</b> All pregnant women should be screened for alcohol use (EASL).</li><li>- <b>Conception:</b> Delaying conception until abstinence is achieved is recommended (EASL).</li><li>- <b>Medications:</b> <u>Disulfiram is contraindicated</u>. Naltrexone or acamprosate use must be individualized, weighing risks vs. benefits (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Liver Transplant</strong></summary>
+            <div>
+                <ul><li>- Fertility often returns within a year of successful transplant.</li></ul>
+                
+        <details>
+            <summary><strong>Timing of Pregnancy</strong></summary>
+            <div>
+                <ul><li>- It is recommended to delay pregnancy for at least <q>1 year</q> following transplant to ensure stable graft function and reduced immunosuppression (EASL).</li><li>- Conception >2 years post-transplant is associated with the best outcomes (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Maternal & Fetal Risks</strong></summary>
+            <div>
+                <ul><li>- <b>Maternal:</b> Increased risk of gestational hypertension (<q>~30%</q>), preeclampsia (<q>7-12%</q>), GDM, and renal impairment (EASL).</li><li>- <b>Fetal:</b> Increased rates of preterm birth (<q>14-53%</q>) and fetal growth restriction (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immunosuppression Management</strong></summary>
+            <div>
+                <ul><li>- <b><u>DO NOT STOP</u></b> maintenance immunosuppression. Rejection rates are <q>0-20%</q> during pregnancy (EASL).</li></ul>
+                
+        <details>
+            <summary><strong>Safe Medications</strong></summary>
+            <div>
+                <ul><li>- <b>Calcineurin Inhibitors:</b> Tacrolimus, Cyclosporine.</li><li>- <b>Antiproliferatives:</b> Azathioprine.</li><li>- <b>Corticosteroids:</b> Prednis(ol)one.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Contraindicated Medications</strong></summary>
+            <div>
+                <ul><li>- <b><u>Mycophenolate Mofetil (MMF)</u>:</b> Teratogenic. Must be stopped at least <q>12 weeks</q> before conception (EASL).</li><li>- <b>mTOR inhibitors (Sirolimus, Everolimus):</b> Limited data, not routinely recommended (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multidisciplinary Care & Planning</strong></summary>
+            <div>
+                <ul><li>- A collaborative approach is essential for optimizing outcomes.</li></ul>
+                
+        <details>
+            <summary><strong>Pre-conception Counseling</strong></summary>
+            <div>
+                <ul><li>- <u>Strongly recommended</u> for all women with chronic liver disease or a history of a gestational liver disorder (EASL).</li><li>- Allows for risk stratification, medication optimization (e.g., stopping MMF), and patient education (EASL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Contraception</strong></summary>
+            <div>
+                <ul><li>- Most liver disorders do not impact contraceptive choices, but there are key exceptions (EASL, Table 7).</li></ul>
+                
+        <details>
+            <summary><strong>Caution/Contraindication for Combined Hormonal Contraception (CHC)</strong></summary>
+            <div>
+                <ul><li>- <b>History of ICP:</b> Use with caution; <q>~10%</q> experience cholestatic injury.</li><li>- <b>Decompensated Cirrhosis:</b> Risks may outweigh benefits.</li><li>- <b>Hepatocellular Adenoma:</b> Contraindicated due to estrogen-driven growth.</li><li>- <b>History of Thrombosis (e.g., PVT):</b> Contraindicated unless on adequate anticoagulation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delivery Considerations</strong></summary>
+            <div>
+                <ul><li>- Timing and mode of delivery are tailored to the specific liver condition (EASL, Table 8).</li></ul>
+                
+        <details>
+            <summary><strong>Timing of Delivery</strong></summary>
+            <div>
+                <ul><li>- <b>Early Delivery Indicated:</b> HELLP, AFLP, decompensated cirrhosis.</li><li>- <b>ICP:</b> Deliver at <q>35-36 weeks</q> if bile acids >100 μmol/L.</li><li>- <b>Most Pre-existing CLD:</b> Plan for early term (<q>38-39 weeks</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mode of Delivery</strong></summary>
+            <div>
+                <ul><li>- <b>Vaginal Delivery Preferred:</b> For most conditions, including cirrhosis with portal hypertension.</li><li>- <b>Shortened 2nd Stage:</b> Recommended for women with varices to reduce bleeding risk.</li><li>- <b>Cesarean Section:</b> Generally for obstetric indications. May be considered in AFLP based on some data showing improved outcomes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
