@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Diagnosis and Treatment of Alcohol‐Associated Liver Diseases</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Diagnosis and Treatment of Alcohol‐Associated Liver Diseases</strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> 2019 Practice Guidance From the American Association for the Study of Liver Diseases.</li><li>- <b>Publication:</b> Hepatology 71(1):p 306-333, January 2020.</li><li>- <b>DOI:</b> 10.1002/hep.30866</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended cutoff for the <b>Lille score</b> to identify non-responders to corticosteroids in AH?</li><li>- Which AUD pharmacotherapy has been tested in an RCT specifically in patients with <b>alcohol-associated cirrhosis</b>?</li><li>- What is the key inclusion criterion in the French/Belgian study for <b>early liver transplantation</b> in severe AH, besides non-response to steroids?</li><li>- What daily calorie intake was associated with increased infection and mortality in patients with AH?</li><li>- What is the composite <b>"SALT" score</b> cutoff used to identify patients at low risk for sustained alcohol use following early LT for AH?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prevalence & Burden of ALD</strong></summary>
+            <div>
+                <ul><li>- ALD is a major cause of liver disease worldwide, both alone and as a co-factor.</li><li>- It is a leading indication for <b>liver transplantation (LT)</b> in the US, competing with chronic HCV.</li><li>- Mortality from alcohol-associated cirrhosis (AC) is increasing, especially in younger patients aged <q><b>25-34</b></q> years.</li></ul>
+                
+        <details>
+            <summary><strong>Statistics</strong></summary>
+            <div>
+                <ul><li>- <b>US Prevalence:</b> Cirrhotic and noncirrhotic ALD is ~<q>2%</q> in the general population.</li><li>- <b>Global Impact:</b> AC deaths account for ~<q>10%</q> of all alcohol-attributable deaths, causing the loss of <q>22.2 million</q> disability-adjusted life years annually.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Challenges in Assessment</strong></summary>
+            <div>
+                <ul><li>- Prevalence is often underestimated due to stigma and difficulty identifying early, asymptomatic stages.</li><li>- Studies often exclude patients with concomitant liver diseases (e.g., NASH, HCV), where ALD rates can be as high as <q>61%</q>.</li><li>- This may lead to a <q><b>2-fold underestimate</b></q> of ALD-related mortality.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis of Alcohol Use Disorders (AUD)</strong></summary>
+            <div>
+                <ul><li>- The term <b>"Alcohol Use Disorder"</b> has replaced "alcohol abuse" and "dependence".</li><li>- It is categorized as <u>mild, moderate, or severe</u> based on symptom count (See Table 1).</li></ul>
+                
+        <details>
+            <summary><strong>DSM-5 Criteria for AUD</strong></summary>
+            <div>
+                <ul><li>- A diagnosis of AUD requires at least <q><b>2</b></q> of 11 symptoms in the past year.</li><li>- <b>Mild:</b> <q>2-3 symptoms</q></li><li>- <b>Moderate:</b> <q>4-5 symptoms</q></li><li>- <b>Severe:</b> <q>6 or more symptoms</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Screening, Brief Intervention, & Referral (SBIRT)</strong></summary>
+            <div>
+                <ul><li>- A nonjudgmental, open interview style is crucial to limit underreporting.</li><li>- <u>Guidance:</u> All patients in primary care, GI/hepatology clinics, EDs, and inpatient settings should be screened for alcohol use with validated questionnaires.</li></ul>
+                
+        <details>
+            <summary><strong>Screening Tools</strong></summary>
+            <div>
+                <ul><li>- <b>NIAAA One-Question Screen:</b> "How many times in the past year have you had <u>5 or more drinks</u> in a day (men) or <u>4 or more</u> (women)?"</li><li>- A single positive response ---> perform full AUDIT.</li></ul>
+                
+        <details>
+            <summary><strong>AUDIT (Alcohol Use Disorders Inventory Test)</strong></summary>
+            <div>
+                <ul><li>- 10-question tool assessing consumption, dependence, and problems.</li><li>- Score > <q><b>8</b></q> ---> predictive of harmful/hazardous use.</li><li>- Score > <q><b>20</b></q> ---> suggestive of moderate/severe AUD (dependence).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AUDIT-C</strong></summary>
+            <div>
+                <ul><li>- A brief, 3-question version focusing on consumption.</li><li>- Performs better than CAGE questionnaire.</li><li>- Score of at least <q><b>4-5</b></q> may indicate harmful alcohol use.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biomarkers of Alcohol Use</strong></summary>
+            <div>
+                <ul><li>- Used to aid diagnosis and support recovery, not to "catch" patients.</li><li>- <u>Guidance:</u> Urine/hair EtG, urine EtS, and PEth are preferred as they are <b>not affected by liver disease</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Traditional Markers (Limited Specificity)</strong></summary>
+            <div>
+                <ul><li>- <b>GGT:</b> Sensitive but not specific for alcohol use.</li><li>- <b>CDT (%CDT):</b> Half-life of <q>2-3 weeks</q>. Limited by low sensitivity (<q>25-50%</q>) and false positives in severe liver disease.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Direct Metabolites (Preferred)</strong></summary>
+            <div>
+                <ul><li>- These are more specific for recent alcohol consumption.</li></ul>
+                
+        <details>
+            <summary><strong>Ethyl Glucuronide (EtG) & Ethyl Sulfate (EtS)</strong></summary>
+            <div>
+                <ul><li>- Measured in urine, blood, or hair.</li><li>- <b>Urine Detection Time:</b> Up to <q><b>3 days</b></q>.</li><li>- <b>Urine EtG Performance:</b> Sensitivity <q>76-89%</q>, Specificity <q>93-99%</q>.</li><li>- <b>Hair EtG:</b> Detects use over months but is costly and has limited availability.</li><li>- <u>Caution:</u> Detection time is prolonged in renal failure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phosphatidylethanol (PEth)</strong></summary>
+            <div>
+                <ul><li>- Measured in blood (erythrocyte membrane).</li><li>- <b>Half-life:</b> <q><b>10-14 days</b></q>, longer with chronic heavy use.</li><li>- <u>Not influenced</u> by age, BMI, sex, or kidney/liver disease.</li><li>- <b>Performance (cutoff >20 ng/mL):</b> Sensitivity <q>100%</q>, Specificity <q>96%</q> in pre/post-LT patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment of Alcohol Use Disorders (AUD)</strong></summary>
+            <div>
+                <ul><li>- <b>Abstinence</b> is the single most important factor for improving survival in ALD.</li><li>- <u>Guidance:</u> Multidisciplinary, integrated management of ALD and AUD is recommended and improves abstinence rates.</li></ul>
+                
+        <details>
+            <summary><strong>Psychosocial & Behavioral Approaches</strong></summary>
+            <div>
+                <ul><li>- Includes CBT, motivational interviewing (MET), 12-step facilitation, etc.</li><li>- Integrating AUD treatment providers with medical providers in the liver clinic produces <b>better abstinence rates</b> than referral to an outside provider.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Relapse Prevention Medications</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> Based on limited data, <b>acamprosate</b> or <b>baclofen</b> can be considered for AUD treatment in patients with ALD.</li></ul>
+                
+        <details>
+            <summary><strong>FDA-Approved Medications</strong></summary>
+            <div>
+                <ul><li>- <b>Naltrexone:</b> Opioid antagonist. <u>Hepatotoxicity concerns</u>; not studied in ALD.</li><li>- <b>Acamprosate:</b> NMDA receptor antagonist. No hepatic metabolism, appears safe but not studied in ALD.</li><li>- <b>Disulfiram:</b> <u>Not recommended</u> for use in patients with ALD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Non-FDA Approved / Off-Label Use</strong></summary>
+            <div>
+                <ul><li>- <b>Baclofen:</b> GABA-B agonist. The <u>only AUD pharmacotherapy tested in an RCT in patients with AC</u>.</li><li>- A 12-week course (<q>10 mg TID</q>) improved abstinence and decreased relapse.</li><li>- <u>Caution:</u> May impair mentation; patients with hepatic encephalopathy were excluded from the trial.</li><li>- <b>Gabapentin, Topiramate:</b> Not studied in ALD; require close monitoring.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pathophysiology & Risk Factors</strong></summary>
+            <div>
+                <ul><li>- Only a minority of heavy drinkers develop significant liver disease.</li><li>- Pathophysiology involves fat accumulation, increased gut permeability ---> endotoxin release ---> innate immune activation, inflammation, and fibrosis.</li></ul>
+                
+        <details>
+            <summary><strong>Alcohol Consumption Thresholds</strong></summary>
+            <div>
+                <ul><li>- <b>Safe Limits (General Population):</b> No more than <q><b>1</b></q> standard drink/day for women, <q><b>2</b></q> for men.</li><li>- <b>Binge Drinking Definition (NIAAA):</b> A pattern that brings BAC to 0.08 g/dL. Typically after <q>4 drinks for women</q> and <q>5 for men</q> in about 2 hours.</li><li>- <u>Guidance:</u> Patients with ALD or other liver diseases should be counseled that there is <b>no safe level of drinking</b> and they should abstain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Risk Factors (See Table 5)</strong></summary>
+            <div>
+                <ul><li>- <b>Dose & Pattern:</b> Daily drinking and binge drinking confer greater risk.</li><li>- <b>Sex:</b> Women have a greater risk of liver injury than men for any level of drinking.</li><li>- <b>Smoking:</b> Independently increases cirrhosis risk.</li><li>- <b>Obesity/Metabolic Syndrome:</b> Important risk factors for alcohol-associated liver injury.</li><li>- <b>Comorbidities:</b> Greatly accelerates fibrosis in HCV, NAFLD, and hemochromatosis.</li></ul>
+                
+        <details>
+            <summary><strong>Genetic Susceptibility</strong></summary>
+            <div>
+                <ul><li>- Heritability of AUD is about <q>50%</q>.</li><li>- <b>Risk Alleles:</b> Polymorphisms in <q><u>PNPLA3</u></q>, <q><u>TM6SF2</u></q>, and <q><u>MBOAT7</u></q> are associated with increased risk of AC and AH.</li><li>- <b>Protective Allele:</b> A polymorphism in <q><u>HSD17B13</u></q> confers protection against progression from steatosis to steatohepatitis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Protective Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Coffee consumption</b> protects against cirrhosis of many causes, including ALD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis of ALD Subtypes</strong></summary>
+            <div>
+                <ul><li>- ALD presentation is often nonspecific and can be clinically indistinguishable from other liver diseases.</li><li>- A high index of suspicion for AUD is required.</li></ul>
+                
+        <details>
+            <summary><strong>Alcohol-Associated Steatosis</strong></summary>
+            <div>
+                <ul><li>- Usually asymptomatic, may have a palpably enlarged liver.</li><li>- Readily identified on imaging (US, CT, MRI).</li><li>- <b>Reversible</b> with cessation of alcohol use.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alcohol-Associated Cirrhosis (AC)</strong></summary>
+            <div>
+                <ul><li>- Often diagnosed at time of decompensation.</li><li>- Prognosis assessed with <b>CPT</b> and <b>MELD/MELD-Na</b> scores.</li><li>- Outcome is crucially influenced by the patient's ability to <b>abstain</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alcoholic Hepatitis (AH)</strong></summary>
+            <div>
+                <ul><li>- A clinical syndrome with a histological correlate (alcoholic steatohepatitis, ASH).</li><li>- Spectrum ranges from asymptomatic to acute-on-chronic liver failure.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Diagnosis</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> Diagnosis should use the 2016 consensus criteria (See Fig. 2).</li><li>- <b>Definite AH:</b> Biopsy-proven.</li><li>- <b>Probable AH:</b> Clinical criteria met (heavy alcohol use, recent onset jaundice, AST>ALT but <400, bilirubin >3) with no confounding factors.</li><li>- <b>Possible AH:</b> Atypical features; requires biopsy for confirmation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Liver Biopsy</strong></summary>
+            <div>
+                <ul><li>- Used to resolve diagnostic dilemmas and for clinical trial enrollment.</li><li>- Cannot distinguish ASH from NASH histologically.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Assessing Prognosis in AH</strong></summary>
+            <div>
+                <ul><li>- Several validated scoring systems predict short-term mortality and guide treatment.</li></ul>
+                
+        <details>
+            <summary><strong>Prognostic Scores (at admission)</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> Use lab-based prognostic scores to determine prognosis in AH.</li></ul>
+                
+        <details>
+            <summary><strong>Maddrey Discriminant Function (MDF)</strong></summary>
+            <div>
+                <ul><li>- Identifies patients with high short-term mortality risk.</li><li>- <b>MDF ≥ <q>32</q></b> ---> Severe AH, high mortality (<q>30-50%</q> at 28 days), consider corticosteroids.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>MELD Score</strong></summary>
+            <div>
+                <ul><li>- Emphasizes impaired renal function.</li><li>- <b>MELD ≥ <q>20</q></b> ---> Also prompts consideration of steroid treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Glasgow Alcoholic Hepatitis Score (GAHS)</strong></summary>
+            <div>
+                <ul><li>- Refines identification of patients who will benefit from steroids.</li><li>- <b>GAHS ≥ <q>9</q></b> (in a patient with MDF ≥ 32) ---> Supports corticosteroid use.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dynamic Score (Response to Therapy)</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> The Lille score should be used to reassess prognosis and guide treatment after 7 days of corticosteroids.</li></ul>
+                
+        <details>
+            <summary><strong>Lille Score</strong></summary>
+            <div>
+                <ul><li>- Calculated at day 7 of steroid therapy, incorporates change in bilirubin.</li><li>- <b>Lille score > <q>0.45</q></b> ---> Predicts non-response and poor prognosis.</li><li>- <u>Action:</u> Supports cessation of corticosteroids and consideration of other options (clinical trial, early LT).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Prognostic Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Acute Kidney Injury (AKI):</b> A major negative prognostic factor.</li><li>- <b>Infection:</b> Common (<q>12-26%</q> at admission) and associated with high mortality.</li><li>- <b>Systemic Inflammatory Response Syndrome (SIRS):</b> Predicts multiorgan failure and early death.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment of Alcoholic Hepatitis (AH)</strong></summary>
+            <div>
+                <ul><li>- Management depends on severity, assessed by prognostic scores.</li></ul>
+                
+        <details>
+            <summary><strong>General Management</strong></summary>
+            <div>
+                <ul><li>- <b>Abstinence:</b> Key to long-term survival.</li><li>- <b>Nutritional Therapy:</b> Patients are typically malnourished. Enteral nutrition is recommended.</li><li>- A daily intake of < <q><b>21.5 kcal/kg/day</b></q> was associated with increased infection and mortality.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment for Severe AH (MDF ≥ 32)</strong></summary>
+            <div>
+                <ul><li>- Focuses on reducing short-term mortality from severe liver inflammation.</li></ul>
+                
+        <details>
+            <summary><strong>Corticosteroids</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> <b>Prednisolone <q>40 mg/day</q> orally</b> should be considered to improve 28-day mortality.</li><li>- Meta-analysis shows a <q>36%</q> risk reduction in 28-day mortality.</li><li>- The STOPAH trial showed a non-significant trend toward benefit at 28 days, but post-hoc analysis was positive.</li></ul>
+                
+        <details>
+            <summary><strong>Contraindications</strong></summary>
+            <div>
+                <ul><li>- <b>Active uncontrolled infection</b></li><li>- <b>Uncontrolled GI bleeding</b> (can be given after bleeding is controlled)</li><li>- <b>Severe acute kidney injury</b> (if resolved, can reconsider steroids)</li><li>- See Figure 3 for full assessment pathway.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>N-Acetylcysteine (NAC)</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> The addition of <b>intravenous NAC</b> to prednisolone may improve 30-day survival.</li><li>- One RCT showed co-administration with steroids reduced infection, HRS, and improved 1-month mortality (<q>8% vs 24%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatments of Unlikely Benefit</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> <b>Pentoxifylline is no longer recommended.</b></li><li>- Multiple trials, including the large STOPAH trial, failed to show a survival benefit.</li><li>- TNF-α inhibitors (infliximab, etanercept) were terminated early due to infection-related mortality.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Transplantation (LT) for ALD</strong></summary>
+            <div>
+                <ul><li>- ALD is now a leading indication for LT in the United States.</li></ul>
+                
+        <details>
+            <summary><strong>Referral and Candidate Selection</strong></summary>
+            <div>
+                <ul><li>- <u>Guidance:</u> Refer for LT evaluation with new onset decompensation, SBP, HCC, or MELD-Na ≥ <q><b>21</b></q>.</li><li>- <u>Guidance:</u> Candidate selection should <b>not be based solely on a fixed interval of abstinence</b>.</li></ul>
+                
+        <details>
+            <summary><strong>The "6-Month Rule"</strong></summary>
+            <div>
+                <ul><li>- A traditional requirement of <q>6 months</q> of abstinence before listing.</li><li>- Rationale was to allow for liver recovery and assess commitment to abstinence.</li><li>- Now considered an inadequate predictor of post-LT relapse and penalizes patients who may not survive 6 months.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychosocial Assessment</strong></summary>
+            <div>
+                <ul><li>- Crucial for predicting post-LT abstinence.</li><li>- Favorable factors: social support, stable home/work, insight into AUD.</li><li>- Negative factors: failed rehab attempts, comorbid psychiatric disorders.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes of LT for ALD</strong></summary>
+            <div>
+                <ul><li>- Liver allograft and recipient survival are among the <b>highest of all indications</b> for LT.</li><li>- Return to any drinking occurs in <q><b>20-25%</b></q> of recipients in the first 5 years.</li><li>- Severe relapse can lead to recurrent fibrosis and cirrhosis in the allograft in as little as <q>5 years</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Early LT for Severe AH</strong></summary>
+            <div>
+                <ul><li>- An emerging indication for patients with severe AH not responding to medical therapy, who have a <q>70%</q> 6-month mortality.</li><li>- <u>Guidance:</u> LT may be considered in <b>carefully selected patients</b> with favorable psychosocial profiles.</li></ul>
+                
+        <details>
+            <summary><strong>Evidence & Selection</strong></summary>
+            <div>
+                <ul><li>- Seminal French/Belgian study showed dramatically improved survival (<q>77% vs 23%</q> at 6 months) compared to controls.</li><li>- <b>Key Selection Criterion:</b> Severe AH as the <u>first liver-decompensating event</u>.</li><li>- Patients undergo rigorous psychosocial screening to identify low relapse risk.</li></ul>
+                
+        <details>
+            <summary><strong>SALT Score</strong></summary>
+            <div>
+                <ul><li>- A predictive model to identify patients at low risk for sustained alcohol use post-LT.</li><li>- Variables: >10 drinks/day, multiple rehab attempts, legal issues, illicit substance use.</li><li>- A score of < <q><b>5</b></q> had a <q>95%</q> negative predictive value for sustained alcohol use.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes</strong></summary>
+            <div>
+                <ul><li>- A large US multicenter study confirmed high survival rates (<q>94%</q> at 1 year, <q>84%</q> at 3 years).</li><li>- Cumulative incidence of sustained alcohol use was <q>10%</q> at 1 year and <q>17%</q> at 3 years.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Suggestions for Future Research</strong></summary>
+            <div>
+                <ul><li>- Improve prevalence assessment for early-stage ALD using noninvasive tools.</li><li>- Study efficacy of AUD treatments specifically in the ALD population.</li><li>- Develop and test new medical agents for AH targeting inflammation, gut microbiota, and fibrosis.</li><li>- Conduct prospective studies on early LT for severe AH, focusing on patient selection and post-LT AUD management.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
