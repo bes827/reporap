@@ -1,0 +1,698 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DeepSeek-OCR: Contexts Optical Compression</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>DeepSeek-OCR: Contexts Optical Compression</strong></summary>
+            <div>
+                <ul><li>- <b>Authors:</b> Haoran Wei, Yaofeng Sun, Yukun Li (DeepSeek-AI)</li><li>- <b>Journal:</b> arXiv:2510.18234v1 [cs.CV]</li><li>- <b>Publication Date:</b> 21 Oct 2025</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What two pre-trained models form the main components of DeepEncoder?</li><li>- What is the parameter count of the activated decoder in DeepSeek-OCR?</li><li>- In the Gundam-master mode, what are the resolutions for the local and global views?</li><li>- What percentage of the total training data is text-only?</li><li>- What is the edit distance of the DeepSeek-OCR (Base) model on the overall OmniDocBench?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Concept: Optical Compression</strong></summary>
+            <div>
+                <ul><li>- <b>Problem:</b> Current Large Language Models (LLMs) face significant computational challenges with long text due to <u>quadratic scaling</u> with sequence length.</li><li>- <b>Proposed Solution:</b> Leverage the <u>visual modality</u> as an efficient compression medium for textual information.</li><li>- <b>Hypothesis:</b> A single image of a document can represent rich text information using substantially fewer tokens than the equivalent digital text, achieving high compression ratios.</li></ul>
+                
+        <details>
+            <summary><strong>Proof-of-Concept: DeepSeek-OCR</strong></summary>
+            <div>
+                <ul><li>- A Vision-Language Model (VLM) designed to test the vision-text compression paradigm.</li><li>- Uses OCR tasks as an ideal testbed, providing a natural compression-decompression mapping with quantitative evaluation metrics.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Contributions</strong></summary>
+            <div>
+                <ul><li>- Provides a comprehensive quantitative analysis of vision-text token compression ratios.</li><li>- Introduces <b>DeepEncoder</b>, a novel architecture for efficient high-resolution image processing.</li><li>- Achieves <u>state-of-the-art (SOTA)</u> performance on OmniDocBench among end-to-end models while using the fewest vision tokens.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>DeepSeek-OCR Architecture</strong></summary>
+            <div>
+                <ul><li>- A unified, end-to-end VLM architecture consisting of an encoder and a decoder.</li></ul>
+                
+        <details>
+            <summary><strong><b>DeepEncoder</b> (The Encoder)</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Process high-resolution images with low activation memory and few vision tokens.</li><li>- <b>Total Parameters:</b> <q>Approximately <b>380M</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Core Components</strong></summary>
+            <div>
+                <ul><li>- <b>1. Visual Perception Component:</b></li><li>- Model: <u>SAM-base</u> (80M parameters).</li><li>- Attention Type: Window attention.</li><li>- <b>2. Visual Knowledge Component:</b></li><li>- Model: <u>CLIP-large</u> (300M parameters).</li><li>- Attention Type: Dense global attention.</li><li>- <b>3. Connector:</b></li><li>- Type: A 2-layer convolutional module.</li><li>- Function: Performs <q><b>16x</b></q> downsampling of vision tokens between the SAM and CLIP components.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mechanism of Action</strong></summary>
+            <div>
+                <ul><li>- An input image (e.g., 1024x1024) is segmented into <u>4096 patch tokens</u>.</li><li>- The SAM-base component processes these tokens with efficient window attention.</li><li>- The convolutional compressor reduces the token count from 4096 to <q><b>256</b></q>.</li><li>- The CLIP-large component then processes the reduced token set with global attention, making activation memory controllable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multi-Resolution Support</strong></summary>
+            <div>
+                <ul><li>- A single model supports multiple resolutions through dynamic interpolation of positional encodings.</li></ul>
+                
+        <details>
+            <summary><strong>Native Resolution Modes</strong></summary>
+            <div>
+                <ul><li>- <b>Tiny:</b> <q>512x512</q> resolution ---> <q>64</q> vision tokens (resize process).</li><li>- <b>Small:</b> <q>640x640</q> resolution ---> <q>100</q> vision tokens (resize process).</li><li>- <b>Base:</b> <q>1024x1024</q> resolution ---> <q>256</q> vision tokens (padding process).</li><li>- <b>Large:</b> <q>1280x1280</q> resolution ---> <q>400</q> vision tokens (padding process).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dynamic Resolution (Gundam Mode)</strong></summary>
+            <div>
+                <ul><li>- Designed for ultra-high-resolution inputs (e.g., newspapers).</li><li>- Composed of `n` local views (tiles) and one global view.</li><li>- <b>Gundam:</b> `n` x 640x640 tiles + 1024x1024 global view.</li><li>- <b>Gundam-master:</b> `n` x <q>1024x1024</q> tiles + <q>1280x1280</q> global view.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>MoE Decoder</b> (The Decoder)</strong></summary>
+            <div>
+                <ul><li>- <b>Model:</b> DeepSeek-3B-MoE.</li><li>- <b>Activated Parameters:</b> <q><b>570M</b></q>.</li><li>- <b>Expert Configuration:</b> Activates <q>6 out of 64</q> routed experts and 2 shared experts during inference.</li><li>- <b>Function:</b> Reconstructs the original text representation from the compressed vision tokens provided by DeepEncoder.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Training Methodology</strong></summary>
+            <div>
+                <ul><li>- The training pipeline consists of two main stages: training DeepEncoder, then training the full DeepSeek-OCR model.</li></ul>
+                
+        <details>
+            <summary><strong>Data Engine</strong></summary>
+            <div>
+                <ul><li>- Training data is diverse, covering OCR, general vision, and text-only domains.</li><li>- <b>Data Distribution:</b> <q>70%</q> OCR data, <q>20%</q> general vision data, <q>10%</q> text-only data.</li></ul>
+                
+        <details>
+            <summary><strong>OCR 1.0 Data</strong></summary>
+            <div>
+                <ul><li>- <b>Document Data:</b> <q>30M</q> pages of diverse PDFs covering ~100 languages.</li><li>- <b>Scene Image OCR:</b> <q>10M</q> samples each for Chinese and English from LAION and Wukong datasets.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>OCR 2.0 Data</strong></summary>
+            <div>
+                <ul><li>- Focuses on parsing complex artificial images.</li><li>- <b>Charts:</b> <q>10M</q> images (line, bar, pie) rendered using pyecharts and matplotlib.</li><li>- <b>Chemical Formulas:</b> <q>5M</q> image-text pairs using SMILES format from PubChem.</li><li>- <b>Plane Geometry:</b> <q>1M</q> parsing data samples.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Training Pipeline Details</strong></summary>
+            <div>
+                <ul><li>- <b>Stage 1 (DeepEncoder Training):</b> Trained independently using all OCR data and 100M general vision samples.</li><li>- <b>Stage 2 (DeepSeek-OCR Training):</b></li><li>- <u>Hardware:</u> <q>20 nodes</q>, each with 8 A100-40G GPUs.</li><li>- <u>Parallelism:</u> 4-way Pipeline Parallelism (PP) and 40-way Data Parallelism (DP).</li><li>- <u>Batch Size:</u> Global batch size of <q>640</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluation & Performance</strong></summary>
+            <div>
+                <ul><li>- The model was evaluated for its compression capabilities and practical OCR performance.</li></ul>
+                
+        <details>
+            <summary><strong>Vision-Text Compression Study</strong></summary>
+            <div>
+                <ul><li>- <b>Benchmark:</b> Fox benchmark, using English documents with 600-1300 tokens.</li><li>- <b>Key Finding:</b> Demonstrates that optical context compression is a highly promising research direction.</li></ul>
+                
+        <details>
+            <summary><strong>Performance vs. Compression Ratio (See Table 2)</strong></summary>
+            <div>
+                <ul><li>- <b>< 10x Compression:</b> Achieves decoding precision of approximately <q><b>97%</b></q>.</li><li>- <b>10-12x Compression:</b> Precision drops to ~90%.</li><li>- <b>~20x Compression:</b> Precision is still maintained at about <q><b>60%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical OCR Performance</strong></summary>
+            <div>
+                <ul><li>- <b>Benchmark:</b> OmniDocBench.</li><li>- <b>Key Finding:</b> Achieves SOTA performance while using significantly fewer vision tokens than competitors.</li></ul>
+                
+        <details>
+            <summary><strong>Model Comparisons (See Table 3)</strong></summary>
+            <div>
+                <ul><li>- <b>DeepSeek-OCR (Small, 100 tokens)</b> surpasses GOT-OCR2.0 (256 tokens).</li><li>- <b>DeepSeek-OCR (Gundam, <800 tokens)</b> outperforms MinerU2.0 (which uses <q>~7,000</q> tokens).</li><li>- <b>DeepSeek-OCR (Base, 256 tokens)</b> achieves an overall edit distance of <q>0.137</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Performance by Document Type (See Table 4)</strong></summary>
+            <div>
+                <ul><li>- <b>Slides:</b> Good performance with just <q>64</q> vision tokens.</li><li>- <b>Books & Reports:</b> Good performance with <q>100</q> vision tokens.</li><li>- <b>Newspapers:</b> Require Gundam mode due to high text density (4-5k tokens), which would exceed a 10x compression ratio in smaller modes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Qualitative Capabilities</strong></summary>
+            <div>
+                <ul><li>- The model demonstrates strong abilities beyond simple text recognition.</li></ul>
+                
+        <details>
+            <summary><strong>Deep Parsing</strong></summary>
+            <div>
+                <ul><li>- Can perform secondary parsing of images within a document.</li><li>- Capable of structuring charts, geometric figures, chemical formulas (to SMILES), and providing dense captions for natural images.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multilingual Recognition</strong></summary>
+            <div>
+                <ul><li>- Can handle nearly <q><b>100</b></q> languages from PDF documents, supporting both layout and non-layout OCR formats.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discussion & Future Directions</strong></summary>
+            <div>
+                <ul><li>- The work suggests a path toward theoretically <u>unlimited context architectures</u> by balancing information retention with computational constraints.</li></ul>
+                
+        <details>
+            <summary><strong>Simulating Memory Forgetting</strong></summary>
+            <div>
+                <ul><li>- Optical compression can simulate human memory decay.</li><li>- <b>Mechanism:</b> Render historical text to images. For older contexts, progressively downsize the images.</li><li>- <b>Effect:</b> Reduces token count and makes text increasingly blurred, mimicking how recent memories are clear while distant ones fade.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
