@@ -1,0 +1,905 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LightRAG: Simple and Fast Retrieval-Augmented Generation</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>LightRAG: Simple and Fast Retrieval-Augmented Generation</strong></summary>
+            <div>
+                <ul><li>- Paper: https://arxiv.org/pdf/2410.05779</li><li>- GitHub: https://github.com/HKUDS/LightRAG</li><li>- Publication Date: Jan 19, 2025 (Note: This is a future date from the source text)</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. What is the core architectural difference between LightRAG's retrieval method and Microsoft's GraphRAG?</li><li>- 2. In LightRAG's cost analysis, how many tokens and API calls are typically required for a search operation?</li><li>- 3. What data structure does LightRAG's 'Profiling' step use to store entities and edges, and why is this significant?</li><li>- 4. How does LightRAG handle new data integration compared to traditional GraphRAG, and what is the main benefit?</li><li>- 5. What are the three main criteria LightRAG considers when handling information with timestamps to avoid simply preferring the most recent data?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Motivation</strong></summary>
+            <div>
+                <ul><li>- LightRAG is presented as an evolution in RAG methodologies, addressing cost and complexity issues of advanced systems.</li></ul>
+                
+        <details>
+            <summary><strong>Typical RAG Adoption Journey</strong></summary>
+            <div>
+                <ul><li>- A common progression for professionals adopting RAG:</li><li>- 1. Start with <b>Vector-based RAG</b>.</li><li>- 2. Encounter <u>hallucination issues</u>, leading to a need for reasoning.</li><li>- 3. Explore advanced tech like <b>Knowledge Graphs</b> (e.g., Neo4j's GraphRAG).</li><li>- 4. Face challenges in <u>ontology extraction</u> and knowledge base construction.</li><li>- 5. Turn to end-to-end solutions like <b>Microsoft GraphRAG</b>.</li><li>- 6. Discover <b>LightRAG</b> due to concerns over high latency and LLM costs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Motivations for Transition</strong></summary>
+            <div>
+                <ul><li>- <b>Two primary drivers</b> for moving towards solutions like LightRAG:</li><li>- 1. Resolving <u>hallucination</u> issues.</li><li>- 2. Optimizing <u>ontology extraction</u> while minimizing costs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Challenges in Existing RAG</strong></summary>
+            <div>
+                <ul><li>- LightRAG identifies and aims to solve key limitations in conventional RAG systems.</li></ul>
+                
+        <details>
+            <summary><strong>Flat Data Representation</strong></summary>
+            <div>
+                <ul><li>- Heavy reliance on flat data structures hinders the ability to capture <u>relationships between entities</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limited Contextual Awareness</strong></summary>
+            <div>
+                <ul><li>- Conventional systems lack the ability to preserve and use <u>dynamic relationships</u> for contextual understanding.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>LightRAG Goals</strong></summary>
+            <div>
+                <ul><li>- Ambitious goals set to overcome the identified challenges.</li></ul>
+                
+        <details>
+            <summary><strong>Dependency Awareness</strong></summary>
+            <div>
+                <ul><li>- Identify and utilize <u>interdependencies</u> between entities within documents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Retrieval Efficiency</strong></summary>
+            <div>
+                <ul><li>- Enhance response times through <u>efficient retrieval mechanisms</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Low-Cost Adaptability</strong></summary>
+            <div>
+                <ul><li>- Reduce costs associated with <u>updating knowledge bases</u> for new data.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Architecture</strong></summary>
+            <div>
+                <ul><li>- The LightRAG process is structured into distinct steps, with a key differentiating feature. (See Figure 1)</li></ul>
+                
+        <details>
+            <summary><strong>Core Steps</strong></summary>
+            <div>
+                <ul><li>- 1. <b>Graph-based Text Indexing</b></li><li>- 2. <b>Index Graph</b> used for Retrieval</li><li>- 3. <b>Dual-level Retrieval Paradigm</b></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Differentiator: Dual-level Retrieval</strong></summary>
+            <div>
+                <ul><li>- The core innovation is the <b>Dual-level Retrieval Paradigm</b>.</li><li>- This applies two levels of abstraction to entities for <q><u>macro-level</u></q> and <q><u>micro-level</u></q> answers.</li></ul>
+                
+        <details>
+            <summary><strong>Comparison to Microsoft GraphRAG</strong></summary>
+            <div>
+                <ul><li>- Microsoft GraphRAG uses <q><u>community detection</u> and traversal</q>.</li><li>- LightRAG uses its dual-level paradigm instead, avoiding community detection.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Graph-based Text Indexing</strong></summary>
+            <div>
+                <ul><li>- The first step in the LightRAG architecture, transforming text into a graph structure. (See Figure 2)</li></ul>
+                
+        <details>
+            <summary><strong>Indexing Process</strong></summary>
+            <div>
+                <ul><li>- A three-function process:</li><li>- 1. <b>Recognize</b>: Extracting entities and edges.</li><li>- 2. <b>Profiling</b>: Profiling entities.</li><li>- 3. <b>Deduplication</b>: Removing duplicates.</li></ul>
+                
+        <details>
+            <summary><strong>Unique Feature: Profiling</strong></summary>
+            <div>
+                <ul><li>- The profiling step stores entities and edges in a <q><b>key-value store</b></q>.</li><li>- This allows storage of multiple, document-specific relationships for the same entity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>High-Level Keyword Extraction</strong></summary>
+            <div>
+                <ul><li>- During entity extraction, prompts are used to also extract <b>high-level keywords</b>.</li><li>- These keywords reflect a concept, theme, or topic and are stored separately.</li></ul>
+                
+        <details>
+            <summary><strong>Prompting Strategy</strong></summary>
+            <div>
+                <ul><li>- Prompts directly instruct the LLM to capture <u>overarching ideas</u>.</li><li>- Few-shot examples are provided to guide the extraction.</li><li>- Example prompt: `Identify high-level key words that summarize the main concepts, themes, or topics...`</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Importance of Domain Expertise</strong></summary>
+            <div>
+                <ul><li>- The quality of extraction depends heavily on providing <u>domain-specific examples</u> to the LLM.</li><li>- A balance of general and specific examples is crucial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Indexing Details & Node Properties</strong></summary>
+            <div>
+                <ul><li>- Nodes in the graph have specific properties to retain context.</li></ul>
+                
+        <details>
+            <summary><strong>Node Properties</strong></summary>
+            <div>
+                <ul><li>- <b>original chunks id</b>: References the source of the entity.</li><li>- <b>description</b>: An LLM-generated reflection on the entity and its relationships, similar to Chain-of-Thought (CoT).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prompting for Descriptions</strong></summary>
+            <div>
+                <ul><li>- Prompts ask for a `Comprehensive description` of the entity.</li><li>- They also ask for an `explanation as to why you think the source entity and the target entity are related`.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dual-Level Retrieval</strong></summary>
+            <div>
+                <ul><li>- The mechanism for processing user queries and retrieving information at different levels of abstraction. (See Figure 3)</li></ul>
+                
+        <details>
+            <summary><strong>Query Processing</strong></summary>
+            <div>
+                <ul><li>- The user's query is analyzed to extract both <b>high-level</b> and <b>low-level</b> keywords.</li><li>- The LLM divides the query into macro and micro perspectives.</li></ul>
+                
+        <details>
+            <summary><strong>Prompting Mechanism</strong></summary>
+            <div>
+                <ul><li>- The prompt uses keywords like `<q><u>overarching</u></q>` for high-level and `<q><u>specific</u></q>` for low-level concepts.</li><li>- Few-shot examples are used to adjust the abstraction level.</li><li>- Output is a JSON with `high_level_keywords` and `low_level_keywords` keys.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Generation (`rag_response`)</strong></summary>
+            <div>
+                <ul><li>- The categorized keywords from the query are matched with the high-level and low-level keywords stored in the knowledge base.</li><li>- This provides an answer that reflects the appropriate abstraction level.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Integrating Graph and Vectors</strong></summary>
+            <div>
+                <ul><li>- The final step involves synthesizing contexts from both the knowledge graph and a traditional vector store.</li></ul>
+                
+        <details>
+            <summary><strong>Synthesis Process</strong></summary>
+            <div>
+                <ul><li>- Fetch at least <q><b>10 top-k</b></q> results from the vector knowledge base.</li><li>- A prompt instructs the LLM to list up to <q><b>5</b></q> most relevant contexts from both Vector and KG sources.</li><li>- A `reranker` function is utilized in this process.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Handling Timestamps</strong></summary>
+            <div>
+                <ul><li>- Provides a nuanced approach to handling temporal data in a dynamic knowledge base.</li></ul>
+                
+        <details>
+            <summary><strong>Key Principle</strong></summary>
+            <div>
+                <ul><li>- <u>The most recent information is not always the best.</u></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluation Criteria</strong></summary>
+            <div>
+                <ul><li>- Focus on three main criteria:</li><li>- 1. <b>Content</b></li><li>- 2. <b>Relationship</b></li><li>- 3. <b>Timestamp</b></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prioritization</strong></summary>
+            <div>
+                <ul><li>- For time-specific queries, prioritize <u>temporal information</u> in the content before considering creation timestamps.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluation & Metrics</strong></summary>
+            <div>
+                <ul><li>- The paper uses four research questions (RQs) to validate the efficiency and performance of LightRAG.</li></ul>
+                
+        <details>
+            <summary><strong>Research Questions (RQs)</strong></summary>
+            <div>
+                <ul><li>- <b>RQ1 & RQ2</b>: Compare performance against baseline RAG and assess the impact of the dual-level paradigm.</li><li>- <b>RQ3 & RQ4</b>: Compare performance and cost-effectiveness against <b>Microsoft GraphRAG</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluation Metrics</strong></summary>
+            <div>
+                <ul><li>- Metrics used for comparison, particularly for RQ3 and RQ4:</li><li>- <b>Comprehensiveness</b>: How thoroughly the answer addresses the question.</li><li>- <b>Diversity</b>: How varied and rich the answer is.</li><li>- <b>Empowerment</b>: How effectively the answer enables user understanding.</li><li>- <b>Overall</b>: Cumulative performance assessment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluation Results</strong></summary>
+            <div>
+                <ul><li>- This section details the outcomes of the research questions, focusing on the comparison between LightRAG and Microsoft's GraphRAG.</li></ul>
+                
+        <details>
+            <summary><strong>RQ3: Qualitative Advantages</strong></summary>
+            <div>
+                <ul><li>- Assesses the specific advantages of LightRAG through case examples, using an LLM-as-judge approach for evaluation.</li></ul>
+                
+        <details>
+            <summary><strong>LLM Judgment Results</strong></summary>
+            <div>
+                <ul><li>- In a side-by-side comparison, LightRAG was judged to be <u>superior</u> in all three evaluation categories: Comprehensiveness, Diversity, and Empowerment.</li></ul>
+                
+        <details>
+            <summary><strong>Key Review Phrases</strong></summary>
+            <div>
+                <ul><li>- `...not only covers a broad array of metrics but also includes nuanced explanations...`</li><li>- `...empowers the reader more effectively by detailing...`</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reason for Success</strong></summary>
+            <div>
+                <ul><li>- Attributed to LightRAG’s <b>hierarchical retrieval paradigm</b>.</li><li>- <u>Low-level retrieval</u> ---> enhances <b>empowerment</b> by exploring related entities in-depth.</li><li>- <u>High-level retrieval</u> ---> improves answer <b>diversity</b> via broader explorations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Author's Interpretation</strong></summary>
+            <div>
+                <ul><li>- The results suggest that the hierarchy created by LightRAG (using prompts and a KV store) is more effective than the hierarchy from Microsoft GraphRAG's community-based traversal.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>RQ4: Cost and Adaptability Analysis</strong></summary>
+            <div>
+                <ul><li>- A direct comparison of the cost and efficiency of data integration between GraphRAG and LightRAG.</li></ul>
+                
+        <details>
+            <summary><strong>GraphRAG (Microsoft)</strong></summary>
+            <div>
+                <ul><li>- <b>Community Generation</b>: Generates <q>1,399</q> communities, with <q>610</q> level-2 communities used for retrieval.</li><li>- <b>Token Cost</b>: Each community report averages <q>1,000</q> tokens, totaling <q><b>610,000</b></q> tokens for initial processing.</li><li>- <b>Search Overhead</b>: Requires <q><u>hundreds of API calls</u></q> for sequential community exploration.</li><li>- <b>Adaptability Cost</b>: Adding new data requires a complete reorganization, costing approximately <q>1,399 × 2 × 5,000</q> tokens, making it highly inefficient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>LightRAG</strong></summary>
+            <div>
+                <ul><li>- <b>Token Cost</b>: Uses less than <q><b>100 tokens</b></q> for keyword generation and search.</li><li>- <b>Search Overhead</b>: Performs operations in a <q><u>single API call</u></q>.</li><li>- <b>Data Processing</b>: Eliminates the need for initial bulk data processing.</li><li>- <b>Adaptability Cost</b>: New data can be merged <u>directly</u> into existing graphs, dramatically reducing token usage and overhead.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Summary of Comparison</strong></summary>
+            <div>
+                <ul><li>- <b>Efficiency</b>: LightRAG is significantly more cost and time efficient, using far fewer tokens and API calls.</li><li>- <b>Dynamic Data Management</b>: LightRAG easily incorporates new data, while GraphRAG requires inefficient, full-scale reconfiguration.</li><li>- <b>Overall Cost</b>: LightRAG has much lower overhead for both search and data updates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion & Key Insights</strong></summary>
+            <div>
+                <ul><li>- Summarizes the core contributions of LightRAG and reflects on the evolving trends in the GraphRAG field.</li></ul>
+                
+        <details>
+            <summary><strong>Core Technical Innovations</strong></summary>
+            <div>
+                <ul><li>- Storing entities and edges in a <b>key-value store</b> during profiling for efficient, context-aware retrieval.</li><li>- Utilizing a <b>dual-level perspective</b> (high-level and low-level keywords) to effectively combine KG and vector contexts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Advantage over Microsoft GraphRAG</strong></summary>
+            <div>
+                <ul><li>- LightRAG replaces community-based traversal with a more efficient high-level/description-based perspective.</li><li>- This allows it to achieve the benefits of GraphRAG (e.g., answering high-level, abstract questions) at a <q><u>relatively quick and cheap</u></q> cost.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Direction & Author's Perspective</strong></summary>
+            <div>
+                <ul><li>- The critical question in GraphRAG is shifting from 'if' to 'how'.</li><li>- The focus is now on: `How did they design the prompts to extract the ontology?`</li><li>- Embedding <b>domain knowledge</b> into prompts is becoming a key determinant of GraphRAG performance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
