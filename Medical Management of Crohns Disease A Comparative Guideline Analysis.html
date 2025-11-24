@@ -1,0 +1,1283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Management of Crohn's Disease: A Comparative Guideline Analysis</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Medical Management of Crohn's Disease: A Comparative Guideline Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Source 1 (ECCO)</b>: ECCO Guidelines on Therapeutics in Crohn’s Disease: Medical Treatment. Journal of Crohn's and Colitis, 2024.</li><li>- <b>Source 2 (AGA)</b>: AGA Living Clinical Practice Guideline on the Pharmacologic Management of Moderate-to-Severe Crohn’s Disease. Gastroenterology, 2025.</li></ul>
+                
+        <details>
+            <summary><strong>knowledge test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended maintenance dose of parenteral methotrexate according to ECCO? <q><b>15 mg</b> weekly</q>.</li><li>- The AGA classifies which two advanced therapies as 'lower efficacy' for <u>biologic-naïve</u> patients? <q>Certolizumab pegol and upadacitinib</q>.</li><li>- The ECCO guidelines state that loss-of-function variants of the NUDT15 genotype, common in <q>Asian populations</q>, predispose to myelosuppression with thiopurines.</li><li>- According to the AGA, what is the clinically meaningful difference (CMD) threshold for comparisons between two active therapies? <q><b>5%</b></q>.</li><li>- In the ECCO guidelines, what was the relative risk for clinical remission at Week 26 for infliximab + azathioprine vs infliximab monotherapy in the SONIC trial? <q>RR: 1.64</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Guideline Comparison: Key Differences in Scope & Approach</strong></summary>
+            <div>
+                <ul><li>- The two guidelines offer complementary perspectives on managing Crohn's Disease.</li></ul>
+                
+        <details>
+            <summary><strong>Scope & Focus</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (2024)</b>: Takes a <u>broader approach</u>.</li><li>- Covers mild-to-severe disease.</li><li>- Includes non-pharmacologic topics like <b>Nutritional Therapy</b>, the role of the <b>Multidisciplinary Team (MDT)</b>, and <b>Therapeutic Drug Monitoring (TDM)</b>.</li><li>- <b>AGA (2025)</b>: Tightly focused on <u>pharmacologic management of moderate-to-severe CD</u>.</li><li>- Does not cover mild disease, nutrition, or care delivery models.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Positioning & Sequencing of Therapies</strong></summary>
+            <div>
+                <ul><li>- This is the <u>most significant point of divergence</u>.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO Approach</strong></summary>
+            <div>
+                <ul><li>- Adopts a <b>drug-by-drug</b> evaluation.</li><li>- Concludes there is <u>insufficient evidence</u> to direct a specific sequence of advanced therapies.</li><li>- Recommends decisions be based on efficacy, safety, patient/disease characteristics, and cost, viewing drugs on individual merit rather than a fixed sequence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA Approach</strong></summary>
+            <div>
+                <ul><li>- Provides <b>explicit, hierarchical positioning</b> of advanced therapies.</li><li>- Based on a comprehensive <u>Network Meta-Analysis (NMA)</u>.</li><li>- Stratifies recommendations for <b>biologic-naïve</b> vs. <b>biologic-exposed</b> patients.</li><li>- Classifies drugs into efficacy tiers (e.g., <b>Higher</b>, <b>Intermediate</b>, <b>Lower</b> efficacy) to guide selection.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recommendation Strength & Evidence Interpretation</strong></summary>
+            <div>
+                <ul><li>- While often agreeing on a drug's general efficacy, the guidelines sometimes assign different strengths to recommendations or interpret trial data differently.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Adalimumab Combination Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Suggests <u>monotherapy over combination</u> in naïve patients, based on the DIAMOND trial.</li><li>- <b>AGA</b>: Makes <u>NO RECOMMENDATION</u>, citing the same trial but concluding it represents a knowledge gap.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Upadacitinib</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Gives a strong recommendation for moderate-to-severe CD.</li><li>- <b>AGA</b>: Gives a strong recommendation but notes FDA reserves it for TNF-failure. More importantly, their NMA classifies it as <u>lower efficacy in naïve patients</u> but <u>higher efficacy in exposed patients</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>General Treatment Principles</strong></summary>
+            <div>
+                <ul><li>- Both guidelines emphasize a shift towards more proactive and objective-driven management.</li></ul>
+                
+        <details>
+            <summary><strong>Early & Effective Treatment</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Both guidelines strongly advocate for early and effective treatment to prevent long-term complications.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Practice Point 6)</strong></summary>
+            <div>
+                <ul><li>- Emphasizes avoidance of diagnostic and treatment initiation delays.</li><li>- Cites the <b>PROFILE trial</b>: 'Top-down' (early infliximab + immunomodulator) was superior to 'accelerated step-up' care.</li><li>- Sustained steroid/surgery-free remission at Week 48: <q><b>79%</b> (top-down) vs <b>15%</b> (step-up)</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 15)</strong></summary>
+            <div>
+                <ul><li>- Suggests <u>upfront use of advanced therapy</u> compared with step-up therapy (initial corticosteroids/immunomodulators).</li><li>- Based on trials like PROFILE and REACT-1 showing reduced disease-related complications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treat-to-Target (T2T)</strong></summary>
+            <div>
+                <ul><li>- Both guidelines support the T2T concept but differ on the strength of evidence for specific targets.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Practice Point 6)</strong></summary>
+            <div>
+                <ul><li>- Recommends a tight control and T2T approach.</li><li>- States that targeting objective measures (e.g., fecal calprotectin, CRP) improves outcomes over targeting symptoms alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 16)</strong></summary>
+            <div>
+                <ul><li>- Makes <u>NO RECOMMENDATION</u> for treating to a target of <b>endoscopic remission</b> vs. <b>symptomatic remission</b>.</li><li>- Cites this as a <u>knowledge gap</u> due to conflicting trial data (STARDUST, REACT-2).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Multidisciplinary Team (MDT) & Shared Decision Making (SDM)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO Exclusive (Practice Point 5)</b>: This topic is only covered in detail by ECCO.</li></ul>
+                
+        <details>
+            <summary><strong>MDT Involvement</strong></summary>
+            <div>
+                <ul><li>- Recommends MDT involvement in clinical management and joint decision-making.</li><li>- MDT includes: gastroenterologists, IBD nurses, surgeons, psychologists, dietitians, radiologists, pathologists, pharmacists.</li><li>- Associated with reduced hospital admissions, surgery, and costs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Shared Decision Making (SDM)</strong></summary>
+            <div>
+                <ul><li>- SDM is fundamental to patient-centered care.</li><li>- Patients in SDM groups are more likely to report adherence to treatment (<q>p = 0.001</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Positioning of Advanced Therapies</strong></summary>
+            <div>
+                <ul><li>- This section highlights the primary difference between the two guidelines: AGA's structured, evidence-based positioning versus ECCO's more individualized approach.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO Stance: Individualized Choice</strong></summary>
+            <div>
+                <ul><li>- <b>Practice Point 3</b>: There is <u>insufficient evidence</u> to direct how advanced therapies should be positioned in a therapeutic algorithm.</li><li>- Decisions should consider: Efficacy, Safety, Patient preferences/characteristics, Disease characteristics, Cost/access.</li><li>- <u>Drugs should be considered by merit, not sequenced as conventional to advanced.</u></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA Stance: NMA-Based Tiering</strong></summary>
+            <div>
+                <ul><li>- Uses a Network Meta-Analysis (NMA) to provide comparative efficacy estimates and create efficacy tiers.</li><li>- Recommendations are stratified by prior treatment exposure.</li></ul>
+                
+        <details>
+            <summary><strong>For <u>Biologic-Naïve</u> Patients (Recommendation 3)</strong></summary>
+            <div>
+                <ul><li>- Suggests using a <b>HIGHER</b> efficacy medication over a <b>LOWER</b> efficacy medication.</li></ul>
+                
+        <details>
+            <summary><strong><b>HIGHER</b> Efficacy Medications</strong></summary>
+            <div>
+                <ul><li>- Infliximab</li><li>- Adalimumab</li><li>- Vedolizumab</li><li>- Ustekinumab</li><li>- Risankizumab</li><li>- Mirikizumab</li><li>- Guselkumab</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>LOWER</b> Efficacy Medications</strong></summary>
+            <div>
+                <ul><li>- Certolizumab pegol</li><li>- Upadacitinib</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>For Patients with <u>Prior Advanced Therapy Exposure</u> (Recommendation 4)</strong></summary>
+            <div>
+                <ul><li>- Suggests using a <b>HIGHER</b> or <b>INTERMEDIATE</b> efficacy medication over a <b>LOWER</b> efficacy medication.</li></ul>
+                
+        <details>
+            <summary><strong><b>HIGHER</b> Efficacy Medications</strong></summary>
+            <div>
+                <ul><li>- Adalimumab</li><li>- Risankizumab</li><li>- Guselkumab</li><li>- Upadacitinib</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>INTERMEDIATE</b> Efficacy Medications</strong></summary>
+            <div>
+                <ul><li>- Ustekinumab</li><li>- Mirikizumab</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>LOWER</b> Efficacy Medications</strong></summary>
+            <div>
+                <ul><li>- Vedolizumab</li><li>- Certolizumab pegol</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5-Aminosalicylates (5-ASA)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Both guidelines strongly recommend against the use of 5-ASA for Crohn's Disease.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 1.1 & 1.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Strong recommendation against</u> use for <b>induction</b> of remission.</li><li>- Meta-analysis of 7 RCTs showed clinical remission rates similar to placebo (RR: <q>1.28</q>; 95% CI: 0.97–1.69).</li><li>- <u>Strong recommendation against</u> use for <b>maintenance</b> of remission.</li><li>- Meta-analysis of 11 trials showed no benefit (Risk Ratio for relapse <q>0.98</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA</strong></summary>
+            <div>
+                <ul><li>- The AGA guideline focuses on moderate-to-severe disease and does not specifically issue a recommendation on 5-ASA, as it is not considered a therapy for this disease severity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Corticosteroids</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Effective for induction but should NOT be used for maintenance due to significant side effects.</li></ul>
+                
+        <details>
+            <summary><strong>Locally Acting Steroids (Budesonide)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statement 2.1)</b>: <u>Strongly recommends</u> budesonide for induction in <b>active, mild-to-moderate CD</b> limited to the <u>ileum and/or ascending colon</u>.</li><li>- Dose: <q><b>9 mg</b></q> daily.</li><li>- Superior to placebo for inducing clinical remission at Week 8 (RR: <q>1.93</q>).</li><li>- Has a more favorable side-effect profile than systemic steroids.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Systemic Corticosteroids (Prednisone, Methylprednisolone)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statement 2.2)</b>: <u>Suggests</u> use as induction therapy in <b>active, moderate-to-severe CD</b>.</li><li>- Recommendation is 'weak' due to the availability of agents with better risk-benefit profiles.</li><li>- Should only be used when no alternative is available for timely administration.</li><li>- Associated with increased risk of infection and death.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immunomodulators (Thiopurines & Methotrexate)</strong></summary>
+            <div>
+                <ul><li>- General consensus on roles, but AGA provides more granular recommendations.</li></ul>
+                
+        <details>
+            <summary><strong>Thiopurines (Azathioprine, Mercaptopurine)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Not for induction, can be used for maintenance.</li></ul>
+                
+        <details>
+            <summary><strong>Induction of Remission</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statement 3.1)</b>: <u>Strong recommendation against</u> thiopurine monotherapy for induction.</li><li>- <b>AGA (Recommendation 5)</b>: <u>Suggests AGAINST</u> thiopurine monotherapy for induction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Maintenance of Remission</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statement 3.2)</b>: <u>Suggests</u> thiopurine monotherapy can be used for maintenance (weak recommendation).</li><li>- Meta-analysis showed superiority to placebo for maintaining remission (RR: <q>1.19</q>).</li><li>- <b>AGA (Recommendation 6)</b>: <u>SUGGESTS</u> using thiopurine monotherapy for maintaining remission (typically corticosteroid-induced).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Safety & Monitoring</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Highlights risk of pancreatitis, leukopenia, infections, lymphoproliferative disorders, and non-melanoma skin cancer (NMSC).</li><li>- Recommends pre-treatment analysis of <b>TPMT</b> and <b>NUDT15</b> (especially in Asian populations) to reduce myelosuppression risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Methotrexate (MTX)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Parenteral form is effective; oral form is not.</li></ul>
+                
+        <details>
+            <summary><strong>Parenteral MTX (Subcutaneous/Intramuscular)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statements 4.1 & 4.2)</b>: <u>Suggests</u> parenteral MTX for both <b>induction</b> and <b>maintenance</b> in moderate-to-severe CD.</li><li>- Induction dose: <q><b>25 mg/week</b></q> IM was superior to placebo (RR: <q>2.06</q>).</li><li>- Maintenance dose: <q><b>15 mg/week</b></q> IM was superior to placebo (RR: <q>1.67</q>).</li><li>- <b>AGA (Recommendation 7)</b>: <u>SUGGESTS</u> using subcutaneous or intramuscular MTX monotherapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Oral MTX</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Notes that studies of oral MTX at lower doses (<q>12.5-15 mg weekly</q>) failed to show efficacy.</li><li>- <b>AGA (Recommendation 8)</b>: <u>Suggests AGAINST</u> using oral MTX monotherapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Safety & Considerations</strong></summary>
+            <div>
+                <ul><li>- <b>Both</b>: MTX is <u>teratogenic</u> and contraindicated in pregnancy or those planning pregnancy.</li><li>- <b>AGA</b>: Recommends daily folic acid supplementation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anti-TNFα Agents</strong></summary>
+            <div>
+                <ul><li>- Includes Infliximab, Adalimumab, and Certolizumab. Generally effective, but nuances exist regarding combination therapy and positioning.</li></ul>
+                
+        <details>
+            <summary><strong>Infliximab (IFX)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Strong recommendations for use in moderate-to-severe CD.</li></ul>
+                
+        <details>
+            <summary><strong>Monotherapy Efficacy</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statements 5.1 & 5.2)</b>: <u>Recommends</u> IFX for both induction and maintenance.</li><li>- <b>AGA (Recommendation 1)</b>: <u>Recommends</u> IFX over no treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Combination Therapy (with Thiopurines)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Combination therapy is superior to monotherapy, especially for induction.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 5.3 & 5.4)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> combination therapy with a thiopurine when starting IFX for induction.</li><li>- Cites <b>SONIC trial</b>: Higher clinical remission at Week 26 (RR: <q>1.64</q>) and mucosal healing (RR: <q>1.82</q>) vs IFX mono.</li><li>- Recommends continuing combination for a minimum of <q><b>6-12 months</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 9)</strong></summary>
+            <div>
+                <ul><li>- <u>SUGGESTS</u> using IFX in combination with thiopurines over IFX monotherapy, particularly in thiopurine-naïve patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>De-escalation from Combination Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: In long-term remission, withdraw the immunomodulator, not the anti-TNF.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statement 5.5)</strong></summary>
+            <div>
+                <ul><li>- <u>Suggests</u> de-escalation to anti-TNF monotherapy by withdrawing thiopurines.</li><li>- Cites <b>SPARE trial</b>: Relapse over 2 years was much lower when continuing IFX mono (<q>9%</q>) vs immunomodulator mono (<q>35%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendations 13 & 14)</strong></summary>
+            <div>
+                <ul><li>- <u>SUGGESTS</u> withdrawing the IMMUNOMODULATOR in patients in remission for at least <q>6 months</q>.</li><li>- <u>Suggests AGAINST</u> withdrawal of the TNF ANTAGONIST.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Formulations</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Notes availability of subcutaneous (SC) maintenance formulation after IV induction.</li><li>- <b>AGA</b>: Notes SC formulation has comparable efficacy to IV maintenance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Adalimumab (ADA)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Effective for induction and maintenance. Key difference in recommendation for combination therapy.</li></ul>
+                
+        <details>
+            <summary><strong>Monotherapy Efficacy</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statements 6.1 & 6.2)</b>: <u>Recommends</u> ADA for both induction and maintenance.</li><li>- <b>AGA (Recommendation 1)</b>: <u>Recommends</u> ADA over no treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Combination Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Divergence</b>: Guidelines interpret the evidence differently.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 6.3 & 6.4)</strong></summary>
+            <div>
+                <ul><li>- <u>Suggests</u> ADA <b>monotherapy</b> should be used over combination therapy in biologic-naïve patients.</li><li>- Based on <b>DIAMOND trial</b>, which showed no superiority for combination therapy in clinical remission at Week 26 (RR: <q>0.95</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 11)</strong></summary>
+            <div>
+                <ul><li>- Makes <u>NO RECOMMENDATION</u> on using ADA in combination with thiopurines or methotrexate.</li><li>- Cites this as a <b>knowledge gap</b>, also referencing the DIAMOND trial but deeming the evidence insufficient for a firm recommendation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Certolizumab Pegol</strong></summary>
+            <div>
+                <ul><li>- Both guidelines view it as an option, but with weaker recommendations compared to other anti-TNFs.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 7.1 & 7.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Suggests</u> certolizumab can be used for induction and maintenance (weak recommendation).</li><li>- Notes it is <u>not approved by the European Medicines Agency (EMA)</u> for CD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 2)</strong></summary>
+            <div>
+                <ul><li>- <u>Suggests</u> the use of certolizumab pegol over no treatment (conditional recommendation).</li><li>- In their positioning model, it is classified as a <b>LOWER</b> efficacy medication for both naïve and exposed patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Therapeutic Drug Monitoring (TDM) for Anti-TNFs</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO Exclusive</b>: Only ECCO provides specific guidance on TDM.</li></ul>
+                
+        <details>
+            <summary><strong>Proactive TDM (Statement 8.1)</strong></summary>
+            <div>
+                <ul><li>- <u>Insufficient evidence</u> to recommend proactive TDM over reactive TDM or standard of care (weak recommendation).</li><li>- Pooled RCT data showed no significant difference in clinical or endoscopic remission.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reactive TDM & General Use (Practice Point 1)</strong></summary>
+            <div>
+                <ul><li>- TDM <u>may be used</u> when optimising dose in patients treated with anti-TNF therapy.</li><li>- Useful for investigating primary non-response (PNR) or loss of response (LOR).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anti-Integrin Therapy (Vedolizumab)</strong></summary>
+            <div>
+                <ul><li>- Effective gut-selective therapy, but AGA positioning depends on prior biologic exposure.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 12.1 & 12.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> vedolizumab as induction and maintenance therapy in moderate-to-severe CD (strong recommendation).</li><li>- Superior to placebo for induction of clinical remission (RR: <q>2.00</q>) and maintenance (RR: <q>1.55</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 2 & Positioning)</strong></summary>
+            <div>
+                <ul><li>- <u>Suggests</u> the use of vedolizumab over no treatment (conditional recommendation).</li><li>- <b>Positioning Nuance</b>:</li><li>- Classified as <b>HIGHER</b> efficacy in <u>biologic-naïve</u> patients.</li><li>- Classified as <b>LOWER</b> efficacy in patients with <u>prior advanced therapy exposure</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>IL-12/23 & IL-23 Inhibitors</strong></summary>
+            <div>
+                <ul><li>- Includes Ustekinumab and Risankizumab. Both are strongly recommended by both guidelines.</li></ul>
+                
+        <details>
+            <summary><strong>Ustekinumab (IL-12/23)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Strong recommendations for use.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 9.1 & 9.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> ustekinumab for induction and maintenance (strong recommendation).</li><li>- Induction: Superior to placebo for clinical remission (RR: <q>1.76</q>).</li><li>- Maintenance: Superior to placebo for clinical remission (RR: <q>1.42</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 1 & Positioning)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> ustekinumab over no treatment (strong recommendation).</li><li>- <b>Positioning Nuance</b>:</li><li>- Classified as <b>HIGHER</b> efficacy in <u>biologic-naïve</u> patients.</li><li>- Classified as <b>INTERMEDIATE</b> efficacy in patients with <u>prior advanced therapy exposure</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Head-to-Head vs. Adalimumab (SEAVUE Trial)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statements 10.1 & 10.2)</b>: Suggests adalimumab and ustekinumab are <u>equally as effective</u> for induction and maintenance in <b>biologic-naïve</b> patients (weak recommendation).</li><li>- <b>AGA</b>: Incorporates this trial into its NMA, leading to both drugs being in the 'Higher Efficacy' tier for naïve patients.</li></ul>
+                
+        <details>
+            <summary><strong>SEAVUE Trial Details</strong></summary>
+            <div>
+                <ul><li>- Phase 3b active comparator trial in biologic-naïve patients.</li><li>- Primary endpoint: Clinical remission (CDAI < 150) at Week 52.</li><li>- Results at Week 52: Ustekinumab <q><b>64.9%</b></q> vs Adalimumab <q><b>61.0%</b></q> (not statistically significant).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risankizumab (IL-23)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Strong recommendations for use.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 11.1 & 11.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> risankizumab for induction and maintenance (strong recommendation, high-quality evidence).</li><li>- Induction: Superior to placebo for clinical remission (RR: <q>1.95</q>) and endoscopic remission (RR: <q>3.22</q>).</li><li>- Maintenance: Superior to placebo for clinical remission (RR: <q>1.31</q>) and endoscopic response (RR: <q>2.13</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 1 & Positioning)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> risankizumab over no treatment (strong recommendation).</li><li>- <b>Positioning</b>: Classified as <b>HIGHER</b> efficacy in both <u>biologic-naïve</u> and <u>prior advanced therapy exposed</u> patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other IL-23 Inhibitors (Mirikizumab, Guselkumab)</strong></summary>
+            <div>
+                <ul><li>- <b>AGA Exclusive</b>: These newer agents are covered by the AGA guideline but not ECCO.</li></ul>
+                
+        <details>
+            <summary><strong>Mirikizumab</strong></summary>
+            <div>
+                <ul><li>- <b>AGA (Recommendation 1 & Positioning)</b>: <u>Recommends</u> over no treatment.</li><li>- <b>Positioning Nuance</b>:</li><li>- Classified as <b>HIGHER</b> efficacy in <u>biologic-naïve</u> patients.</li><li>- Classified as <b>INTERMEDIATE</b> efficacy in patients with <u>prior advanced therapy exposure</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Guselkumab</strong></summary>
+            <div>
+                <ul><li>- <b>AGA (Recommendation 1 & Positioning)</b>: <u>Recommends</u> over no treatment.</li><li>- <b>Positioning</b>: Classified as <b>HIGHER</b> efficacy in both <u>biologic-naïve</u> and <u>prior advanced therapy exposed</u> patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>JAK Inhibitors (Upadacitinib)</strong></summary>
+            <div>
+                <ul><li>- <b>Consensus</b>: Effective for moderate-to-severe CD, but AGA highlights a nuanced positioning.</li></ul>
+                
+        <details>
+            <summary><strong>ECCO (Statements 13.1 & 13.2)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> upadacitinib for induction and maintenance (strong recommendation).</li><li>- Induction (45mg): Superior to placebo for clinical remission (<q>44.4% vs 25.1%</q>) and endoscopic response (<q>40.2% vs 8.4%</q>).</li><li>- Maintenance (15mg & 30mg): Both doses superior to placebo for clinical remission and endoscopic response at Week 52.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AGA (Recommendation 1 & Positioning)</strong></summary>
+            <div>
+                <ul><li>- <u>Recommends</u> upadacitinib over no treatment, but notes FDA reserves it for TNF-failure.</li><li>- <b>Positioning Nuance (Critical Difference)</b>:</li><li>- Classified as <b>LOWER</b> efficacy in <u>biologic-naïve</u> patients.</li><li>- Classified as <b>HIGHER</b> efficacy in patients with <u>prior advanced therapy exposure</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Safety Considerations</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO</b>: Notes higher rates of Herpes Zoster infection with upadacitinib (<q>4.0%</q> for 15mg, <q>7.2%</q> for 30mg vs 4.7% placebo).</li><li>- <b>AGA</b>: Highlights potential increased risk of major adverse cardiovascular events (MACE), VTE, and cancer, especially in older adults with cardiovascular risk factors.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Nutritional Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO Exclusive</b>: This topic is only covered in detail by ECCO.</li></ul>
+                
+        <details>
+            <summary><strong>Exclusive Enteral Nutrition (EEN) for Induction</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Statement 14.1)</b>: <u>Suggests</u> EEN for induction in mild-to-moderate CD as an alternative to corticosteroids (weak recommendation).</li><li>- Best for motivated patients with dietetic support.</li><li>- In adults, less effective than steroids in intention-to-treat analysis (RR: <q>0.65</q>) due to compliance issues.</li><li>- Per-protocol analysis shows similar remission rates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Dietary Therapies</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO (Practice Points 2A & 2B)</b>: Discusses emerging evidence for food-based diets.</li></ul>
+                
+        <details>
+            <summary><strong>Crohn’s Disease Exclusion Diet (CDED)</strong></summary>
+            <div>
+                <ul><li>- Most studied food-based diet for CD.</li><li>- Pilot RCT in adults with mild-to-moderate disease showed a <q>62%</q> remission rate at Week 6.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Partial Enteral Nutrition (PEN) for Maintenance</strong></summary>
+            <div>
+                <ul><li>- Might be considered for maintaining remission.</li><li>- Meta-analysis showed adding PEN to infliximab led to <q>74.5%</q> remission at 1 year vs <q>49.2%</q> with infliximab alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Diets</strong></summary>
+            <div>
+                <ul><li>- <b>Specific Carbohydrate Diet (SCD)</b>: Showed similar symptomatic remission to Mediterranean diet (<q>~40%</q>), but Mediterranean diet is easier to adhere to.</li><li>- <b>Low FODMAP Diet</b>: Recommended for functional symptoms in quiescent CD, not for active inflammation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Advanced Combination Therapy (ACT)</strong></summary>
+            <div>
+                <ul><li>- <b>ECCO Exclusive (Practice Point 4)</b>: Refers to combining biologic agents and/or small molecules.</li></ul>
+                
+        <details>
+            <summary><strong>Indications for ACT</strong></summary>
+            <div>
+                <ul><li>- Uncontrolled extraintestinal manifestations.</li><li>- Concomitant immune-mediated diseases.</li><li>- Refractory CD where surgery is not feasible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Current Evidence</strong></summary>
+            <div>
+                <ul><li>- <u>No evidence to support ACT upfront</u> in patients naïve to advanced therapies.</li><li>- Evidence is mostly retrospective and of limited quality.</li><li>- <b>EXPLORER trial</b> (single-arm): Investigated vedolizumab + adalimumab + methotrexate in newly diagnosed, high-risk CD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
