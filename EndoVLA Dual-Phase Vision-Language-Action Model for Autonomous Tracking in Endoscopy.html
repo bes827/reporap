@@ -1,0 +1,743 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EndoVLA: Dual-Phase Vision-Language-Action Model for Autonomous Tracking in Endoscopy</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>EndoVLA: Dual-Phase Vision-Language-Action Model for Autonomous Tracking in Endoscopy</strong></summary>
+            <div>
+                <ul><li>- Journal: arXiv preprint arXiv:2505.15206v1 [cs.RO]</li><li>- Publication Date: 21 May 2025</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the inference speed of the full EndoVLA model?</li><li>- What is the success rate of the DFT model in completing the entire circular cutting (CC) task?</li><li>- What is the name of the reinforcement learning optimization strategy used?</li><li>- What was the initial learning rate for the Supervised Fine-Tuning (SFT) phase?</li><li>- What is the total number of image-action pairs in the EndoVLA-Motion dataset?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Problem & Motivation</strong></summary>
+            <div>
+                <ul><li>- Endoscopic tracking of targets (polyps, lesions) is critical but challenging.</li><li>- Requires extensive surgeon training and is affected by fatigue, tremors, and limited visual fields.</li><li>- <u>Goal</u>: Reduce cognitive burden on endoscopists via <b>autonomous tracking</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Limitations of Current Approaches</strong></summary>
+            <div>
+                <ul><li>- <b>Conventional pipelines</b> (perception, planning, control) are brittle, require manual tuning, and don't generalize well across diverse scenes.</li><li>- <b>Learning-based strategies</b> (e.g., Reinforcement Learning) require intensive data, detailed reward engineering, and lack generalizability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>EndoVLA: Proposed Solution</strong></summary>
+            <div>
+                <ul><li>- A <b>Vision-Language-Action (VLA)</b> model designed for autonomous tracking with continuum robotic endoscopes.</li><li>- Interprets a surgeon's natural language prompts to guide robotic actions without manual recalibration.</li></ul>
+                
+        <details>
+            <summary><strong>Core Tasks</strong></summary>
+            <div>
+                <ul><li>- 1. <b>Polyp tracking</b> (PP)</li><li>- 2. <b>Abnormal mucosal region</b> delineation and following (AR)</li><li>- 3. <b>Circular marker following</b> during circumferential cutting (CC)</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Strategy: Dual-Phase Fine-Tuning (DFT)</strong></summary>
+            <div>
+                <ul><li>- A novel strategy to address data scarcity and domain shifts in the endoscopic environment.</li><li>- Combines <b>Supervised Fine-Tuning (SFT)</b> with <b>Reinforcement Fine-Tuning (RFT)</b> using task-aware, verifiable rewards.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Robotic System & Dataset</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Endoscopic Robot System</strong></summary>
+            <div>
+                <ul><li>- Based on a commercial <b>Olympus endoscope</b>.</li><li>- Features <q><b>2-degree-of-freedom</b></q> (2-DOFs) movement via two control knobs.</li><li>- Two motors drive the knobs for full movement coverage within the imaging field.</li><li>- Provides real-time video at <q><b>30 FPS</b></q> with a resolution of <q><b>400 × 400</b></q> pixels.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>EndoVLA-Motion Dataset</strong></summary>
+            <div>
+                <ul><li>- A custom vision-language and kinematic dataset created for training.</li><li>- Contains <q><b>6k</b></q> image–action pairs across the three core tasks (PP, AR, CC).</li><li>- Data acquired using two types of stomach phantoms.</li></ul>
+                
+        <details>
+            <summary><strong>Data Collection & Annotation</strong></summary>
+            <div>
+                <ul><li>- Raw video captured under teleoperated control.</li><li>- Bounding boxes automatically annotated via <b>YOLOv5</b>, followed by manual curation to remove errors.</li><li>- Each bounding box is mapped to one of four discrete bending motions or a 'still' command.</li></ul>
+                
+        <details>
+            <summary><strong>Focus Region (FR) & Action Logic</strong></summary>
+            <div>
+                <ul><li>- A circular Focus Region (FR) is defined at the image center.</li><li>- If the target's center is within a threshold distance (<q><b>18 pixels</b></q>) of the FR center, the action is 'still'.</li><li>- Otherwise, the action corresponds to the quadrant the target is in (e.g., upper-right, lower-left).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Annotation for CC Task</strong></summary>
+            <div>
+                <ul><li>- More complex: involves detecting all markers, fitting a circle, and selecting the next target in an <u>anti-clockwise</u> order.</li><li>- Automated labeling accuracy was low (<q><b>~65%</b></q>) before manual curation due to detection noise and sorting errors.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prompt Design</strong></summary>
+            <div>
+                <ul><li>- Prompts combine a visual scene description (generated by Qwen2-VL) and spatial relationship guidelines.</li><li>- Three instruction types tested: <b>Ib</b> (bounding box localization), <b>Id</b> (directional localization), and <b>Ia</b> (direct action prediction).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>EndoVLA Model & Training</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Architecture</strong></summary>
+            <div>
+                <ul><li>- Built upon the <q><b>Qwen2-VL</b></q> backbone.</li><li>- Uses <b>Low-Rank Adaptation (LoRA)</b> for efficient fine-tuning, keeping most base model parameters frozen.</li><li>- <u>Input</u>: RGB image frame + language instruction.</li><li>- <u>Output</u>: Bounding box coordinates [x, y, w, h] + a discrete action.</li></ul>
+                
+        <details>
+            <summary><strong>Problem Formulation</strong></summary>
+            <div>
+                <ul><li>- <u>Control Objective</u>: Choose actions to reduce the pixel-distance between the target and the focus point to below a threshold (ϵ = <q><b>18 pixels</b></q>) as quickly as possible.</li><li>- <u>Action Set</u>: A = {upper-right, upper-left, lower-left, lower-right, stop}.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dual-Phase Fine-Tuning (DFT)</strong></summary>
+            <div>
+                <ul><li>- The core training methodology to enhance performance and generalization.</li></ul>
+                
+        <details>
+            <summary><strong>Phase 1: Supervised Fine-Tuning (SFT)</strong></summary>
+            <div>
+                <ul><li>- A LoRA adaptor is used to align visual representations with the LLM.</li><li>- Training objective minimizes prediction errors on ground-truth bounding boxes and actions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phase 2: Reinforcement Fine-Tuning (RFT)</strong></summary>
+            <div>
+                <ul><li>- Further enhances model performance using Reinforcement Learning with verifiable rewards.</li><li>- Employs <b>Group Relative Policy Optimization (GRPO)</b> for stable updates across different scenarios.</li></ul>
+                
+        <details>
+            <summary><strong>Verifiable Reward Functions</strong></summary>
+            <div>
+                <ul><li>- <b>IoU Reward</b>: Measures Intersection over Union between predicted and ground-truth bounding boxes.</li><li>- <b>Motion Angle (MA) Reward</b>: Binary (1.0 or 0.0) reward for matching the ground-truth action.</li><li>- <b>Format Reward</b>: Ensures the model's output adheres to the required `[digit, digit, digit, digit] character` format.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Experiments & Results</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Implementation Details</strong></summary>
+            <div>
+                <ul><li>- <b>Base Model</b>: <q><b>Qwen2-VL-7B</b></q></li><li>- <b>GPU</b>: NVIDIA A6000</li><li>- <b>SFT</b>: AdamW optimizer, LR=<q><b>2e-4</b></q>, batch size=2, training time ~3 hours.</li><li>- <b>RFT</b>: AdamW optimizer, LR=<q><b>1e-5</b></q>, batch size=4, training time ~4 hours.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ablation Study (SFT vs. RFT vs. DFT)</strong></summary>
+            <div>
+                <ul><li>- Compares performance of single-phase vs. dual-phase fine-tuning (See Table 2).</li><li>- <b>SFT</b> performed well on simpler tasks (PP) but struggled with complex localization (CC).</li><li>- <b>RFT</b> showed complementary strengths but underperformed SFT in some areas.</li><li>- <b>DFT (SFT+RFT)</b> demonstrated <u>superior performance</u> across all metrics and tasks.</li></ul>
+                
+        <details>
+            <summary><strong>Key DFT Improvements (vs. single-phase)</strong></summary>
+            <div>
+                <ul><li>- <u>IoU Improvement</u>: <b>+38.6%</b> (PP), <b>+64.1%</b> (AR), and a massive <q><b>+340.9%</b></q> (CC).</li><li>- <u>Motion Prediction Accuracy (with Ib prompt)</u>: Reached <q><b>94.8%</b></q> (PP), <q><b>92.0%</b></q> (AR), and <q><b>89.7%</b></q> (CC).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Real Robot Evaluation</strong></summary>
+            <div>
+                <ul><li>- Evaluated on the physical robotic system to assess real-world performance (See Table 3).</li></ul>
+                
+        <details>
+            <summary><strong>PP & AR Tracking</strong></summary>
+            <div>
+                <ul><li>- The DFT model achieved <q><b>100%</b></q> success in moving <u>toward</u> the target.</li><li>- DFT significantly improved precise positioning within the Focus Region, outperforming single-phase models by <q><b>110.0%</b></q> (PP) and <q><b>185.0%</b></q> (AR).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>CC (Circular Cutting) Tracking</strong></summary>
+            <div>
+                <ul><li>- This is a highly challenging sequential task.</li><li>- Only the DFT model achieved any success, completing the entire circle in <q><b>10.0%</b></q> of trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Generalization to General Scenes</strong></summary>
+            <div>
+                <ul><li>- Assessed zero-shot performance on non-endoscopic tasks to test adaptability (See Table 4).</li><li>- The DFT approach demonstrated remarkable generalization capabilities.</li></ul>
+                
+        <details>
+            <summary><strong>DFT Zero-Shot Success Rates</strong></summary>
+            <div>
+                <ul><li>- CORL character sequence tracking: <q><b>50%</b></q></li><li>- Fruit sequence tracking: <q><b>100%</b></q></li><li>- Hole tracking in a field: <q><b>90%</b></q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitations & Future Directions</strong></summary>
+            <div>
+                <ul><li>- Acknowledges current constraints and outlines the path toward clinical deployment.</li></ul>
+                
+        <details>
+            <summary><strong>Key Limitations</strong></summary>
+            <div>
+                <ul><li>- <b>Dataset</b>: Small (<q>~6k</q> pairs) and limited to phantom models, lacking in vivo complexity (e.g., active bleeding, smoke, mucosal irregularities).</li><li>- <b>Environment</b>: Tested only under ideal conditions, not with significant soft-tissue deformation, specular reflections, or occlusions.</li><li>- <b>Control</b>: Uses a simplified discrete action set and assumes a linear mapping to motor rotation, which may limit fine-grained precision.</li><li>- <b>Speed</b>: Inference speed of <q><b>~2 Hz</b></q> is significantly slower than the video frame rate (<q>30 Hz</q>), risking lag with fast-moving targets.</li><li>- <b>Temporal Context</b>: Processes frames independently and cannot anticipate future motion or use history.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Observed Failure Modes</strong></summary>
+            <div>
+                <ul><li>- <b>CC Task</b>: Sometimes tracked the ring in the wrong rotational direction (clockwise instead of counter-clockwise).</li><li>- <b>Zero-shot Tasks</b>: Occasionally misidentified targets (e.g., confusing similar letters).</li><li>- <b>No Recovery Mechanism</b>: Lacks a strategy to re-localize a target if it is lost or moves out of the field of view.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Work</strong></summary>
+            <div>
+                <ul><li>- <b>Model Enhancement</b>: Integrate temporal and uncertainty-aware modeling for safety; explore continuous control outputs; improve inference speed toward real-time rates (≥30 Hz).</li><li>- <b>Data Expansion</b>: Collect and annotate diverse clinical videos capturing bleeding, smoke, and occlusions; use simulation to augment data.</li><li>- <b>Validation</b>: Conduct human-in-the-loop user studies in wet-lab environments to assess endoscopist trust, cognitive load, and procedural efficiency.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
