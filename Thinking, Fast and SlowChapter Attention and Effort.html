@@ -1,0 +1,798 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow
+Chapter: Attention and Effort</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow</strong><br><em>Chapter: Attention and Effort</em></summary>
+            <div>
+                <ul><li>- Book by Daniel Kahneman.</li></ul>
+                
+        <details>
+            <summary><strong>knowledge test</strong></summary>
+            <div>
+                <ul><li>- What is the correct answer to the bat-and-ball puzzle where they cost $1.10 in total and the bat is $1 more than the ball?</li><li>- In the parole judge study, what was the approximate parole approval rate immediately after a food break?</li><li>- The Add-3 task is so demanding that in the first 5 seconds, the pupil dilates by what percentage of its original area?</li><li>- What is the name of the phenomenon where exerting self-control on one task makes you less willing or able to exert it on a subsequent task?</li><li>- What simple substance was found to reverse the effects of ego depletion?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>System 2: The 'Hero' of the Story</strong></summary>
+            <div>
+                <ul><li>- System 2 is the conscious, reasoning self that has beliefs, makes choices, and decides what to think about and what to do.</li><li>- It operates through <b>effortful</b> mental activities.</li><li>- A main characteristic is <b>laziness</b>; a reluctance to invest more effort than necessary.</li></ul>
+                
+        <details>
+            <summary><strong>Mental Effort & Its Physical Indicators</strong></summary>
+            <div>
+                <ul><li>- Mental effort is a form of work, and its exertion can be physically measured.</li></ul>
+                
+        <details>
+            <summary><strong>Cognitive Pupillometry: A Window to the Soul</strong></summary>
+            <div>
+                <ul><li>- The pupil of the eye is a sensitive indicator of <b>mental effort</b>.</li><li>- Pupil dilation corresponds directly to the cognitive load of a task, distinct from emotional arousal.</li></ul>
+                
+        <details>
+            <summary><strong>The 'Add-N' Tasks</strong></summary>
+            <div>
+                <ul><li>- Paced tasks like 'Add-1' or 'Add-3' demonstrate the limits of cognitive ability.</li><li>- In Add-1, a person reads 4 digits (e.g., 5294) and must report a new string with each digit incremented by 1 (e.g., <q>6305</q>).</li></ul>
+                
+        <details>
+            <summary><strong>Physiological Response Pattern</strong></summary>
+            <div>
+                <ul><li>- Pupil size response follows an <u>inverted V-shape</u>.</li><li>- Effort builds with each digit, peaks during transformation, and relaxes as short-term memory is unloaded.</li><li>- The most difficult task, Add-3, caused pupils to dilate by <q><b>50%</b></q> of their original area and heart rate to increase by <q><b>7 beats per minute</b></q> in the first 5 seconds.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reaching Cognitive Limits</strong></summary>
+            <div>
+                <ul><li>- When subjects were given more digits than they could remember, their pupils <u>stopped dilating or shrank</u>.</li><li>- This indicated they had given up on the task.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Effort as an Energy Meter</strong></summary>
+            <div>
+                <ul><li>- Pupils act like an electricity meter, showing the current rate of mental energy use.</li><li>- We decide what to do, but have limited control over the effort required.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limited Capacity & Cognitive Overload</strong></summary>
+            <div>
+                <ul><li>- System 2 has a limited capacity for effort, similar to an electrical circuit.</li></ul>
+                
+        <details>
+            <summary><strong>Response to Overload</strong></summary>
+            <div>
+                <ul><li>- Unlike a circuit breaker that shuts everything down, mental overload response is <u>selective and precise</u>.</li><li>- System 2 <b>protects the most important activity</b>, allocating it the necessary attention.</li><li>- 'Spare capacity' is allocated to secondary tasks.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inattentional Blindness</strong></summary>
+            <div>
+                <ul><li>- When engaged in a mental 'sprint', people can become <b>effectively blind</b> to other stimuli.</li><li>- In an experiment, when mental effort was at its peak, subjects missed seeing a target letter (K) almost <q><u>half the time</u></q>, despite their eyes being open and looking at it.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Law of Least Effort</strong></summary>
+            <div>
+                <ul><li>- This law applies to both cognitive and physical exertion.</li><li>- If there are multiple ways to achieve a goal, people will gravitate to the <u>least demanding course of action</u>.</li><li>- In the economy of action, <b>effort is a cost</b>. Laziness is built into our nature.</li></ul>
+                
+        <details>
+            <summary><strong>Skill Acquisition</strong></summary>
+            <div>
+                <ul><li>- As you become skilled in a task, its demand for energy <b>diminishes</b>.</li><li>- Brain studies show <u>fewer brain regions are involved</u> as skill increases.</li><li>- Highly intelligent individuals need less effort to solve the same problems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Tasks Requiring System 2</strong></summary>
+            <div>
+                <ul><li>- System 2 is required for tasks that System 1 cannot perform.</li></ul>
+                
+        <details>
+            <summary><strong>Core Capabilities</strong></summary>
+            <div>
+                <ul><li>- Maintaining several ideas in memory simultaneously that require separate actions.</li><li>- Following rules, comparing objects on multiple attributes, and making deliberate choices.</li><li>- Adopting '<b>task sets</b>' (executive control) to obey instructions that override habitual responses (e.g., counting all 'f's on a page).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Drivers of Effort</strong></summary>
+            <div>
+                <ul><li>- <b>Task Switching</b>: Switching from one task to another is effortful, especially under time pressure.</li><li>- <b>Time Pressure</b>: The rate at which material decays in memory forces a hurried pace to refresh and rehearse information.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Lazy Controller & Intellectual Sloth</strong></summary>
+            <div>
+                <ul><li>- A primary function of System 2 is to <u>monitor and control</u> thoughts and actions suggested by System 1.</li><li>- However, System 2 is often 'lazy' and fails to check intuitive answers from System 1.</li></ul>
+                
+        <details>
+            <summary><strong>The Bat-and-Ball Puzzle</strong></summary>
+            <div>
+                <ul><li>- A bat and ball cost <b>$1.10</b>. The bat costs <b>$1.00 more</b> than the ball. How much does the ball cost?</li><li>- Intuitive (wrong) answer: <q>10¢</q>.</li><li>- Correct answer: <q><b>5¢</b></q> (Ball=5¢, Bat=$1.05).</li><li>- A failure to check this reflects adherence to the law of least effort.</li></ul>
+                
+        <details>
+            <summary><strong>Shocking Results</strong></summary>
+            <div>
+                <ul><li>- More than <q><b>50%</b></q> of students at Harvard, MIT, and Princeton gave the intuitive, incorrect answer.</li><li>- At less selective universities, the failure rate was in excess of <q><b>80%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Flawed Syllogism Example</strong></summary>
+            <div>
+                <ul><li>- Premise 1: All roses are flowers.</li><li>- Premise 2: Some flowers fade quickly.</li><li>- Conclusion: Therefore some roses fade quickly.</li><li>- This argument is <u>flawed</u>, but a large majority endorse it as valid because the conclusion seems plausible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Michigan Murder Rate Puzzle</strong></summary>
+            <div>
+                <ul><li>- When asked to estimate the murder rate in Michigan, many people fail to recall that Detroit, a high-crime city, is in Michigan.</li><li>- This failure of memory search leads to a significant underestimation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Engaged vs. Lazy Minds</strong></summary>
+            <div>
+                <ul><li>- People who avoid these intuitive errors are described as more '<b>engaged</b>'.</li><li>- They are more alert, intellectually active, and more skeptical of their intuitions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Self-Control & Ego Depletion</strong></summary>
+            <div>
+                <ul><li>- Self-control and cognitive effort are forms of mental work that draw on a <u>shared pool of mental energy</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Cognitive Load Weakens Self-Control</strong></summary>
+            <div>
+                <ul><li>- People who are <b>cognitively busy</b> (e.g., remembering 7 digits) are more likely to:</li><li>- Yield to temptation (e.g., choose chocolate cake over fruit salad).</li><li>- Make selfish choices, use sexist language, and make superficial judgments.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ego Depletion</strong></summary>
+            <div>
+                <ul><li>- An effort of will or self-control is tiring. This phenomenon is called <b>ego depletion</b>.</li><li>- If you force yourself to do something, you are less willing or able to exert self-control on the next challenge.</li><li>- Unlike cognitive load, ego depletion is partly a <u>loss of motivation</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Tasks that Cause Depletion</strong></summary>
+            <div>
+                <ul><li>- Inhibiting emotional responses.</li><li>- Making a series of choices involving conflict.</li><li>- Trying to impress others.</li><li>- Responding kindly to a partner's bad behavior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Signs of Depletion</strong></summary>
+            <div>
+                <ul><li>- Deviating from one's diet.</li><li>- Overspending on impulsive purchases.</li><li>- Reacting aggressively to provocation.</li><li>- Performing poorly in cognitive tasks and logical decision making.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Role of Glucose</strong></summary>
+            <div>
+                <ul><li>- Effortful mental activity is expensive in the currency of <b>glucose</b>.</li><li>- When engaged in difficult cognitive reasoning or self-control, blood glucose levels drop.</li></ul>
+                
+        <details>
+            <summary><strong>Reversing Ego Depletion</strong></summary>
+            <div>
+                <ul><li>- The effects of ego depletion can be undone by <u>ingesting glucose</u>.</li><li>- In an experiment, participants who drank lemonade with glucose did not show depletion effects, while those who drank it with Splenda did.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Israeli Judges Study</strong></summary>
+            <div>
+                <ul><li>- A study of parole judges showed a disturbing pattern related to food breaks.</li><li>- The proportion of approved parole requests spiked to about <q><b>65%</b></q> after each meal.</li><li>- The approval rate then dropped steadily to about <q><b>zero</b></q> just before the next meal.</li><li>- This suggests tired and hungry judges fall back on the easier default position of <u>denying requests</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intelligence, Rationality & Control</strong></summary>
+            <div>
+                <ul><li>- There is a strong link between cognitive control, self-control, and measures of intelligence.</li></ul>
+                
+        <details>
+            <summary><strong>The Marshmallow Test (Walter Mischel)</strong></summary>
+            <div>
+                <ul><li>- Four-year-olds were given a choice: one Oreo now, or two Oreos if they could wait <q>15 minutes</q> alone with the first one.</li><li>- Years later, the children who resisted temptation had:</li><li>- Higher measures of <b>executive control</b>.</li><li>- Substantially higher scores on tests of <b>intelligence</b>.</li><li>- Were less likely to take drugs as young adults.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cognitive Reflection Test (CRT)</strong></summary>
+            <div>
+                <ul><li>- A test (including the bat-and-ball problem) designed to measure the strength of System 2's supervisory function.</li><li>- Low scorers are prone to answer with the first idea that comes to mind and are unwilling to check their intuitions.</li></ul>
+                
+        <details>
+            <summary><strong>Characteristics of Low Scorers</strong></summary>
+            <div>
+                <ul><li>- <b>Impulsive and impatient</b>: <q>63%</q> of low scorers preferred $3,400 this month over $3,800 next month (vs. 37% of high scorers).</li><li>- <b>Keen for immediate gratification</b>: Willing to pay <q><u>twice as much</u></q> as high scorers for overnight delivery of a book.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Stanovich's Model: Intelligence vs. Rationality</strong></summary>
+            <div>
+                <ul><li>- Proposes a distinction within System 2 into two 'minds'.</li></ul>
+                
+        <details>
+            <summary><strong>Algorithmic Mind</strong></summary>
+            <div>
+                <ul><li>- Deals with slow thinking and demanding computation.</li><li>- Corresponds to traditional measures of <b>intelligence (IQ)</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reflective Mind</strong></summary>
+            <div>
+                <ul><li>- Controls whether we check our intuitions and avoid cognitive biases.</li><li>- Corresponds to <b>rationality</b>.</li><li>- Stanovich argues that lazy thinking is a <u>failure of rationality</u>, not necessarily of intelligence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Flow: The State of Effortless Attention</strong></summary>
+            <div>
+                <ul><li>- A concept studied by Mihaly Csikszentmihalyi.</li><li>- Described as 'a state of effortless concentration so deep that they lose their sense of time, of themselves, of their problems.'</li><li>- Called an '<b>optimal experience</b>'.</li></ul>
+                
+        <details>
+            <summary><strong>Separating Forms of Effort</strong></summary>
+            <div>
+                <ul><li>- Flow neatly separates two forms of effort:</li><li>- 1. <b>Concentration on the task</b> (which can be very high).</li><li>- 2. <b>Deliberate control of attention</b> (which requires no exertion of self-control).</li><li>- This frees up mental resources to be directed entirely to the absorbing task at hand.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
