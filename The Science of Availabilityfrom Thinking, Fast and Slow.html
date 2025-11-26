@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Science of Availability
+from 'Thinking, Fast and Slow'</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Science of Availability</strong><br><em>from 'Thinking, Fast and Slow'</em></summary>
+            <div>
+                <ul><li>- An exploration of the availability heuristic, its psychological underpinnings, and its impact on risk perception and public policy.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. In Schwarz's experiment, who rated themselves as more assertive: those who listed 6 instances of assertive behavior or those who listed 12?</li><li>- 2. What is the term for the self-sustaining chain of events where a minor media report leads to public panic and government action?</li><li>- 3. In the study on causes of death, which was judged more likely: death by stroke or death by all accidents combined?</li><li>- 4. What is the term for the phenomenon where people either ignore small risks or give them far too much weight?</li><li>- 5. What did Paul Slovic develop the notion of, where people make judgments by consulting their emotions?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Availability Heuristic: Definition & Mechanism</strong></summary>
+            <div>
+                <ul><li>- The process of judging frequency by “<u>the ease with which instances come to mind</u>.”</li><li>- It substitutes a difficult question (e.g., 'What is the frequency of this event?') with an easier one ('How easily can I recall examples?').</li><li>- Involves both <b>System 1</b> (automatic impression of ease) and <b>System 2</b> (deliberate problem-solving strategy).</li></ul>
+                
+        <details>
+            <summary><strong>Instantaneous Impression</strong></summary>
+            <div>
+                <ul><li>- An impression of availability can be formed almost instantly, without retrieving any specific instances.</li><li>- Example: You know that the letters <b>TAPCERHOB</b> offer more word possibilities than <b>XUZONLCJM</b> without generating any words.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sources of Availability Bias</strong></summary>
+            <div>
+                <ul><li>- The heuristic leads to systematic errors because factors other than <u>actual frequency</u> can make retrieval easy.</li></ul>
+                
+        <details>
+            <summary><strong><b>Salient Events</b></strong></summary>
+            <div>
+                <ul><li>- Events that attract your attention are more easily retrieved from memory.</li><li>- Example: You are likely to exaggerate the frequency of <q>Hollywood divorces</q> and <q>political sex scandals</q> because they receive so much media attention.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Dramatic Events</b></strong></summary>
+            <div>
+                <ul><li>- A dramatic event temporarily increases the availability of its category.</li><li>- Example: A plane crash that attracts media coverage will temporarily alter your feelings about the safety of flying.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Personal Experiences & Vivid Examples</b></strong></summary>
+            <div>
+                <ul><li>- Personal experiences, pictures, and vivid examples are more available than incidents that happened to others, mere words, or statistics.</li><li>- Example: A judicial error that affects you will undermine your faith in the justice system more than a similar incident you read about in a newspaper.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Resisting Bias & Debiasing</strong></summary>
+            <div>
+                <ul><li>- Resisting availability biases is possible but tiresome, requiring effortful <u>System 2</u> engagement.</li><li>- It involves actively reconsidering impressions and intuitions.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Marital Contributions Study</strong></summary>
+            <div>
+                <ul><li>- In a famous study, spouses were asked to estimate their personal contribution to household chores (e.g., keeping the place tidy) in percentages.</li><li>- The self-assessed contributions consistently added up to <q><u>more than 100%</u></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Underlying Mechanism</strong></summary>
+            <div>
+                <ul><li>- A simple availability bias: both spouses remember their own individual efforts and contributions much more clearly than those of the other.</li><li>- This difference in availability leads to a difference in judged frequency.</li><li>- The bias is not necessarily self-serving; spouses also overestimated their contribution to <q>causing quarrels</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Successful Debiasing</strong></summary>
+            <div>
+                <ul><li>- This is a rare case where personal control of bias can be successful.</li><li>- The mere observation that there is usually more than 100% credit to go around is sometimes sufficient to defuse the situation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Psychology of Availability: Fluency vs. Content</strong></summary>
+            <div>
+                <ul><li>- Research led by Norbert Schwarz in the 1990s revealed that the <u>experience of retrieval</u> is often more important than the <u>number of items retrieved</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Key Experiment: The Assertiveness Study</strong></summary>
+            <div>
+                <ul><li>- <b>Task</b>: Participants were asked to list either 6 or 12 instances of their own assertive behavior and then rate how assertive they were.</li></ul>
+                
+        <details>
+            <summary><strong>Results: The Power of Fluency</strong></summary>
+            <div>
+                <ul><li>- People who listed <q><b>12</b> instances</q> (a difficult task) rated themselves as <u>less assertive</u> than people who listed only 6 (an easy task).</li><li>- The <b>difficulty (low fluency)</b> of recalling the last few instances trumped the <b>number of instances</b> recalled.</li><li>- The experience of fluent retrieval was the dominant factor.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Paradoxical Extension</strong></summary>
+            <div>
+                <ul><li>- Participants asked to list 12 cases where they were <u>not</u> assertive ended up thinking of themselves as <q>quite assertive</q>.</li><li>- The difficulty of recalling meek behavior led them to conclude they were not meek.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Paradoxical Findings</strong></summary>
+            <div>
+                <ul><li>- People are less confident in a choice when asked to produce <q>more</q> arguments to support it.</li><li>- People are less impressed by a car after listing <q>many</q> of its advantages.</li><li>- Students who listed more ways to improve a course rated it <q>higher</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disrupting the Heuristic: 'Unexplained Unavailability'</strong></summary>
+            <div>
+                <ul><li>- The heuristic relies on a surprise: fluency being worse than expected.</li><li>- If the difficulty of retrieval is given a spurious explanation, the effect disappears.</li></ul>
+                
+        <details>
+            <summary><strong>Experimental Manipulation</strong></summary>
+            <div>
+                <ul><li>- Participants were told background music would affect their memory recall.</li><li>- Those told the music would make retrieval <u>more difficult</u> did not use fluency as a heuristic.</li><li>- They rated themselves as equally assertive whether they recalled 6 or 12 instances, as the difficulty was now 'explained'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>System 1 vs. System 2 Engagement</strong></summary>
+            <div>
+                <ul><li>- The ease of retrieval (fluency) is a <u>System 1 heuristic</u>.</li><li>- A focus on the content (number of instances) occurs when <u>System 2 is more engaged</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Case Study: Cardiac Health Risk</strong></summary>
+            <div>
+                <ul><li>- Students with a family history of heart disease (high personal involvement) engaged System 2.</li><li>- They focused on the <u>number of instances</u> recalled, not the ease of recall.</li><li>- They felt safer after recalling many instances of safe behavior and at greater risk after recalling many instances of risky behavior (the opposite of the standard heuristic).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conditions Favoring System 1 (Fluency)</strong></summary>
+            <div>
+                <ul><li>- When engaged in another effortful task at the same time.</li><li>- When in a good mood.</li><li>- If they are knowledgeable novices (in contrast to true experts).</li><li>- If they score high on a scale of faith in intuition.</li><li>- If they are made to feel <q>powerful</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Availability, Emotion, and Risk Perception</strong></summary>
+            <div>
+                <ul><li>- The ease with which ideas of risks come to mind and the emotional reactions to them are inextricably linked.</li></ul>
+                
+        <details>
+            <summary><strong>Post-Disaster Behavior</strong></summary>
+            <div>
+                <ul><li>- Availability effects explain cycles of disaster, concern, and growing complacency.</li><li>- After a disaster, concern is high, and people take protective measures.</li><li>- As memories dim, so do <q>worry and diligence</q>.</li><li>- Protective actions are often designed to be adequate only for the <q>worst disaster actually experienced</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biased Estimates of Causes of Death</strong></summary>
+            <div>
+                <ul><li>- A survey by Paul Slovic et al. showed that estimates of causes of death are warped by media coverage and emotional intensity.</li></ul>
+                
+        <details>
+            <summary><strong>Key Survey Findings</strong></summary>
+            <div>
+                <ul><li>- <b>Strokes</b> cause almost twice as many deaths as all accidents combined, but <q><u>80%</u></q> of respondents judged accidental death to be more likely.</li><li>- <b>Asthma</b> causes <q>20 times</q> more deaths than tornadoes, but tornadoes were seen as more frequent killers.</li><li>- <b>Death by disease</b> is <q>18 times</q> as likely as accidental death, but the two were judged about equally likely.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Affect Heuristic</strong></summary>
+            <div>
+                <ul><li>- A <b>System 1</b> heuristic where people make judgments and decisions by consulting their emotions: 'How do I feel about it?'.</li><li>- It substitutes an easy question (about feelings) for a much harder one (about thoughts).</li><li>- Frightening thoughts that are fluent and vivid exacerbate fear.</li></ul>
+                
+        <details>
+            <summary><strong>The Emotional Tail Wags the Rational Dog</strong></summary>
+            <div>
+                <ul><li>- An experiment showed that changing people's emotional appeal towards a technology also changed their perception of its risks and benefits.</li><li>- People told a technology had high benefits subsequently perceived it as having <q>lower risks</q>, even with no new evidence on risk.</li><li>- Similarly, people told a technology had low risks developed a more favorable view of its <q>benefits</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Public vs. Expert Perception of Risk</strong></summary>
+            <div>
+                <ul><li>- Explores the conflict between public opinion (often guided by emotion and availability) and expert analysis in risk policy.</li></ul>
+                
+        <details>
+            <summary><strong>Paul Slovic's View: The Public's 'Richer' Conception</strong></summary>
+            <div>
+                <ul><li>- The public draws finer distinctions than experts (e.g., 'good deaths' vs. 'bad deaths').</li><li>- Argues that 'risk' is not an objective reality 'out there' but a human concept invented to cope with uncertainty.</li><li>- Concludes that 'defining risk is thus an exercise in <q>power</q>.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cass Sunstein's View: The Experts' Objectivity</strong></summary>
+            <div>
+                <ul><li>- Risk regulation should be guided by <u>rational, objective analysis</u> (e.g., number of lives saved, dollar cost).</li><li>- Believes biased public reactions lead to erratic and misplaced priorities in policy.</li><li>- Experts should act as a bulwark against 'populist' excesses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>The Availability Cascade</b></strong></summary>
+            <div>
+                <ul><li>- A term invented by Sunstein and Timur Kuran for the mechanism through which biases flow into policy.</li><li>- A self-sustaining chain of events, starting from a minor media report and leading to public panic and large-scale government action.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>- 1. A media story about a risk catches public attention.</li><li>- 2. Public arousal becomes a story itself, prompting more media coverage.</li><li>- 3. 'Availability entrepreneurs' may deliberately fuel the cycle.</li><li>- 4. The issue becomes politically important, resetting public priorities as other risks fade into the background.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: The Alar Scare (1989)</strong></summary>
+            <div>
+                <ul><li>- Media reports claimed Alar, a chemical on apples, caused cancer in rodents at gigantic doses.</li><li>- This led to public panic, large industry losses, and an FDA ban.</li><li>- The incident was an enormous overreaction to what was likely a <q>minor problem</q>, and may have been detrimental to public health as fewer apples were consumed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Probability Neglect</strong></summary>
+            <div>
+                <ul><li>- A basic limitation of our minds in dealing with small risks: we either <u>ignore them altogether</u> or give them <u>far too much weight</u>.</li><li>- We focus on the numerator (the tragic story) and not the denominator (the actual probability).</li><li>- Terrorism is a prime example, inducing an availability cascade despite statistically low casualty numbers compared to other risks like traffic accidents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion: A Messy Democracy</strong></summary>
+            <div>
+                <ul><li>- The author finds merit in both perspectives.</li><li>- <b>Sunstein is right:</b> Availability cascades distort public priorities and resource allocation.</li><li>- <b>Slovic is right:</b> Widespread public fears, even if irrational, cannot be ignored by policymakers because fear itself is painful and debilitating.</li></ul>
+                
+        <details>
+            <summary><strong>Path Forward</strong></summary>
+            <div>
+                <ul><li>- Policymakers must endeavor to protect the public from <u>fear</u>, not only from real dangers.</li><li>- Psychology should inform the design of risk policies that combine experts' knowledge with the public's emotions and intuitions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Speaking of Availability...</strong></summary>
+            <div>
+                <ul><li>- Practical examples illustrating the concepts.</li></ul>
+                
+        <details>
+            <summary><strong>Availability Bias</strong></summary>
+            <div>
+                <ul><li>- 'Because of the coincidence of two planes crashing last month, she now prefers to take the train. That’s silly. The risk hasn’t really changed; it is an <b>availability bias</b>.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Affect Heuristic</strong></summary>
+            <div>
+                <ul><li>- 'She’s raving about an innovation that has large benefits and no costs. I suspect the <b>affect heuristic</b>.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Availability Cascade</strong></summary>
+            <div>
+                <ul><li>- 'This is an <b>availability cascade</b>: a nonevent that is inflated by the media and the public until it fills our TV screens and becomes all anyone is talking about.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
