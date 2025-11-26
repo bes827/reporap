@@ -1,0 +1,797 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: Representativeness</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: Representativeness</strong></summary>
+            <div>
+                <ul><li>- This mind map covers key concepts from the book 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- It focuses on the <b>Representativeness Heuristic</b>, <b>Base Rates</b>, and the <b>Conjunction Fallacy</b>.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of statistically sophisticated doctoral students still made the conjunction fallacy in the Linda problem?</li><li>- In the cab problem, what is the key difference between a 'statistical base rate' and a 'causal base rate'?</li><li>- What is the 'less is more' pattern, as shown in the dinnerware experiment?</li><li>- In the die-rolling experiment, what was the more representative but less probable sequence that most people chose?</li><li>- According to the 'helping experiment' study, what is a more effective way to teach psychology: presenting surprising statistics or surprising individual cases?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Tom W's Specialty: An Experiment on Base Rates vs. Representativeness</strong></summary>
+            <div>
+                <ul><li>- An experiment designed to pit <u>statistical base rates</u> against <u>stereotypes</u> (representativeness).</li></ul>
+                
+        <details>
+            <summary><strong>Task 1: Judging by Base Rate</strong></summary>
+            <div>
+                <ul><li>- Participants are asked to rank 9 fields of graduate study by the likelihood of a random student, Tom W, being in them.</li><li>- With no specific information, the correct approach is to use <b>base rates</b> ---> the number of students enrolled in each field.</li><li>- Most people correctly rank fields like <u>humanities and education</u> as high likelihood due to larger enrollment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Task 2: Judging by Similarity (Representativeness)</strong></summary>
+            <div>
+                <ul><li>- A personality sketch of Tom W is provided, designed to fit a stereotype.</li><li>- <b>Sketch Details</b>: High intelligence, lacks creativity, needs order, dull writing, corny puns, sci-fi imagination, little sympathy for others, deep moral sense.</li><li>- Participants are asked to rank fields based on how similar Tom W is to the <u>typical student</u> in that field.</li></ul>
+                
+        <details>
+            <summary><strong>Typical Ranking by Similarity</strong></summary>
+            <div>
+                <ul><li>- 1. <q>Computer Science</q> (due to 'nerdiness' hints like 'corny puns').</li><li>- 2. <q>Engineering</q> (due to 'neat and tidy systems').</li><li>- 9. <q>Social Science and Social Work</q> (due to 'little feel and little sympathy for other people').</li><li>- This task activates <b>System 1</b>'s automatic association with stereotypes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Task 3: The Critical Prediction</strong></summary>
+            <div>
+                <ul><li>- Psychology graduate students, who know about base rates and were told the sketch has uncertain validity, were asked to predict Tom W's actual field.</li><li>- <b><u>The critical error</u></b>: They ignored the base rates and the low quality of evidence.</li></ul>
+                
+        <details>
+            <summary><strong>The Result: Representativeness Wins</strong></summary>
+            <div>
+                <ul><li>- The students' probability rankings were identical to the similarity rankings.</li><li>- They substituted the difficult question (probability) with an easier one (similarity).</li><li>- This is a <u>serious mistake</u> because judgments of similarity and probability follow different logical rules.</li><li>- Even a sophisticated statistician, Robyn Dawes, intuitively fell for it, guessing <q>computer scientist</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Representativeness Heuristic</strong></summary>
+            <div>
+                <ul><li>- A mental shortcut where we judge the probability of something by how similar it is to our stereotype or prototype.</li><li>- It involves <b>System 1</b> generating a quick impression of similarity, often ignoring other relevant data.</li><li>- Example: Judging a candidate's leadership by the shape of their chin.</li></ul>
+                
+        <details>
+            <summary><strong>Virtues of Representativeness</strong></summary>
+            <div>
+                <ul><li>- Intuitive impressions are often <u>more accurate than chance</u>.</li><li>- Examples:</li><li>-  - People who act friendly are usually friendly.</li><li>-  - A very tall, thin athlete is more likely to play basketball than football.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sins of Representativeness (Cognitive Biases)</strong></summary>
+            <div>
+                <ul><li>- Exclusive reliance on this heuristic leads to grave errors in statistical logic.</li></ul>
+                
+        <details>
+            <summary><strong>Sin 1: Excessive Willingness to Predict Unlikely Events</strong></summary>
+            <div>
+                <ul><li>- People neglect <b>low base-rate</b> information when presented with a representative story.</li><li>- <b>Example</b>: Guessing a shy poetry lover studies <q>Chinese literature</q> instead of <q>business administration</q>, even though there are far more business students.</li></ul>
+                
+        <details>
+            <summary><strong>Overcoming Base-Rate Neglect</strong></summary>
+            <div>
+                <ul><li>- Base rates are used correctly when there is <u>no other information</u>.</li><li>- They are often ignored when specific, individual information is available.</li><li>- <b>Activation of System 2</b> can improve accuracy.</li></ul>
+                
+        <details>
+            <summary><strong>Experimental Findings</strong></summary>
+            <div>
+                <ul><li>- Instructing people to '<u>think like a statistician</u>' enhances base-rate use.</li><li>- Instructing them to '<u>think like a clinician</u>' has the opposite effect.</li><li>- Forcing a frown (which increases System 2 vigilance) led to <q>some sensitivity to the base rates</q> in the Tom W problem.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sin 2: Insensitivity to the Quality of Evidence</strong></summary>
+            <div>
+                <ul><li>- System 1's rule is <b>WYSIATI</b> (What You See Is All There Is).</li><li>- It processes available information as if it were true, even if you're told it's unreliable.</li><li>- In the Tom W problem, participants trusted the 'uncertain' personality sketch over the hard statistical base rates.</li></ul>
+                
+        <details>
+            <summary><strong>How to Discipline Intuition</strong></summary>
+            <div>
+                <ul><li>- When evidence quality is low, your judgment of probability should stay <u>close to the base rate</u>.</li><li>- This requires significant effort and self-control from <b>System 2</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bayesian Reasoning: The Disciplined Approach</strong></summary>
+            <div>
+                <ul><li>- A logical framework for how to change your mind in light of evidence.</li><li>- It specifies how to combine <b>prior beliefs</b> (base rates) with the <b>diagnosticity of evidence</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Two Key Principles</strong></summary>
+            <div>
+                <ul><li>- 1. <u>Base rates matter</u>, even when you have case-specific evidence.</li><li>- 2. <u>Intuitive impressions of evidence are often exaggerated</u>. The combination of WYSIATI and associative coherence makes us believe our own stories too much.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Steps</strong></summary>
+            <div>
+                <ul><li>- <b>Anchor</b> your judgment on a plausible base rate.</li><li>- <b>Question</b> the true diagnosticity (informativeness) of your evidence.</li></ul>
+                
+        <details>
+            <summary><strong>Bayesian Example: Tom W</strong></summary>
+            <div>
+                <ul><li>- Base Rate: <q>3%</q> of grad students are in computer science.</li><li>- Evidence: Description is <q>4 times</q> more likely for a computer scientist.</li><li>- Bayes's rule conclusion: The probability Tom W is a computer scientist is now <q>11%</q> (not the intuitive 80-90%).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Linda: The Conjunction Fallacy</strong></summary>
+            <div>
+                <ul><li>- An experiment designed to provide conclusive evidence of heuristics and their incompatibility with logic.</li></ul>
+                
+        <details>
+            <summary><strong>The Setup</strong></summary>
+            <div>
+                <ul><li>- A description of Linda is given: 31, single, outspoken, bright, philosophy major, concerned with social justice, anti-nuclear activist.</li><li>- This description creates a strong stereotype of a <q>feminist</q>.</li><li>- Participants are asked to rank 8 scenarios by probability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Twist: Logic vs. Representativeness</strong></summary>
+            <div>
+                <ul><li>- The list includes two critical items:</li><li>-  - 'Linda is a bank teller.'</li><li>-  - 'Linda is a bank teller and is active in the feminist movement.'</li><li>- <b>Logic</b>: The set of 'feminist bank tellers' is a subset of 'bank tellers'. Therefore, P(Feminist Bank Teller) ≤ P(Bank Teller).</li><li>- <b>Representativeness</b>: The 'feminist bank teller' story is more coherent and plausible given Linda's description.</li></ul>
+                
+        <details>
+            <summary><strong>The Result: Representativeness Wins Again</strong></summary>
+            <div>
+                <ul><li>- In multiple experiments, a vast majority ranked 'feminist bank teller' as <u>more probable</u> than 'bank teller'.</li><li>- This error is called the <b>Conjunction Fallacy</b>: judging a conjunction of two events to be more probable than one of the events.</li><li>- Undergraduates: <q>89%</q> violated the logic.</li><li>- Doctoral students in decision science: <q>85%</q> also violated the logic.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Plausibility vs. Probability</strong></summary>
+            <div>
+                <ul><li>- The most coherent stories are not the most probable, but they are <u>plausible</u>.</li><li>- People easily confuse plausibility, coherence, and probability.</li><li>- <b>Trap for forecasters</b>: Adding detail to scenarios makes them more persuasive but <u>less likely to come true</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Less Is More: Averaging vs. Adding</strong></summary>
+            <div>
+                <ul><li>- A pattern where removing items from a set can increase its perceived value, because <b>System 1</b> tends to <u>average</u> instead of <u>add</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Experiment 1: Dinnerware Sets</strong></summary>
+            <div>
+                <ul><li>- <b>Set A</b>: 40 pieces, including 9 broken ones.</li><li>- <b>Set B</b>: 24 pieces, all intact.</li><li>- <b>Joint Evaluation</b> (seeing both sets): Set A is valued higher (<q>$32</q>) than Set B (<q>$30</q>), because more items have value (logic rules).</li><li>- <b>Single Evaluation</b> (seeing only one set): Set B is valued much higher (<q>$33</q>) than Set A (<q>$23</q>), because the broken dishes in Set A lower its <u>average</u> value (intuition rules).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Experiment 2: Die Rolls</strong></summary>
+            <div>
+                <ul><li>- A die has 4 green (G) and 2 red (R) faces. Which sequence is more likely to appear in 20 rolls?</li><li>- 1. RGRRR (unrepresentative)</li><li>- 2. GRGRRR (more representative)</li><li>- 3. GRRRRR</li><li>- <b>The Logic</b>: Sequence 2 contains Sequence 1, so it <u>must be less likely</u>.</li><li>- <b>The Result</b>: <q>Almost two-thirds</q> of respondents bet on Sequence 2 because it was more representative of the die.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reducing the Conjunction Fallacy</strong></summary>
+            <div>
+                <ul><li>- The fallacy is reduced when the question is phrased in terms of <u>frequencies</u> instead of percentages.</li><li>- 'How many of 100 people...' is easier than 'What percentage...'.</li><li>- This phrasing helps people visualize that one group is a subset of another.</li><li>- Error rate dropped from <q>65%</q> (percentage) to <q>25%</q> (frequency).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Causes Trump Statistics</strong></summary>
+            <div>
+                <ul><li>- The mind is hungry for causal stories and treats different types of base rates differently.</li></ul>
+                
+        <details>
+            <summary><strong>The Cab Accident Problem</strong></summary>
+            <div>
+                <ul><li>- A witness identifies a cab in a hit-and-run as Blue. Witness is <q>80%</q> reliable.</li></ul>
+                
+        <details>
+            <summary><strong>Version 1: Statistical Base Rate</strong></summary>
+            <div>
+                <ul><li>- <b>Data</b>: <q>85%</q> of cabs in the city are Green, <q>15%</q> are Blue.</li><li>- This is a statistical fact about the city, not causally linked to the accident.</li><li>- <b>Result</b>: People tend to <u>ignore this base rate</u> and focus only on the witness testimony.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Version 2: Causal Base Rate</strong></summary>
+            <div>
+                <ul><li>- <b>Data</b>: The two companies have equal cabs, but Green cabs are involved in <q>85%</q> of accidents.</li><li>- This creates a <u>causal story</u>: Green drivers are reckless.</li><li>- <b>Result</b>: People give this base rate considerable weight. Their average judgment is close to the Bayesian solution (the probability of the cab being Blue is <q>41%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Types of Base Rates</strong></summary>
+            <div>
+                <ul><li>- <b>Statistical Base Rates</b>: Facts about a population. Generally underweighted or ignored when specific information is available.</li><li>- <b>Causal Base Rates</b>: Change your view of how the case came to be. Treated as information about the individual and easily combined with other facts.</li></ul>
+                
+        <details>
+            <summary><strong>Stereotypes as Causal Base Rates</strong></summary>
+            <div>
+                <ul><li>- Stereotypes are representations of categories as norms or prototypes.</li><li>- They are a basic function of <b>System 1</b>.</li><li>- In the cab problem, stereotyping Green drivers as reckless <u>improves judgment accuracy</u>.</li><li>- However, in sensitive social contexts, we reject causal base rates to create a more equal society, even if it leads to suboptimal judgments.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Teaching Psychology: The 'Helping Experiment'</strong></summary>
+            <div>
+                <ul><li>- An experiment demonstrating that people often fail to draw correct inferences from statistical base rates, especially when those inferences conflict with their beliefs about themselves.</li></ul>
+                
+        <details>
+            <summary><strong>The Experiment Setup</strong></summary>
+            <div>
+                <ul><li>- Participants in booths hear a confederate have a (fake) seizure and ask for help.</li><li>- They know others are also listening.</li><li>- <b>The Surprising Result</b>: <q>Only four of the fifteen</q> participants responded immediately. Most did not help at all or helped very late.</li><li>- <b>The Lesson</b>: The presence of others diffuses the sense of personal responsibility.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Failure to Learn from Statistics</strong></summary>
+            <div>
+                <ul><li>- Nisbett and Borgida tested if students learned this lesson.</li><li>- One group was told the procedure and the statistical results. Another group was not.</li><li>- Both groups were shown videos of two (uninformative) participants and asked to predict their behavior.</li><li>- <b>Result</b>: Knowing the statistics had <u>no effect</u>. Both groups predicted the individuals would help, ignoring the base rate of unhelpfulness. They 'quietly exempted themselves' from the conclusion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Power of Surprising Individual Cases</strong></summary>
+            <div>
+                <ul><li>- A new experiment was run to find a better teaching method.</li><li>- Students were shown the videos first and told that these two nice individuals <u>did not help</u>.</li><li>- They were then asked to guess the overall statistics of the experiment.</li><li>- <b>Result</b>: Their guesses were <u>extremely accurate</u>. They learned the general principle from the surprising particular cases.</li></ul>
+                
+        <details>
+            <summary><strong>Key Conclusion</strong></summary>
+            <div>
+                <ul><li>- <b>People are unwilling to deduce the particular from the general</b> (e.g., apply statistics to an individual).</li><li>- <b>People are very willing to infer the general from the particular</b> (e.g., create a general rule from one or two surprising examples).</li><li>- The test of learning is a change in your understanding of situations, not just learning a new fact.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
