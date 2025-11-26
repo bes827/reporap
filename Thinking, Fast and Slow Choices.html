@@ -1,0 +1,941 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: Choices</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: Choices</strong></summary>
+            <div>
+                <ul><li>- Source: Book 'Thinking, Fast and Slow' by Daniel Kahneman.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the typical 'loss aversion ratio' observed in experiments, indicating how much more people dislike losses than they like equivalent gains?</li><li>- In the famous 'mugs experiment', what was the approximate ratio of the average selling price to the average buying price?</li><li>- What critical concept, illustrated by the 'Jack and Jill' and 'Anthony and Betty' examples, is missing from Bernoulli's utility theory?</li><li>- Prospect theory is an improvement over utility theory, but it still has blind spots. What are two emotions it cannot account for?</li><li>- According to John List's study, what percentage of experienced traders showed an endowment effect, compared to 82% of novices?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction: Two Species</strong></summary>
+            <div>
+                <ul><li>- A central theme is the difference between two conceptual beings in economic and psychological models.</li></ul>
+                
+        <details>
+            <summary><strong>Econs (Economic Theory)</strong></summary>
+            <div>
+                <ul><li>- The agent of economic theory is described as: <b>Rational</b>, <b>Selfish</b>, and having <b>stable tastes</b>.</li><li>- Econs are assumed to be as consistent and logical as possible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Humans (Psychology)</strong></summary>
+            <div>
+                <ul><li>- Humans are neither <u>fully rational</u> nor <u>completely selfish</u>.</li><li>- Their tastes are <u>not stable</u>.</li><li>- They possess a <b>System 1</b>, which limits their worldview based on currently available information (WYSIATI).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Study of Decision Making</strong></summary>
+            <div>
+                <ul><li>- The core question is: What rules govern people's choices between risky options (gambles) and sure things?</li></ul>
+                
+        <details>
+            <summary><strong>Simple Gambles as a Model</strong></summary>
+            <div>
+                <ul><li>- Simple gambles (e.g., '40% chance to win $300') are the 'fruit fly' for decision-making research.</li><li>- They model the fact that the consequences of real-life choices are <u>never certain</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📜 Expected Utility Theory</strong></summary>
+            <div>
+                <ul><li>- The foundational theory of the rational-agent model in social sciences.</li><li>- It is a <u>logic of choice</u>, not a psychological model.</li></ul>
+                
+        <details>
+            <summary><strong>Core Axioms</strong></summary>
+            <div>
+                <ul><li>- Based on elementary rules of rationality.</li><li>- Example: If you prefer an apple to a banana, you should also prefer a 10% chance to win an apple over a 10% chance to win a banana.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dual Role in Economics</strong></summary>
+            <div>
+                <ul><li>- <b>Prescriptive:</b> How decisions <u>should</u> be made.</li><li>- <b>Descriptive:</b> How <u>Econs</u> make choices.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bernoulli's Theory & Its Errors</strong></summary>
+            <div>
+                <ul><li>- An early attempt to explain decision-making that dominated for centuries but contained a fundamental flaw.</li></ul>
+                
+        <details>
+            <summary><strong>Bernoulli's Insight: Utility of Wealth</strong></summary>
+            <div>
+                <ul><li>- People's choices are based not on dollar values, but on the <u>psychological values</u> of outcomes (<b>utilities</b>).</li><li>- He proposed that utility is a <b>logarithmic function of wealth</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Diminishing Marginal Utility</strong></summary>
+            <div>
+                <ul><li>- The psychological response to a change of wealth is inversely proportional to the initial amount of wealth.</li><li>- Example: Adding $1M to a wealth of $1M gives <q>20 utility points</q>, but adding $1M to a wealth of $9M gives only <q>4 points</q> (See Table 3).</li><li>- This explains <b>risk aversion</b>: the preference for a sure thing over a favorable gamble of equal or higher expected value.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Application: Insurance</strong></summary>
+            <div>
+                <ul><li>- Explains why poor people buy insurance and richer people sell it.</li><li>- A loss of $1M is a much larger utility loss for a poorer person than for a richer person.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>❌ The Fundamental Error: Ignoring the Reference Point</strong></summary>
+            <div>
+                <ul><li>- Bernoulli's theory assumes utility depends only on the <u>current state of wealth</u>, not on one's history or starting point.</li><li>- This leads to incorrect predictions because happiness is determined by the <u>recent change</u> in wealth.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Jack and Jill</strong></summary>
+            <div>
+                <ul><li>- <b>Scenario:</b> Both have 5 million today. Yesterday, Jack had 1 million and Jill had 9 million.</li><li>- <b>Bernoulli's Theory:</b> They should be equally happy (same wealth).</li><li>- <b>Reality:</b> Jack is <u>elated</u>, and Jill is <u>despondent</u>. Their happiness depends on their <b>reference points</b> (<q>1 million for Jack, 9 million for Jill</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Anthony and Betty</strong></summary>
+            <div>
+                <ul><li>- <b>Scenario:</b> Anthony has 1M, Betty has 4M. Both are offered a choice: a) 50/50 chance to have 1M or 4M, or b) guaranteed 2M.</li><li>- <b>Bernoulli's Theory:</b> They face the same final states of wealth, so they should choose the same.</li><li>- <b>Reality:</b> Their choices differ based on their reference points.</li><li>- <b>Anthony (starts at 1M):</b> Sees the sure thing as a <u>gain</u> ('double my wealth'). He is likely <b>risk-averse</b>.</li><li>- <b>Betty (starts at 4M):</b> Sees the sure thing as a <u>loss</u> ('lose half my wealth'). She is likely <b>risk-seeking</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Theory-Induced Blindness</strong></summary>
+            <div>
+                <ul><li>- A cognitive bias where accepting a theory makes it extraordinarily difficult to notice its flaws.</li><li>- Explains why Bernoulli's obvious error survived for so long.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>💡 Prospect Theory</strong></summary>
+            <div>
+                <ul><li>- Developed by Kahneman and Tversky as a more psychologically realistic model of decision-making under risk.</li><li>- It is a <u>purely descriptive</u> model, explaining systematic violations of rationality.</li></ul>
+                
+        <details>
+            <summary><strong>Core Idea: Gains and Losses</strong></summary>
+            <div>
+                <ul><li>- The crucial shift from Bernoulli's theory.</li><li>- Outcomes are defined as <b>gains and losses</b> relative to a reference point, <u>not as states of wealth</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Demonstration</strong></summary>
+            <div>
+                <ul><li>- Two problems are presented that are identical in terms of final wealth but framed differently.</li></ul>
+                
+        <details>
+            <summary><strong>Problem 3 (Gain Frame)</strong></summary>
+            <div>
+                <ul><li>- Given $1,000. Choose: 50% chance to win $1,000 OR get $500 for sure.</li><li>- Most people are <b>risk-averse</b> and choose the <q>sure $500</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Problem 4 (Loss Frame)</strong></summary>
+            <div>
+                <ul><li>- Given $2,000. Choose: 50% chance to lose $1,000 OR lose $500 for sure.</li><li>- Most people are <b>risk-seeking</b> and choose the <q>gamble</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>- This is a decisive counterexample to utility theory.</li><li>- It shows the <u>all-important role of the reference point</u>. The 'sure thing' is a gain in Problem 3 but a loss in Problem 4.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Three Cognitive Features (System 1)</strong></summary>
+            <div>
+                <ul><li>- These are the heart of prospect theory, describing automatic evaluation processes.</li></ul>
+                
+        <details>
+            <summary><strong>1. Neutral Reference Point</strong></summary>
+            <div>
+                <ul><li>- Evaluation is relative to a reference point (status quo, expectation, etc.).</li><li>- Outcomes above the reference point are <b>gains</b>; below are <b>losses</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Diminishing Sensitivity</strong></summary>
+            <div>
+                <ul><li>- The subjective difference between $900 and $1,000 is much smaller than between $100 and $200.</li><li>- This applies to both gains and losses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Loss Aversion</strong></summary>
+            <div>
+                <ul><li>- <u>Losses loom larger than gains</u>.</li><li>- The response to losses is stronger than the response to corresponding gains.</li><li>- Has an evolutionary basis: threats are more urgent than opportunities.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Value Function (Figure 10)</strong></summary>
+            <div>
+                <ul><li>- A graphical representation of prospect theory's principles.</li></ul>
+                
+        <details>
+            <summary><strong>Key Characteristics</strong></summary>
+            <div>
+                <ul><li>- <b>S-shaped curve:</b> Represents diminishing sensitivity for both gains and losses.</li><li>- <b>Asymmetrical:</b> The slope is steeper for losses than for gains, showing loss aversion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Loss Aversion in Detail</strong></summary>
+            <div>
+                <ul><li>- The principle that 'losses loom larger than gains' is a powerful driver of human choice.</li></ul>
+                
+        <details>
+            <summary><strong>Mixed Gambles</strong></summary>
+            <div>
+                <ul><li>- Gambles with a risk of loss and an opportunity for gain.</li><li>- Example: 50% chance to win $150, 50% chance to lose $100.</li><li>- Most people <u>reject</u> this favorable gamble because the fear of losing $100 is more intense than the hope of gaining $150.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Loss Aversion Ratio</strong></summary>
+            <div>
+                <ul><li>- Measures the extent of aversion to losses.</li><li>- Question: What is the smallest gain needed to balance an equal chance to lose $100?</li><li>- For many, the answer is about <q>$200</q>.</li><li>- The ratio is typically in the range of <q><b>1.5 to 2.5</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>No Contradiction</strong></summary>
+            <div>
+                <ul><li>- It's important to distinguish between two scenarios:</li></ul>
+                
+        <details>
+            <summary><strong>Mixed Gambles ---> Risk Aversion</strong></summary>
+            <div>
+                <ul><li>- <b>Loss aversion</b> dominates. The possible loss looms twice as large as the possible gain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bad Choices ---> Risk Seeking</strong></summary>
+            <div>
+                <ul><li>- <b>Diminishing sensitivity</b> dominates. When choosing between a sure loss and a probable larger loss, the pain of the sure loss drives people to gamble.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rabin's Theorem</strong></summary>
+            <div>
+                <ul><li>- A mathematical proof showing that explaining small-stakes loss aversion with the utility of wealth is <u>absurd</u>.</li><li>- It implies that anyone rejecting a 50/50 bet to lose $100/win $200 would also reject a 50/50 bet to lose $200/win $20,000, which is foolish.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🙈 Blind Spots of Prospect Theory</strong></summary>
+            <div>
+                <ul><li>- Despite its advantages, prospect theory is not a complete model of decision-making and has its own flaws.</li></ul>
+                
+        <details>
+            <summary><strong>Inability to Handle Disappointment</strong></summary>
+            <div>
+                <ul><li>- Prospect theory assumes a zero value for the reference point (e.g., winning nothing).</li><li>- However, winning nothing is very different when the alternative is a <u>90% chance to win $1 million</u> versus a <u>1% chance to win $12</u>.</li><li>- In the high-probability case, winning nothing is intensely <b>disappointing</b>, a large loss relative to expectations, which the theory cannot capture.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inability to Handle Regret</strong></summary>
+            <div>
+                <ul><li>- The theory assumes options are evaluated independently.</li><li>- In reality, the experience of an outcome depends on options you <u>could have adopted but did not</u>.</li><li>- Example: Choosing a gamble over a sure $150,000 and losing is much more painful (<b>regret</b>) than if the sure thing was only $50.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Why It's Still Accepted</strong></summary>
+            <div>
+                <ul><li>- Simpler models that incorporate regret and disappointment make few striking new predictions.</li><li>- Prospect theory's concepts (<b>reference point, loss aversion</b>) were worth the complexity because they explained phenomena that utility theory could not.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🎁 The Endowment Effect</strong></summary>
+            <div>
+                <ul><li>- A manifestation of loss aversion where owning a good increases its perceived value.</li></ul>
+                
+        <details>
+            <summary><strong>Flaw in Indifference Maps</strong></summary>
+            <div>
+                <ul><li>- Standard economic indifference curves (Figure 11) show combinations of goods with equal utility.</li><li>- <b>The Flaw:</b> They omit the individual's <u>current position</u> (the <b>reference point</b>).</li><li>- This implicitly and incorrectly assumes the past is irrelevant and preferences are stable.</li></ul>
+                
+        <details>
+            <summary><strong>Status Quo Bias</strong></summary>
+            <div>
+                <ul><li>- Loss aversion induces a bias that favors the status quo.</li><li>- Making concessions hurts, so disadvantages of a change loom larger than advantages.</li><li>- Example: Unemployed workers' minimal acceptable wage for a new job averages <q>90%</q> of their previous wage.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Classic Example: Professor's Wine</strong></summary>
+            <div>
+                <ul><li>- Professor R, a wine lover, would not sell a bottle from his collection for less than <q>$100</q>.</li><li>- However, he would never pay more than <q>$35</q> for the same bottle at an auction.</li><li>- This gap is explained by loss aversion: giving up the bottle (a loss) is more painful than getting it (a gain) is pleasurable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Experimental Evidence: The Mugs Study</strong></summary>
+            <div>
+                <ul><li>- A famous experiment highlighting the contrast between goods held for use vs. for exchange.</li></ul>
+                
+        <details>
+            <summary><strong>Setup</strong></summary>
+            <div>
+                <ul><li>- Three groups: <b>Sellers</b> (given a mug), <b>Buyers</b> (had to buy a mug), and <b>Choosers</b> (could take a mug or money).</li><li>- The mug was a good held 'for use'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Results</strong></summary>
+            <div>
+                <ul><li>- <b>Sellers' Price:</b> <q>$7.12</q></li><li>- <b>Choosers' Price:</b> <q>$3.12</q></li><li>- <b>Buyers' Price:</b> <q>$2.87</q></li><li>- The selling price was more than <u>double</u> the buying/choosing price, a ratio of about <b>2:1</b>, consistent with loss aversion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion</strong></summary>
+            <div>
+                <ul><li>- The high price from Sellers reflects the reluctance (pain) of giving up an object they already own.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Goods for Use vs. Goods for Exchange</strong></summary>
+            <div>
+                <ul><li>- The endowment effect is strong for goods held 'for use' (e.g., wine, concert tickets, mugs).</li><li>- It is weak or absent for goods held 'for exchange' (e.g., money, shoes a merchant sells).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Thinking Like a Trader: Exceptions to the Rule</strong></summary>
+            <div>
+                <ul><li>- The endowment effect is not universal. Certain groups and situations eliminate it.</li></ul>
+                
+        <details>
+            <summary><strong>Experienced Traders</strong></summary>
+            <div>
+                <ul><li>- Experimental economist John List studied baseball card traders.</li></ul>
+                
+        <details>
+            <summary><strong>Mug/Chocolate Bar Study</strong></summary>
+            <div>
+                <ul><li>- Replicated an earlier experiment where participants were given a gift (mug or chocolate) and then offered to trade.</li><li>- <b>Inexperienced Traders:</b> Only <q>18%</q> were willing to trade (strong endowment effect).</li><li>- <b>Experienced Traders:</b> <q>48%</q> traded, showing <u>no trace</u> of an endowment effect.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reasoning</strong></summary>
+            <div>
+                <ul><li>- Experienced traders learn to ask the 'Econ' question: 'How much do I want this compared to other things?'</li><li>- This removes the emotional asymmetry of gains vs. losses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Poor</strong></summary>
+            <div>
+                <ul><li>- The poor are another group not expected to show the endowment effect.</li></ul>
+                
+        <details>
+            <summary><strong>Living 'In the Losses'</strong></summary>
+            <div>
+                <ul><li>- In prospect theory terms, being poor is living <u>below one's reference point</u>.</li><li>- All choices are between losses (spending on one good means losing another good).</li><li>- For the poor, costs are not just costs; they are experienced as <b>losses</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
