@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking Fast and Slow: Part 5 - Two Selves</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking Fast and Slow: Part 5 - Two Selves</strong></summary>
+            <div>
+                <ul><li>- A mind map of the key concepts from Part 5 of Daniel Kahneman's book, focusing on the distinction between the 'experiencing self' and the 'remembering self'.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the approximate household income level in high-cost areas beyond which experienced well-being no longer increases?</li><li>- In the cold-hand experiment, what percentage of participants chose to repeat the longer, more painful episode?</li><li>- What is the term for the bias where the length of an experience has little to no effect on our memory of it?</li><li>- What is the U-Index, and what was the percentage for American women in the study?</li><li>- What is the name of the policy approach that aims to help people make better decisions without curtailing their freedom?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Concept: The Two Selves</strong></summary>
+            <div>
+                <ul><li>- A fundamental conflict exists between two different ways we experience and think about our lives.</li></ul>
+                
+        <details>
+            <summary><strong>The <u>Experiencing</u> Self</strong></summary>
+            <div>
+                <ul><li>- This self lives in the present and answers the question: <b>“Does it hurt now?”</b></li><li>- It processes life as a series of moments.</li><li>- Its 'voice' is often lost or ignored in favor of memory.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The <u>Remembering</u> Self</strong></summary>
+            <div>
+                <ul><li>- This self is the storyteller and scorekeeper, answering the question: <b>“How was it, on the whole?”</b></li><li>- It makes decisions based on memories, which can be flawed.</li><li>- It is the perspective we adopt when thinking about our lives.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conflict & Tyranny</strong></summary>
+            <div>
+                <ul><li>- The remembering self governs what we learn from living and makes decisions for the future.</li><li>- This can lead to choices that are not in the best interest of the experiencing self.</li><li>- This is the <b>tyranny of the remembering self</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Ruined Symphony</strong></summary>
+            <div>
+                <ul><li>- A long, beautiful symphony ending with a screeching sound is remembered as 'ruined'.</li><li>- The <u>remembering self</u> gives a failing grade to the entire episode because of the bad ending.</li><li>- The <u>experiencing self</u> had a mostly good experience that cannot be undone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Two Meanings of 'Utility'</strong></summary>
+            <div>
+                <ul><li>- The term 'utility' has been used in two distinct ways, leading to confusion between experience and choice.</li></ul>
+                
+        <details>
+            <summary><strong><b>Experienced Utility</b> (Bentham)</strong></summary>
+            <div>
+                <ul><li>- Refers to the actual experience of pleasure and pain.</li><li>- The 'hedonimeter' concept: a measure of the level of pleasure or pain experienced at any moment.</li><li>- The total experienced utility is the 'area under the curve' over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Decision Utility</b> (Economists)</strong></summary>
+            <div>
+                <ul><li>- Refers to 'wantability' – what we choose or prefer.</li><li>- Expected utility theory is about rational rules governing these choices, not about the actual feelings (hedonic experiences).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discrepancy Example: Painful Injections</strong></summary>
+            <div>
+                <ul><li>- People would pay more to reduce injections from <b>6 to 4</b> than from <b>20 to 18</b>.</li><li>- The <u>decision utility</u> is different, even though the <u>experienced utility</u> (avoiding 2 injections) is the same.</li><li>- This is an error, as it assigns different values to the same amount of pain reduction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Memory vs. Experience: Key Biases</strong></summary>
+            <div>
+                <ul><li>- The remembering self does not create an accurate summary of experiences. It uses mental shortcuts that lead to systematic errors.</li></ul>
+                
+        <details>
+            <summary><strong>The <u>Peak-End Rule</u></strong></summary>
+            <div>
+                <ul><li>- Retrospective ratings are predicted by the <b>average</b> of the most intense moment (peak) and the final moment (end) of an experience.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Duration Neglect</u></strong></summary>
+            <div>
+                <ul><li>- The duration of an episode has <b>no effect</b> on the memory or global rating of it.</li><li>- This contradicts our preference for short pains and long pleasures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evidence: Colonoscopy Study</strong></summary>
+            <div>
+                <ul><li>- Patients rated their pain every 60 seconds during a colonoscopy and gave a global rating afterward.</li></ul>
+                
+        <details>
+            <summary><strong>Patient A vs. Patient B</strong></summary>
+            <div>
+                <ul><li>- <b>Patient A:</b> Shorter procedure (8 min), but pain was high at the end (Peak 8, End 7).</li><li>- <b>Patient B:</b> Longer procedure (24 min), but pain was low at the end (Peak 8, End 1).</li><li>- <u>Result:</u> Patient A had a much worse memory (Peak-End average <q>7.5</q>) than Patient B (Peak-End average <q>4.5</q>), despite Patient B suffering for a longer duration.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Implications</strong></summary>
+            <div>
+                <ul><li>- To reduce <u>memory of pain</u>: Lower the peak intensity and ensure gradual relief.</li><li>- To reduce <u>actual pain experienced</u>: Conduct the procedure swiftly, even if it increases peak pain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evidence: Cold-Hand Experiment</strong></summary>
+            <div>
+                <ul><li>- A direct test of conflict between the experiencing and remembering selves.</li></ul>
+                
+        <details>
+            <summary><strong>Experimental Design</strong></summary>
+            <div>
+                <ul><li>- <b>Short Episode:</b> 60 seconds in painfully cold water (14°C).</li><li>- <b>Long Episode:</b> 60 seconds in cold water + 30 seconds in slightly warmer water.</li><li>- Participants were then asked to choose which episode to repeat.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Results & Conclusion</strong></summary>
+            <div>
+                <ul><li>- The long trial was objectively worse (more total pain).</li><li>- However, its memory was less aversive due to a better 'end'.</li><li>- Fully <q><b>80%</b></q> of participants chose to repeat the <u>longer episode</u>.</li><li>- This is a clear mistake where decision utility (based on flawed memory) overrides experienced utility.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Life as a Story</strong></summary>
+            <div>
+                <ul><li>- The remembering self composes stories, not summaries. In stories, duration is irrelevant, but key moments and the ending are critical.</li></ul>
+                
+        <details>
+            <summary><strong>Narrative Dominance</strong></summary>
+            <div>
+                <ul><li>- We care about significant events and memorable moments, not about time passing.</li><li>- The ending often defines the character of the entire story (e.g., La Traviata opera).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evidence: 'Jen's Life' Study</strong></summary>
+            <div>
+                <ul><li>- Participants evaluated the total happiness of a fictitious person's life.</li></ul>
+                
+        <details>
+            <summary><strong>Findings</strong></summary>
+            <div>
+                <ul><li>- <b>Duration Neglect:</b> Doubling Jen's happy life from 30 to 60 years had <u>no effect</u> on the evaluation of her total happiness.</li><li>- <b>Less-is-More Effect:</b> Adding 5 'slightly happy' years to a 'very happy' life caused a <u>substantial drop</u> in the evaluation of total happiness.</li><li>- This shows life is evaluated as a prototype or average, not a sum.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Amnesic Vacations</strong></summary>
+            <div>
+                <ul><li>- A thought experiment reveals our priorities.</li></ul>
+                
+        <details>
+            <summary><strong>The Scenario</strong></summary>
+            <div>
+                <ul><li>- Imagine a vacation where at the end, all photos will be destroyed and a potion will wipe your memory of it.</li><li>- How much is this vacation worth to you?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Implication</strong></summary>
+            <div>
+                <ul><li>- Most people say the value is greatly reduced, some wouldn't go at all.</li><li>- This reveals we often prioritize the <b>remembering self</b> (constructing memories) over the <b>experiencing self</b> (enjoying the moment).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Measuring Experienced Well-Being</strong></summary>
+            <div>
+                <ul><li>- Moving beyond simple life satisfaction surveys to measure the well-being of the experiencing self.</li></ul>
+                
+        <details>
+            <summary><strong>Measurement Methods</strong></summary>
+            <div>
+                <ul><li>- <b>Experience Sampling:</b> Pinging people at random times during the day to ask about their current feelings.</li><li>- <b>Day Reconstruction Method (DRM):</b> A more practical method where people relive the previous day, breaking it into episodes and rating their feelings.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The U-Index</strong></summary>
+            <div>
+                <ul><li>- A duration-weighted measure of well-being.</li><li>- Definition: The percentage of time an individual spends in an <b>unpleasant state</b>.</li><li>- Findings: American women <q>19%</q>, French women <q>16%</q>, Danish women <q>14%</q>.</li><li>- Activities with high U-Index for American women: Morning commute (<q>29%</q>), Work (<q>27%</q>), Child care (<q>24%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Determinants of Well-Being</strong></summary>
+            <div>
+                <ul><li>- <b>Attention is key:</b> Our emotional state is largely determined by what we attend to.</li><li>- <b>Situational factors</b> (e.g., socializing with coworkers, time pressure) are more important than general factors (e.g., benefits, status).</li><li>- Happiness is largely the experience of spending time with people you love and who love you.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Can Money Buy Happiness?</strong></summary>
+            <div>
+                <ul><li>- The answer depends on which self you ask.</li></ul>
+                
+        <details>
+            <summary><strong>Experienced Well-Being</strong></summary>
+            <div>
+                <ul><li>- Being poor makes one miserable.</li><li>- Beyond a household income of about <q><b>$75,000</b></q> in high-cost areas, the average increase in experienced well-being is <u>zero</u>.</li><li>- Higher income may reduce the ability to enjoy small pleasures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Life Satisfaction</strong></summary>
+            <div>
+                <ul><li>- Higher income brings higher life satisfaction, well beyond the $75,000 point.</li><li>- This shows that <b>life satisfaction</b> and <b>experienced well-being</b> are two different concepts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Focusing Illusion</strong></summary>
+            <div>
+                <ul><li>- A cognitive bias that occurs when people place too much importance on one aspect of an event, causing an error in accurately predicting the utility of a future outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Core Idea</strong></summary>
+            <div>
+                <ul><li>- <u>"Nothing in life is as important as you think it is when you are thinking about it."</u></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>- When you are asked to evaluate something, you substitute the answer to an easier question: "How do I feel about this thing <b>when I'm thinking about it?</b>"</li><li>- This is a form of <b>WYSIATI</b> (What You See Is All There Is) and duration neglect.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>California Climate</strong></summary>
+            <div>
+                <ul><li>- People in the Midwest and California both believe Californians are happier due to the climate.</li><li>- In reality, there is <b>no difference</b> in life satisfaction.</li><li>- People focus on the climate and ignore the countless other factors that determine well-being.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Paraplegics</strong></summary>
+            <div>
+                <ul><li>- People vastly overestimate the proportion of time paraplegics spend in a bad mood.</li><li>- They focus on the condition and fail to account for <b>adaptation</b>, where attention is withdrawn from the new situation over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Miswanting</strong></summary>
+            <div>
+                <ul><li>- The focusing illusion is a rich source of <b>miswanting</b> (bad choices from errors of affective forecasting).</li><li>- It creates a bias for goods that are initially exciting (a new car) over experiences that retain attention value (a weekly social club).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusions & Implications</strong></summary>
+            <div>
+                <ul><li>- A summary of the three major distinctions discussed in the book: Two Selves, Econs vs. Humans, and Two Systems.</li></ul>
+                
+        <details>
+            <summary><strong>Two Selves Revisited</strong></summary>
+            <div>
+                <ul><li>- The remembering self's rules (peak-end, duration neglect) are poor guides for decision-making because <b>time is the ultimate finite resource</b>.</li><li>- A hybrid view is needed: a theory of well-being must consider both the experiencing self and the remembering self.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Econs vs. Humans</strong></summary>
+            <div>
+                <ul><li>- <b>Econs:</b> Fictional agents who are rational (logically coherent). The basis for traditional economics.</li><li>- <b>Humans:</b> Not irrational, but not Econs. They are susceptible to biases and often need help making better decisions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Libertarian Paternalism (Nudge)</strong></summary>
+            <div>
+                <ul><li>- The policy approach of helping Humans make better choices <u>without</u> restricting their freedom.</li><li>- It involves designing the 'choice architecture' to favor better outcomes.</li><li>- Example: <b>Save More Tomorrow</b> program, which makes saving the default option and ties increases to pay raises.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Two Systems Revisited</strong></summary>
+            <div>
+                <ul><li>- <b>System 1</b> (fast, intuitive) is the origin of most of what we do right, but also the source of predictable biases.</li><li>- <b>System 2</b> (slow, effortful) is who we think we are, but it is often lazy and endorses System 1's suggestions.</li><li>- <u>How to improve:</u> Recognize the signs of a 'cognitive minefield', slow down, and ask for reinforcement from System 2.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
