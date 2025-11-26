@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: An Introduction to Cognitive Biases</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: An Introduction to Cognitive Biases</strong></summary>
+            <div>
+                <ul><li>- Source: Introduction from 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- Objective: To provide a richer language for understanding and discussing errors of judgment and choice, both in others and ourselves.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. What is the core principle of intuitive heuristics when faced with a difficult question?</li><li>- 2. In the "Invisible Gorilla" experiment, what percentage of viewers typically fail to see the gorilla?</li><li>- 3. According to Herbert Simon, what is expert intuition, in its simplest form?</li><li>- 4. What is the key statistical fact often ignored in the "Steve the librarian vs. farmer" problem?</li><li>- 5. What is the primary task of System 2 in relation to the impulses of System 1?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Premise: Improving Judgment Through Language</strong></summary>
+            <div>
+                <ul><li>- The goal is to improve the ability to identify and understand errors of judgment and choice.</li><li>- This is achieved by providing a richer, more precise language to discuss them, similar to how medicine uses diagnostic labels for diseases.</li><li>- Expectation of <u>intelligent gossip</u> can be a powerful motive for self-criticism.</li></ul>
+                
+        <details>
+            <summary><strong>Systematic Errors (Biases)</strong></summary>
+            <div>
+                <ul><li>- <b>Systematic errors</b> are predictable, recurring errors in judgment known as <u>biases</u>.</li><li>- They arise from the design of the cognitive machinery, not necessarily from emotional corruption of thought.</li><li>- A diagnostic label (e.g., Halo Effect) makes a bias easier to anticipate, recognize, and understand.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Two Systems Model</strong></summary>
+            <div>
+                <ul><li>- A psychological model describing mental life via two metaphorical agents: <b>System 1</b> and <b>System 2</b>.</li><li>- These are <u>fictitious characters</u> used to simplify the explanation of different modes of thinking.</li></ul>
+                
+        <details>
+            <summary><strong>System 1: The Automatic System</strong></summary>
+            <div>
+                <ul><li>- Operates <b>automatically</b> and <b>quickly</b>, with little or no effort.</li><li>- No sense of voluntary control.</li><li>- It is the 'hero' of the book, the secret author of many choices and judgments.</li></ul>
+                
+        <details>
+            <summary><strong>Characteristics & Capabilities</strong></summary>
+            <div>
+                <ul><li>- Includes innate skills (perceiving distance, fearing spiders) and learned, automatic skills (reading, 2+2=<q>4</q>, understanding simple sentences).</li><li>- Generates suggestions for System 2: impressions, intuitions, feelings.</li><li>- Cannot be turned off voluntarily (e.g., you will read a word in a language you know).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Examples of System 1 Activities</strong></summary>
+            <div>
+                <ul><li>- Detect hostility in a voice.</li><li>- Complete the phrase "bread and <q>butter</q>".</li><li>- Drive a car on an empty road.</li><li>- Recognize a stereotype from a description.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>System 2: The Effortful System</strong></summary>
+            <div>
+                <ul><li>- Allocates attention to <b>effortful mental activities</b>.</li><li>- Associated with the subjective experience of <u>agency, choice, and concentration</u>.</li><li>- We identify our conscious self with System 2.</li></ul>
+                
+        <details>
+            <summary><strong>Characteristics & Limitations</strong></summary>
+            <div>
+                <ul><li>- Operations require attention and are disrupted when attention is drawn away.</li><li>- Has a <u>limited budget of attention</u>; trying to go beyond it will cause failure.</li><li>- Effortful activities interfere with each other (e.g., cannot solve 17x24 while making a difficult left turn).</li></ul>
+                
+        <details>
+            <summary><strong>Physiological Markers of Effort</strong></summary>
+            <div>
+                <ul><li>- When engaged, muscles tense, blood pressure rises, heart rate increases, and pupils <q>dilate</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Examples of System 2 Activities</strong></summary>
+            <div>
+                <ul><li>- Focus on a specific voice in a noisy room.</li><li>- Park in a narrow space.</li><li>- Fill out a tax form.</li><li>- Check the validity of a complex logical argument.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interaction & Division of Labor</strong></summary>
+            <div>
+                <ul><li>- A highly efficient arrangement that minimizes effort and optimizes performance.</li><li>- <b>System 1</b> runs automatically, generating suggestions (impressions, intuitions).</li><li>- <b>System 2</b> is in a low-effort mode, endorsing System 1's suggestions if all is smooth.</li></ul>
+                
+        <details>
+            <summary><strong>System 2 Mobilization</strong></summary>
+            <div>
+                <ul><li>- System 2 is mobilized when:</li><li>- System 1 encounters difficulty or has no answer (e.g., 17 × 24 = <q>408</q>).</li><li>- An event violates System 1's model of the world (e.g., a talking cat).</li><li>- An error is about to be made, requiring self-control.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conflict & Self-Control</strong></summary>
+            <div>
+                <ul><li>- Conflict occurs when an automatic reaction from System 1 interferes with an intended task by System 2.</li><li>- Example: Naming the text color when the word itself is a different color (Stroop test, see Figure 2).</li><li>- A key task of System 2 is to <u>overcome the impulses of System 1</u>, which is the essence of <b>self-control</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Heuristics and Biases</strong></summary>
+            <div>
+                <ul><li>- <b>Heuristics</b> are simplifying mental shortcuts (rules of thumb) used in intuitive thinking.</li><li>- Reliance on heuristics can lead to predictable, systematic errors known as <b>biases</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Origins of the Research</strong></summary>
+            <div>
+                <ul><li>- Collaboration between Daniel Kahneman and Amos Tversky starting in <q>1969</q>.</li><li>- Initial question: Are people good intuitive statisticians?</li><li>- Conclusion: A qualified <b>NO</b>. Even expert statisticians showed poor statistical intuition, especially regarding the reliability of results from <q>small samples</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Availability Heuristic</strong></summary>
+            <div>
+                <ul><li>- Judging the size of a category or frequency of an event by the <u>ease with which instances come to mind</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>- <b>Letter K</b>: People think 'K' is more likely to be the first letter of a word than the third, because it's easier to recall words starting with K. The opposite is true for letters like <q>K, L, N, R, V</q>.</li><li>- <b>Politician Adultery</b>: Transgressions of politicians are more widely reported by media, making them more 'available' in memory and leading to the impression that it's more common in that group.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Media Influence</strong></summary>
+            <div>
+                <ul><li>- The media's choice of coverage heavily influences what is 'available' to the public.</li><li>- This explains why some issues are highly salient while others (e.g., declining educational standards) are neglected.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Resemblance Heuristic (Representativeness)</strong></summary>
+            <div>
+                <ul><li>- Using <u>resemblance</u> to a stereotype to make a difficult judgment of probability, while ignoring relevant statistical facts (base rates).</li></ul>
+                
+        <details>
+            <summary><strong>Example: Steve the Librarian</strong></summary>
+            <div>
+                <ul><li>- A shy, meek, and tidy soul (Steve) is described.</li><li>- People judge him more likely to be a librarian than a farmer based on resemblance to the stereotype.</li><li>- This ignores the statistical base rate: there are more than <q>20 male farmers for each male librarian</q> in the US.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Affect Heuristic</strong></summary>
+            <div>
+                <ul><li>- Judgments and decisions are guided directly by feelings of <u>liking and disliking</u>, with little reasoning.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Ford Stock Investment</strong></summary>
+            <div>
+                <ul><li>- An investment officer invested millions in Ford stock.</li><li>- His reasoning was not based on financial analysis (Is the stock underpriced?).</li><li>- Instead, it was based on his positive feeling: "Boy, do they know how to make a car!"</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Mechanism of Heuristics</strong></summary>
+            <div>
+                <ul><li>- <b>Substitution</b>: When faced with a difficult question, we often answer an <u>easier one</u> instead, usually without noticing the substitution.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cognitive Illusions</strong></summary>
+            <div>
+                <ul><li>- Illusions of thought, analogous to visual illusions.</li><li>- Errors of intuitive thought are often difficult to prevent because System 1 operates automatically.</li></ul>
+                
+        <details>
+            <summary><strong>Visual Illusion Example: Müller-Lyer</strong></summary>
+            <div>
+                <ul><li>- Two lines of identical length appear to be different lengths due to fins pointing in or out (See Figure 3).</li><li>- <b>Key Insight</b>: Even when your System 2 <u>knows</u> the lines are equal, your System 1 <u>still sees</u> one as longer.</li><li>- To resist, you must learn to mistrust your impression in this specific context.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cognitive Illusion Example: Psychopathic Charm</strong></summary>
+            <div>
+                <ul><li>- A patient with a history of multiple failed treatments lucidly describes how previous therapists failed him, but is convinced you are different and can help.</li><li>- This triggers strong feelings of sympathy and competence in the therapist (System 1).</li><li>- <b>Clinical Wisdom</b>: This is a <u>danger sign</u>. The patient is likely a psychopath. Do not take on this patient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overcoming Cognitive Illusions</strong></summary>
+            <div>
+                <ul><li>- Difficult because System 1 cannot be turned off and System 2 may have no clue an error is occurring.</li><li>- The best approach is a compromise: learn to <u>recognize situations where mistakes are likely</u> and try harder to avoid them when stakes are high.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitations & Marvels of the Mind</strong></summary>
+            <div>
+                <ul><li>- The mind has puzzling limitations, but also performs marvelous feats of intuition.</li></ul>
+                
+        <details>
+            <summary><strong>Limitation: Inattentional Blindness</strong></summary>
+            <div>
+                <ul><li>- We can be <b>blind to the obvious</b>, and we are also <b>blind to our blindness</b>.</li></ul>
+                
+        <details>
+            <summary><strong>The Invisible Gorilla Experiment</strong></summary>
+            <div>
+                <ul><li>- Viewers are asked to count basketball passes by one team.</li><li>- A person in a gorilla suit walks through the scene for <q>9 seconds</q>.</li><li>- Result: About <q>half</q> of the viewers do not notice the gorilla.</li><li>- Implication: Seeing and orienting, while automatic (System 1), depend on the allocation of some attention.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitation: Overconfidence</strong></summary>
+            <div>
+                <ul><li>- We have excessive confidence in what we believe we know.</li><li>- We are prone to <u>overestimate how much we understand</u> about the world.</li><li>- We tend to <u>underestimate the role of chance</u> in events.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Marvel: Expert Intuition</strong></summary>
+            <div>
+                <ul><li>- Accurate intuitions of experts are not magic, but a result of prolonged practice.</li></ul>
+                
+        <details>
+            <summary><strong>Herbert Simon's Definition</strong></summary>
+            <div>
+                <ul><li>- "The situation has provided a cue; this cue has given the expert access to information stored in memory, and the information provides the answer."</li><li>- In short: "Intuition is nothing more and nothing less than <q><b>recognition</b></q>."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Development & Examples</strong></summary>
+            <div>
+                <ul><li>- Develops after <q>thousands of hours</q> of practice.</li><li>- Examples:</li><li>- Chess master instantly seeing a strong move.</li><li>- Firefighter commander sensing danger and evacuating just before a floor collapses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Book Structure Overview</strong></summary>
+            <div>
+                <ul><li>- <b>Part 1</b>: Two-systems approach.</li><li>- <b>Part 2</b>: Judgment heuristics and difficulties in statistical thinking.</li><li>- <b>Part 3</b>: Overconfidence and the illusion of certainty.</li><li>- <b>Part 4</b>: Conversation with economics; prospect theory and challenges to rationality.</li><li>- <b>Part 5</b>: Distinction between the experiencing self and the remembering self.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
