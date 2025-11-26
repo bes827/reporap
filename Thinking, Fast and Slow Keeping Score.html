@@ -1,0 +1,869 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: Keeping Score</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: Keeping Score</strong></summary>
+            <div>
+                <ul><li>- Source: Book 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- This section explores how we use mental accounting, regret, and framing to make decisions, often leading to irrational choices.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the massive preference for selling winning stocks over losing ones called?</li><li>- In the context of regret, which outcome do people expect to have stronger emotional reactions to: one produced by action or one by inaction?</li><li>- What is the 'precautionary principle' often used in European regulations?</li><li>- What is the 'MPG Illusion'?</li><li>- What is the single best predictor of whether people will donate their organs?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Keeping Score: The Psychology of Money</strong></summary>
+            <div>
+                <ul><li>- For most people, money is a proxy for points on a scale of <b>self-regard</b> and <b>achievement</b>.</li><li>- This emotional score-keeping shapes our preferences and motivates our actions.</li></ul>
+                
+        <details>
+            <summary><strong>Resulting Biases</strong></summary>
+            <div>
+                <ul><li>- We refuse to cut losses when doing so would mean admitting <b>failure</b>.</li><li>- We are biased against actions that could lead to <b>regret</b>.</li><li>- We draw a sharp, illusory distinction between <u>omission</u> (not doing) and <u>commission</u> (doing).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mental Accounts</strong></summary>
+            <div>
+                <ul><li>- A concept by <b>Richard Thaler</b>.</li><li>- We organize our lives by putting money and decisions into separate mental 'accounts'.</li><li>- This is a form of <u>narrow framing</u> that helps a finite mind keep things manageable.</li></ul>
+                
+        <details>
+            <summary><strong>Types & Examples</strong></summary>
+            <div>
+                <ul><li>- <b>Physical/Mental Accounts</b>: We have separate pots for spending money, general savings, or a child's education.</li><li>- <b>Self-Control</b>: We use accounts to create budgets or limit daily consumption.</li><li>- <b>Score-Keeping</b>: Professional golfers putt more successfully to <q>avoid a bogey</q> (preventing a loss) than to <q>achieve a birdie</q> (securing a gain).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Sunk-Cost Fallacy</strong></summary>
+            <div>
+                <ul><li>- The mistake of investing additional resources in a losing account because of the prior investment.</li><li>- It's an attempt to avoid the emotional pain of closing an account with a loss.</li></ul>
+                
+        <details>
+            <summary><strong>Example: The Blizzard Game</strong></summary>
+            <div>
+                <ul><li>- Two fans have tickets for a game during a blizzard. One paid for the ticket; the other got it for free.</li><li>- The fan who <q><b>paid</b></q> is more likely to brave the blizzard to attend.</li><li>- <u>Reason</u>: For the paying fan, staying home closes their mental account with a more negative balance (lost money + missed game).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Corporate Projects</strong></summary>
+            <div>
+                <ul><li>- A company has spent <q>$50 million</q> on a failing project.</li><li>- It requires another <q>$60 million</q> to continue, even though a new project looks more profitable.</li><li>- Often, the company continues the failing project, 'throwing good money after bad' to avoid admitting a costly failure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Agency Problem</strong></summary>
+            <div>
+                <ul><li>- This occurs when an executive's personal interests (e.g., avoiding a failure on their record) are misaligned with the company's objectives (e.g., cutting losses).</li><li>- Boards often replace a CEO to bring in someone who doesn't carry the same mental accounts and can ignore past sunk costs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Disposition Effect</strong></summary>
+            <div>
+                <ul><li>- A massive, documented preference for selling <b>winning stocks</b> rather than <b>losing stocks</b>.</li><li>- This is an instance of <u>narrow framing</u>, where the investor wants to close each 'account' (each stock) as a gain.</li></ul>
+                
+        <details>
+            <summary><strong>Why it's a Costly Bias</strong></summary>
+            <div>
+                <ul><li>- <b>Tax Implications (US)</b>: Realizing losses <q>reduces your taxes</q>, while selling winners <q>exposes you to taxes</q>.</li><li>- <b>Market Anomaly</b>: Stocks that recently gained value are often likely to continue gaining for a short while.</li><li>- One study found the expected after-tax extra return of selling the loser instead of the winner was <q><b>3.4%</b></q> over the next year.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regret</strong></summary>
+            <div>
+                <ul><li>- An emotion and a form of self-punishment.</li><li>- It is a <u>counterfactual emotion</u>, triggered by the ease with which we can imagine an alternative to reality ('if only...').</li></ul>
+                
+        <details>
+            <summary><strong>Regret & Normality</strong></summary>
+            <div>
+                <ul><li>- Regret is felt more intensely for <b>unusual events</b> because the 'normal' alternative is easier to imagine.</li></ul>
+                
+        <details>
+            <summary><strong>Example: The Hitchhiker</strong></summary>
+            <div>
+                <ul><li>- Mr. Brown (<u>rarely</u> picks up hitchhikers) and Mr. Smith (<u>frequently</u> does) both get robbed after giving someone a ride.</li><li>- Who feels more regret? ---> <q><b>Mr. Brown</b></q> (<q>88%</q> of respondents agree), because his action was abnormal for him.</li><li>- Who gets more blame from others? ---> <q><b>Mr. Smith</b></q> (<q>77%</q> of respondents agree), because he violated a social norm of reasonable behavior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Action vs. Inaction</strong></summary>
+            <div>
+                <ul><li>- People expect to have stronger emotional reactions, including regret, to an outcome produced by <b>action</b> than to the same outcome produced by <b>inaction</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Example: The Stocks</strong></summary>
+            <div>
+                <ul><li>- Paul considered switching from stock A to B but didn't (<u>inaction</u>).</li><li>- George owned stock B and switched to A (<u>action</u>).</li><li>- Both would have been <q>$1,200</q> better off if they owned stock B.</li><li>- Who feels more regret? ---> <q><b>George</b></q> (<q>92%</q> of respondents agree), because his loss resulted from an action.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Power of the Default Option</strong></summary>
+            <div>
+                <ul><li>- The key distinction is not just action/inaction, but the difference between the <b>default option</b> and actions that <u>deviate</u> from it.</li><li>- Deviating from the default makes it easier to imagine the alternative, which is the source of painful emotions.</li><li>- This bias favors <u>conventional</u> and <u>risk-averse</u> choices.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Responsibility & Taboo Tradeoffs</strong></summary>
+            <div>
+                <ul><li>- Loss aversion is much higher for important aspects of life, like <b>health</b>, than for money.</li><li>- We are extremely reluctant to 'sell' important endowments if it makes us responsible for a terrible outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Example: The Vaccine vs. Volunteering</strong></summary>
+            <div>
+                <ul><li>- Scenario 1 (Buying): What is the maximum you would pay for a vaccine to avoid a <q>1-in-1,000</q> chance of a fatal disease? ---> People offer a limited amount.</li><li>- Scenario 2 (Selling): What is the minimum you would ask to be paid to volunteer for research with a <q>1-in-1,000</q> chance of contracting the same disease? ---> People demand a far higher amount.</li><li>- The typical ratio of the 'selling' price to the 'buying' price is about <q><b>50:1</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Taboo Tradeoffs</strong></summary>
+            <div>
+                <ul><li>- The idea of trading safety for money is often seen as morally wrong or 'taboo'.</li><li>- Example: Parents refusing to buy a slightly less safe insecticide for their child, even at a large discount.</li><li>- This attitude can be <u>incoherent</u> and damaging, as it prevents the efficient use of a limited 'safety budget'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Precautionary Principle</strong></summary>
+            <div>
+                <ul><li>- A doctrine, especially strong in Europe, that <b>prohibits any action that might cause harm</b>.</li><li>- It places the entire burden of proving safety on anyone who undertakes a new action.</li><li>- When interpreted strictly, it can be paralyzing and would have blocked innovations like <q>airplanes, antibiotics, and X-rays</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Preference Reversals</strong></summary>
+            <div>
+                <ul><li>- Our judgments and choices can 'reverse' depending on the context of evaluation.</li><li>- This challenges the economic model of stable, reality-bound preferences.</li></ul>
+                
+        <details>
+            <summary><strong>Single vs. Joint Evaluation</strong></summary>
+            <div>
+                <ul><li>- <b>Single Evaluation</b>: Judging one option in isolation. Often driven by <u>System 1</u>'s emotional reactions (WYSIATI).</li><li>- <b>Joint Evaluation</b>: Comparing two or more options side-by-side. This involves more careful, comparative assessment by <u>System 2</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Victim Compensation</strong></summary>
+            <div>
+                <ul><li>- A man is shot in a convenience store. Scenario A: his <u>regular</u> store. Scenario B: a store he <u>rarely</u> visited.</li><li>- In <b>single evaluation</b>, the victim in Scenario B gets <q>much higher</q> compensation due to poignancy ('if only...').</li><li>- In <b>joint evaluation</b>, compensation is <q>the same</q> for both, as location is correctly identified as an irrelevant factor.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Classic Reversal: The Bets</strong></summary>
+            <div>
+                <ul><li>- An experiment by Lichtenstein and Slovic.</li><li>- Bet A: <q>11/36</q> chance to win <q>$160</q>, <q>25/36</q> chance to lose <q>$15</q>.</li><li>- Bet B: <q>35/36</q> chance to win <q>$40</q>, <q>1/36</q> chance to lose <q>$10</q>.</li><li>- When asked to <b>choose</b>, most people pick the safer <q><b>Bet B</b></q>.</li><li>- When asked to set a <b>selling price</b> for each bet, they set a higher price for <q><b>Bet A</b></q>, anchoring on the larger potential prize.</li><li>- This is a preference reversal, a violation of rational choice theory.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Role of Categories</strong></summary>
+            <div>
+                <ul><li>- Our judgments are coherent <u>within</u> categories but can be incoherent <u>across</u> different categories.</li><li>- System 1 automatically retrieves a norm for comparison based on the category an item belongs to.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Dolphins vs. Farmworkers</strong></summary>
+            <div>
+                <ul><li>- In <b>single evaluation</b>, people tend to offer larger contributions to <q>save dolphins</q> (a charismatic species within the 'endangered animals' category).</li><li>- In <b>joint evaluation</b>, people contribute substantially more to help <q>farmworkers</q>.</li><li>- The 'human vs. animal' feature, which is decisive, only becomes salient when the two are compared directly.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluability Hypothesis</strong></summary>
+            <div>
+                <ul><li>- By Christopher Hsee. Some attributes are difficult to evaluate on their own ('unevaluable').</li><li>- Example: Two dictionaries. A has 10,000 entries and is 'like new'. B has 20,000 entries and a torn cover.</li><li>- In <b>single evaluation</b>, <q>Dictionary A</q> is valued more highly because 'condition' is easy to evaluate.</li><li>- In <b>joint evaluation</b>, <q>Dictionary B</q> is valued more, as it's obvious that the number of entries is a far more important attribute.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Frames and Reality</strong></summary>
+            <div>
+                <ul><li>- Logically equivalent statements can evoke different reactions because they trigger different associations in System 1.</li><li>- Our choices are often <u>frame-bound</u> rather than <u>reality-bound</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Emotional Framing</strong></summary>
+            <div>
+                <ul><li>- Using emotionally charged words to influence choice, even when the underlying reality is identical.</li><li>- Example: A bad outcome is more acceptable as the 'cost of a lottery ticket' than as 'losing a gamble'.</li><li>- Example: People will more readily forgo a 'cash discount' than pay a 'credit surcharge'.</li></ul>
+                
+        <details>
+            <summary><strong>Neuroeconomics Study: KEEP vs. LOSE</strong></summary>
+            <div>
+                <ul><li>- A choice between a sure thing and a gamble was framed as either 'KEEP £20' or 'LOSE £30' (from an initial £50).</li><li>- The <b>amygdala</b> (emotion center) was more active when subjects' choices conformed to the frame.</li><li>- The <b>anterior cingulate</b> (conflict center) was more active when subjects resisted the frame's suggestion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Medical Study: Survivalvs. Mortality</strong></summary>
+            <div>
+                <ul><li>- Physicians were given statistics for two lung cancer treatments: surgery and radiation.</li><li>- <b>Survival Frame</b>: 'The one-month survival rate is 90%.' ---> <q><b>84%</b></q> of physicians chose surgery.</li><li>- <b>Mortality Frame</b>: 'There is 10% mortality in the first month.' ---> Only <q><b>50%</b></q> chose surgery.</li><li>- <u>Conclusion</u>: Medical training is no defense against the power of framing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Empty Intuitions: The Asian Disease Problem</strong></summary>
+            <div>
+                <ul><li>- This classic problem shows that risk preferences for lives saved/lost are not reality-bound.</li></ul>
+                
+        <details>
+            <summary><strong>Frame 1: Gains (Lives Saved)</strong></summary>
+            <div>
+                <ul><li>- <u>Program A</u>: '<b>200 people will be saved</b>' (a sure thing).</li><li>- <u>Program B</u>: 'a 1/3 probability that 600 people will be saved, and a 2/3 probability that no people will be saved' (a gamble).</li><li>- <b>Result</b>: A substantial majority chooses <q>Program A</q>. People are <u>risk-averse</u> for gains.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Frame 2: Losses (Lives Lost)</strong></summary>
+            <div>
+                <ul><li>- <u>Program A'</u>: '<b>400 people will die</b>' (a sure thing).</li><li>- <u>Program B'</u>: 'a 1/3 probability that nobody will die, and a 2/3 probability that 600 people will die' (a gamble).</li><li>- <b>Result</b>: A large majority chooses <q>Program B'</q>. People are <u>risk-seeking</u> for losses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Inconsistency</strong></summary>
+            <div>
+                <ul><li>- The outcomes of A and A' are identical, as are B and B'.</li><li>- When confronted with their inconsistent choices, most people have no compelling moral intuition from System 2 to resolve the conflict.</li><li>- <u>Conclusion</u>: Our moral intuitions are attached to <b>descriptions</b> of reality, not reality itself.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Schelling's Tax Problem</strong></summary>
+            <div>
+                <ul><li>- Illustrates how a simple moral rule ('favor the poor') can generate contradictory answers depending on the frame.</li></ul>
+                
+        <details>
+            <summary><strong>Frame 1: Child Exemption</strong></summary>
+            <div>
+                <ul><li>- <b>Question</b>: 'Should the child exemption be larger for the rich than for the poor?'</li><li>- <b>Intuitive Answer</b>: <q>No</q>, this is unacceptable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Frame 2: Childless Surcharge</strong></summary>
+            <div>
+                <ul><li>- The law is reframed: the default is a family with two children, and childless families pay a surcharge.</li><li>- <b>Question</b>: 'Should the childless poor pay as large a surcharge as the childless rich?'</li><li>- <b>Intuitive Answer</b>: <q>No</q>, this is also unacceptable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Contradiction</strong></summary>
+            <div>
+                <ul><li>- The two moral positions are logically inconsistent.</li><li>- If you want the poor to get the same or greater tax <u>reduction</u> for having children, you must want them to pay the same or greater tax <u>increase</u> for being childless.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Good Frames</strong></summary>
+            <div>
+                <ul><li>- Not all frames are equal; some are clearly better because they lead to more rational decisions.</li><li>- <b>Principle</b>: <u>Broader frames</u> and <u>inclusive accounts</u> generally lead to better choices.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Lost Tickets vs. Lost Cash</strong></summary>
+            <div>
+                <ul><li>- <b>Scenario 1 (Lost Tickets)</b>: A woman loses two $80 tickets. Most people predict she <q>will not</q> buy new ones.</li><li>- <u>Reasoning</u>: The loss is posted to the 'theater show' mental account, making the cost seem to be <q>$320</q>.</li><li>- <b>Scenario 2 (Lost Cash)</b>: A woman loses $160 cash. Most people predict she <q>will</q> still buy the tickets.</li><li>- <u>Reasoning</u>: The loss is posted to a 'general revenue' account and is seen as separate from the ticket purchase.</li><li>- <b>Better Frame</b>: The <q>lost cash</q> frame is superior because the loss is a <u>sunk cost</u> and should be ignored.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: The MPG Illusion</strong></summary>
+            <div>
+                <ul><li>- The 'miles per gallon' (MPG) frame is a poor guide for assessing fuel efficiency savings.</li></ul>
+                
+        <details>
+            <summary><strong>The Puzzle</strong></summary>
+            <div>
+                <ul><li>- Adam switches from a 12 mpg car to a 14 mpg car.</li><li>- Beth switches from a 30 mpg car to a 40 mpg car.</li><li>- Who saves more gas over 10,000 miles?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Answer</strong></summary>
+            <div>
+                <ul><li>- <b>Answer</b>: <q><b>Adam</b></q> saves more gas.</li><li>- Adam's savings: <q>119 gallons</q> (833 down to 714).</li><li>- Beth's savings: <q>83 gallons</q> (333 down to 250).</li><li>- <b>Better Frame</b>: 'Gallons per mile' (or Liters per 100km) is a much more informative frame.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Organ Donation</strong></summary>
+            <div>
+                <ul><li>- The single best predictor of organ donation rates is the designation of the <b>default option</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Opt-Out vs. Opt-In</strong></summary>
+            <div>
+                <ul><li>- <b>Opt-out countries</b> (e.g., Austria, Sweden): You are a donor by default unless you check a box to opt out. ---> Donation rates are <q>close to 100%</q>.</li><li>- <b>Opt-in countries</b> (e.g., Germany, Denmark): You are not a donor unless you check a box to opt in. ---> Donation rates can be as low as <q>4%</q>.</li><li>- <u>Reason</u>: The laziness of System 2. When unprepared, people stick with the default.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
