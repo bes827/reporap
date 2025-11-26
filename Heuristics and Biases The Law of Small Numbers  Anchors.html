@@ -1,0 +1,689 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heuristics and Biases: The Law of Small Numbers & Anchors</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Heuristics and Biases: The Law of Small Numbers & Anchors</strong></summary>
+            <div>
+                <ul><li>- From the book: <b>Thinking, Fast and Slow</b> by Daniel Kahneman.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What was the anchoring index for real-estate agents assessing a house value, despite them denying the influence of the asking price?</li><li>- In the Campbell's soup experiment, what was the average number of cans purchased when a 'limit of 12 per person' sign was present?</li><li>- What did a statistical analysis of rocket bomb hits in London during WWII reveal?</li><li>- What is the 'hot hand' in basketball considered to be?</li><li>- What was the anchoring effect on German judges who rolled dice before sentencing a shoplifter?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Law of Small Numbers</strong></summary>
+            <div>
+                <ul><li>- The incorrect belief that the principles of large samples apply to small samples as well.</li><li>- Our minds, particularly <b>System 1</b>, have a strong bias toward believing that small samples closely resemble the population from which they are drawn.</li></ul>
+                
+        <details>
+            <summary><strong>Illustrative Example: <u>Kidney Cancer Incidence</u></strong></summary>
+            <div>
+                <ul><li>- An analysis of 3,141 US counties revealed a strange pattern.</li></ul>
+                
+        <details>
+            <summary><strong>The Observation & Causal Trap</strong></summary>
+            <div>
+                <ul><li>- Counties with the <b>LOWEST</b> incidence of kidney cancer were mostly: <u>rural, sparsely populated, and traditionally Republican</u>.</li><li>- Counties with the <b>HIGHEST</b> incidence of kidney cancer shared the <u>exact same characteristics</u>.</li><li>- <b>System 1</b> jumps to create causal stories (e.g., clean rural living vs. poverty of rural living), but these explanations are contradictory and wrong.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Statistical Truth</strong></summary>
+            <div>
+                <ul><li>- The key factor is not lifestyle but <b>small population size</b>.</li><li>- <u>Extreme outcomes</u> (both very high and very low) are statistically more likely to be found in small samples than in large ones.</li><li>- The observed cancer rates are an <b>artifact</b> of the sample size, not a true fact to be explained.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mind's Relationship with Statistics</strong></summary>
+            <div>
+                <ul><li>- <b>System 1</b>: Automatically identifies causal connections, even spurious ones. It is inept with 'merely statistical' facts.</li><li>- <b>System 2</b>: Required for statistical thinking, which is effortful and less intuitive.</li></ul>
+                
+        <details>
+            <summary><strong>Two Equivalent Statements</strong></summary>
+            <div>
+                <ul><li>- 1. 'Large samples are more precise than small samples.' ---> <u>Intuitively true</u>.</li><li>- 2. 'Small samples yield extreme results more often than large samples do.' ---> <u>Less intuitive, but means the same thing</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>A Bias of Confidence Over Doubt</strong></summary>
+            <div>
+                <ul><li>- We naturally focus on the <b>story</b> (the message's content) rather than the <b>reliability</b> of its source (e.g., sample size).</li><li>- <b>System 1</b> suppresses ambiguity and constructs coherent stories, an effect known as WYSIATI (What You See Is All There Is).</li><li>- <b>System 2</b> can sustain doubt, but this is harder work than sliding into certainty.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cause and Chance: Misinterpreting Randomness</strong></summary>
+            <div>
+                <ul><li>- Our associative machinery (System 1) seeks causes and sees patterns, even in random events.</li><li>- A sequence like <b>BGBBGB</b> appears more random and likely than <b>GGGGGG</b>, even though all specific sequences of six births are <q>equally likely</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Real-World Example: <u>WWII London Bombing</u></strong></summary>
+            <div>
+                <ul><li>- The public believed bombing patterns were not random due to conspicuous gaps on the map, suspecting spies.</li><li>- A careful statistical analysis revealed the distribution was typical of a <q>random process</q>.</li><li>- Key insight: 'To the untrained eye, randomness appears as regularity or a tendency to cluster.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Real-World Example: <u>The 'Hot Hand' in Basketball</u></strong></summary>
+            <div>
+                <ul><li>- The belief that players get 'hot' is a massive and widespread <b>cognitive illusion</b>.</li><li>- Analysis of thousands of shots shows that the sequence of successes and misses satisfies all tests of <q>randomness</q>.</li><li>- The 'hot hand' is entirely in the eye of the beholders, who are too quick to perceive order and causality.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Real-World Example: <u>Successful Schools Research</u></strong></summary>
+            <div>
+                <ul><li>- The Gates Foundation invested <q><b>$1.7 billion</b></q> based on research showing the most successful schools are often small.</li><li>- The critical flaw: the <b>worst</b> schools also tend to be smaller than average.</li><li>- The truth: Small schools are not better on average; they are simply <u>more variable</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Implications for Researchers</strong></summary>
+            <div>
+                <ul><li>- Researchers' intuitions about sample size are often flawed.</li><li>- They commonly choose samples so small they face a <q><b>50% risk</b></q> of failing to confirm a true hypothesis.</li><li>- <u>Recommendation</u>: Regard statistical intuitions with proper suspicion and replace impression formation with computation whenever possible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anchoring</strong></summary>
+            <div>
+                <ul><li>- An effect that occurs when people consider a particular value (the 'anchor') for an unknown quantity before estimating that quantity.</li><li>- The final estimate tends to stay close to the anchor, even if the anchor is arbitrary and uninformative.</li></ul>
+                
+        <details>
+            <summary><strong>The Two Mechanisms of Anchoring</strong></summary>
+            <div>
+                <ul><li>- Anchoring is produced by two different mechanisms, involving both System 1 and System 2.</li></ul>
+                
+        <details>
+            <summary><strong>1. Anchoring as <u>Adjustment</u> (System 2)</strong></summary>
+            <div>
+                <ul><li>- A deliberate, conscious, and effortful process.</li><li>- Strategy: Start from an anchor number and adjust away from it.</li><li>- The adjustment is typically <b>insufficient</b> because people stop when they are no longer certain they should move farther.</li><li>- This is a failure of a 'weak or lazy' System 2.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Anchoring as a <u>Priming Effect</u> (System 1)</strong></summary>
+            <div>
+                <ul><li>- An automatic, involuntary process with no corresponding subjective experience.</li><li>- It is a form of <b>suggestion</b>, where the anchor selectively evokes compatible evidence and thoughts.</li><li>- System 1 tries to construct a world in which the anchor is the true number, a manifestation of associative coherence.</li></ul>
+                
+        <details>
+            <summary><strong>Supporting Evidence</strong></summary>
+            <div>
+                <ul><li>- A high temperature anchor (20°C) made it easier to recognize <q>summer words</q> (sun, beach).</li><li>- A high price anchor for cars selectively primed names of <q>luxury brands</q> (Mercedes, Audi).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Measuring the Anchor: The Anchoring Index</strong></summary>
+            <div>
+                <ul><li>- The anchoring effect can be measured as a percentage.</li><li>- <u>Formula</u>: (Difference between estimates) / (Difference between anchors)</li><li>- In an experiment about redwood tree height, the anchoring index was <q><b>55%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Real-World Power of Anchors</strong></summary>
+            <div>
+                <ul><li>- Anchors are powerful even when they are obviously random and uninformative.</li></ul>
+                
+        <details>
+            <summary><strong>Real Estate Agents</strong></summary>
+            <div>
+                <ul><li>- When assessing a house, professional agents were asked to consider a high or low asking price.</li><li>- They insisted the price had no effect, but they were wrong: the anchoring index was <q><b>41%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Charitable Donations</strong></summary>
+            <div>
+                <ul><li>- When asked to donate to save seabirds:</li><li>- No anchor ---> average donation was <q>$64</q>.</li><li>- $5 anchor ---> average donation was <q>$20</q>.</li><li>- $400 anchor ---> average donation was <q>$143</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>German Judges</strong></summary>
+            <div>
+                <ul><li>- Judges rolled a loaded die (getting a 3 or 9) before sentencing a shoplifter.</li><li>- Judges who rolled a 9 gave an average sentence of <q><b>8 months</b></q>.</li><li>- Judges who rolled a 3 gave an average sentence of <q><b>5 months</b></q>.</li><li>- The anchoring effect was <q>50%</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Uses, Abuses, and Defenses</strong></summary>
+            <div>
+                <ul><li>- Anchoring is widely used in marketing and negotiations.</li></ul>
+                
+        <details>
+            <summary><strong>Marketing & Sales</strong></summary>
+            <div>
+                <ul><li>- <u>Arbitrary Rationing</u>: A 'limit of 12 per person' sign for Campbell's soup led shoppers to buy an average of <q><b>7 cans</b></q>, twice as many as when there was no limit.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Negotiations</strong></summary>
+            <div>
+                <ul><li>- Moving first by setting a list price is an advantage.</li><li>- <u>Defense Strategy</u>: If the other side makes an outrageous proposal, do not counter with another outrageous offer. Instead, make it clear you will not negotiate with that number on the table.</li><li>- Another defense is to deliberately '<b>think the opposite</b>' by activating System 2 to search for arguments against the anchor.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anchoring and the Two Systems</strong></summary>
+            <div>
+                <ul><li>- System 2 makes the final judgment, but it works on data retrieved by System 1.</li><li>- System 1's retrieval is automatically and involuntarily biased by the anchor.</li><li>- System 2 has no control over this effect and often no knowledge of it.</li><li>- <u>Takeaway</u>: Assume that any number on the table has had an anchoring effect on you. If the stakes are high, mobilize your System 2 to combat the effect.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
