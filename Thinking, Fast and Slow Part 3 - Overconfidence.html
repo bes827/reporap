@@ -1,0 +1,860 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: Part 3 - Overconfidence</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: Part 3 - Overconfidence</strong></summary>
+            <div>
+                <ul><li>- This mind map summarizes the key concepts about overconfidence from the book 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- It focuses on the cognitive illusions that make us believe we understand the world better than we actually do.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- How well do you know the concepts in this chapter? Test yourself first.</li><li>- 1. What is the term for the bias where people judge a decision's quality by its outcome rather than the process?</li><li>- 2. In Philip Tetlock's 20-year study, how did political experts' predictions compare to simple chance?</li><li>- 3. What was the average year-to-year performance correlation for the investment advisers the author studied, indicating the role of luck?</li><li>- 4. According to Paul Meehl's review of ~200 studies, in what percentage of cases did statistical algorithms significantly outperform human clinical predictions?</li><li>- 5. What simple formula did Robyn Dawes propose as a good predictor of marital stability?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>1. The Illusion of Understanding</strong></summary>
+            <div>
+                <ul><li>- We believe we understand the past, which makes us think the future is predictable.</li><li>- In reality, we understand the past less than we think we do.</li></ul>
+                
+        <details>
+            <summary><strong>Narrative Fallacy</strong></summary>
+            <div>
+                <ul><li>- Coined by <b>Nassim Taleb</b>.</li><li>- Describes how we create flawed stories about the past to make sense of the world.</li><li>- These stories shape our view of the future.</li></ul>
+                
+        <details>
+            <summary><strong>Characteristics of Compelling Stories</strong></summary>
+            <div>
+                <ul><li>- They are <u>simple and coherent</u>.</li><li>- They are <b>concrete</b>, not abstract.</li><li>- They give a large role to <b>talent and intention</b>, and a small role to <u>luck</u>.</li><li>- They focus on a few striking events that happened, ignoring the countless things that did <u>not</u> happen.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: The Google Story</strong></summary>
+            <div>
+                <ul><li>- The story of Google's success seems like a clear result of skill and good decisions.</li><li>- This simple narrative fosters an <b>illusion of inevitability</b>.</li><li>- It makes us underestimate the huge role that <q><u>luck</u></q> played in their success.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Problem with Narratives</strong></summary>
+            <div>
+                <ul><li>- The real test of an explanation is if it could have <u>predicted the event in advance</u>. No story can do this.</li><li>- The human mind struggles to deal with '<b>non-events</b>' (things that could have happened but didn't).</li><li>- <b>WYSIATI</b> (What You See Is All There Is) is at work: we build the best story from limited information and believe it.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hindsight Bias (The 'I-Knew-It-All-Along' Effect)</strong></summary>
+            <div>
+                <ul><li>- Once an event happens, we adjust our view of the world to accommodate the surprise.</li><li>- We lose the ability to remember our old beliefs accurately.</li><li>- This makes us underestimate how much we were surprised by past events.</li></ul>
+                
+        <details>
+            <summary><strong>Demonstration of Hindsight Bias</strong></summary>
+            <div>
+                <ul><li>- <b>Baruch Fischhoff's study</b> before President Nixon's 1972 visit to China.</li><li>- People were asked to recall the probabilities they had assigned to events before the visit.</li><li>- <b>Result</b>: If an event occurred, people exaggerated the probability they had assigned to it. If it didn't occur, they recalled thinking it was always unlikely.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pernicious Effects of Hindsight</strong></summary>
+            <div>
+                <ul><li>- Hindsight bias has dangerous consequences, especially for evaluating decisions.</li></ul>
+                
+        <details>
+            <summary><strong>Outcome Bias</strong></summary>
+            <div>
+                <ul><li>- We assess the quality of a decision by its <u>outcome</u>, not by whether the process was sound.</li><li>- A good decision with a bad outcome is blamed unfairly.</li><li>- A risky gamble with a good outcome is praised excessively.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Duluth Bridge Monitor</strong></summary>
+            <div>
+                <ul><li>- A legal case about hiring a bridge monitor to prevent flood damage.</li><li>- Group 1 (told only facts available at the time): <q><b>24%</b></q> said the city should hire a monitor.</li><li>- Group 2 (told a flood had occurred): <q><b>56%</b></q> said the city should have hired one, despite being told to avoid hindsight.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact on Professionals</strong></summary>
+            <div>
+                <ul><li>- Hindsight is especially unkind to physicians, financial advisers, CEOs, and politicians.</li><li>- It encourages <b>risk aversion</b> and bureaucratic solutions to avoid blame.</li><li>- For example, doctors may order more tests to protect themselves, not necessarily to benefit the patient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recipes for Success (Business Books)</strong></summary>
+            <div>
+                <ul><li>- Business books often satisfy our need for simple stories where success is a direct result of good leadership and practices.</li><li>- This is largely an illusion.</li></ul>
+                
+        <details>
+            <summary><strong>The Role of Luck vs. Skill</strong></summary>
+            <div>
+                <ul><li>- The correlation between a firm's success and its CEO's quality is generously estimated at <q><b>.30</b></q>.</li><li>- This means a stronger CEO leads the more successful firm in only about <q><u>60%</u></q> of cases (only 10% better than a random guess).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Halo Effect in Business</strong></summary>
+            <div>
+                <ul><li>- A successful company's CEO is seen as 'flexible' and 'decisive'.</li><li>- If the company fails, the same CEO is seen as 'rigid' and 'confused'.</li><li>- We get the cause-and-effect backward: The CEO <u>appears</u> rigid <b>because</b> the firm is failing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Regression to the Mean</strong></summary>
+            <div>
+                <ul><li>- Companies praised in books like 'Built to Last' and 'In Search of Excellence' often perform worse in the years after the book is published.</li><li>- This is not because they became complacent; it's because their initial success was partly due to <b>luck</b>, and their performance regressed to the average.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. The Illusion of Validity & Skill</strong></summary>
+            <div>
+                <ul><li>- We often feel confident in our judgments even when they are based on weak evidence and are statistically useless.</li></ul>
+                
+        <details>
+            <summary><strong>The Illusion of Validity</strong></summary>
+            <div>
+                <ul><li>- The feeling of confidence we have in our judgments, even when we know from global evidence that our predictions are not accurate.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Israeli Army Officer Evaluation</strong></summary>
+            <div>
+                <ul><li>- The author evaluated officer candidates using a 'leaderless group challenge'.</li><li>- The observers felt they could clearly see each candidate's 'true nature' and were very confident in their predictions.</li></ul>
+                
+        <details>
+            <summary><strong>The Reality</strong></summary>
+            <div>
+                <ul><li>- Feedback sessions showed their ability to predict actual performance was <q><u>negligible</u></q> (almost useless).</li><li>- <b>The Paradox</b>: Knowing this fact had <u>no effect</u> on their confidence when evaluating the next group of candidates.</li><li>- This is the <b>Illusion of Validity</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Source of Subjective Confidence</strong></summary>
+            <div>
+                <ul><li>- Confidence is a <b>feeling</b> from <u>System 1</u>.</li><li>- It reflects the <b>coherence</b> of the story we create, not the quality or amount of evidence.</li><li>- Poor evidence can make a very good, coherent story.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Illusion of Stock-Picking Skill</strong></summary>
+            <div>
+                <ul><li>- A major industry built largely on an illusion of skill.</li><li>- Most buyers and sellers have the same information but different opinions, each believing they know more than the market.</li></ul>
+                
+        <details>
+            <summary><strong>Individual Investors</strong></summary>
+            <div>
+                <ul><li>- A study by <b>Terry Odean</b> of 10,000 brokerage accounts showed poor performance.</li><li>- On average, shares that investors sold did <u>better</u> than the shares they bought by <q><b>3.2 percentage points</b></q> per year.</li><li>- The most active traders had the <q>poorest results</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Professional Investors (Fund Managers)</strong></summary>
+            <div>
+                <ul><li>- Research over 50 years is conclusive: most fund managers are playing a game of <b>chance</b>, not skill.</li><li>- Typically, at least <q><u>two out of three</u></q> mutual funds underperform the market in any given year.</li><li>- The year-to-year correlation of performance is near <q><b>zero</b></q>, meaning success is mostly luck.</li></ul>
+                
+        <details>
+            <summary><strong>Author's Study at an Investment Firm</strong></summary>
+            <div>
+                <ul><li>- Analyzed performance of 25 wealth advisers over 8 years.</li><li>- Computed 28 year-to-year correlations to check for persistent skill.</li><li>- The average correlation was <q><b>.01</b></q> (effectively zero).</li><li>- The firm was rewarding <b>luck</b> as if it were <b>skill</b>, and this fact was ignored by the executives and advisers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Illusions of Pundits (Experts)</strong></summary>
+            <div>
+                <ul><li>- The illusion that we understand the past fosters overconfidence in our ability to predict the future.</li></ul>
+                
+        <details>
+            <summary><strong>Philip Tetlock's 20-Year Study</strong></summary>
+            <div>
+                <ul><li>- Interviewed <b>284 experts</b> who made a living commenting on political and economic trends.</li><li>- Gathered over <q>80,000</q> predictions.</li></ul>
+                
+        <details>
+            <summary><strong>Devastating Results</strong></summary>
+            <div>
+                <ul><li>- The experts performed <u>worse</u> than if they had assigned equal probabilities to the outcomes.</li><li>- They were worse than <q><b>dart-throwing monkeys</b></q>.</li><li>- The most famous experts were often the most overconfident and least accurate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hedgehogs vs. Foxes</strong></summary>
+            <div>
+                <ul><li>- A classification of expert thinking styles, from Isaiah Berlin.</li></ul>
+                
+        <details>
+            <summary><strong>Hedgehogs</strong></summary>
+            <div>
+                <ul><li>- Know '<u>one big thing</u>'.</li><li>- Have a single, coherent theory about the world.</li><li>- Are very confident and reluctant to admit error.</li><li>- Make for good television but are <b>poor forecasters</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Foxes</strong></summary>
+            <div>
+                <ul><li>- Are complex thinkers who believe reality emerges from many interacting forces, including luck.</li><li>- Are less confident and more likely to admit error.</li><li>- They scored best in Tetlock's study, but their performance was <q>still very poor</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Intuitions vs. Formulas</strong></summary>
+            <div>
+                <ul><li>- Simple, statistical rules (algorithms or formulas) are often superior to the intuitive judgments of experts.</li></ul>
+                
+        <details>
+            <summary><strong>Paul Meehl's 'Disturbing Little Book'</strong></summary>
+            <div>
+                <ul><li>- Reviewed studies comparing <b>clinical predictions</b> (expert intuition) with <b>statistical predictions</b> (formulas).</li><li>- The contest between algorithms and humans has a clear winner.</li></ul>
+                
+        <details>
+            <summary><strong>The Score</strong></summary>
+            <div>
+                <ul><li>- In about <q><b>60%</b></q> of ~200 studies, algorithms were significantly more accurate.</li><li>- The other <q>40%</q> were roughly a tie, which is a win for the cheaper, faster formulas.</li><li>- This holds true in diverse fields: medicine, economics, government, etc.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Predicting Bordeaux Wine Prices</strong></summary>
+            <div>
+                <ul><li>- Economist Orley Ashenfelter created a formula to predict the future price of wine.</li><li>- It uses 3 weather variables: summer temperature, harvest rain, and winter rain.</li><li>- The formula's predictions have a correlation with actual prices of <q><u>above .90</u></q>, far more accurate than expert opinions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Why Formulas Work Better</strong></summary>
+            <div>
+                <ul><li>- Humans are inconsistent, while formulas always give the same output for the same input.</li></ul>
+                
+        <details>
+            <summary><strong>Expert Flaws</strong></summary>
+            <div>
+                <ul><li>- Experts try to be clever and think 'outside the box', which often reduces accuracy.</li><li>- They are prone to cognitive biases and context dependency (e.g., mood, weather).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human Inconsistency</strong></summary>
+            <div>
+                <ul><li>- Experienced radiologists who re-evaluate the same X-ray contradict their own previous judgment <q><b>20%</b></q> of the time.</li><li>- This level of inconsistency is typical for professionals and makes valid prediction impossible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The 'Broken-Leg Rule'</strong></summary>
+            <div>
+                <ul><li>- Meehl's idea that you should only override a formula when you have rare, decisive information that the formula does not know (e.g., a person predicted to go to the movies just broke their leg).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Power of Simple Formulas</strong></summary>
+            <div>
+                <ul><li>- Even simple, equally-weighted formulas often outperform complex regression models and expert judgment.</li><li>- Example: Marital stability is well predicted by the formula: <q><b>frequency of lovemaking minus frequency of quarrels</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Apgar Score: A Real-World Success</strong></summary>
+            <div>
+                <ul><li>- A simple checklist developed by Dr. Virginia Apgar in 1953 to assess newborn health.</li><li>- It standardized assessment and dramatically helped reduce infant mortality.</li></ul>
+                
+        <details>
+            <summary><strong>The 5 Variables</strong></summary>
+            <div>
+                <ul><li>- <b>H</b>eart rate</li><li>- <b>R</b>espiration</li><li>- <b>R</b>eflex</li><li>- <b>M</b>uscle tone</li><li>- <b>C</b>olor</li><li>- Each is scored 0, 1, or 2. A total score of <q>8 or above</q> is good.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hostility to Algorithms</strong></summary>
+            <div>
+                <ul><li>- Experts and the public often resist the idea that a simple formula can be better than human intuition.</li></ul>
+                
+        <details>
+            <summary><strong>Reasons for Resistance</strong></summary>
+            <div>
+                <ul><li>- It contradicts the personal experience of skill that clinicians feel in their daily work (even if that skill is in short-term, not long-term, prediction).</li><li>- A strong preference for the '<u>natural</u>' over the '<u>artificial</u>'.</li><li>- The cause of a mistake matters emotionally: an error by an algorithm feels worse than an error by a human.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How to Make Better Hiring Decisions</strong></summary>
+            <div>
+                <ul><li>- A practical, formula-based approach to hiring, inspired by Meehl.</li></ul>
+                
+        <details>
+            <summary><strong>The Method</strong></summary>
+            <div>
+                <ul><li>- 1. Select <q>~6</q> key traits for success in the job.</li><li>- 2. Create factual questions to assess each trait.</li><li>- 3. Score each trait on a 1-5 scale, one at a time, to avoid the halo effect.</li><li>- 4. Add up the scores for a final result.</li><li>- 5. Hire the candidate with the <b>highest score</b>, even if you intuitively like someone else better.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
