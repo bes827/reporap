@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Regression to the Mean
+From 'Thinking, Fast and Slow'</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Regression to the Mean</strong><br><em>From 'Thinking, Fast and Slow'</em></summary>
+            <div>
+                <ul><li>- Author: <b>Daniel Kahneman</b></li><li>- This mind map explores the statistical concept of regression to the mean, its common misinterpretations, and how to correct for it in predictions.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- Why does punishing a flight cadet for a very bad maneuver often <u>seem</u> to work?</li><li>- What is the relationship between <b>correlation</b> and <b>regression</b>?</li><li>- If a golfer scores exceptionally well on day 1, what is the best prediction for day 2?</li><li>- What is the main reason our minds struggle with regression?</li><li>- What are the two key components of success according to the text?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🎯 Core Concept: Regression to the Mean</strong></summary>
+            <div>
+                <ul><li>- A statistical phenomenon where an <b>extreme</b> result is likely to be followed by a result that is closer to the <b>average</b> (the mean).</li><li>- It is a mathematically inevitable consequence when random luck is involved in an outcome.</li><li>- It occurs whenever the correlation between two measures is <q><u>less than perfect</u></q>.</li></ul>
+                
+        <details>
+            <summary><strong>❌ Common Misinterpretation</strong></summary>
+            <div>
+                <ul><li>- The biggest error is attaching a <u>causal interpretation</u> to these inevitable, random fluctuations.</li><li>- We invent stories to explain what is simply a statistical regularity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>✈️ Illustrative Examples</strong></summary>
+            <div>
+                <ul><li>- Regression effects are everywhere, but they often hide in plain sight and are given incorrect causal explanations.</li></ul>
+                
+        <details>
+            <summary><strong>Israeli Flight Instructors</strong></summary>
+            <div>
+                <ul><li>- <b>Observation:</b> Praising a great maneuver was often followed by a worse one. Shouting after a bad maneuver was often followed by a better one.</li><li>- <b>Instructor's Flawed Conclusion:</b> Punishment works better than reward.</li><li>- <b>Statistical Truth:</b> Performance naturally fluctuates. An exceptionally good or bad performance is statistically likely to be followed by a more average one, <u>regardless of feedback</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Perverse Feedback Loop</strong></summary>
+            <div>
+                <ul><li>- This creates a situation where life seems to statistically <q>punish us for being nice</q> and <q>reward us for being nasty</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Golf Tournament: Talent vs. Luck</strong></summary>
+            <div>
+                <ul><li>- An excellent score on Day 1 (e.g., 66) is a mix of <b>above-average talent</b> + <b>good luck</b>.</li><li>- A poor score on Day 1 (e.g., 77) is a mix of <b>below-average talent</b> + <b>bad luck</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Predicting Day 2 Performance</strong></summary>
+            <div>
+                <ul><li>- When predicting Day 2, assume talent remains constant, but luck will be <b>average</b>.</li><li>- The golfer who did well on Day 1 is likely to do well again, but <q>less well than on Day 1</q>.</li><li>- The golfer who did poorly on Day 1 will likely do poorly again, but <q>will improve from Day 1</q>.</li><li>- The key is that the prediction should be <u>more moderate</u> than the initial evidence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The 'Sports Illustrated' Jinx</strong></summary>
+            <div>
+                <ul><li>- <b>The Claim:</b> Athletes on the magazine's cover perform poorly the next season.</li><li>- <b>Wrong Causal Explanation:</b> Pressure, overconfidence.</li><li>- <b>Correct Statistical Explanation:</b> An athlete gets on the cover after an <u>exceptionally good</u> season, likely helped by luck. The next season is simply more likely to be closer to their average performance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hypothetical Study: Depressed Children</strong></summary>
+            <div>
+                <ul><li>- <b>Headline:</b> "Depressed children treated with an energy drink improve significantly over a three-month period."</li><li>- This conclusion is unjustified because depressed children are an <u>extreme group</u> and are likely to improve over time simply due to regression to the mean.</li><li>- To prove effectiveness, a treatment group must improve <b>more</b> than a <q><u>control group</u></q>, which is expected to improve by regression alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📊 Underlying Principles</strong></summary>
+            <div>
+                <ul><li>- The concept of regression is deeply tied to the formulas of success and the statistical measure of correlation.</li></ul>
+                
+        <details>
+            <summary><strong>The Formula for Success</strong></summary>
+            <div>
+                <ul><li>- `success = <q>talent + luck</q>`</li><li>- `great success = <q>a little more talent + a lot of luck</q>`</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Correlation and Regression</strong></summary>
+            <div>
+                <ul><li>- They are not two separate concepts, but <q>different perspectives on the same concept</q>.</li><li>- <b><u>General Rule:</u></b> Whenever the correlation between two scores is imperfect (less than 1), there will be regression to the mean.</li></ul>
+                
+        <details>
+            <summary><strong>Correlation Coefficient Examples</strong></summary>
+            <div>
+                <ul><li>- A measure of the relative weight of shared factors between two variables, from 0 (none) to 1 (all).</li><li>- <b>1.0:</b> Perfect correlation (e.g., size in inches vs. cm).</li><li>- <b>~<q>0.60</q>:</b> SAT scores and college GPA.</li><li>- <b>~<q>0.40</q>:</b> Income and education level in the US.</li><li>- <b>0.0:</b> No correlation (e.g., income and last 4 digits of phone number).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Intelligence in Spouses</strong></summary>
+            <div>
+                <ul><li>- <b>Interesting Statement:</b> "Highly intelligent women tend to marry men who are less intelligent than they are."</li><li>- <b>Trivial Statement:</b> "The correlation between the intelligence scores of spouses is less than perfect."</li><li>- These two statements are <u>algebraically equivalent</u>. The first is just a mathematical consequence of the second, not something that needs a complex causal explanation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🧠 Why We Misunderstand Regression</strong></summary>
+            <div>
+                <ul><li>- Regression is strange to the human mind because of our cognitive biases.</li></ul>
+                
+        <details>
+            <summary><strong>Bias Toward Causal Explanations</strong></summary>
+            <div>
+                <ul><li>- Our mind (System 1) automatically and insistently seeks <b>causes</b> for events.</li><li>- We do not deal well with "mere statistics."</li><li>- Regression has an <u>explanation</u> (imperfect correlation), but it does not have a <u>cause</u> in the way our minds like to think.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>System 1 vs. System 2</strong></summary>
+            <div>
+                <ul><li>- <b>System 1 (Intuitive):</b> Automatically matches the extremeness of a prediction to the extremeness of the evidence. It generates overconfident judgments based on a coherent story.</li><li>- <b>System 2 (Effortful):</b> Finds the concept of regression difficult to learn and apply. It requires special training to overcome System 1's intuitive pull.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🛠️ Taming Intuition: Making Better Predictions</strong></summary>
+            <div>
+                <ul><li>- Intuitive predictions are often <b>non-regressive</b> and therefore systematically biased. They are as extreme as the evidence they are based on.</li><li>- This happens because we <u>substitute</u> an evaluation of current evidence for a prediction of a future outcome.</li></ul>
+                
+        <details>
+            <summary><strong>A 4-Step Correction Method</strong></summary>
+            <div>
+                <ul><li>- To make an unbiased, regressive prediction:</li><li>- <b>1. Start with a baseline:</b> Estimate the average outcome for the reference category (e.g., average GPA).</li><li>- <b>2. Make an intuitive prediction:</b> Determine the outcome that matches your impression of the evidence.</li><li>- <b>3. Estimate the correlation:</b> Guess the correlation (from 0 to 1) between your evidence and the outcome.</li><li>- <b>4. Adjust:</b> Move from the baseline towards your intuition by the percentage of the correlation. (e.g., if correlation is <q>0.30</q>, move <q>30%</q> of the distance from the average to your intuitive guess).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Characteristics of Corrected Predictions</strong></summary>
+            <div>
+                <ul><li>- They are <u>unbiased</u> (equally likely to overestimate or underestimate).</li><li>- They are more <u>moderate</u>.</li><li>- They only permit prediction of rare or extreme events when the information is <b>very good</b> (high correlation).</li></ul>
+                
+        <details>
+            <summary><strong>The Downside</strong></summary>
+            <div>
+                <ul><li>- If your predictions are unbiased, you will never have the satisfying experience of correctly calling an extreme case (e.g., predicting a top student will become a Supreme Court justice).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>When Are Extreme Predictions Defensible?</strong></summary>
+            <div>
+                <ul><li>- A preference for unbiased predictions is not always best. It depends on the cost of different types of errors.</li><li>- <b>Venture Capitalist:</b> The cost of <u>missing</u> the next Google is far greater than investing in a company that fails. The goal is to correctly call extreme successes.</li><li>- <b>Conservative Banker:</b> The cost of a single large loan <u>default</u> is far greater than turning down several good clients. The goal is to avoid extreme failures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Hiring Kim vs. Jane</strong></summary>
+            <div>
+                <ul><li>- <b>Kim:</b> Spectacular recommendations, brilliant interview, but no track record (<u>small sample</u> of information).</li><li>- <b>Jane:</b> Excellent research record over 3 years, but less sparkling interview (<u>large sample</u> of information).</li><li>- <b>Intuitive Choice:</b> Kim, because of WYSIATI (What You See Is All There Is).</li><li>- <b>Regressive Choice:</b> Jane. Kim's performance is more likely an extreme outcome from a small sample and should be regressed more heavily toward the mean.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🗣️ Speaking of Regression</strong></summary>
+            <div>
+                <ul><li>- Practical ways to think and talk about the concept.</li></ul>
+                
+        <details>
+            <summary><strong>On Regression to Mediocrity</strong></summary>
+            <div>
+                <ul><li>- "She says experience taught her that criticism is more effective than praise. What she doesn’t understand is that it’s all due to <b>regression to the mean</b>."</li><li>- "Perhaps his second interview was less impressive because the first was <u>unusually good</u>."</li><li>- "Our screening is good but not perfect, so we should anticipate regression. The very best candidates may fail to meet our expectations."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>On Intuitive Predictions</strong></summary>
+            <div>
+                <ul><li>- "That start-up looks great, but there is a lot of room for <b>regression</b> before it reaches the market."</li><li>- "Our intuitive prediction is very favorable, but probably too high. Let’s regress the prediction toward the mean."</li><li>- "The investment may be a good idea, even if the best guess is that it will fail. Let's not say we really believe it is the next Google."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
