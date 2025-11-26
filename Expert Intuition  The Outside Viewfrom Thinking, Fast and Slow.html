@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Expert Intuition & The Outside View
+(from Thinking, Fast and Slow)</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Expert Intuition & The Outside View</strong><br><em>(from Thinking, Fast and Slow)</em></summary>
+            <div>
+                <ul><li>- Source: Book '<b>Thinking, Fast and Slow</b>' by Daniel Kahneman.</li><li>- Explains when to trust expert intuition and the cognitive biases that cause major forecasting errors.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What are the <u>two basic conditions</u> for acquiring true intuitive skill?</li><li>- What is the technical name for the treatment for the planning fallacy?</li><li>- What was the average passenger overestimation in rail projects studied between 1969 and 1998?</li><li>- What percentage of curriculum development teams, similar to the author's, failed to complete their task?</li><li>- What are '<b>wicked</b>' environments in the context of learning?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expert Intuition: Marvels vs. Flaws</strong></summary>
+            <div>
+                <ul><li>- An exploration of the boundary between valid and flawed intuition, based on a collaboration between Daniel Kahneman (skeptic) and Gary Klein (proponent of expert intuition).</li></ul>
+                
+        <details>
+            <summary><strong>The Nature of Intuition</strong></summary>
+            <div>
+                <ul><li>- Intuition is not magic; it is simply <u><b>recognition</b></u>.</li></ul>
+                
+        <details>
+            <summary><strong>Herbert Simon's Definition</strong></summary>
+            <div>
+                <ul><li>- 'The situation has provided a cue; this cue has given the expert access to information stored in memory, and the information provides the answer.'</li><li>- This view reduces the 'magic' of intuition to the everyday experience of <b>memory</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recognition-Primed Decision (RPD) Model</strong></summary>
+            <div>
+                <ul><li>- Developed by Gary Klein from studies of firefighters.</li><li>- Explains how experts make good decisions without comparing multiple options.</li></ul>
+                
+        <details>
+            <summary><strong>RPD Process</strong></summary>
+            <div>
+                <ul><li>- <b>Phase 1 (System 1):</b> An automatic function of associative memory brings a tentative plan to mind.</li><li>- <b>Phase 2 (System 2):</b> The plan is deliberately and mentally simulated to check if it will work.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Acquiring Intuitive Skill</strong></summary>
+            <div>
+                <ul><li>- Expertise is not a single skill but a large collection of '<b>miniskills</b>'.</li></ul>
+                
+        <details>
+            <summary><strong>Emotional Learning</strong></summary>
+            <div>
+                <ul><li>- Can be acquired very quickly, sometimes from a single experience (e.g., food aversion).</li><li>- Can also be learned from words, not just direct experience (e.g., a soldier learning to identify ambush terrain).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Complex Skills (e.g., Chess)</strong></summary>
+            <div>
+                <ul><li>- Takes a very long time to develop.</li><li>- Requires at least <q><b>10,000 hours</b></q> of dedicated practice to reach the highest levels.</li><li>- Experts learn to recognize thousands of patterns, like a skilled reader recognizes words.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluating Intuition: When to Trust It?</strong></summary>
+            <div>
+                <ul><li>- <b>Key Principle:</b> The confidence people have in their intuitions is <u>not a reliable guide</u> to their validity.</li><li>- Do not trust subjective confidence, including your own.</li></ul>
+                
+        <details>
+            <summary><strong>Two Basic Conditions for Acquiring Skill</strong></summary>
+            <div>
+                <ul><li>- 1. An environment that is sufficiently <b>regular</b> to be predictable.</li><li>- 2. An opportunity to learn these regularities through <b>prolonged practice</b>.</li></ul>
+                
+        <details>
+            <summary><strong>High-Validity Environments</strong></summary>
+            <div>
+                <ul><li>- Situations are complex but fundamentally orderly.</li><li>- Examples: Chess, bridge, poker, physicians, nurses, firefighters, anesthesiologists.</li><li>- Experts learn to use highly valid cues, even if they can't name them.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Low/Zero-Validity Environments</strong></summary>
+            <div>
+                <ul><li>- Situations are fundamentally unpredictable.</li><li>- Examples: Stock pickers, political scientists making long-term forecasts.</li><li>- In these environments, intuitive 'hits' are due to <q>luck or lies</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Wicked Environments</strong></summary>
+            <div>
+                <ul><li>- Environments where professionals are likely to learn the <u>wrong lessons</u> from experience.</li><li>- Example: A physician in the early 20th century who thought he could intuit typhoid, but was actually spreading it by palpating patients' tongues without washing his hands.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Feedback</strong></summary>
+            <div>
+                <ul><li>- The quality and speed of feedback are essential for developing expertise.</li><li>- <b>Ideal conditions:</b> Immediate and unambiguous feedback (e.g., braking a car on a curve).</li><li>- <b>Poor conditions:</b> Delayed, sparse, or nonexistent feedback.</li></ul>
+                
+        <details>
+            <summary><strong>Medical Examples</strong></summary>
+            <div>
+                <ul><li>- <b>Good Feedback:</b> <u>Anesthesiologists</u> see the effects of their actions quickly. If one says 'I have a feeling something is wrong,' it should be taken seriously.</li><li>- <b>Poor Feedback:</b> <u>Radiologists</u> get little information on the accuracy of their diagnoses. <u>Psychotherapists</u> get poor feedback on long-term patient outcomes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limits of Expertise</strong></summary>
+            <div>
+                <ul><li>- Experts may not know the limits of their own expertise.</li><li>- Skill in one task (e.g., a therapist sensing a patient's immediate reaction) does not guarantee skill in another (e.g., long-term forecasting for that patient).</li><li>- This unrecognized limit helps explain expert <b>overconfidence</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Forecasting & The Outside View</strong></summary>
+            <div>
+                <ul><li>- Illustrates two profoundly different approaches to forecasting, highlighting a major cognitive bias.</li></ul>
+                
+        <details>
+            <summary><strong>The Curriculum Project: A Case Study</strong></summary>
+            <div>
+                <ul><li>- A team designing a new school curriculum was asked to estimate the project's completion time.</li></ul>
+                
+        <details>
+            <summary><strong>The Inside View</strong></summary>
+            <div>
+                <ul><li>- The team's spontaneous approach.</li><li>- Focused on their specific circumstances, plans, and experiences.</li><li>- Forecast: <q><b>1.5 to 2.5 years</b></q>.</li><li>- This view is prone to the <u>planning fallacy</u> and ignoring 'unknown unknowns'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Outside View</strong></summary>
+            <div>
+                <ul><li>- Prompted by asking an expert about similar past projects (the 'reference class').</li><li>- Used statistics from a class of similar cases to create a baseline prediction.</li></ul>
+                
+        <details>
+            <summary><strong>The Grim Statistics</strong></summary>
+            <div>
+                <ul><li>- A substantial fraction, about <q><b>40%</b></q>, of similar teams failed to finish their project.</li><li>- For the teams that did finish, it took <q><b>between 7 and 10 years</b></q>.</li><li>- The team's own skill was rated as 'below average' compared to the reference class.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Outcome</strong></summary>
+            <div>
+                <ul><li>- The team ignored the outside view and continued the project.</li><li>- The project was finally completed in <q><b>8 years</b></q> and was never used.</li><li>- This demonstrates <u>irrational perseverance</u> and the <u><b>sunk-cost fallacy</b></u> (unwillingness to abandon a project after investing effort).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Planning Fallacy</strong></summary>
+            <div>
+                <ul><li>- The tendency to create plans and forecasts that are:</li><li>- 1. Unrealistically close to <b>best-case scenarios</b>.</li><li>- 2. Could be improved by consulting the statistics of <b>similar cases</b> (i.e., taking the outside view).</li></ul>
+                
+        <details>
+            <summary><strong>Causes</strong></summary>
+            <div>
+                <ul><li>- <b>Cognitive Bias:</b> Focusing on a specific plan (inside view) while neglecting base rates (outside view).</li><li>- <b>Optimism Bias:</b> Overestimating benefits and underestimating costs.</li><li>- <b>Motivation:</b> Desire to get a plan approved by superiors or clients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Examples of Overruns</strong></summary>
+            <div>
+                <ul><li>- <b>Scottish Parliament:</b> Initial estimate £40 million ---> Final cost <q><b>£431 million</b></q>.</li><li>- <b>Rail Projects (1969-1998):</b> Planners overestimated passenger numbers by an average of <q><b>106%</b></q>, with an average cost overrun of <q><b>45%</b></q>.</li><li>- <b>Kitchen Remodels:</b> Homeowners expected to pay $18,658 ---> Actual average cost was <q><b>$38,769</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mitigating the Planning Fallacy</strong></summary>
+            <div>
+                <ul><li>- The cure is to deliberately adopt the <b>outside view</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Reference Class Forecasting</strong></summary>
+            <div>
+                <ul><li>- The technical name for the treatment, developed by Bent Flyvbjerg.</li></ul>
+                
+        <details>
+            <summary><strong>3-Step Method</strong></summary>
+            <div>
+                <ul><li>- 1. <b>Identify</b> an appropriate reference class (e.g., large railway projects, kitchen renovations).</li><li>- 2. <b>Obtain statistics</b> of the reference class (e.g., cost overruns, completion times) to generate a baseline prediction.</li><li>- 3. <b>Use specific information</b> about the current case to adjust the baseline prediction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Organizational Strategy</strong></summary>
+            <div>
+                <ul><li>- A well-run organization should:</li><li>- <b>Reward</b> planners for precise execution and accurate forecasts.</li><li>- <b>Penalize</b> for failing to anticipate difficulties, including 'unknown unknowns'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
