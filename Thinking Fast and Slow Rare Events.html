@@ -1,0 +1,797 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking Fast and Slow: Rare Events</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking Fast and Slow: Rare Events</strong></summary>
+            <div>
+                <ul><li>- A mind map summarizing the chapter on the psychology of rare events from the book 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- Focuses on cognitive biases like overestimation, overweighting, and the impact of vividness and framing.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the term for the bias where people focus on the number of winning items rather than the overall probability, such as choosing an urn with 8 red marbles out of 100 over one with 1 out of 10?</li><li>- In the 'choice from experience' model, why are rare events often underweighted, contrary to prospect theory?</li><li>- What is the key difference between 'broad framing' and 'narrow framing' when making multiple decisions?</li><li>- What is a simple, practical way for individual investors to combat the costly combination of loss aversion and narrow framing?</li><li>- When professionals were told a patient had a risk of violence, which format of presenting the risk made them almost twice as likely to deny discharge: 'a 10% probability' or '10 out of every 100 patients'?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychology of Rare Events: Terrorism & Lotteries</strong></summary>
+            <div>
+                <ul><li>- Human intuition struggles with rare events, often leading to irrational behavior.</li><li>- The actual probability of an event is often less important than the mere <u>possibility</u> of it.</li></ul>
+                
+        <details>
+            <summary><strong>Terrorism & the <b>Availability Cascade</b></strong></summary>
+            <div>
+                <ul><li>- Example: Suicide bombings in Israel (2001-2004).</li><li>- Statistically, the risk was tiny: <q>236</q> fatalities from 23 bombings, with 1.3 million daily bus riders.</li><li>- However, public fear led to bus avoidance.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism of Fear</strong></summary>
+            <div>
+                <ul><li>- Terrorism works by inducing an <b>availability cascade</b>.</li><li>- A <u>vivid image</u> of death, reinforced by media, becomes highly accessible.</li><li>- This triggers an automatic, emotional <b>System 1</b> impulse for protective action, even if <b>System 2</b> knows the probability is low.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Insensitivity to Probability</strong></summary>
+            <div>
+                <ul><li>- The emotional response is insensitive to the exact level of probability.</li><li>- A city warned of two bombers does not feel much less safe than a city warned of one, despite a <q>50%</q> lower risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lottery Psychology</strong></summary>
+            <div>
+                <ul><li>- The psychology of high-prize lotteries is similar to that of terrorism.</li><li>- The thrilling <u>possibility</u> of winning is reinforced by community conversations.</li><li>- Buying a ticket is immediately rewarded by pleasant fantasies, making the actual low probability inconsequential.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overestimation vs. Overweighting</strong></summary>
+            <div>
+                <ul><li>- These are two distinct phenomena, but they share psychological mechanisms.</li></ul>
+                
+        <details>
+            <summary><strong>Core Concepts</strong></summary>
+            <div>
+                <ul><li>- <b>Overestimation</b>: People judge the probability of unlikely events to be higher than they are.</li><li>- <b>Overweighting</b>: People give unlikely events more weight in their decisions than they deserve.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Shared Psychological Mechanisms</strong></summary>
+            <div>
+                <ul><li>- <b>Focused Attention</b>: Concentrating on an event makes it more salient.</li><li>- <b>Confirmation Bias</b>: System 1 selectively retrieves evidence that makes a statement true.</li><li>- <b>Cognitive Ease</b>: Judgments are determined by the fluency with which a plausible scenario comes to mind.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Third-Party President</strong></summary>
+            <div>
+                <ul><li>- When asked about the probability of a third-party president winning, your mind seeks a plausible scenario for it to happen, not reasons why it won't.</li><li>- This confirmatory process can lead to overestimating the probability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Focusing on the <b>Unusual</b></strong></summary>
+            <div>
+                <ul><li>- When an event is very likely (e.g., a baby being released from hospital in 3 days), our minds spontaneously focus on the <u>alternative</u> (what could go wrong).</li><li>- This makes the rare, unlikely event (complications) become the focal point, leading to its overestimation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The <b>Denominator Neglect</b> Bias</strong></summary>
+            <div>
+                <ul><li>- The probability of a rare event is most likely overestimated when the alternative is not fully specified.</li></ul>
+                
+        <details>
+            <summary><strong>NBA Playoff Study (Craig Fox)</strong></summary>
+            <div>
+                <ul><li>- Basketball fans were asked to estimate the win probability for each of the 8 participating teams.</li><li>- The sum of probabilities for the 8 teams added up to <q><b>240%</b></q>!</li><li>- <u>Reason</u>: Each team's victory is a specific, focal event, while its alternative ('one of the other 7 teams winning') is diffuse.</li></ul>
+                
+        <details>
+            <summary><strong>Betting Behavior</strong></summary>
+            <div>
+                <ul><li>- Fans were also willing to bet, assigning cash equivalents to a $160 payoff for each team winning.</li><li>- The sum of cash equivalents was <q><b>$287</b></q>, guaranteeing an average loss of <q>$127</q> if all bets were taken.</li><li>- This shows they not only <u>overestimated</u> probability but also <u>overweighted</u> it in decisions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Urn Experiment</strong></summary>
+            <div>
+                <ul><li>- Choice: Draw a marble from Urn A (1 red, 9 white) or Urn B (8 red, 92 white).</li><li>- Correct choice is Urn A (10% chance), but <q><b>30-40%</b></q> of students choose Urn B (8% chance).</li><li>- This is <b>denominator neglect</b>: attention is drawn to the <u>number of winning marbles</u> (the numerator), not the total number (the denominator).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact of Vividness & Framing</strong></summary>
+            <div>
+                <ul><li>- A rich, vivid representation of an outcome reduces the role of probability in evaluations.</li></ul>
+                
+        <details>
+            <summary><strong><b>Vivid Outcomes</b> vs. Probability</strong></summary>
+            <div>
+                <ul><li>- <b>Prospect Theory</b>: Decision weights are not linear with probabilities (e.g., 90% chance might have a weight of 71.2, not 90).</li><li>- <b>Utility Theory</b>: Decision weights and probabilities are the same.</li></ul>
+                
+        <details>
+            <summary><strong>Emotional Outcomes</strong></summary>
+            <div>
+                <ul><li>- Valuations are <u>less sensitive to probability</u> for emotional outcomes (e.g., 'kissing a movie star', 'getting an electric shock') than for cash.</li><li>- The mere possibility of a shock can trigger a full fear response, regardless of the probability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rich Representations</strong></summary>
+            <div>
+                <ul><li>- The key factor is not emotion, but a <b>rich and vivid representation</b> of the outcome.</li><li>- Adding irrelevant but vivid details (e.g., 'a large blue cardboard envelope containing $59') disrupts calculation and reduces sensitivity to probability compared to just '$59'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Vivid Probabilities</b> (Framing Effects)</strong></summary>
+            <div>
+                <ul><li>- Different ways of communicating risks have vastly different effects due to denominator neglect.</li></ul>
+                
+        <details>
+            <summary><strong>Frequency vs. Abstract Terms</strong></summary>
+            <div>
+                <ul><li>- Low-probability events are weighted more heavily when described in <b>relative frequencies</b> (how many) versus abstract terms (risk, chance).</li><li>- System 1 is better at dealing with <u>individuals</u> than categories.</li></ul>
+                
+        <details>
+            <summary><strong>Examples of Framing</strong></summary>
+            <div>
+                <ul><li>- 'A disease that kills <b>1,286 people out of every 10,000</b>' is judged more dangerous than 'a disease that kills <q><b>24.14%</b></q> of the population', even though the first risk is about half the second.</li><li>- 'One of <q><b>100,000</b></q> vaccinated children will be disabled' is more evocative than 'a <q><b>0.001%</b></q> risk of disability'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact on Professionals</strong></summary>
+            <div>
+                <ul><li>- Forensic psychologists evaluated a patient's risk of violence.</li><li>- When risk was framed as '10% probability', <q>21%</q> denied discharge.</li><li>- When framed as 'Of every 100 patients... <q><b>10 are estimated to commit an act of violence</b></q>', <q><b>41%</b></q> denied discharge (almost twice as many).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Choice from Experience vs. Description</strong></summary>
+            <div>
+                <ul><li>- The way we learn about probabilities—by description or by personal experience—dramatically changes how we weigh rare events.</li></ul>
+                
+        <details>
+            <summary><strong>Choice from <b>Description</b></strong></summary>
+            <div>
+                <ul><li>- Prospects are described explicitly (e.g., '99% chance to win $1,000, 1% chance to win nothing').</li><li>- This guarantees separate attention to the rare event.</li><li>- Leads to <b>overweighting</b> of rare events, consistent with Prospect Theory.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Choice from <b>Experience</b></strong></summary>
+            <div>
+                <ul><li>- We learn outcomes by observing them over many trials (e.g., pressing buttons to get rewards).</li><li>- This often leads to <b>underweighting</b> of rare events.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Reason for Underweighting</strong></summary>
+            <div>
+                <ul><li>- Many participants <q><b>never experience the rare event</b></q> during the learning phase.</li><li>- Examples: Most Californians have never experienced a major earthquake; no banker in 2007 had personally experienced a devastating financial crisis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Global Impressions (System 1)</strong></summary>
+            <div>
+                <ul><li>- Even if experienced, rare events may be absorbed into a 'global impression'.</li><li>- Example: Choosing between helpful colleague Adele (consistent) and colleague Brian (usually less helpful but rarely extremely generous).</li><li>- System 1 forms a general impression based on typical behavior, favoring Adele. The rare event is not explicitly considered and is therefore underweighted.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Policies & Framing</strong></summary>
+            <div>
+                <ul><li>- Humans are by nature <b>narrow framers</b>, making decisions as problems arise.</li><li>- A rational agent would use <b>broad framing</b>, considering decisions jointly.</li></ul>
+                
+        <details>
+            <summary><strong>Narrow vs. Broad Framing</strong></summary>
+            <div>
+                <ul><li>- <b>Narrow framing</b>: A sequence of two simple decisions, considered separately.</li><li>- <b>Broad framing</b>: A single comprehensive decision, with all options combined.</li></ul>
+                
+        <details>
+            <summary><strong>The Concurrent Decisions Problem</strong></summary>
+            <div>
+                <ul><li>- <u>Decision (i)</u>: A) sure gain of $240 vs. B) 25% chance to gain $1000.</li><li>- <u>Decision (ii)</u>: C) sure loss of $750 vs. D) 75% chance to lose $1000.</li><li>- Most people are risk-averse for gains (choose A) and risk-seeking for losses (choose D). <q><b>73%</b></q> of respondents chose the combination A & D.</li></ul>
+                
+        <details>
+            <summary><strong>The Broad Frame Reveals the Flaw</strong></summary>
+            <div>
+                <ul><li>- Combining the choices reveals the true outcomes:</li><li>- <b>AD (the popular choice)</b>: 25% chance to win $240 and 75% chance to lose $760.</li><li>- <b>BC (the unpopular choice)</b>: 25% chance to win $250 and 75% chance to lose $750.</li><li>- Option BC is clearly superior (dominates) AD, yet most people choose the inferior option due to narrow framing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Samuelson's Problem & Aggregation</strong></summary>
+            <div>
+                <ul><li>- A friend rejects a single coin toss bet (lose <q>$100</q> or win <q>$200</q>) due to loss aversion.</li><li>- But he would accept an offer to make <q><b>100</b></q> such bets.</li></ul>
+                
+        <details>
+            <summary><strong>The Power of Aggregation</strong></summary>
+            <div>
+                <ul><li>- Aggregating favorable gambles rapidly reduces the probability of losing.</li><li>- While one bet is unattractive to a loss-averse person, bundling two makes the combined prospect positive.</li><li>- The impact of loss aversion diminishes as more gambles are bundled.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Developing a <b>Risk Policy</b> (A Broad Frame)</strong></summary>
+            <div>
+                <ul><li>- A risk policy is a broad frame routinely applied to relevant problems, avoiding case-by-case decisions.</li></ul>
+                
+        <details>
+            <summary><strong>The Mantra: 'You Win a Few, You Lose a Few'</strong></summary>
+            <div>
+                <ul><li>- Main purpose is to control the emotional response to loss.</li><li>- Helps to see small gambles as part of a larger bundle.</li></ul>
+                
+        <details>
+            <summary><strong>When to Use the Mantra</strong></summary>
+            <div>
+                <ul><li>- Gambles are genuinely <u>independent</u>.</li><li>- The possible loss does <u>not</u> cause worry about your total wealth.</li><li>- Does <u>not</u> apply to long shots (very low probability of winning).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Applications</strong></summary>
+            <div>
+                <ul><li>- <b>Think like a trader</b>: Blunts emotional reaction to losses and increases risk-taking.</li><li>- <b>Reduce checking investments</b>: Avoids the pain of frequent small losses. Checking <q>once a quarter</q> is enough for individual investors.</li><li>- <b>Adopt policies</b>: E.g., 'always take the highest possible deductible' or 'never buy extended warranties'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Organizational View</strong></summary>
+            <div>
+                <ul><li>- A CEO can adopt a broad frame for the company, encouraging division managers (who are naturally narrow-framing and loss-averse) to take on positive-expected-value risks.</li><li>- The goal is to combine an <b>outside view</b> (for planning) with a <b>risk policy</b> (for risk-taking).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
