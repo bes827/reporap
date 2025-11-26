@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Engine of Capitalism: Optimistic Bias
+From 'Thinking, Fast and Slow'</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Engine of Capitalism: Optimistic Bias</strong><br><em>From 'Thinking, Fast and Slow'</em></summary>
+            <div>
+                <ul><li>- This mind map explores the concepts of optimistic bias, overconfidence, and related cognitive biases as discussed in the book 'Thinking, Fast and Slow'.</li><li>- It focuses on how these biases shape decisions, especially in business and professional contexts.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- How often were medical clinicians who were 'completely certain' of a diagnosis actually wrong?</li><li>- What is the 5-year survival rate for small businesses in the United States?</li><li>- In a study of inventors who were told their project was hopeless, what percentage continued their efforts anyway?</li><li>- What was the correlation between CFOs' forecasts of the stock market and the actual results?</li><li>- What is the name of the technique proposed by Gary Klein to counter optimistic bias in groups?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🧠 Optimistic Bias: An Overview</strong></summary>
+            <div>
+                <ul><li>- A widespread cognitive bias where most people see the world as better than it is, their own qualities as more positive than they are, and their goals as more achievable than they are likely to be.</li><li>- It may be the <u>most significant</u> of the cognitive biases due to its impact on decisions.</li></ul>
+                
+        <details>
+            <summary><strong>A Double-Edged Sword</strong></summary>
+            <div>
+                <ul><li>- <b>Blessing:</b> Fosters resilience, ambition, and action.</li><li>- <b>Risk:</b> Leads to underestimation of risks, poor planning, and failure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Forecasting the Future</strong></summary>
+            <div>
+                <ul><li>- People tend to <u>exaggerate their ability to predict the future</u>.</li><li>- This fosters optimistic overconfidence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>😊 The Optimist Profile</strong></summary>
+            <div>
+                <ul><li>- An optimistic attitude is largely <u>inherited</u> and part of a general disposition for well-being.</li></ul>
+                
+        <details>
+            <summary><strong>Positive Traits</strong></summary>
+            <div>
+                <ul><li>- Normally cheerful, happy, and popular.</li><li>- <b>Resilient</b> in adapting to failures.</li><li>- Reduced chance of clinical depression.</li><li>- Stronger immune system and better health habits, often leading to a longer life.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role in Society</strong></summary>
+            <div>
+                <ul><li>- Optimists play a <u>disproportionate role</u> in shaping our lives.</li><li>- They are the <b>inventors, entrepreneurs, and leaders</b> who seek challenges and take risks.</li><li>- Their success confirms their belief in their own judgment and ability to control events.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Influencers</strong></summary>
+            <div>
+                <ul><li>- Hypothesis: The people with the greatest influence on others are likely to be optimistic, overconfident, and take more risks than they realize.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🚀 Entrepreneurial Delusions</strong></summary>
+            <div>
+                <ul><li>- Optimistic bias is often the dominant factor when individuals or companies take on significant risks.</li><li>- Risk-takers often <u>underestimate the odds</u> they face.</li></ul>
+                
+        <details>
+            <summary><strong>Statistics vs. Belief</strong></summary>
+            <div>
+                <ul><li>- <b>Reality:</b> The chance a small business in the US will survive for 5 years is about <q><b>35%</b></q>.</li><li>- <b>Entrepreneurs' Belief (General):</b> They estimate the chance of success for 'any business like yours' is <q><b>60%</b></q>.</li><li>- <b>Entrepreneurs' Belief (Personal):</b> <q><b>81%</b></q> put their personal odds of success at 7/10 or higher, and <q><b>33%</b></q> said their chance of failing was zero.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Persistence vs. Obstinance</strong></summary>
+            <div>
+                <ul><li>- Optimism encourages <u>persistence</u>, but this can be costly.</li><li>- A study of inventors given objective feedback on their ideas showed this clearly.</li></ul>
+                
+        <details>
+            <summary><strong>Inventor Study Details</strong></summary>
+            <div>
+                <ul><li>- Over <q><b>70%</b></q> of inventions were predicted to fail (Grade D or E).</li><li>- These forecasts were highly accurate.</li><li>- After receiving a prediction of failure, about half the inventors quit.</li><li>- However, <q><b>47%</b></q> continued their efforts, on average <u>doubling their initial losses</u> before giving up.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Financial Reality of Self-Employment</strong></summary>
+            <div>
+                <ul><li>- Financial benefits are often <u>mediocre</u>.</li><li>- People with the same qualifications often achieve higher average returns by working for an employer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Hubris Hypothesis</strong></summary>
+            <div>
+                <ul><li>- Explains why leaders of large businesses make huge, expensive bets on mergers and acquisitions.</li><li>- They mistakenly believe they can manage the other company's assets better.</li><li>- The stock market often reacts by <u>downgrading the value of the acquiring firm</u>, as these efforts fail more often than they succeed.</li></ul>
+                
+        <details>
+            <summary><strong>Overconfident CEOs</strong></summary>
+            <div>
+                <ul><li>- Identified by the large amount of company stock they personally own.</li><li>- They take <u>excessive risks</u>, such as assuming debt instead of issuing equity.</li><li>- They are more likely to overpay for acquisitions and undertake 'value-destroying mergers'.</li><li>- This shows they are not just gambling with other people's money; they take bigger risks when their own money is at stake.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🙈 Competition Neglect</strong></summary>
+            <div>
+                <ul><li>- A key cognitive bias where we focus on our own goals, plans, and skills, while <u>neglecting the plans and skills of others</u>.</li><li>- This is a result of System 1's <b>WYSIATI</b> ('What You See Is All There Is').</li></ul>
+                
+        <details>
+            <summary><strong>How It Works</strong></summary>
+            <div>
+                <ul><li>- We focus on what we <u>can do</u>, not what competitors will do.</li><li>- We focus on the role of <u>skill</u> and neglect the role of <u>luck</u>.</li><li>- We focus on what we <u>know</u> and neglect what we <u>don't know</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Above-Average Effect</strong></summary>
+            <div>
+                <ul><li>- The common finding that '90% of drivers believe they are better than average' is an example.</li><li>- This is a cognitive bias: people answer an easier question ('Am I a good driver?') instead of the harder one ('Am I better than the average driver?').</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences</strong></summary>
+            <div>
+                <ul><li>- <b>Excess Entry:</b> More competitors enter a market than it can support.</li><li>- The average outcome for entrants is a <u>loss</u>.</li><li>- Example: Movie studios releasing big-budget films on the same holiday weekend, because each studio focuses only on its own film and marketing, not the competition. The reason given by a Disney chairman was <q><b>Hubris</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Optimistic Martyrs</strong></summary>
+            <div>
+                <ul><li>- Term for failed entrepreneurial firms.</li><li>- They are bad for their investors but can be good for the economy by signaling new market opportunities to more qualified competitors.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>😎 Overconfidence</strong></summary>
+            <div>
+                <ul><li>- Another manifestation of WYSIATI, where we construct a coherent story from the information available to us and ignore the information we don't have.</li></ul>
+                
+        <details>
+            <summary><strong>Case Study: CFO Forecasts</strong></summary>
+            <div>
+                <ul><li>- A Duke University survey collected 11,600 forecasts of the S&P index from Chief Financial Officers (CFOs).</li></ul>
+                
+        <details>
+            <summary><strong>Findings</strong></summary>
+            <div>
+                <ul><li>- <b>Accuracy:</b> The correlation between their estimates and the true value was <q><u>slightly less than zero</u></q>. They had no clue.</li><li>- <b>Confidence:</b> They set an '80% confidence interval' but outcomes fell outside this range <q><b>67%</b></q> of the time (expected rate was 20%).</li><li>- <b>Conclusion:</b> CFOs were grossly overconfident and did not know their forecasts were worthless.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Case Study: Medicine</strong></summary>
+            <div>
+                <ul><li>- A study compared antemortem (before death) diagnoses with autopsy results in an ICU.</li><li>- <b>Result:</b> Clinicians who were '<u>completely certain</u>' of the diagnosis were wrong <q><b>40%</b></q> of the time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Social & Organizational Pressures</strong></summary>
+            <div>
+                <ul><li>- Admitting ignorance or uncertainty is often socially unacceptable for experts.</li><li>- <b>Confidence is valued over uncertainty.</b></li><li>- Organizations and clients reward providers of dangerously misleading (but confident) information more than truth-tellers.</li><li>- This can lead to a <u>collective blindness to risk</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🛠️ The Premortem: A Partial Remedy</strong></summary>
+            <div>
+                <ul><li>- A technique proposed by psychologist <b>Gary Klein</b> to combat overconfidence and groupthink in organizations.</li></ul>
+                
+        <details>
+            <summary><strong>The Procedure</strong></summary>
+            <div>
+                <ul><li>- When a team is close to a big decision, gather knowledgeable people for a brief session.</li><li>- The premise: 'Imagine we are a year into the future. We implemented the plan. The outcome was a <u>disaster</u>.'</li><li>- Each person then spends 5-10 minutes writing a brief history of that disaster.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Main Advantages</strong></summary>
+            <div>
+                <ul><li>- <b>Overcomes Groupthink:</b> It legitimizes doubt and makes it safe to voice concerns, even after a decision seems to have been made.</li><li>- <b>Unleashes Imagination:</b> It directs knowledgeable people to look for potential threats and flaws in the plan that were previously overlooked.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Effectiveness</strong></summary>
+            <div>
+                <ul><li>- It is not a perfect solution ('panacea').</li><li>- It helps reduce the damage from plans affected by WYSIATI and uncritical optimism.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
