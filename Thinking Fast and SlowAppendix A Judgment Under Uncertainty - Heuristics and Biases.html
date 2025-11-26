@@ -1,0 +1,978 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking Fast and Slow
+Appendix A: Judgment Under Uncertainty - Heuristics and Biases</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking Fast and Slow</strong><br><em>Appendix A: Judgment Under Uncertainty - Heuristics and Biases</em></summary>
+            <div>
+                <ul><li>- Authors: <b>Amos Tversky</b> and <b>Daniel Kahneman</b>.</li><li>- This appendix explains how people make judgments and decisions when faced with uncertainty.</li><li>- People use simple mental shortcuts, called <u>heuristics</u>, which are generally useful but can lead to predictable, systematic errors (<u>biases</u>).</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- Why did flight instructors mistakenly believe punishment was more effective than praise for pilots?</li><li>- In the "Asian disease" problem, what happened to people's choices when the options were framed as "lives lost" instead of "lives saved"?</li><li>- When asked to estimate the number of committees of 2 versus 8 people from a group of 10, what was the common error people made?</li><li>- What is the "endowment effect" that makes buying and selling prices for the same item different?</li><li>- In an experiment, subjects were anchored by a random number from a wheel of fortune (10 or 65). How did this affect their estimate of the percentage of African countries in the UN?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>1. Representativeness Heuristic</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Judging the probability of something (A) by how much it resembles, or is representative of, something else (B).</li><li>- <u>Key Idea</u>: We judge based on stereotypes or similarity, not on actual probability.</li><li>- Example: People think Steve, a 'meek and tidy soul', is more likely to be a librarian than a farmer because his description matches the <u>stereotype</u> of a librarian.</li></ul>
+                
+        <details>
+            <summary><strong>Insensitivity to Prior Probability (Base Rates)</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: People <u>ignore the base-rate frequency</u> (the actual statistical prevalence) of an outcome when they have a descriptive story, even if the story is useless.</li><li>- This is a major violation of <b>Bayes' rule</b> of probability.</li></ul>
+                
+        <details>
+            <summary><strong>Engineer vs. Lawyer Experiment</strong></summary>
+            <div>
+                <ul><li>- Subjects read personality descriptions from a group of 100 people.</li><li>- <u>Condition 1</u>: Group has <q><b>70 engineers</b> and <b>30 lawyers</b></q>.</li><li>- <u>Condition 2</u>: Group has <q><b>30 engineers</b> and <b>70 lawyers</b></q>.</li><li>- <b>Result</b>: Subjects gave the <u>same probability judgments</u> in both conditions, ignoring the base rates. They focused only on how much the description matched the stereotype of an engineer or lawyer.</li></ul>
+                
+        <details>
+            <summary><strong>Worthless Evidence</strong></summary>
+            <div>
+                <ul><li>- When given a vague, uninformative description (e.g., "Dick is a 30-year-old man..."), people also ignored the base rates.</li><li>- They judged the probability of Dick being an engineer as <q><b>50%</b></q>, regardless of whether the group had 70% or 30% engineers.</li><li>- <b>Key Takeaway</b>: People use base rates correctly <u>only when they have no other information</u>. Worthless information is treated as if it's valuable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Insensitivity to Sample Size</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: People don't understand that <u>larger samples are less likely to deviate</u> from the average.</li><li>- We expect small samples to be just as representative of the population as large samples.</li></ul>
+                
+        <details>
+            <summary><strong>Hospital Babies Example</strong></summary>
+            <div>
+                <ul><li>- A town has two hospitals:</li><li>- - Large hospital: <q><b>45 babies</b></q> born per day.</li><li>- - Small hospital: <q><b>15 babies</b></q> born per day.</li><li>- <b>Question</b>: Which hospital recorded more days with >60% boys born?</li><li>- Most people answered: <q>About the same</q> (53 students).</li><li>- <b>Correct Answer</b>: The <q><u>smaller hospital</u></q>, because its daily results will have much more variability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Urn of Balls Example</strong></summary>
+            <div>
+                <ul><li>- An urn has 2/3 red balls and 1/3 white balls.</li><li>- - Sample 1: 4 red, 1 white (<u>80% red</u>).</li><li>- - Sample 2: 12 red, 8 white (<u>60% red</u>).</li><li>- <b>Question</b>: Which sample gives more confidence the urn is mostly red?</li><li>- Most people chose <q>Sample 1</q> because the proportion is higher.</li><li>- <b>Correct Answer</b>: <q><u>Sample 2</u></q> provides much stronger evidence because of its larger size. The correct posterior odds are <q>16 to 1</q> for the 12:8 sample vs. <q>8 to 1</q> for the 4:1 sample.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Misconceptions of Chance</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: We expect random sequences to look 'random' even when they are short (<u>Belief in the Law of Small Numbers</u>).</li><li>- We think chance is a self-correcting process.</li></ul>
+                
+        <details>
+            <summary><strong>Gambler's Fallacy</strong></summary>
+            <div>
+                <ul><li>- After a long run of 'red' on a roulette wheel, people believe 'black' is now <u>due</u>.</li><li>- <b>Reality</b>: Chance is not self-correcting. Deviations are not corrected; they are merely <u>diluted</u> as more events occur.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact on Researchers</strong></summary>
+            <div>
+                <ul><li>- Even experienced research psychologists believe small samples are highly representative of the population.</li><li>- This leads to:</li><li>- - Using samples of <u>inadequate size</u>.</li><li>- - <u>Over-interpreting</u> findings from small studies.</li><li>- - Grossly <u>overestimating</u> the chance that results can be replicated.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Insensitivity to Predictability</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: When making predictions, people rely on how well a description fits an outcome, ignoring the actual predictability of the evidence.</li><li>- If a description is very favorable, people predict a very positive outcome, even if the information is unreliable.</li></ul>
+                
+        <details>
+            <summary><strong>Student Teacher Study</strong></summary>
+            <div>
+                <ul><li>- Subjects read a description of a student teacher's practice lesson.</li><li>- - Group 1: <u>Evaluated</u> the quality of the lesson.</li><li>- - Group 2: <u>Predicted</u> the teacher's standing 5 years later.</li><li>- <b>Result</b>: The predictions were <q><u>identical</u></q> to the evaluations. People made extreme predictions based on limited data, ignoring the low predictability of future success from a single lesson.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Illusion of Validity</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Unwarranted confidence in predictions produced by a good 'fit' between the predicted outcome and the input information.</li><li>- This illusion persists even when we know the information is unreliable or outdated.</li><li>- <b>Example</b>: Psychologists often feel very confident in their interview-based predictions, despite literature showing interviews are <u>highly fallible</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Confidence from Consistency</strong></summary>
+            <div>
+                <ul><li>- Confidence increases with the <u>internal consistency</u> of input data.</li><li>- Example: More confidence in predicting the GPA of a student with all B's than one with many A's and C's.</li><li>- <b>Statistical Fact</b>: Redundant/correlated inputs (which create consistency) actually <u>decrease predictive accuracy</u> compared to independent inputs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Misconceptions of Regression to the Mean</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: In any series of events with a random element, an extreme outcome is likely to be followed by a less extreme one (closer to the average).</li><li>- <b>Problem</b>: People don't expect regression to occur and often invent causal explanations for it.</li></ul>
+                
+        <details>
+            <summary><strong>Flight Instructor Example</strong></summary>
+            <div>
+                <ul><li>- Instructors observed:</li><li>- - Praise for a smooth landing ---> <u>poorer</u> next landing.</li><li>- - Criticism for a rough landing ---> <u>better</u> next landing.</li><li>- <b>Erroneous Conclusion</b>: They concluded that <q>punishment is more effective than reward</q>.</li><li>- <b>Correct Explanation</b>: It was simply <q><u>regression toward the mean</u></q>. An exceptionally good or bad performance is likely to be followed by a more average one, regardless of feedback.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Human Condition</strong></summary>
+            <div>
+                <ul><li>- Because of regression, we are often statistically punished for rewarding others and rewarded for punishing them.</li><li>- This happens by chance alone, but we misinterpret it as a causal relationship.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Availability Heuristic</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Judging the frequency or probability of an event by the <u>ease with which instances come to mind</u>.</li><li>- <u>Key Idea</u>: If it's easy to recall, we think it's common or likely.</li><li>- This is often useful, but ease of recall is affected by factors other than frequency.</li></ul>
+                
+        <details>
+            <summary><strong>Biases Due to Retrievability of Instances</strong></summary>
+            <div>
+                <ul><li>- A class whose instances are more easily retrieved will seem more numerous.</li></ul>
+                
+        <details>
+            <summary><strong>Famous Names Experiment</strong></summary>
+            <div>
+                <ul><li>- Subjects heard a list of names of men and women.</li><li>- In some lists, the men were more famous; in others, the women were.</li><li>- <b>Result</b>: In every case, subjects judged that the sex that had the <q><u>more famous personalities</u></q> was more numerous in the list, even when it wasn't.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Salience</b>: Seeing a house burn has a greater impact on your perceived risk of fire than reading about it.</li><li>- <b>Recency</b>: Seeing a car accident temporarily increases your subjective probability of being in one.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biases Due to Effectiveness of a Search Set</strong></summary>
+            <div>
+                <ul><li>- We judge frequency by how easily we can search for examples in our mind.</li></ul>
+                
+        <details>
+            <summary><strong>Words Starting with 'r' vs. 'r' in Third Position</strong></summary>
+            <div>
+                <ul><li>- <b>Question</b>: Is it more likely a word starts with 'r' or has 'r' as the third letter?</li><li>- Most people say <q>starts with 'r'</q> because it's much easier to search for words that way (e.g., road, run).</li><li>- <b>Reality</b>: Consonants like 'r' or 'k' are actually more frequent in the <q><u>third position</u></q> (e.g., car, park).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biases of Imaginability</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: We assess frequency by how easily we can construct or imagine instances, but this ease does not reflect actual frequency.</li></ul>
+                
+        <details>
+            <summary><strong>Committee Size Example</strong></summary>
+            <div>
+                <ul><li>- <b>Question</b>: From a group of 10 people, how many different committees of size 'k' can be formed?</li><li>- People estimate by trying to imagine the committees.</li><li>- It's easier to imagine small committees (e.g., size 2) than large ones (e.g., size 8).</li><li>- <b>Result</b>: People's estimates decreased as committee size increased. For k=2, median estimate was <q>70</q>; for k=8, it was <q>20</q>.</li><li>- <b>Correct Answer</b>: The number of committees of size k is the same as size (10-k). The number for k=2 and k=8 is <q><u>both 45</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Real-Life Risk Assessment</strong></summary>
+            <div>
+                <ul><li>- The perceived risk of an expedition is judged by how easily we can imagine potential disasters.</li><li>- Conversely, risk can be underestimated if dangers are <u>hard to conceive</u> or don't come to mind.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Illusory Correlation</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Seeing a relationship between two events that are not actually connected, simply because they are strongly associated in our minds.</li><li>- <b>Example</b>: In a study, subjects were shown patient drawings and clinical diagnoses. They 'rediscovered' common but unfounded clinical beliefs, like a link between <q><u>suspiciousness and peculiar eyes</u></q> in drawings.</li><li>- This effect persisted even when the actual data showed a <u>negative correlation</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Adjustment and Anchoring Heuristic</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: Making estimates by starting from an initial value (an 'anchor') and adjusting it to get the final answer.</li><li>- <b>Problem</b>: Adjustments are typically <u>insufficient</u>, so the final answer is biased toward the initial anchor.</li></ul>
+                
+        <details>
+            <summary><strong>Insufficient Adjustment</strong></summary>
+            <div>
+                <ul><li>- The anchor can be suggested by the problem or be the result of a partial calculation.</li></ul>
+                
+        <details>
+            <summary><strong>Wheel of Fortune Experiment</strong></summary>
+            <div>
+                <ul><li>- Subjects were asked to estimate the percentage of African countries in the UN.</li><li>- First, a random number (the anchor) was spun on a wheel.</li><li>- - Group 1 Anchor: <b>10</b> ---> Median Estimate: <q><b>25%</b></q></li><li>- - Group 2 Anchor: <b>65</b> ---> Median Estimate: <q><b>45%</b></q></li><li>- The arbitrary anchor had a <u>marked effect</u> on the estimates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multiplication Estimation Experiment</strong></summary>
+            <div>
+                <ul><li>- Subjects had 5 seconds to estimate a product.</li><li>- - Group 1 (descending): <b>8 × 7 × 6 × 5 × 4 × 3 × 2 × 1</b> ---> Median Estimate: <q><b>2,250</b></q></li><li>- - Group 2 (ascending): <b>1 × 2 × 3 × 4 × 5 × 6 × 7 × 8</b> ---> Median Estimate: <q><b>512</b></q></li><li>- <b>Reason</b>: The first few steps of calculation served as the anchor. The descending sequence starts with a larger product, creating a higher anchor.</li><li>- <b>Correct Answer</b>: <q>40,320</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biases in Evaluating Conjunctive & Disjunctive Events</strong></summary>
+            <div>
+                <ul><li>- The probability of an elementary event acts as an anchor.</li></ul>
+                
+        <details>
+            <summary><strong>Conjunctive Events (Chain-like)</strong></summary>
+            <div>
+                <ul><li>- A series of events that <u>must all occur</u> for a successful outcome (e.g., completing a project).</li><li>- People anchor on the high probability of each individual event and fail to adjust enough for the cumulative effect.</li><li>- <b>Result</b>: We tend to <u>overestimate</u> the probability of conjunctive events, leading to <b>unwarranted optimism</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disjunctive Events (Funnel-like)</strong></summary>
+            <div>
+                <ul><li>- A series of events where <u>only one needs to occur</u> for an outcome (e.g., failure of a complex system).</li><li>- People anchor on the low probability of any single component failing.</li><li>- <b>Result</b>: We tend to <u>underestimate</u> the probability of disjunctive events, leading to underestimation of risks in complex systems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anchoring in Subjective Probability Distributions</strong></summary>
+            <div>
+                <ul><li>- <b>Problem</b>: When asked to provide a confidence interval (e.g., a range where they are 98% sure the true answer lies), people anchor on their best estimate and don't adjust far enough outwards.</li><li>- <b>Result</b>: People state overly <u>narrow confidence intervals</u>, reflecting more certainty than is justified.</li></ul>
+                
+        <details>
+            <summary><strong>Calibration Study</strong></summary>
+            <div>
+                <ul><li>- In most studies, the true values of quantities fell outside the subjects' stated 98% confidence interval about <q><b>30%</b></q> of the time.</li><li>- This bias affects both naive and sophisticated subjects and is not fixed by rewarding accuracy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Appendix B: Choices, Values, and Frames</strong></summary>
+            <div>
+                <ul><li>- This section discusses the cognitive and psychophysical factors that determine our choices.</li><li>- It introduces <b>Prospect Theory</b> as an alternative to rational choice theory.</li></ul>
+                
+        <details>
+            <summary><strong>Prospect Theory & Value Function</strong></summary>
+            <div>
+                <ul><li>- People don't think in terms of total wealth, but in terms of <u>gains and losses</u> from a reference point (the status quo).</li><li>- The subjective value function is <b>S-shaped</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Key Properties of the Value Function</strong></summary>
+            <div>
+                <ul><li>- 1. <b>Reference Dependence</b>: Defined on gains and losses, not total wealth.</li><li>- 2. <b>Diminishing Sensitivity</b>: Concave for gains (risk aversion) and convex for losses (risk seeking).</li><li>- - The difference between a $100 and $200 gain feels bigger than between a $1100 and $1200 gain.</li><li>- 3. <b>Loss Aversion</b>: The function is <u>steeper for losses</u> than for gains. A loss of $X is more painful than a gain of $X is pleasurable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Attitudes</strong></summary>
+            <div>
+                <ul><li>- <b>In the domain of gains</b>: People are generally <u>risk averse</u>.</li><li>- - Most prefer a sure $800 over an 85% chance to win $1000.</li><li>- <b>In the domain of losses</b>: People are generally <u>risk seeking</u>.</li><li>- - Most prefer an 85% chance to lose $1000 over a sure loss of $800.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Framing of Outcomes & Violation of Invariance</strong></summary>
+            <div>
+                <ul><li>- <b>Invariance Principle</b>: A rational person's preferences should not change based on how a problem is described or 'framed'.</li><li>- <b>Reality</b>: Framing has a massive effect on choices, making invariance <u>psychologically unfeasible</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Asian Disease Problem</strong></summary>
+            <div>
+                <ul><li>- An unusual disease is expected to kill 600 people.</li></ul>
+                
+        <details>
+            <summary><strong>Frame 1: 'Lives Saved' (Gains)</strong></summary>
+            <div>
+                <ul><li>- Program A: <q><b>200 people will be saved</b></q>. (Chosen by <q><u>72%</u></q>)</li><li>- Program B: 1/3 probability 600 are saved, 2/3 probability no one is saved.</li><li>- <b>Result</b>: People are <u>risk averse</u>, preferring the certain gain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Frame 2: 'Lives Lost' (Losses)</strong></summary>
+            <div>
+                <ul><li>- Program C: <q><b>400 people will die</b></q>.</li><li>- Program D: 1/3 probability nobody dies, 2/3 probability 600 die. (Chosen by <q><u>78%</u></q>)</li><li>- <b>Result</b>: People become <u>risk seeking</u>, preferring the gamble to avoid the certain loss.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Violation of Dominance</strong></summary>
+            <div>
+                <ul><li>- Framing can lead people to choose an option that is objectively worse (dominated).</li><li>- In a problem with two concurrent decisions (one a gain, one a loss), <q><b>73%</b></q> of subjects chose a combination of options (A and D) that was demonstrably worse than the combination they rejected (B and C).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Psychophysics of Chances (Decision Weights)</strong></summary>
+            <div>
+                <ul><li>- People don't weight probabilities linearly. We use 'decision weights' instead.</li></ul>
+                
+        <details>
+            <summary><strong>Weighting Function</strong></summary>
+            <div>
+                <ul><li>- <b>Certainty Effect</b>: We give special weight to certainty. A change from 95% to 100% has a much bigger impact than from 30% to 35%.</li><li>- <b>Overweighting of Low Probabilities</b>: We overweight small chances, which explains the appeal of both <q><u>lottery tickets</u></q> (improbable gains) and <q><u>insurance</u></q> (improbable losses).</li><li>- <b>Underweighting of Moderate/High Probabilities</b>: We underweight most other probabilities.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pseudo-certainty Effect</strong></summary>
+            <div>
+                <ul><li>- An event that is actually uncertain is weighted as if it were certain because of framing.</li><li>- In a two-stage game, people ignored the first stage (a 25% chance to proceed) and treated the second stage choice as if it were between a sure thing and a gamble.</li><li>- This reversed their preferences compared to an equivalent single-stage problem.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mental Accounting</strong></summary>
+            <div>
+                <ul><li>- We organize outcomes in our minds using separate 'mental accounts'.</li><li>- An option is acceptable if the value of its advantages exceeds the value of its disadvantages within a specific account.</li></ul>
+                
+        <details>
+            <summary><strong>Topical Accounts</strong></summary>
+            <div>
+                <ul><li>- We frame decisions based on the immediate context or 'topic'.</li></ul>
+                
+        <details>
+            <summary><strong>Calculator & Jacket Problem</strong></summary>
+            <div>
+                <ul><li>- Would you drive 20 minutes to save $5?</li><li>- - On a <b>$15 calculator</b>: <q><u>68%</u></q> of people said YES.</li><li>- - On a <b>$125 calculator</b>: Only <q><u>29%</u></q> of people said YES.</li><li>- <b>Reason</b>: The $5 saving is framed relative to the price of the item in the topical account. It feels like a huge discount on the $15 item, but a tiny one on the $125 item.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lost Ticket vs. Lost Cash</strong></summary>
+            <div>
+                <ul><li>- You are going to a play with a $10 ticket.</li></ul>
+                
+        <details>
+            <summary><strong>Problem 1: You lose the $10 ticket.</strong></summary>
+            <div>
+                <ul><li>- Would you buy another one?</li><li>- <b>Result</b>: <q><b>54%</b></q> said NO.</li><li>- <b>Reason</b>: The cost of seeing the play is now posted to the 'theater account' as $20, which feels too expensive.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Problem 2: You lose a $10 bill.</strong></summary>
+            <div>
+                <ul><li>- Would you still buy a ticket?</li><li>- <b>Result</b>: <q><b>88%</b></q> said YES.</li><li>- <b>Reason</b>: The lost cash is not posted to the 'theater account'. It's a general loss, and you just feel slightly less wealthy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Losses vs. Costs</strong></summary>
+            <div>
+                <ul><li>- A disadvantage can be framed as either a 'cost' or a 'loss', which changes our choices.</li></ul>
+                
+        <details>
+            <summary><strong>Endowment Effect</strong></summary>
+            <div>
+                <ul><li>- <b>Definition</b>: We value things we own more highly than things we don't.</li><li>- It is more painful to <u>give up</u> an asset than it is pleasurable to <u>obtain</u> it.</li><li>- <b>Result</b>: <u>Selling prices</u> are consistently higher than <u>buying prices</u> for the same item.</li><li>- This effect favors <b>stability over change</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cost-Loss Discrepancy</strong></summary>
+            <div>
+                <ul><li>- Losses are more aversive than costs.</li><li>- <b>Example</b>: More people will refuse a gamble with a 90% chance to lose $5 than will refuse to pay $5 for a lottery ticket with the same odds.</li><li>- Thinking of the $5 as a <u>payment (cost)</u> is more acceptable than thinking of it as a <u>potential loss</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dead-Loss Effect</strong></summary>
+            <div>
+                <ul><li>- A person with tennis elbow continues to play at a club they paid a membership for, just to avoid wasting the investment.</li><li>- <b>Reason</b>: Continuing to play frames the fee as a 'cost' for an activity. Stopping would force them to recognize the fee as a 'dead loss', which is psychologically more painful.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
