@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How Judgments Happen
+From 'Thinking, Fast and Slow'</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>How Judgments Happen</strong><br><em>From 'Thinking, Fast and Slow'</em></summary>
+            <div>
+                <ul><li>- This mind map summarizes the cognitive mechanisms behind intuitive judgments, focusing on the interplay between System 1 and System 2.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the core mechanism that explains how we generate intuitive opinions on complex matters, according to the text?</li><li>- In the Todorov study on facial judgments, which rated attribute was surprisingly more predictive of election outcomes than likability?</li><li>- What cognitive phenomenon is demonstrated when an intention to answer one question (e.g., do words rhyme?) unintentionally triggers another computation (e.g., are they spelled the same?)</li><li>- How did the order of questions about dating and general happiness dramatically change the correlation between the two answers in the German student survey?</li><li>- What is the term for letting one's likes and dislikes determine their beliefs about the world, such as believing an activity you dislike has high risks and low benefits?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Concepts: System 1 & System 2</strong></summary>
+            <div>
+                <ul><li>- <b>System 1</b>: Operates <u>automatically and quickly</u>, with little or no effort and no sense of voluntary control.</li><li>- Continuously generates assessments (basic assessments) without specific intention.</li><li>- <b>System 2</b>: Allocates attention to effortful mental activities, including complex computations.</li><li>- Receives or generates questions, then directs attention and memory search to find answers.</li></ul>
+                
+        <details>
+            <summary><strong>The Heuristics and Biases Approach</strong></summary>
+            <div>
+                <ul><li>- The essential idea is that <u>basic assessments</u> from System 1 are easily <b>substituted</b> for more difficult questions posed to System 2.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Basic Assessments by System 1</strong></summary>
+            <div>
+                <ul><li>- System 1 provides a continuous, effortless assessment of the environment to answer crucial survival questions.</li><li>- Examples: Is there a threat? Is everything normal? Should I approach or avoid?</li><li>- In humans, this manifests as assessments of <u>safety and familiarity</u>, which are linked to <q>good mood and cognitive ease</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Judging Strangers: The Todorov Study</strong></summary>
+            <div>
+                <ul><li>- We have an evolved ability to evaluate a stranger's face at a glance for two key facts:</li><li>- 1. <b>Dominance</b> (potential threat) ---> Cued by face shape (e.g., a <q><u>'strong' square chin</u></q>).</li><li>- 2. <b>Trustworthiness</b> (intentions) ---> Cued by facial expression (e.g., <q>smile or frown</q>).</li></ul>
+                
+        <details>
+            <summary><strong>Political Implications: Facial Competence</strong></summary>
+            <div>
+                <ul><li>- Todorov found that ratings of <b>competence</b> were highly predictive of voting outcomes.</li><li>- In about <q><b>70%</b></q> of races for senator, congressman, and governor, the winner was the candidate whose face was rated higher in competence.</li><li>- This finding was replicated in Finland, England, Australia, Germany, and Mexico.</li></ul>
+                
+        <details>
+            <summary><strong>Defining 'Competence' in Faces</strong></summary>
+            <div>
+                <ul><li>- People judge competence by combining two dimensions: <b>strength</b> and <b>trustworthiness</b>.</li><li>- Competent-looking faces combine a <q><u>strong chin with a slight, confident-appearing smile</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Voter Susceptibility</strong></summary>
+            <div>
+                <ul><li>- The effect of facial competence on voting is about <q><b>three times larger</b></q> for politically uninformed voters who watch a great deal of television.</li><li>- This shows that the relative importance of System 1 in decisions varies among individuals.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Assessments of Sets & Prototypes</strong></summary>
+            <div>
+                <ul><li>- System 1 excels at computing <b>averages</b> and <b>prototypes</b> automatically, but is poor at computing <b>sums</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Average vs. Total Length</strong></summary>
+            <div>
+                <ul><li>- People can instantly and accurately assess the <u>average length</u> of a set of lines (Figure 8).</li><li>- This is done automatically by System 1, even when cognitively busy.</li><li>- However, calculating the <u>total length</u> requires laborious effort from System 2 (estimate average x count lines).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: The Exxon Valdez Study</strong></summary>
+            <div>
+                <ul><li>- Participants were asked their willingness to pay to save migratory birds from oil ponds.</li><li>- Willingness to pay to save 2,000, 20,000, or 200,000 birds was <q><b>$80, $78, and $88</b></q> respectively.</li><li>- This demonstrates <u>neglect of quantity</u> (a sum-like variable).</li><li>- People reacted to the prototype image (a single drowning bird), not the number of birds.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key System 1 Mechanisms</strong></summary>
+            <div>
+                <ul><li>- These are underlying processes that enable heuristics and intuitive judgments.</li></ul>
+                
+        <details>
+            <summary><strong>Intensity Matching</strong></summary>
+            <div>
+                <ul><li>- System 1 has the ability to translate values across different dimensions based on an underlying scale of <b>intensity</b>.</li><li>- This allows matching concepts like crime severity to colors (murder = deep red) or loudness (mass murder = fortissimo).</li></ul>
+                
+        <details>
+            <summary><strong>Example: 'Julie's Precocity'</strong></summary>
+            <div>
+                <ul><li>- The statement: "Julie read fluently when she was <q><b>four years old</b></q>."</li><li>- People can intuitively match this level of precocity to other intensity scales:</li><li>- A man's height (e.g., more than 6' but less than 7').</li><li>- A corresponding income level or GPA.</li><li>- This matching is a key component of how we make predictions, even if it's statistically wrong.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mental Shotgun</strong></summary>
+            <div>
+                <ul><li>- An intention by System 2 to answer a specific question automatically triggers <u>excess computations</u> in System 1.</li><li>- It's difficult for System 1 not to do more than it's asked to do, like a shotgun scattering pellets.</li></ul>
+                
+        <details>
+            <summary><strong>Experiment: Rhyming Words</strong></summary>
+            <div>
+                <ul><li>- Task: Press a key if two <u>heard</u> words rhyme.</li><li>- Pairs: VOTE-NOTE (rhyme, same spelling) vs. VOTE-GOAT (rhyme, different spelling).</li><li>- Result: Participants were <q><u>distinctly slower</u></q> to identify rhyming words with discrepant spellings.</li><li>- Conclusion: The irrelevant attribute (spelling) was computed automatically and interfered with the main task (sound comparison).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Experiment: Literal vs. Metaphorical Truth</strong></summary>
+            <div>
+                <ul><li>- Task: Judge if sentences are literally true or false.</li><li>- Sentences: "Some jobs are snakes" and "Some jobs are jails" are metaphorically true but literally false.</li><li>- Result: People took longer to identify these as false compared to a sentence like "Some roads are snakes."</li><li>- Conclusion: The irrelevant metaphorical meaning was computed and created conflict, disrupting performance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Substitution: Answering an Easier Question</strong></summary>
+            <div>
+                <ul><li>- A core mechanism for generating intuitive opinions on complex matters.</li><li>- If a satisfactory answer to a hard question is not found quickly, System 1 finds a related, easier question and answers that instead.</li></ul>
+                
+        <details>
+            <summary><strong>Terminology</strong></summary>
+            <div>
+                <ul><li>- <b>Target Question</b>: The assessment you <u>intend</u> to produce (the hard question).</li><li>- <b>Heuristic Question</b>: The <u>simpler</u> question that you answer instead.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Process of Substitution</strong></summary>
+            <div>
+                <ul><li>- 1. A difficult <b>Target Question</b> is posed.</li><li>- 2. The <b>Mental Shotgun</b> automatically generates answers to easier, related questions.</li><li>- 3. <b>Intensity Matching</b> maps the answer from the easy question onto the scale of the target question.</li><li>- 4. A lazy <b>System 2</b> often endorses this heuristic answer without much scrutiny.</li></ul>
+                
+        <details>
+            <summary><strong>Examples of Substitution (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <u>Target</u>: How much to contribute to save a species? ---> <u>Heuristic</u>: How much emotion do I feel about dying dolphins?</li><li>- <u>Target</u>: How happy are you with your life? ---> <u>Heuristic</u>: What is my mood right now?</li><li>- <u>Target</u>: How far will this political candidate go? ---> <u>Heuristic</u>: Does this woman look like a political winner?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Specific Heuristics Based on Substitution</strong></summary>
+            <div>
+                <ul><li>- Concrete examples of how substitution leads to predictable biases in judgment.</li></ul>
+                
+        <details>
+            <summary><strong>The 3-D Heuristic</strong></summary>
+            <div>
+                <ul><li>- When viewing a 2-D image with perspective cues, our perceptual system automatically interprets it as a 3-D scene.</li><li>- This leads to a powerful illusion where judgment of 2-D size is dictated by the impression of 3-D size.</li></ul>
+                
+        <details>
+            <summary><strong>Example: Figures in a Corridor (Figure 9)</strong></summary>
+            <div>
+                <ul><li>- <b>Target Question</b>: As printed on the page, is the figure on the right larger than the figure on the left?</li><li>- <b>Heuristic Question</b>: How tall are the three people in the 3-D scene?</li><li>- Result: The figure on the right appears much larger, even though on the page they are the <q><u>exact same size</u></q>.</li><li>- The bias is that objects appearing more distant are perceived as larger on the page.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Mood Heuristic for Happiness</strong></summary>
+            <div>
+                <ul><li>- When asked about general happiness, people may substitute an answer about their current mood or a salient aspect of their life.</li></ul>
+                
+        <details>
+            <summary><strong>Experiment: German Student Survey</strong></summary>
+            <div>
+                <ul><li>- <b>Order 1</b>: 1. How happy are you? 2. How many dates did you have?</li><li>- Result: The correlation between happiness and dating was <q><u>about zero</u></q>.</li><li>- <b>Order 2</b>: 1. How many dates did you have? 2. How happy are you?</li><li>- Result: The correlation was <q><b>as high as correlations between psychological measures can get</b></q>.</li><li>- Conclusion: The emotion aroused by the dating question (the heuristic) was substituted for an evaluation of overall life happiness (the target).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Affect Heuristic</strong></summary>
+            <div>
+                <ul><li>- Proposed by Paul Slovic, this is when people let their <b>likes and dislikes</b> (affect) determine their beliefs about the world.</li><li>- It represents the dominance of conclusions over arguments, especially when emotions are involved.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism & Examples</strong></summary>
+            <div>
+                <ul><li>- If you <u>like</u> an activity (e.g., current health policy), you believe its benefits are <b>substantial</b> and its costs are <b>manageable</b>.</li><li>- If you <u>dislike</u> something (e.g., nuclear power, red meat), you believe its risks are <b>high</b> and its benefits are <b>negligible</b>.</li><li>- Information about lower risks can also change your view of the benefits (for the better), even if benefits weren't mentioned.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of System 2</strong></summary>
+            <div>
+                <ul><li>- In the context of attitudes, System 2 acts more as an <u>apologist</u> for System 1's emotions than a critic.</li><li>- It engages in a biased search for information that is <b>consistent with existing beliefs</b>, rather than examining them critically.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Summary: Characteristics of System 1</strong></summary>
+            <div>
+                <ul><li>- A list of features and activities attributed to the automatic system.</li></ul>
+                
+        <details>
+            <summary><strong>Core Operations</strong></summary>
+            <div>
+                <ul><li>- Generates <b>impressions, feelings, inclinations</b>.</li><li>- Operates <u>automatically and quickly</u> with no sense of voluntary control.</li><li>- Creates a coherent pattern of activated ideas in associative memory.</li><li>- Links cognitive ease to illusions of truth and pleasant feelings.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biases & Tendencies</strong></summary>
+            <div>
+                <ul><li>- <b>Infers and invents</b> causes and intentions.</li><li>- <b>Neglects ambiguity</b> and suppresses doubt.</li><li>- Is biased to <u>believe and confirm</u>.</li><li>- Exaggerates emotional consistency (<b>halo effect</b>).</li><li>- Focuses on existing evidence and ignores absent evidence (<b>WYSIATI</b>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Computational Features</strong></summary>
+            <div>
+                <ul><li>- Represents sets by <b>norms and prototypes</b>; does not integrate (poor with sums).</li><li>- Matches intensities across scales (<b>intensity matching</b>).</li><li>- Computes more than intended (<b>mental shotgun</b>).</li><li>- Substitutes an easier question for a difficult one (<b>heuristics</b>).</li><li>- Is more sensitive to <u>changes</u> than to states.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk & Decision Making</strong></summary>
+            <div>
+                <ul><li>- Overweights <b>low probabilities</b>.</li><li>- Shows <u>diminishing sensitivity</u> to quantity (psychophysics).</li><li>- Responds more strongly to <b>losses</b> than to <b>gains</b> (loss aversion).</li><li>- Frames decision problems narrowly, in isolation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
