@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thinking, Fast and Slow: Bad Events & The Fourfold Pattern</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Thinking, Fast and Slow: Bad Events & The Fourfold Pattern</strong></summary>
+            <div>
+                <ul><li>- A structured mind map of key concepts from the book 'Thinking, Fast and Slow' by Daniel Kahneman.</li><li>- Focuses on <b>Loss Aversion</b>, <b>Negativity Dominance</b>, and the <b>Fourfold Pattern</b> of decision making.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the estimated ratio of good to bad interactions needed for a stable relationship according to John Gottman?</li><li>- By what percentage were professional golfers more successful when putting for par (to avoid a loss) compared to putting for a birdie (to achieve a gain)?</li><li>- In prospect theory, what is the approximate 'decision weight' assigned to an event with a 2% probability?</li><li>- When a person punishes another for unfair behavior, what brain centers show increased activity?</li><li>- In the 'frivolous litigation' scenario, which party is typically risk-seeking: the plaintiff with a weak case or the defendant?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Loss Aversion: The Core Concept</strong></summary>
+            <div>
+                <ul><li>- The idea that people evaluate outcomes as <b>gains</b> and <b>losses</b>.</li><li>- <u>Losses loom larger than gains</u>; the pain of losing is emotionally more powerful than the pleasure of gaining an equal amount.</li><li>- Considered the most significant contribution of psychology to behavioral economics.</li></ul>
+                
+        <details>
+            <summary><strong>🧠 Negativity Dominance</strong></summary>
+            <div>
+                <ul><li>- A broad principle where negative things (emotions, events, information) have a greater impact than positive ones.</li><li>- Loss aversion is one of many examples of negativity dominance.</li></ul>
+                
+        <details>
+            <summary><strong>Biological Basis</strong></summary>
+            <div>
+                <ul><li>- The brain is designed to give <u>priority to bad news</u> for survival.</li><li>- A superfast neural channel sends threat information directly to the brain's emotional processing centers, bypassing the slower visual cortex used for conscious 'seeing'.</li></ul>
+                
+        <details>
+            <summary><strong>The Amygdala: Threat Center</strong></summary>
+            <div>
+                <ul><li>- The amygdala is the brain's 'threat center'.</li><li>- It shows an intense response to threatening images (like terrified eyes) even when shown too quickly for conscious recognition (e.g., less than <q>2/100 of a second</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Faster Processing of Threats</strong></summary>
+            <div>
+                <ul><li>- The brain processes angry faces faster than happy faces.</li><li>- An angry face 'pops out' of a crowd of happy faces, but a happy face does not stand out in an angry crowd.</li><li>- Bad words (e.g., 'war', 'crime') attract attention faster than good words (e.g., 'peace', 'love').</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychological & Social Manifestations</strong></summary>
+            <div>
+                <ul><li>- <b>Bad is Stronger Than Good</b>: Bad emotions, feedback, and stereotypes form quicker and are more resistant to change than good ones.</li><li>- <u>Example</u>: A single cockroach ruins a bowl of cherries, but a cherry does nothing for a bowl of cockroaches.</li></ul>
+                
+        <details>
+            <summary><strong>Relationships</strong></summary>
+            <div>
+                <ul><li>- Long-term success of a relationship depends more on <u>avoiding the negative</u> than seeking the positive.</li><li>- Expert John Gottman estimated a stable relationship requires good interactions to outnumber bad ones by at least <q><b>5 to 1</b></q>.</li><li>- A friendship that takes years to build can be ruined by a single action.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🎯 Goals as Reference Points</strong></summary>
+            <div>
+                <ul><li>- A <b>reference point</b> is a baseline for judging outcomes, often the status quo but can also be a goal.</li><li>- Not achieving a goal is felt as a <u>loss</u>.</li><li>- Exceeding a goal is felt as a <u>gain</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Asymmetric Motivation</strong></summary>
+            <div>
+                <ul><li>- The motivation to <u>avoid the loss</u> of not reaching a goal is much stronger than the desire to exceed it.</li><li>- This leads people to reduce effort once a goal is met.</li></ul>
+                
+        <details>
+            <summary><strong>Example: NYC Cabdrivers</strong></summary>
+            <div>
+                <ul><li>- Drivers with a fixed daily income target work longer hours on bad days (when fares are few) to avoid the 'loss' of not meeting their goal.</li><li>- They go home early on rainy days (when fares are easy) after reaching their goal, even though economic logic suggests working more when demand is high.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: Professional Golfers</strong></summary>
+            <div>
+                <ul><li>- <b>Par</b> on a golf hole serves as a reference point.</li><li>- A <b>bogey</b> (one over par) is a <u>loss</u>.</li><li>- A <b>birdie</b> (one under par) is a <u>gain</u>.</li><li>- Analysis of over 2.5 million putts showed players were more successful when putting for par (to avoid a loss) than for a birdie (to achieve a gain).</li><li>- The success rate difference was <q><b>3.6%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🏛️ Defending the Status Quo</strong></summary>
+            <div>
+                <ul><li>- Loss aversion is a powerful <b>conservative force</b> that favors minimal changes to the current state.</li><li>- People and animals fight harder to <u>prevent losses</u> than to <u>achieve gains</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Negotiations</strong></summary>
+            <div>
+                <ul><li>- Existing terms of a contract act as a reference point.</li><li>- Any proposed change is seen as a <u>concession</u> (a loss) by one side.</li><li>- Concessions you make (your losses) cause you more pain than the pleasure they give to the other side (their gains).</li><li>- Negotiations over a 'shrinking pie' (allocating losses) are especially difficult.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Institutional Reform</strong></summary>
+            <div>
+                <ul><li>- Attempts at large-scale reforms often fail or are less effective than planned.</li><li>- Potential <b>losers</b> from a reform are more active and determined than potential <b>winners</b>.</li><li>- Reforms often include 'grandfather clauses' to protect current stakeholders from losses, making the reform more expensive and less effective.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚖️ Loss Aversion in the Law & Fairness</strong></summary>
+            <div>
+                <ul><li>- Moral rules of fairness are heavily influenced by loss aversion.</li><li>- The existing wage, price, or rent acts as a <b>reference point</b> or an <u>entitlement</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Unfair Actions: Imposing Losses</strong></summary>
+            <div>
+                <ul><li>- It is considered unfair for a firm to exploit market power to impose losses on others.</li><li>- <u>Example 1</u>: A hardware store raises the price of snow shovels from $15 to $20 after a snowstorm. <q><b>82%</b></q> of people rated this as unfair.</li><li>- <u>Example 2</u>: An employer cuts an existing employee's wage from $9/hr to $7/hr due to high local unemployment. <q><b>83%</b></q> considered this unfair.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Acceptable Actions: Protecting Entitlements</strong></summary>
+            <div>
+                <ul><li>- A firm is allowed to protect its own entitlement (e.g., current profit).</li><li>- It is considered acceptable for a firm to cut wages if its profitability is falling.</li><li>- It is also acceptable to hire a <u>new</u> employee at a lower wage (<q><b>73%</b></q> found this acceptable), as the new worker has no entitlement to the previous wage.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences of Unfairness</strong></summary>
+            <div>
+                <ul><li>- Employers who violate fairness rules are punished by <u>reduced productivity</u>.</li><li>- Merchants with unfair pricing can expect to <u>lose sales</u>.</li><li>- Unfairly imposing losses can be risky if victims can retaliate.</li></ul>
+                
+        <details>
+            <summary><strong>Altruistic Punishment</strong></summary>
+            <div>
+                <ul><li>- Strangers will often punish someone for behaving unfairly to another stranger.</li><li>- This 'altruistic punishment' is accompanied by increased activity in the brain's <q><u>pleasure centers</u></q>.</li><li>- The brain is not designed to reward generosity as reliably as it punishes meanness.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Legal Distinctions</strong></summary>
+            <div>
+                <ul><li>- The law often distinguishes sharply between actual losses and foregone gains.</li><li>- A merchant whose goods are lost may be compensated for actual costs incurred, but is unlikely to be compensated for <q>lost profits</q> (a foregone gain).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🎲 The Fourfold Pattern</strong></summary>
+            <div>
+                <ul><li>- A model explaining a distinctive pattern of preferences in decision-making under risk.</li><li>- It combines two key ideas from <b>Prospect Theory</b>:</li><li>- 1. People attach value to <u>gains and losses</u>, not to final states of wealth.</li><li>- 2. <b>Decision weights</b> assigned to outcomes are different from their actual probabilities.</li></ul>
+                
+        <details>
+            <summary><strong>Decision Weights vs. Probabilities</strong></summary>
+            <div>
+                <ul><li>- The <b>expectation principle</b> states that outcomes should be weighted by their probability. This is poor psychology.</li><li>- In reality, people's 'decision weights' are not identical to probabilities.</li></ul>
+                
+        <details>
+            <summary><strong>Possibility Effect</strong></summary>
+            <div>
+                <ul><li>- We <u>overweight</u> highly unlikely outcomes.</li><li>- A change from <b>0% to 5%</b> chance is a qualitative shift (from impossible to possible) and feels more significant than a change from 5% to 10%.</li><li>- This explains the appeal of <b>lotteries</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Certainty Effect</strong></summary>
+            <div>
+                <ul><li>- We <u>underweight</u> outcomes that are almost certain compared to actual certainty.</li><li>- A change from <b>95% to 100%</b> is also a qualitative shift (from uncertain to certain) and feels more significant than a change from 60% to 65%.</li><li>- This explains why people will pay a premium for certainty (e.g., accepting a lower but certain settlement).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Measured Decision Weights (Table 4)</strong></summary>
+            <div>
+                <ul><li>- Decision weights match probabilities at the extremes (0 and 100).</li><li>- <u>Possibility Effect</u>: A <b>2%</b> chance is given a decision weight of <q><b>8.1</b></q> (overweighted by a factor of 4).</li><li>- <u>Certainty Effect</u>: A <b>2%</b> chance of <u>not</u> winning reduces the utility of a prospect by <q><b>13%</b></q> (from 100 to 87.1).</li><li>- People are insensitive to variations of risk among small probabilities (e.g., 0.001% vs 0.00001%).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Allais's Paradox</strong></summary>
+            <div>
+                <ul><li>- A famous thought experiment showing that people violate the expectation principle due to the <b>certainty effect</b>.</li><li>- Most people choose: <b>A)</b> <u>61% chance to win $520k</u> over 63% chance to win $500k.</li><li>- But also choose: <b>B)</b> <u>100% chance to win $500k</u> over 98% chance to win $520k.</li><li>- This is logically inconsistent because option B is just option A with 37 losing tickets turned into winning ones for both choices, making the improvement in A's first option better.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Four Quadrants (Figure 13)</strong></summary>
+            <div>
+                <ul><li>- Describes preferences for choices between a gamble and a sure thing of equal expected value.</li></ul>
+                
+        <details>
+            <summary><strong>1. GAINS | High Probability (e.g., 95% to win $10k)</strong></summary>
+            <div>
+                <ul><li>- <b>Emotion</b>: Fear of disappointment.</li><li>- <b>Behavior</b>: <u>RISK AVERSE</u>.</li><li>- People prefer the sure gain (e.g., $9,500 for sure) to avoid the small chance of getting nothing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. LOSSES | High Probability (e.g., 95% to lose $10k)</strong></summary>
+            <div>
+                <ul><li>- <b>Emotion</b>: Hope to avoid loss.</li><li>- <b>Behavior</b>: <u>RISK SEEKING</u>.</li><li>- People prefer the gamble, accepting a high probability of a larger loss for a small hope of avoiding loss altogether.</li><li>- This is where people take desperate gambles and fail to 'cut their losses'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. GAINS | Low Probability (e.g., 5% to win $10k)</strong></summary>
+            <div>
+                <ul><li>- <b>Emotion</b>: Hope of a large gain.</li><li>- <b>Behavior</b>: <u>RISK SEEKING</u>.</li><li>- People prefer the gamble over a small sure gain (e.g., $500 for sure).</li><li>- This explains the popularity of <b>lotteries</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. LOSSES | Low Probability (e.g., 5% to lose $10k)</strong></summary>
+            <div>
+                <ul><li>- <b>Emotion</b>: Fear of a large loss.</li><li>- <b>Behavior</b>: <u>RISK AVERSE</u>.</li><li>- People prefer a sure, smaller loss (e.g., paying $500 for sure) to avoid the small chance of a catastrophic loss.</li><li>- This explains why people buy <b>insurance</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Application: Legal Settlements</strong></summary>
+            <div>
+                <ul><li>- The fourfold pattern predicts behavior in civil suits.</li></ul>
+                
+        <details>
+            <summary><strong>Strong Case for Plaintiff</strong></summary>
+            <div>
+                <ul><li>- <b>Plaintiff</b> (high chance of gain) ---> Quadrant 1 ---> <u>Risk Averse</u> (prefers to settle).</li><li>- <b>Defendant</b> (high chance of loss) ---> Quadrant 2 ---> <u>Risk Seeking</u> (prefers to go to trial).</li><li>- The risk-seeking defendant has a stronger bargaining position.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Frivolous (Weak) Case for Plaintiff</strong></summary>
+            <div>
+                <ul><li>- <b>Plaintiff</b> (low chance of gain) ---> Quadrant 3 ---> <u>Risk Seeking</u> (bold and aggressive).</li><li>- <b>Defendant</b> (low chance of loss) ---> Quadrant 4 ---> <u>Risk Averse</u> (prefers to settle for a modest amount).</li><li>- The plaintiff often gets a more generous settlement than statistics justify.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Long-Run Cost</strong></summary>
+            <div>
+                <ul><li>- Systematic deviations from expected value are costly in the long run.</li><li>- <u>Example</u>: If NYC settles 200 frivolous suits for $100k each, the total cost is <q><b>$20 million</b></q>.</li><li>- If NYC litigates all 200 (expecting to lose 5% or 10 cases at $1M each), the total cost is <q><b>$10 million</b></q>.</li><li>- Consistently paying a premium to avoid small risks is expensive.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
