@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Associative Machine & Cognitive Ease | Thinking, Fast and Slow</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Associative Machine & Cognitive Ease | Thinking, Fast and Slow</strong></summary>
+            <div>
+                <ul><li>- An exploration of the automatic, unconscious workings of <b>System 1</b>, focusing on associative activation, priming, and the concept of cognitive ease.</li><li>- From the book 'Thinking, Fast and Slow' by Daniel Kahneman.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the 'ideomotor effect'?</li><li>- What is the 'Lady Macbeth effect'?</li><li>- What percentage of Princeton students made at least one mistake on the Cognitive Reflection Test (CRT) in normal font?</li><li>- What is the 'mere exposure effect'?</li><li>- What is the 'Moses illusion'?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Associative Machine</strong></summary>
+            <div>
+                <ul><li>- <b>System 1</b> operates through a process of <u>associative activation</u>.</li><li>- Ideas are conceptualized as nodes in a vast network called <b>associative memory</b>.</li><li>- Activation spreads like ripples, triggering a cascade of related ideas, most of which are unconscious.</li></ul>
+                
+        <details>
+            <summary><strong>Example: 'Bananas Vomit'</strong></summary>
+            <div>
+                <ul><li>- Seeing these words triggers a complex, automatic, and uncontrollable response.</li><li>- <b>Physical reactions</b>: Disgust expression, increased heart rate, sweat gland activation.</li><li>- <b>Cognitive reactions</b>: Assumption of a causal link (bananas ---> vomit), temporary aversion to bananas.</li></ul>
+                
+        <details>
+            <summary><strong>Associative Coherence</strong></summary>
+            <div>
+                <ul><li>- The mind creates a self-reinforcing pattern of cognitive, emotional, and physical responses.</li><li>- Word ---> Memories ---> Emotions ---> Facial Expressions ---> Physical Reactions.</li><li>- Each element is connected, supporting and strengthening the others to make as much sense of the situation as possible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Principles of Association (Hume)</strong></summary>
+            <div>
+                <ul><li>- David Hume's original three principles from 1748:</li><li>- 1. <u>Resemblance</u></li><li>- 2. <u>Contiguity</u> in time and place</li><li>- 3. <u>Causality</u></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Modern View of Associative Memory</strong></summary>
+            <div>
+                <ul><li>- A great deal happens at once, not in a linear sequence of conscious ideas.</li><li>- An activated idea triggers <u>many</u> other ideas simultaneously.</li><li>- Most of this associative thinking is <b>silent and unconscious</b>, hidden from our conscious selves (System 2).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Embodied Cognition</strong></summary>
+            <div>
+                <ul><li>- Cognition is <b>embodied</b>; you think with your body, not just your brain.</li><li>- The body's reaction (e.g., physical recoil from the word 'vomit') is part of the interpretation of an event.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Marvels of Priming</strong></summary>
+            <div>
+                <ul><li>- <b>Priming Effect</b>: Exposure to one stimulus (the prime) influences a response to a subsequent stimulus without conscious guidance or intention.</li></ul>
+                
+        <details>
+            <summary><strong>Conceptual Priming</strong></summary>
+            <div>
+                <ul><li>- Exposure to a word causes measurable changes in the ease of evoking related words.</li><li>- Example: Seeing 'EAT' primes you to complete SO_P as <q>SOUP</q>.</li><li>- Example: Seeing 'WASH' primes you to complete SO_P as <q>SOAP</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ideomotor Effect</strong></summary>
+            <div>
+                <ul><li>- A form of priming where an <u>idea</u> unconsciously influences an <u>action</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Experiment: The 'Florida Effect' (John Bargh)</strong></summary>
+            <div>
+                <ul><li>- Students assembled sentences using words associated with the elderly (e.g., Florida, forgetful, bald).</li><li>- Afterward, they were timed walking down a corridor.</li><li>- <b>Result</b>: Students primed with elderly words walked <q><u>significantly more slowly</u></q> than the control group.</li><li>- This involves two stages: Words prime thoughts of old age ---> Thoughts prime behavior of walking slowly.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reciprocal Priming</strong></summary>
+            <div>
+                <ul><li>- The link between ideas and actions works in both directions, creating a coherent, self-reinforcing loop.</li></ul>
+                
+        <details>
+            <summary><strong>Acting Old ---> Thinking Old</strong></summary>
+            <div>
+                <ul><li>- Students asked to walk slowly (at <q>one-third</q> their normal pace) for 5 minutes.</li><li>- <b>Result</b>: They were much quicker to recognize words related to old age afterward.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Smiling & Amusement</strong></summary>
+            <div>
+                <ul><li>- Being amused ---> Smiling.</li><li>- Smiling ---> Feeling amused.</li><li>- <b>Experiment</b>: Students holding a pencil in their teeth (forcing a smile) found cartoons <q>funnier</q> than those holding it with their lips (forcing a frown).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Head Nodding & Acceptance</strong></summary>
+            <div>
+                <ul><li>- Participants listened to radio editorials while moving their heads.</li><li>- Those instructed to nod up and down (a 'yes' gesture) tended to <q>accept</q> the message.</li><li>- Those instructed to shake side to side (a 'no' gesture) tended to <q>reject</q> it.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Primes That Guide Us</strong></summary>
+            <div>
+                <ul><li>- Priming effects can reach into every corner of our lives, influencing judgments and choices in ways we are not aware of.</li></ul>
+                
+        <details>
+            <summary><strong>Voting Behavior</strong></summary>
+            <div>
+                <ul><li>- <b>Finding</b>: Support for increasing school funding was <q>significantly greater</q> when the polling station was located in a <u>school</u>.</li><li>- Exposing people to images of classrooms also increased support for a school initiative.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Money Priming</strong></summary>
+            <div>
+                <ul><li>- Reminders of money (even subtle, unconscious ones) prime <b>individualism</b> and <b>selfishness</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Effects of Money Priming</strong></summary>
+            <div>
+                <ul><li>- <b>Increased self-reliance</b>: Persevered almost <q>twice as long</q> on a difficult problem before asking for help.</li><li>- <b>More selfish</b>: Less willing to help a confused student; picked up fewer dropped pencils.</li><li>- <b>Greater preference for being alone</b>: Set up chairs for a conversation much farther apart (<q>118 cm vs. 80 cm</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The 'Lady Macbeth Effect'</strong></summary>
+            <div>
+                <ul><li>- Feeling that one's soul is stained triggers a desire to cleanse one's body.</li><li>- Thinking about a shameful action makes people more likely to complete W__H as <q>WASH</q> and S__P as <q>SOAP</q>.</li><li>- The cleansing is specific to the body part involved: Lying on the phone ---> preference for <q>mouthwash</q>. Lying in email ---> preference for <q>soap</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Symbolic Reminders of Being Watched</strong></summary>
+            <div>
+                <ul><li>- <b>Experiment</b>: Honesty box in an office kitchen.</li><li>- For 10 weeks, a poster was displayed above the price list, alternating between images of <u>eyes</u> and <u>flowers</u>.</li><li>- <b>Result</b>: People contributed almost <q>three times as much</q> money in 'eye weeks' than in 'flower weeks'. (See Figure 4)</li><li>- A purely symbolic reminder of being watched improved behavior.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cognitive Ease</strong></summary>
+            <div>
+                <ul><li>- A measure, maintained by <b>System 1</b>, of how well things are going.</li><li>- Ranges from 'Easy' to 'Strained'.</li><li>- <b>Easy</b>: No threats, no major news, no need to mobilize effort.</li><li>- <b>Strained</b>: A problem exists, requires increased mobilization of <b>System 2</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Causes & Consequences (Figure 5)</strong></summary>
+            <div>
+                <ul><li>- A single dial of cognitive ease is connected to a large network of diverse inputs and outputs.</li></ul>
+                
+        <details>
+            <summary><strong>Causes of Cognitive Ease</strong></summary>
+            <div>
+                <ul><li>- Repeated experience</li><li>- Clear display (font, contrast)</li><li>- Primed idea</li><li>- Good mood</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences of Cognitive Ease</strong></summary>
+            <div>
+                <ul><li>- Feels familiar</li><li>- Feels true</li><li>- Feels good</li><li>- Feels effortless</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Causes of Cognitive Strain</strong></summary>
+            <div>
+                <ul><li>- Novel experience</li><li>- Poor display (bad font, low contrast)</li><li>- Complex language</li><li>- Bad mood</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences of Cognitive Strain</strong></summary>
+            <div>
+                <ul><li>- Feels unfamiliar</li><li>- Feels false</li><li>- Feels bad</li><li>- Feels effortful</li><li>- Leads to mobilization of System 2 ---> more vigilant, analytical, less error-prone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Illusions of Remembering</strong></summary>
+            <div>
+                <ul><li>- The experience of familiarity has a powerful quality of 'pastness' that is an illusion created by cognitive ease.</li></ul>
+                
+        <details>
+            <summary><strong>Experiment: 'Becoming Famous Overnight' (Larry Jacoby)</strong></summary>
+            <div>
+                <ul><li>- People see a list of made-up names (e.g., David Stenbill).</li><li>- A few days later, they see a list with minor celebrities and the previous made-up names.</li><li>- <b>Result</b>: They are likely to identify the made-up name as a celebrity.</li><li>- <b>Mechanism</b>: The previously seen name is processed with greater cognitive ease, which System 2 misinterprets as the familiarity of fame.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Illusions of Truth</strong></summary>
+            <div>
+                <ul><li>- Familiarity is not easily distinguished from truth.</li><li>- If a judgment is based on an impression of cognitive ease, predictable illusions occur.</li></ul>
+                
+        <details>
+            <summary><strong>Repetition</strong></summary>
+            <div>
+                <ul><li>- A reliable way to make people believe falsehoods is <u>frequent repetition</u>.</li><li>- Even repeating a part of a statement (e.g., 'the body temperature of a chicken') makes the whole statement feel more true.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How to Write a Persuasive Message</strong></summary>
+            <div>
+                <ul><li>- The general principle is to do anything you can to <u>reduce cognitive strain</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Maximize Legibility</strong></summary>
+            <div>
+                <ul><li>- Use high-quality paper.</li><li>- Maximize contrast between text and background.</li><li>- Use bright colors like <q>blue or red</q> over middling shades like green or yellow.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Use Simple Language</strong></summary>
+            <div>
+                <ul><li>- Pretentious language is taken as a sign of <q>poor intelligence and low credibility</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Make it Memorable</strong></summary>
+            <div>
+                <ul><li>- Ideas put in verse or rhyme are more likely to be taken as truth.</li><li>- 'Woes unite foes' is judged more insightful than 'Woes unite enemies'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Use Easily Pronounced Sources</strong></summary>
+            <div>
+                <ul><li>- People give more weight to reports from a source with an easy name (e.g., Artan) than a complex one (e.g., Taahhut).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Strain and Effort</strong></summary>
+            <div>
+                <ul><li>- Cognitive strain, whatever its source, tends to mobilize <b>System 2</b>, shifting from a casual, intuitive mode to a more engaged, analytic mode.</li></ul>
+                
+        <details>
+            <summary><strong>Cognitive Reflection Test (CRT)</strong></summary>
+            <div>
+                <ul><li>- A test with questions that evoke an immediate, intuitive, but incorrect answer.</li></ul>
+                
+        <details>
+            <summary><strong>CRT Questions</strong></summary>
+            <div>
+                <ul><li>- <b>Bat-and-ball</b>: A bat and ball cost $1.10. The bat costs $1.00 more than the ball. How much does the ball cost? (Intuitive: 10 cents. Correct: <q>5 cents</q>)</li><li>- <b>Widgets</b>: If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets? (Intuitive: 100 mins. Correct: <q>5 minutes</q>)</li><li>- <b>Lily pads</b>: A patch of lily pads doubles in size every day. If it takes 48 days to cover the entire lake, how long to cover half the lake? (Intuitive: 24 days. Correct: <q>47 days</q>)</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bad Font Experiment</strong></summary>
+            <div>
+                <ul><li>- Half of students saw the CRT in normal font, half in a washed-out, barely legible font.</li><li>- <b>Result</b>: Performance was <u>better</u> with the bad font.</li><li>- Normal font: <q>90%</q> made at least one mistake.</li><li>- Bad font (cognitive strain): Only <q>35%</q> made at least one mistake.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Pleasure of Cognitive Ease</strong></summary>
+            <div>
+                <ul><li>- Cognitive ease is associated with good feelings.</li></ul>
+                
+        <details>
+            <summary><strong>Mere Exposure Effect (Robert Zajonc)</strong></summary>
+            <div>
+                <ul><li>- The link between the <u>repetition</u> of an arbitrary stimulus and the mild <u>affection</u> people eventually have for it.</li><li>- Turkish words shown repeatedly in a student newspaper were rated as meaning something more 'good' the more frequently they appeared.</li><li>- Effect is stronger for stimuli that the individual <q>never consciously sees</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Biological Basis</strong></summary>
+            <div>
+                <ul><li>- An organism should react cautiously to a novel stimulus.</li><li>- If repeated exposure is followed by nothing bad, the stimulus becomes a safety signal, and safety is good.</li><li>- Forms a primitive basis for social attachments and cohesion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ease, Mood, and Intuition</strong></summary>
+            <div>
+                <ul><li>- Good mood, intuition, creativity, gullibility, and reliance on System 1 form a cluster.</li><li>- Sadness, vigilance, suspicion, an analytic approach, and reliance on System 2 also go together.</li></ul>
+                
+        <details>
+            <summary><strong>Remote Association Test (RAT)</strong></summary>
+            <div>
+                <ul><li>- A test of creativity where one must find a word associated with three other words (e.g., cottage, Swiss, cake ---> <q>cheese</q>).</li><li>- People can feel that a triad has a solution (a sense of cognitive ease) before they know the answer.</li><li>- <b>Effect of Mood</b>: Putting participants in a good mood <q>more than doubled accuracy</q> on the intuitive task. Unhappy subjects were no better than random.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Norms, Surprises, and Causes</strong></summary>
+            <div>
+                <ul><li>- The main function of <b>System 1</b> is to maintain and update a model of your personal world, representing what is <u>normal</u> in it.</li></ul>
+                
+        <details>
+            <summary><strong>Assessing Normality</strong></summary>
+            <div>
+                <ul><li>- The model is built by associations linking events that co-occur with some regularity.</li><li>- A capacity for <b>surprise</b> is the most sensitive indication of how we understand our world and what we expect from it.</li></ul>
+                
+        <details>
+            <summary><strong>Types of Expectations</strong></summary>
+            <div>
+                <ul><li>- <b>Active Expectations</b>: Consciously waiting for a particular event to happen. Surprise occurs if it *doesn't* happen.</li><li>- <b>Passive Expectations</b>: Events that are normal in a situation but not actively awaited. You are not surprised when they happen.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rapid Norm Adaptation</strong></summary>
+            <div>
+                <ul><li>- A single incident can make a recurrence less surprising.</li><li>- Meeting an acquaintance Jon by coincidence on vacation makes a second coincidental meeting in London feel <q>less surprising</q>.</li><li>- Seeing a car on fire on a specific stretch of road makes a second fire there the next week feel less surprising, creating an active expectation for 'the place where cars catch fire'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Moses Illusion</strong></summary>
+            <div>
+                <ul><li>- Question: 'How many animals of each kind did Moses take into the ark?'</li><li>- Most people do not detect the error (it was <q>Noah</q>, not Moses).</li><li>- <b>Mechanism</b>: 'Moses' is not abnormal in a biblical context. The associative coherence between 'Moses' and 'ark' is high enough that System 1 accepts it without flagging an error for System 2.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Seeing Causes and Intentions</strong></summary>
+            <div>
+                <ul><li>- Finding causal connections is an automatic operation of <b>System 1</b>.</li><li>- System 1 is adept at finding a coherent causal story that links available fragments of knowledge.</li></ul>
+                
+        <details>
+            <summary><strong>Automatic Causal Search</strong></summary>
+            <div>
+                <ul><li>- Example: 'Fred’s parents arrived late. The caterers were expected soon. Fred was angry.'</li><li>- We instantly know Fred is angry because his parents are late, not because of the caterers.</li><li>- This search for causes can lead to errors, as any large event (e.g., Saddam Hussein's capture) will be used to 'explain' any market movement, even contradictory ones.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inferred Causality</strong></summary>
+            <div>
+                <ul><li>- Example: 'After spending a day exploring beautiful sights in the crowded streets of New York, Jane discovered that her wallet was missing.'</li><li>- In a recall test, the word <q>pickpocket</q> is more strongly associated with the story than 'sights', even though it wasn't in the sentence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Perception of Causality</strong></summary>
+            <div>
+                <ul><li>- We are born ready to have impressions of causality; they are products of System 1, not reasoning.</li></ul>
+                
+        <details>
+            <summary><strong>Physical Causality (Michotte)</strong></summary>
+            <div>
+                <ul><li>- We <u>see</u> causality directly, like we see color.</li><li>- An animation of one square hitting another, which then moves, creates a powerful 'illusion of causality' of being 'launched'.</li><li>- <q>Six-month-old</q> infants show surprise when this cause-effect scenario is altered.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intentional Causality (Heider & Simmel)</strong></summary>
+            <div>
+                <ul><li>- An animation of simple shapes (triangles, circle) moving around is irresistibly seen as a story of agents with intentions and emotions (e.g., a bully, a victim).</li><li>- Infants under <q>one year old</q> can identify bullies and victims.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Causality and Religion (Paul Bloom)</strong></summary>
+            <div>
+                <ul><li>- The inborn readiness to separate <u>physical</u> and <u>intentional</u> causality may explain the near universality of religious beliefs.</li><li>- It makes it possible to envision soulless bodies and bodiless souls.</li><li>- Allows for belief in: 1) An immaterial divinity as the cause of the physical world, and 2) Immortal souls controlling our bodies.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
