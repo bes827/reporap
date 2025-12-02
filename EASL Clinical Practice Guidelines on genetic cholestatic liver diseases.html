@@ -1,0 +1,869 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EASL Clinical Practice Guidelines on genetic cholestatic liver diseases</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>EASL Clinical Practice Guidelines on genetic cholestatic liver diseases</strong></summary>
+            <div>
+                <ul><li>- Journal of Hepatology, August 2024. vol. 81 j 303–325</li><li>- https://doi.org/10.1016/j.jhep.2024.04.006</li></ul>
+                
+        <details>
+            <summary><strong>knowledge test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended <b>HCC screening interval</b> for patients with <b>BSEP deficiency</b> and biallelic predicted protein-truncating mutations (PPTMs)?</li><li>- In <b>MDR3 deficiency</b>, which genotype is more likely to respond to <b>UDCA</b> therapy?</li><li>- What is the recommended serum <b>AAT level cut-off</b> that raises suspicion of severe <b>AATD</b>?</li><li>- What are the three main criteria for diagnosing <b>Low Phospholipid-Associated Cholelithiasis (LPAC) syndrome</b>?</li><li>- What is the primary, life-saving treatment for <b>bile acid synthesis defects</b> like HSD3B7 and AKR1D1 deficiencies?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>General Recommendations</strong></summary>
+            <div>
+                <ul><li>- These guidelines focus on monogenic disorders causing defects in bile formation and/or flow.</li><li>- While common in young age, genetic variants can manifest later in life.</li><li>- Heterozygous carriers may have milder symptoms but carry predispositions for liver issues like gallstones, ICP, DILI, and malignancies.</li></ul>
+                
+        <details>
+            <summary><strong>Genetic Testing</strong></summary>
+            <div>
+                <ul><li>- <u>Recommended early</u> in infants/children with cholestasis of unclear cause.</li><li>- In adults, recommended after excluding more frequent causes, or if unresponsive to treatment.</li><li>- <b>Genetic counselling</b> <u>must precede</u> genetic testing.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Techniques</strong></summary>
+            <div>
+                <ul><li>- <b>Next-generation sequencing (NGS)</b> techniques like panel sequencing and <b>whole-exome sequencing (WES)</b> are recommended.</li><li>- <b>Whole-genome sequencing (WGS)</b> can be considered if WES is inconclusive.</li><li>- <u>Sanger sequencing</u> of individual genes is now <u>discouraged</u>, with a possible exception for <b>ABCB4</b> gene testing in young patients with small duct primary sclerosing cholangitis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Data Re-analysis</strong></summary>
+            <div>
+                <ul><li>- Re-analyse WES/WGS data at least every <q><b>3 years</b></q> for patients without a diagnosis to check for newly discovered variants.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Variant Classification</strong></summary>
+            <div>
+                <ul><li>- Mutations are classified from Class 1 (benign) to Class 5 (pathogenic).</li><li>- <b>Class 3</b> denotes <b>Variants of Uncertain Significance (VUS)</b>, which are common and challenging for patient counselling.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disease Onset & Phenotype</strong></summary>
+            <div>
+                <ul><li>- <b>Early onset:</b> Genetic variants are often the major determinant.</li><li>- <b>Late onset:</b> Phenotype often results from interaction of variants with environmental factors (drugs, pregnancy, infections).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pruritus Management</strong></summary>
+            <div>
+                <ul><li>- A comprehensive, stepwise approach to the challenging and debilitating symptom of cholestatic pruritus.</li><li>- Many recommendations are based on expert opinion due to a lack of high-quality studies.</li><li>- See Fig. 2 for flowchart.</li></ul>
+                
+        <details>
+            <summary><strong>First-Line Therapy</strong></summary>
+            <div>
+                <ul><li>- General measures like emollients and cool baths.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Second-Line Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>IBAT inhibitors</b> (<u>Maralixibat</u>, <u>Odevixibat</u>): Interrupt the enterohepatic circulation (EHC) of bile acids. Efficacy varies from none to high depending on PFIC type and genotype.</li><li>- <b>Rifampicin</b>: Mechanism unknown, possibly via PXR activation. Moderate efficacy.</li><li>- <b>Bile acid sequestrants</b> (<u>Cholestyramine</u>): Marginal efficacy.</li><li>- <b>UDCA</b>: Not generally first-line due to lack of evidence, but often tried early due to its low-risk profile.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Third-Line Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Naltrexone</b> (Opioid antagonist): Marginal efficacy.</li><li>- <b>Sertraline</b> (SSRI): Modulates CNS pruritoception. Marginal efficacy.</li><li>- <b>Bezafibrate</b> (Fibrate): Mechanism not fully understood. Intermediate efficacy in adults.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Refractory Pruritus / Fourth-Line</strong></summary>
+            <div>
+                <ul><li>- <b>Naso-biliary drainage</b> (temporary).</li><li>- <b>Surgical interruption of EHC</b> (Partial External/Internal Biliary Diversion).</li><li>- <b>MARS</b> (Molecular Adsorbent Recirculating System).</li><li>- <b>Liver Transplantation</b> as the ultimate option.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alpha-1 Antitrypsin Deficiency (AATD)</strong></summary>
+            <div>
+                <ul><li>- Caused by mutations in the <b>SERPINA1</b> gene.</li><li>- Leads to defective protein accumulation in hepatocytes, causing liver disease, and lack of lung protection, causing emphysema.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis & Testing</strong></summary>
+            <div>
+                <ul><li>- <u>Recommended first step</u>: Measure serum AAT levels.</li><li>- Measurement should be done in situations <u>without inflammation</u>, as AAT is an acute phase protein.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Cut-offs</strong></summary>
+            <div>
+                <ul><li>- A cut-off of <q><b><50 mg/dL</b> (9.2 lmol/L)</q> raises suspicion of severe AATD.</li><li>- Normal range is 90-175 mg/dL.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Confirmatory Testing</strong></summary>
+            <div>
+                <ul><li>- <b>Phenotyping</b> (isoelectric focusing) can be used for a quick decision.</li><li>- <b>Genotyping</b> should be used for a definitive diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Genotype: Pi*ZZ</strong></summary>
+            <div>
+                <ul><li>- Accounts for <q><b>95%</b></q> of severe AATD cases.</li><li>- Results in an <q><b>85%</b></q> decrease in plasma AAT levels.</li><li>- Greatly increases the risk of cirrhosis (Fig. 5).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment</strong></summary>
+            <div>
+                <ul><li>- <b>UDCA</b>: Insufficient data to advise for or against treatment in children.</li><li>- <b>Fazirsiran</b> (small-interfering RNA): Showed promise in a phase II study by decreasing AAT production and improving liver tests in adults.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Monitoring & Prognosis</strong></summary>
+            <div>
+                <ul><li>- <b>Severe Disease Markers</b>: <u>Impaired liver synthetic function</u> (prolonged INR, decreased albumin) or <u>decompensation of cirrhosis</u> (ascites, varices) indicate poor outcomes.</li><li>- <b>Liver Stiffness Measurement (LSM)</b>: Can be used in adults with Pi*ZZ to estimate histological fibrosis.</li><li>- <b>Liver Biopsy</b>: Should be considered when careful non-invasive evaluation remains inconclusive.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lifestyle Counselling</strong></summary>
+            <div>
+                <ul><li>- <u>Strongly recommended</u> as smoking, obesity, and alcohol consumption have negative health effects in patients with AATD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>AATD in Liver Transplantation</strong></summary>
+            <div>
+                <ul><li>- <b>Pi*MZ donor organs</b>: Should only be considered when other suitable organs are lacking and no signs of liver injury are present.</li><li>- <b>Pi*ZZ donor organs</b>: <u>Should not be used</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alagille Syndrome (ALGS)</strong></summary>
+            <div>
+                <ul><li>- Autosomal dominant multi-system disease caused by mutations in <b>JAG1</b> or, less commonly, <b>NOTCH2</b>.</li><li>- Characterized by bile duct paucity.</li></ul>
+                
+        <details>
+            <summary><strong>Liver Biopsy</strong></summary>
+            <div>
+                <ul><li>- The routine use of liver biopsy for determining prognosis or management of liver disease in ALGS is <u>not recommended</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pruritus Treatment</strong></summary>
+            <div>
+                <ul><li>- <b>IBAT inhibitors</b> (<u>Maralixibat</u>, <u>Odevixibat</u>) <u>should be offered</u> to patients with ALGS and cholestatic pruritus.</li><li>- RCTs (ICONIC, ASSERT) have shown significant reductions in serum bile acids (sBA) and pruritus scores.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hypercholesterolemia & Xanthomas</strong></summary>
+            <div>
+                <ul><li>- <b>Statins</b> are <u>not recommended</u> for hyperlipidemia or xanthomas in ALGS.</li><li>- Hyperlipidemia is largely due to Lipoprotein-X, which is not thought to be atherogenic.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>FIC1 Deficiency (PFIC1)</strong></summary>
+            <div>
+                <ul><li>- Caused by mutations in the <b>ATP8B1</b> gene, encoding FIC1.</li><li>- Leads to both hepatic and extrahepatic manifestations (e.g., pancreatitis, diarrhoea).</li></ul>
+                
+        <details>
+            <summary><strong>Enterohepatic Circulation (EHC) Interruption</strong></summary>
+            <div>
+                <ul><li>- <b>Surgical interruption of the EHC</b> is <u>not recommended</u> as a routine treatment to prolong native liver survival.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Liver Transplant Management</strong></summary>
+            <div>
+                <ul><li>- For post-transplant diarrhoea and steatohepatitis, <b>medical or surgical interruption of the EHC</b> could be used.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>BSEP Deficiency (PFIC2)</strong></summary>
+            <div>
+                <ul><li>- Caused by mutations in the <b>ABCB11</b> gene, encoding the Bile Salt Export Pump (BSEP).</li><li>- Associated with a high risk of hepatocellular carcinoma (HCC).</li></ul>
+                
+        <details>
+            <summary><strong>Genotype-Directed Management</strong></summary>
+            <div>
+                <ul><li>- Management, including follow-up, screening, and treatment, <u>should be based on the specific genotype</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Responsive Genotypes (e.g., p.D482G, p.E297G)</strong></summary>
+            <div>
+                <ul><li>- Associated with a less severe phenotype and residual BSEP function.</li><li>- Median native liver survival is <q><b>>18 years</b></q>.</li><li>- Show sustained response to surgical interruption of the EHC.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Severe Genotypes (e.g., two PPTMs)</strong></summary>
+            <div>
+                <ul><li>- <b>PPTM</b> = Predicted Protein-Truncating Mutation.</li><li>- Associated with poor native liver survival and poor response to EHC interruption.</li><li>- High incidence of HCC at a young age.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Enterohepatic Circulation (EHC) Interruption</strong></summary>
+            <div>
+                <ul><li>- <b>Surgical EHC interruption</b>: <u>Should be considered</u> in patients with a responsive genotype to prolong native liver survival. A post-op sBA level <q><b><102 lmol/L</b></q> is associated with long-term success.</li><li>- <b>Medical EHC interruption (IBAT inhibitors)</b>: <u>Should be considered</u> to reduce pruritus in patients with missense mutations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>HCC Screening</strong></summary>
+            <div>
+                <ul><li>- <b>For patients with missense mutations</b>: An HCC screening interval of <q><b>3 to 6 months</b></q> is recommended.</li><li>- <b>For patients with biallelic PPTMs</b>: A more frequent HCC screening interval of <q><b>3 months</b></q> is recommended.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>BSEP Alloimmunisation (Post-Transplant)</strong></summary>
+            <div>
+                <ul><li>- Occurs in patients with no BSEP expression who develop an immune response to the donor BSEP.</li><li>- <b>Diagnosis</b>: Detection of <u>anti-BSEP antibodies</u> in plasma or anti-canalicular antibodies on liver tissue staining.</li><li>- <b>Treatment</b>: Intensify immunosuppression; consider a combination of <u>rituximab and plasmapheresis</u>. Re-transplantation may be necessary.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>MDR3 Deficiency (PFIC3)</strong></summary>
+            <div>
+                <ul><li>- Caused by mutations in the <b>ABCB4</b> gene.</li><li>- Characterized by <b>high GGT levels</b>, unlike FIC1 and BSEP deficiencies.</li><li>- Heterozygous mutations can cause a spectrum of diseases including ICP, DILI, and LPAC syndrome.</li></ul>
+                
+        <details>
+            <summary><strong>Genotype & Management</strong></summary>
+            <div>
+                <ul><li>- In patients with biallelic <b>ABCB4</b> variants, genetics <u>should be used</u> to predict phenotype and response to UDCA therapy.</li></ul>
+                
+        <details>
+            <summary><strong>UDCA Response</strong></summary>
+            <div>
+                <ul><li>- Patients with <b>missense variants</b> are <q><u>more likely to respond</u></q> to UDCA therapy.</li><li>- Patients with two <b>PPTMs</b> (predicted protein-truncating mutations) usually <q><u>do not respond</u></q> or only partially.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Follow-up & Screening</strong></summary>
+            <div>
+                <ul><li>- Patients with known pathogenic <b>ABCB4</b> variants should be offered follow-up for liver-related complications, including <b>malignancy</b> (HCC/CCA).</li><li>- <b>Genetic testing</b> <u>should be offered</u> to first-degree relatives.</li></ul>
+                
+        <details>
+            <summary><strong>Follow-up Protocol (See Table 4)</strong></summary>
+            <div>
+                <ul><li>- Adjust follow-up to clinical presentation and genotype.</li><li>- Visits every <q><b>3-12 months</b></q> depending on severity.</li><li>- Perform medical history, lab analysis, and non-invasive fibrosis screening (e.g., FIB-4, elastography).</li><li>- Liver ultrasound and/or MRI with MRCP are recommended at least <u>yearly</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>UDCA Treatment</strong></summary>
+            <div>
+                <ul><li>- <u>Strongly recommended</u> for those with at least one <b>ABCB4 missense variant</b> and a clinical phenotype.</li><li>- May be offered to patients with biallelic PPTM variants, though response is limited.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>MDR3 in Liver Transplantation</strong></summary>
+            <div>
+                <ul><li>- Long-term <b>UDCA therapy</b> is recommended for recipients of a graft from a donor with a monoallelic pathogenic MDR3 variant.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bile Acid Synthesis Defects (BASD)</strong></summary>
+            <div>
+                <ul><li>- Ultra-rare autosomal recessive disorders from mutations in genes of the bile acid synthesis pathway.</li><li>- Most frequent are <b>3b-HSD deficiency</b> (<u>HSD3B7</u> gene) and <b>D4-3-oxoR deficiency</b> (<u>AKR1D1</u> gene).</li><li>- Key features: cholestasis, <u>normal GGT</u>, <u>absence of pruritus</u>, and low total serum primary bile acids.</li></ul>
+                
+        <details>
+            <summary><strong>Treatment</strong></summary>
+            <div>
+                <ul><li>- Patients <u>should be treated</u> with an oral primary bile acid.</li><li>- This is a life-saving replacement therapy that restores bile flow and downregulates the production of toxic atypical bile acids.</li></ul>
+                
+        <details>
+            <summary><strong>Drug of Choice</strong></summary>
+            <div>
+                <ul><li>- <b>Cholic acid (CA)</b> is the bile acid of choice for treatment.</li><li>- It is safe, effective, and not hepatotoxic or teratogenic.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Types of PFIC</strong></summary>
+            <div>
+                <ul><li>- The spectrum of Progressive Familial Intrahepatic Cholestasis (PFIC) has expanded due to NGS.</li><li>- Includes very rare deficiencies like <b>TJP2, FXR, MYO5B, USP53</b>, and others (See Table 5).</li><li>- Due to rarity, data is limited and patients should be managed in tertiary care centers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Future Perspectives</strong></summary>
+            <div>
+                <ul><li>- Recent advances include a better understanding of the natural history of these diseases through international consortia (GALA, NAPPED).</li><li>- The introduction of <b>IBAT inhibitors</b> has opened new therapeutic avenues, but long-term data on disease modification is needed.</li><li>- A clear unmet need exists for treatments for patients who do not respond to IBAT inhibition.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
