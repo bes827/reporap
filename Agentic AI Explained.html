@@ -1,0 +1,734 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Agentic AI Explained</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Agentic AI Explained</strong></summary>
+            <div>
+                <ul><li>- Source: Video Transcript on AI Agents, Low-Code vs. Pro-Code Solutions.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- 1. What is the key difference between a standard AI agent and an <b>agentic AI</b>?</li><li>- 2. What technology is used to create a semantic index over a knowledge base for <b>RAG</b>?</li><li>- 3. In <b>Co-pilot Studio</b>, what two features are critical for creating an agentic agent?</li><li>- 4. In <b>Semantic Kernel's</b> multi-agent setup, what must be defined to prevent infinite loops?</li><li>- 5. What is the role of a '<b>group chat</b>' in Semantic Kernel?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Levels of AI Agents</strong></summary>
+            <div>
+                <ul><li>- All AI agents work off a generative model (e.g., LLM, SLM) which has pre-trained knowledge.</li></ul>
+                
+        <details>
+            <summary><strong>Level 1: Basic Model Interaction</strong></summary>
+            <div>
+                <ul><li>- Uses only <b>pre-trained knowledge</b> from its training corpus.</li><li>- Limited by a knowledge <u>cutoff date</u>.</li><li>- Cannot access private or organizational data.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Level 2: Retrieval Augmented Generation (RAG)</strong></summary>
+            <div>
+                <ul><li>- Augments the model with an <b>additional body of knowledge</b>.</li><li>- Enables access to private data sources like SharePoint, Dataverse, or uploaded files.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism: Semantic Indexing</strong></summary>
+            <div>
+                <ul><li>- Uses an <u>embedding model</u> to create a <b>vector</b> for each piece of data.</li><li>- The vector represents the <u>semantic meaning</u>, not just keywords.</li><li>- When a query is made, its vector is compared to the data vectors to find the 'nearest neighbors' (most relevant information).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Level 3: Task/Action Performance</strong></summary>
+            <div>
+                <ul><li>- Agent can perform actions by calling external tools.</li><li>- Examples: Calling <b>APIs</b>, hooking into serverless capabilities.</li><li>- This makes it a '<b>task agent</b>'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Commonality: Human-in-the-Loop</strong></summary>
+            <div>
+                <ul><li>- These initial levels typically involve a <b>human</b> as a constant part of the interaction loop.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Agentic AI: The Next Level</strong></summary>
+            <div>
+                <ul><li>- An evolution where AI agents can act <b>autonomously</b> to achieve complex, long-running goals.</li><li>- All agentic agents are AI agents, but not all AI agents are agentic.</li></ul>
+                
+        <details>
+            <summary><strong>Core Characteristics</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Dynamic & Complex Planning</strong></summary>
+            <div>
+                <ul><li>- Dynamically plans how to achieve a goal, rather than following a predefined workflow.</li><li>- Uses <u>reasoning</u> to ascertain the optimal plan based on its core instructions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Autonomous Operation</strong></summary>
+            <div>
+                <ul><li>- Triggered by an <b>event</b>, not necessarily direct human interaction.</li><li>- Can be proactive, suggesting and proposing actions.</li></ul>
+                
+        <details>
+            <summary><strong>Example Triggers</strong></summary>
+            <div>
+                <ul><li>- Keywords in an email.</li><li>- A new record written to a spreadsheet.</li><li>- Speech recognition.</li><li>- A scheduled recurrence (e.g., cron job).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human Interaction (Optional)</strong></summary>
+            <div>
+                <ul><li>- May have checkpoints for human approval, especially for risky or costly actions (e.g., spending money).</li><li>- The human's involvement in the overall loop can vary greatly.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Improvement Over Time (Debated)</strong></summary>
+            <div>
+                <ul><li>- Often stated as an attribute, but not common in practice today.</li><li>- The underlying model is <u>stateless and read-only</u>; it has no memory.</li><li>- 'Memory' is simulated by storing state externally (e.g., in a <q>Cosmos DB</q>) and retrieving it for new tasks.</li><li>- True model improvement would require fine-tuning with reinforcement learning signals, which is currently rare.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multi-Agent Systems</strong></summary>
+            <div>
+                <ul><li>- A common and recommended approach for building robust agentic AI solutions.</li><li>- Avoids creating a single, massive agent which is more prone to <b>hallucination</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Expert Agents</strong></summary>
+            <div>
+                <ul><li>- Strategy involves creating many agents, each an <b>expert</b> in a specific, focused task.</li><li>- This narrow scope makes them less prone to hallucination.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Collaboration & Orchestration</strong></summary>
+            <div>
+                <ul><li>- Agents can call other agents to solve more complex problems.</li><li>- An <u>orchestrator agent</u> can manage the primary mission and delegate tasks to specialized agents.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Validation Patterns</strong></summary>
+            <div>
+                <ul><li>- Use multiple agents for checks and balances to increase confidence in autonomous outputs.</li><li>- Common pattern: <b>Author-Critic</b> or <b>Maker-Checker</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Implementation Examples</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Low-Code: Co-pilot Studio</strong></summary>
+            <div>
+                <ul><li>- A low-code platform for building AI agents.</li></ul>
+                
+        <details>
+            <summary><strong>Key Features for Agentic AI</strong></summary>
+            <div>
+                <ul><li>- <b>Generative Orchestration</b>: Must be enabled to allow the agent to dynamically plan how to respond to users and events.</li><li>- <b>Triggers</b>: Enables autonomous operation by defining what events should activate the agent.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Configuration Steps</strong></summary>
+            <div>
+                <ul><li>- Provide a clear name and description for inter-agent understanding.</li><li>- Write detailed instructions/directives for the agent's goal.</li><li>- Add <u>Knowledge Sources</u> (e.g., files, SharePoint, Azure AI Search).</li><li>- Add <u>Actions</u> (e.g., APIs to send an email).</li><li>- Configure <u>Triggers</u> (e.g., 'When a new email arrives').</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Tip</strong></summary>
+            <div>
+                <ul><li>- When using the 'send email' action, the video recommends using version <q><b>V2</b></q>, as V3 is reported to not work as well.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pro-Code: Semantic Kernel</strong></summary>
+            <div>
+                <ul><li>- Microsoft's <b>enterprise-ready</b>, open-source orchestration engine for AI development.</li><li>- Available for <q>.NET, Java, and Python</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Core Concepts</strong></summary>
+            <div>
+                <ul><li>- Uses '<b>connectors</b>' to abstract interactions with various components.</li><li>- Components include AI providers (models), memory (vector stores), and functions (tools).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Agent Types</strong></summary>
+            <div>
+                <ul><li>- <b>Chat Completion Agent</b>: A basic agent for model interaction. Requires manual plumbing for state and tooling.</li><li>- <b>Assistant Agent</b>: A more advanced type that includes built-in state storage and tooling.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Multi-Agent Implementation</strong></summary>
+            <div>
+                <ul><li>- Individual expert agents are defined with specific instructions (system prompts).</li><li>- A '<b>Group Chat</b>' is created to allow these agents to work together and converge on a solution.</li></ul>
+                
+        <details>
+            <summary><strong>Group Chat Controls</strong></summary>
+            <div>
+                <ul><li>- <u>Termination Strategy</u>: A function must be defined to determine when the goal is met. Example: Terminate when a critic agent's response includes the word '<q>approved</q>'.</li><li>- <u>Maximum Iterations</u>: A limit must be set to prevent infinite loops. Example: Stop after <q>10</q> iterations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Operational Considerations & Guardrails</strong></summary>
+            <div>
+                <ul><li>- Agentic AI still requires standard operational practices and operates within defined boundaries.</li></ul>
+                
+        <details>
+            <summary><strong>Testing & Evaluation</strong></summary>
+            <div>
+                <ul><li>- Perform <b>unit testing</b> on individual components.</li><li>- Evaluate agent performance with various inputs, often using another LLM as a 'judge'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Monitoring & Tracing</strong></summary>
+            <div>
+                <ul><li>- Implement full logging and tracing (e.g., using Azure AI Foundry's tracer decorator).</li><li>- Semantic Kernel emits <u>Open Telemetry</u> data, which can be sent to services like App Insights.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Security & Permissions</strong></summary>
+            <div>
+                <ul><li>- Agents operate within the guardrails and permissions you provide.</li><li>- They run under a specific identity context (e.g., a user account or service principal).</li><li>- Existing controls like <b>Data Loss Prevention (DLP)</b> policies still apply to actions like sending emails.</li><li>- Highlights the critical need for proper data discovery, classification, and protection within an organization.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
