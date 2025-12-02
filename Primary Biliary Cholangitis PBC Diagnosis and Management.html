@@ -1,0 +1,1211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Primary Biliary Cholangitis (PBC): Diagnosis and Management</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Primary Biliary Cholangitis (PBC): Diagnosis and Management</strong></summary>
+            <div>
+                <ul><li>- <b>Source 1 (EASL)</b>: EASL Clinical Practice Guidelines: The diagnosis and management of patients with primary biliary cholangitis. Journal of Hepatology 2017 vol. 67 j 145–172.</li><li>- <b>Source 2 (UpToDate)</b>: Overview of the management of primary biliary cholangitis. Literature review current through Nov 2025, topic last updated Feb 14, 2025.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended first-line therapy and dosage for all patients with PBC?</li><li>- What percentage of UDCA-treated patients have an inadequate biochemical response after one year?</li><li>- What is the recommended screening interval for hepatocellular carcinoma in patients with PBC and cirrhosis?</li><li>- Obeticholic acid is contraindicated in which specific patient populations due to reports of liver failure?</li><li>- According to the Paris-I criteria for assessing UDCA response, what are the three biochemical thresholds that define treatment failure?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Epidemiology</strong></summary>
+            <div>
+                <ul><li>- <b>PBC</b> is a chronic, progressive autoimmune cholestatic liver disease targeting small intralobular bile ducts.</li><li>- Untreated, it can lead to ductopenia, fibrosis, biliary cirrhosis, and end-stage liver disease.</li><li>- Predominantly affects women, with an estimated global prevalence of <q>1 in 1,000 women over age 40</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Epidemiology</strong></summary>
+            <div>
+                <ul><li>- <b>Incidence (Europe)</b>: <q>1–2 per 100,000</q> population per year.</li><li>- <b>Prevalence</b>: Commonly cited range is <q>1.9–40.2 per 100,000</q>.</li><li>- <b>Female Predominance</b>: Female-to-male ratio is approximately <q>10:1</q>, though recent data suggest increasing male prevalence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pathogenesis</strong></summary>
+            <div>
+                <ul><li>- Involves interaction of <u>environmental triggers</u> with <u>immunogenetic and epigenetic risk</u>.</li><li>- Leads to chronic immune-mediated biliary epithelial cell (BEC) injury, cholestasis, and fibrosis.</li><li>- Key pathways include <b>IL-12</b> and <b>JAK-STAT</b> signaling.</li></ul>
+                
+        <details>
+            <summary><strong>Biliary Injury Cycle</strong></summary>
+            <div>
+                <ul><li>- Immune injury and cholestasis are interdependent.</li><li>- Downregulation of the Cl-/HCO3- exchanger (<b>AE2</b>) weakens the protective biliary 'bicarbonate umbrella'.</li><li>- This sensitizes cholangiocytes to apoptosis from hydrophobic bile acids, perpetuating inflammation and fibrosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Natural History (Untreated)</strong></summary>
+            <div>
+                <ul><li>- Historic UK cohorts showed average survival of <q>9–10 years</q> from presentation.</li><li>- A Yale study showed median survival up to <q>16 years</q> in asymptomatic patients.</li><li>- Median time to develop extensive fibrosis is <q>2 years</q> without effective therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- PBC should be suspected in patients with persistent cholestatic liver tests (especially elevated ALP) or symptoms like pruritus and fatigue.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>EASL Guideline</b>: Diagnosis can be made in adults with elevated ALP if <b>AMA</b> is present at a titre <q>≥1:40</q>.</li><li>- Liver biopsy is not required for diagnosis if these criteria are met.</li></ul>
+                
+        <details>
+            <summary><strong>AMA-Negative PBC</strong></summary>
+            <div>
+                <ul><li>- Accounts for <q>5-10%</q> of cases.</li><li>- Diagnosis can be made in patients with cholestasis and specific ANA patterns.</li><li>- <b>Key ANA Patterns</b>: <u>Nuclear dots</u> (anti-sp100) or <u>perinuclear rims</u> (anti-gp210).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Important Caveat</strong></summary>
+            <div>
+                <ul><li>- <b>AMA reactivity alone is NOT sufficient to diagnose PBC.</b></li><li>- Patients with positive AMA but normal liver tests should have annual biochemical reassessment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Initial Workup</strong></summary>
+            <div>
+                <ul><li>- A structured approach is recommended for any patient with chronic cholestasis.</li></ul>
+                
+        <details>
+            <summary><strong>1. History & Physical Exam</strong></summary>
+            <div>
+                <ul><li>- Inquire about associated autoimmune diseases: <u>Sjögren's</u>, <u>Hashimoto's thyroiditis</u>, <u>celiac disease</u>, <u>systemic sclerosis</u>.</li><li>- Thorough drug history is crucial to rule out DILI (Drug-Induced Liver Injury).</li><li>- Physical signs may include hepatosplenomegaly, jaundice, xanthelasma, and scratch marks.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Abdominal Ultrasound</strong></summary>
+            <div>
+                <ul><li>- <b>First-line imaging</b> to rule out extrahepatic biliary obstruction, mass lesions, or gallbladder abnormalities.</li><li>- Hilar lymphadenopathy is a frequent but non-specific finding in PBC.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Serological Tests</strong></summary>
+            <div>
+                <ul><li>- <b>Antimitochondrial Antibodies (AMA)</b>: The diagnostic hallmark. Targets PDC-E2. Found in <q>>90%</q> of patients. Highly specific (<q>98%</q>) in the context of chronic cholestasis.</li><li>- <b>Antinuclear Antibodies (ANA)</b>: Present in <q>~30%</q> of patients. Specific patterns (anti-sp100, anti-gp210) are diagnostic in AMA-negative cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Extended Imaging (if needed)</strong></summary>
+            <div>
+                <ul><li>- <b>MRCP</b> is recommended in patients with unexplained cholestasis to visualize the biliary tree and rule out PSC.</li><li>- <b>EUS</b> is an alternative for evaluating distal biliary disease.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biochemical Abnormalities</strong></summary>
+            <div>
+                <ul><li>- <b>Alkaline Phosphatase (ALP)</b>: Typically elevated; level is associated with disease progression.</li><li>- <b>GGT</b>: Also elevated, often before ALP.</li><li>- <b>Immunoglobulins</b>: Elevated <b>IgM</b> is a characteristic feature.</li><li>- <b>Transaminases (AST/ALT)</b>: May be elevated. An AST/ALT ratio <q>>1</q> can suggest fibrosis. Prominent elevation may suggest AIH overlap.</li><li>- <b>Bilirubin</b>: Elevation is a late sign, typical of advanced disease.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Liver Biopsy</strong></summary>
+            <div>
+                <ul><li>- <b>Not necessary for routine diagnosis</b> when serology is typical.</li><li>- <b>Recommended when</b>:</li><li>- PBC-specific antibodies (AMA, sp100, gp210) are absent.</li><li>- Co-existent <u>AIH</u> or <u>NASH</u> is suspected.</li><li>- Other systemic co-morbidities are present.</li></ul>
+                
+        <details>
+            <summary><strong>Histological Findings</strong></summary>
+            <div>
+                <ul><li>- <b>Hallmark Lesion</b>: Chronic non-suppurative destructive cholangitis, known as the "<u>florid duct lesion</u>".</li><li>- Inflammatory infiltrate consists of lymphocytes, macrophages, and eosinophils; epithelioid granulomas may be seen.</li><li>- Progressive bile duct damage leads to <b>ductopenia</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Staging Systems</strong></summary>
+            <div>
+                <ul><li>- <b>Ludwig & Scheuer</b>: 4 stages, with Stage 4 indicating cirrhosis.</li><li>- <b>Nakanuma (New System)</b>: Scores fibrosis, bile duct loss, and orcein-positive granules. More accurately predicts 10-year outcomes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Stratification & Prognosis</strong></summary>
+            <div>
+                <ul><li>- All patients should be evaluated for their risk of progression to identify those needing additional therapy.</li><li>- Patients at greatest risk are those with <b>inadequate biochemical response to therapy</b> and those with <b>cirrhosis</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Static Risk Factors (at presentation)</strong></summary>
+            <div>
+                <ul><li>- Factors identifiable at diagnosis or during follow-up, independent of treatment response.</li></ul>
+                
+        <details>
+            <summary><strong>Demographics</strong></summary>
+            <div>
+                <ul><li>- <b>Younger age at diagnosis</b> (<q><45 years</q>) is a strong risk factor for inadequate response.</li><li>- <b>Male sex</b> is associated with more advanced disease at presentation, poorer UDCA response, and higher HCC risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biochemistry & Serology</strong></summary>
+            <div>
+                <ul><li>- <b>Baseline Bilirubin & Albumin</b>: Can stratify patients into low, medium, and high risk.</li><li>- <b>PBC-specific ANA</b>: Presence of <u>anti-gp210</u> or <u>anti-sp100</u> may predict an unfavorable course.</li><li>- <b>Anti-centromere antibodies</b>: Associated with a portal hypertensive phenotype.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Non-Invasive Fibrosis Assessment</strong></summary>
+            <div>
+                <ul><li>- <b>Liver Stiffness Measurement (LSM)</b> via VCTE (FibroScan) is a key tool.</li><li>- LSM <q>>9.6 kPa</q> is associated with a <u>5-fold increased risk</u> of liver decompensation.</li><li>- <b>Serum Markers</b>: APRI, ELF score, and WFA+-M2BP have shown prognostic ability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Histology</strong></summary>
+            <div>
+                <ul><li>- Advanced histological stage is a poor prognostic factor.</li><li>- <b>Interface hepatitis</b> and <b>ductopenia</b> are independent predictors of progression.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dynamic Risk Assessment: Response to UDCA</strong></summary>
+            <div>
+                <ul><li>- <b>Biochemical response to UDCA after 1 year</b> is the most validated and critical tool for risk stratification.</li><li>- Inadequate response is seen in <q>25% to 50%</q> of patients, depending on the criteria used (UpToDate: <q>~35%</q>).</li><li>- Evaluation at <q>6 months</q> may have equivalent predictive performance.</li></ul>
+                
+        <details>
+            <summary><strong>Qualitative (Binary) Criteria</strong></summary>
+            <div>
+                <ul><li>- Various criteria exist to define 'responder' vs. 'non-responder'.</li></ul>
+                
+        <details>
+            <summary><strong>Paris-I Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Most widely validated criteria.</b></li><li>- <u>Inadequate response</u> if, after 1 year of UDCA, any of the following are present:</li><li>- ALP <q>≥3 x ULN</q></li><li>- AST <q>≥2 x ULN</q></li><li>- Bilirubin <q>>1 mg/dL</q> (<q>17 µmol/L</q>)</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Paris-II Criteria</strong></summary>
+            <div>
+                <ul><li>- Designed for <u>early-stage patients</u>.</li><li>- <u>Inadequate response</u> if, after 1 year of UDCA, any of the following are present:</li><li>- ALP <q>≥1.5 x ULN</q></li><li>- AST <q>≥1.5 x ULN</q></li><li>- Bilirubin <q>>1 mg/dL</q> (<q>17 µmol/L</q>)</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Toronto</b>: ALP <q>>1.67 x ULN</q> after 24 months (predicts histological progression).</li><li>- <b>Barcelona</b>: Decrease in ALP <q><40%</q> OR ALP remains <q>>1 x ULN</q> after 12 months.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Quantitative (Continuous) Scoring Systems</strong></summary>
+            <div>
+                <ul><li>- These models provide a more nuanced risk score and have better predictive performance than binary criteria.</li></ul>
+                
+        <details>
+            <summary><strong>GLOBE Score</strong></summary>
+            <div>
+                <ul><li>- Incorporates age, bilirubin, albumin, ALP, and platelet count at 1 year.</li><li>- Improves patient risk classification by <q>~10%</q> compared to Paris-I.</li><li>- Predicts that <q>~40%</q> of UDCA-treated patients have shorter transplant-free survival than matched controls.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>UK-PBC Score</strong></summary>
+            <div>
+                <ul><li>- Incorporates bilirubin, ALP, AST/ALT at 1 year, plus baseline albumin and platelet count.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prognosis for Responders</strong></summary>
+            <div>
+                <ul><li>- Early-stage patients with ALP <q><1.5 x ULN</q> and normal bilirubin after one year of UDCA have a transplant-free survival <u>not significantly different</u> from a healthy control population.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment: Therapies to Slow Disease Progression</strong></summary>
+            <div>
+                <ul><li>- The goals of therapy are to prevent end-stage complications and manage symptoms.</li></ul>
+                
+        <details>
+            <summary><strong>First-Line Therapy: Ursodeoxycholic Acid (UDCA)</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: Recommended as first-line pharmacotherapy for <u>ALL</u> patients with PBC.</li><li>- <b>Dose</b>: <q><b>13–15 mg/kg/day</b></q>, given orally, either once daily or in divided doses. Therapy is lifelong.</li><li>- <b>Safety</b>: Very safe. Side effects are minimal (modest weight gain of <q>~3kg</q>, hair thinning, rarely diarrhea). Considered safe in pregnancy.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism of Action</strong></summary>
+            <div>
+                <ul><li>- A hydrophilic bile acid that becomes predominant in the bile acid pool.</li><li>- Stimulates hepatobiliary secretion (post-transcriptional secretagogue).</li><li>- Exerts cytoprotective and anti-apoptotic effects on hepatocytes and cholangiocytes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Efficacy</strong></summary>
+            <div>
+                <ul><li>- <b>Biochemical</b>: Improvement in liver tests is typically seen within <q>3 months</q>.</li><li>- <b>Histological</b>: Slows progression from early-stage disease to fibrosis/cirrhosis. 4-year probability of remaining early-stage was <q>76%</q> with UDCA vs. <q>29%</q> with placebo.</li><li>- <b>Clinical Outcomes</b>: Reduces risk of developing esophageal varices (<q>16%</q> vs. <q>58%</q> over 4 years). Global PBC Study Group meta-analysis showed significantly improved liver transplant-free survival.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Second-Line Therapy (for UDCA non-responders/intolerant)</strong></summary>
+            <div>
+                <ul><li>- For patients with an inadequate biochemical response after one year of UDCA.</li><li>- UpToDate defines this as ALP remaining above ULN.</li></ul>
+                
+        <details>
+            <summary><strong>Obeticholic Acid (OCA)</strong></summary>
+            <div>
+                <ul><li>- <b>Class</b>: Farnesoid X receptor (FXR) agonist.</li><li>- <b>Indication</b>: Approved for use in combination with UDCA in inadequate responders, or as monotherapy in UDCA-intolerant patients.</li><li>- <b>Dose</b>: Start at <q><b>5 mg</b></q> daily, titrate to <q><b>10 mg</b></q> after 6 months based on tolerability and response.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy (POISE Trial)</strong></summary>
+            <div>
+                <ul><li>- Recruited patients with ALP <q>≥1.67 x ULN</q> or elevated bilirubin.</li><li>- <b>Primary Endpoint Met</b>: Biochemical response was <q>46-47%</q> in OCA groups vs. <q>10%</q> in placebo group.</li><li>- Mean ALP reduction was <q>33-39%</q> with OCA vs. <q>5%</q> with placebo.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Adverse Effects & Contraindications</strong></summary>
+            <div>
+                <ul><li>- <b>Pruritus</b>: Dose-dependent, leading to discontinuation in <q>1-10%</q> of patients.</li><li>- <b>Lipids</b>: Can cause a reversible decrease in HDL and total cholesterol.</li><li>- <b><u>CONTRAINDICATION (CRITICAL)</u></b>: <b>Decompensated cirrhosis (Child-Pugh B or C)</b>, a prior decompensation event, or compensated cirrhosis with portal hypertension. Associated with reports of hepatic decompensation and liver failure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>PPAR Agonists (Unique to UpToDate 2025)</strong></summary>
+            <div>
+                <ul><li>- A newer class of agents for second-line therapy. Not mentioned in 2017 EASL guidelines.</li><li>- Can be combined with UDCA or used as monotherapy. Not for use in decompensated cirrhosis.</li></ul>
+                
+        <details>
+            <summary><strong>Elafibranor</strong></summary>
+            <div>
+                <ul><li>- <b>Class</b>: Dual PPAR-alpha and PPAR-delta agonist.</li><li>- <b>Dose</b>: <q>80 mg</q> once daily.</li><li>- <b>Efficacy</b>: Achieved biochemical response in <q>51%</q> of patients vs. <q>4%</q> for placebo after 52 weeks. ALP normalization in <q>15%</q> vs. 0%.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Seladelpar</strong></summary>
+            <div>
+                <ul><li>- <b>Class</b>: PPAR-delta agonist.</li><li>- <b>Dose</b>: <q>10 mg</q> once daily.</li><li>- <b>Efficacy</b>: Achieved biochemical response in <q>62%</q> of patients vs. <q>20%</q> for placebo after 12 months. ALP normalization in <q>25%</q> vs. 0%.</li><li>- Also showed a reduction in pruritus severity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fibrates (Bezafibrate, Fenofibrate)</strong></summary>
+            <div>
+                <ul><li>- <b>Class</b>: Pan-PPAR agonists (Bezafibrate) or PPAR-alpha agonists (Fenofibrate).</li><li>- <b>Status</b>: Considered off-label in many regions. Bezafibrate is not available in the US.</li><li>- <b>Dose (Bezafibrate)</b>: <q>400 mg/day</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy & Benefits</strong></summary>
+            <div>
+                <ul><li>- Improves liver biochemistries in UDCA non-responders. A trial showed complete biochemical response in <q>31%</q> vs. 0% for placebo.</li><li>- May improve symptoms of pruritus and fatigue.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Adverse Effects</strong></summary>
+            <div>
+                <ul><li>- Can cause elevations in ALT/AST (transcriptional effect).</li><li>- May cause creatinine elevation (requires monitoring).</li><li>- Musculoskeletal pain reported in <q>5-10%</q> of patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Investigational Therapies</strong></summary>
+            <div>
+                <ul><li>- Therapies with limited or uncertain roles.</li></ul>
+                
+        <details>
+            <summary><strong>Budesonide</strong></summary>
+            <div>
+                <ul><li>- <b>Role</b>: Reserved for <u>non-cirrhotic</u> patients with marked inflammatory changes (interface hepatitis) who have failed other therapies.</li><li>- <b>Mechanism</b>: Glucocorticoid with high first-pass metabolism.</li><li>- <b>Efficacy</b>: Data is mixed. Some trials show improved biochemistry and histology, while others show minimal benefit and increased risk of bone density loss.</li><li>- <b>Caution</b>: Can have deleterious outcomes in patients with cirrhosis and portal hypertension.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of Symptoms & Extrahepatic Manifestations</strong></summary>
+            <div>
+                <ul><li>- Symptoms often do <u>not</u> correlate with disease severity and do <u>not</u> improve with UDCA or OCA.</li><li>- A structured approach to symptom evaluation and management is essential for patient QoL.</li></ul>
+                
+        <details>
+            <summary><strong>Pruritus (Itch)</strong></summary>
+            <div>
+                <ul><li>- A characteristic cholestatic symptom. A stepwise management approach is recommended.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Bile Acid Sequestrants</strong></summary>
+            <div>
+                <ul><li>- <b>Agent</b>: <b>Cholestyramine</b>.</li><li>- <b>Dosing Caution</b>: Must be taken <q>2-4 hours</q> before or after other medications (including UDCA/OCA) to avoid impairing their absorption.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 2: Pregnane X Receptor (PXR) Agonist</strong></summary>
+            <div>
+                <ul><li>- <b>Agent</b>: <b>Rifampicin</b>.</li><li>- <b>Dose</b>: <q>150-300 mg</q> daily.</li><li>- <b>Monitoring</b>: Requires monitoring of liver tests due to risk of hepatotoxicity. Should be stopped if toxicity occurs.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 3: Opiate Antagonists</strong></summary>
+            <div>
+                <ul><li>- <b>Agent</b>: <b>Naltrexone</b>.</li><li>- <b>Dosing</b>: Start at a low dose to avoid opiate withdrawal-like reactions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other & Refractory Itch</strong></summary>
+            <div>
+                <ul><li>- <b>Empirical</b>: SSRIs (e.g., Sertraline) are sometimes used.</li><li>- <b>Severe/Intractable Pruritus</b>: May be a feature of an aggressive ductopenic variant with a poor prognosis. These patients should be referred to an expert center and may be candidates for liver transplantation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fatigue</strong></summary>
+            <div>
+                <ul><li>- The most common symptom, reported by <q>>50%</q> of patients; severe in <q>20%</q>.</li><li>- <b>No specific licensed therapy exists.</b> Does not improve with liver-directed therapy or transplantation.</li><li>- <b>Management Focus</b>:</li><li>- Seek and treat alternate causes: <u>anemia</u>, <u>hypothyroidism</u>, <u>sleep disturbance</u>.</li><li>- Advise on coping strategies and avoidance of social isolation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sicca Complex (Dry Eyes/Mouth)</strong></summary>
+            <div>
+                <ul><li>- Very common in PBC.</li><li>- <b>Management</b>:</li><li>- <b>First-line</b>: Artificial tears and saliva substitutes.</li><li>- <b>Refractory</b>: Pilocarpine or cevimeline (muscarinic agonists).</li><li>- Advise on oral hygiene to prevent dental caries.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of Liver-Related Complications</strong></summary>
+            <div>
+                <ul><li>- Focuses on complications of chronic cholestasis and cirrhosis.</li></ul>
+                
+        <details>
+            <summary><strong>Metabolic Bone Disease (Osteoporosis)</strong></summary>
+            <div>
+                <ul><li>- A common complication.</li><li>- <b>Screening</b>: Bone mineral densitometry (DEXA) at presentation and every <q>2-5 years</q> depending on risk.</li><li>- <b>Management</b>:</li><li>- Calcium and Vitamin D supplementation (per local practice).</li><li>- <b>Bisphosphonates</b> (e.g., alendronate) are effective but should be used with caution in patients with esophageal varices.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fat-Soluble Vitamin Deficiency</strong></summary>
+            <div>
+                <ul><li>- Uncommon except in patients with prolonged jaundice.</li><li>- Consider measuring levels of vitamins A, D, E, K in icteric patients.</li><li>- Prophylactic Vitamin K should be given prior to invasive procedures in severe cholestasis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hyperlipidemia</strong></summary>
+            <div>
+                <ul><li>- Elevated lipids (especially HDL) are a feature of cholestasis, driven by abnormal lipoprotein X.</li><li>- There is <b>no substantial evidence of increased cardiovascular risk</b> in PBC.</li><li>- Routine treatment with statins is not recommended unless concomitant metabolic syndrome or other cardiovascular risk factors are present.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Portal Hypertension & Varices</strong></summary>
+            <div>
+                <ul><li>- Can rarely develop in the pre-cirrhotic stage but is mostly acomplication of cirrhosis.</li><li>- Patients with varices often have other markers of high-risk disease (low albumin, high bilirubin).</li></ul>
+                
+        <details>
+            <summary><strong>Screening</strong></summary>
+            <div>
+                <ul><li>- <b>EASL & UpToDate recommend following Baveno-VI guidelines.</b></li><li>- <u>Screening endoscopy</u> is recommended for patients with cirrhosis, typically every <q>2-3 years</q>.</li><li>- <b>Non-invasive markers</b> can identify high-risk patients: LSM <q>≥20 kPa</q> or platelet count <q><150 x 10^9/L</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management</strong></summary>
+            <div>
+                <ul><li>- <b>Primary Prophylaxis</b>: <u>Non-selective beta-blockers</u> are indicated for large esophageal varices.</li><li>- <b>Endoscopic Variceal Ligation (EVL)</b> is recommended for varices at high risk of bleeding.</li><li>- Patients with fatigue may find beta-blockade challenging symptomatically.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hepatocellular Carcinoma (HCC)</strong></summary>
+            <div>
+                <ul><li>- A serious complication, primarily in patients with cirrhosis.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Factors</strong></summary>
+            <div>
+                <ul><li>- <b>Cirrhosis</b> is the main risk factor.</li><li>- Other key risk factors include:</li><li>- <b>Male sex</b></li><li>- <b>Inadequate response to UDCA</b></li><li>- Advanced histological stage at diagnosis.</li></ul>
+                
+        <details>
+            <summary><strong>Incidence</strong></summary>
+            <div>
+                <ul><li>- A large international cohort showed an incidence rate of <q>3.4 cases per 1,000 patient-years</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Surveillance</strong></summary>
+            <div>
+                <ul><li>- <b>Indication</b>: All patients with PBC and suspected or confirmed cirrhosis.</li><li>- <b>Method</b>: <u>Abdominal ultrasound</u>, with or without alpha-fetoprotein (AFP).</li><li>- <b>Frequency</b>: Every <q><b>6 months</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Special Populations & Variants</strong></summary>
+            <div>
+                <ul><li>- Management considerations for specific patient groups and disease presentations.</li></ul>
+                
+        <details>
+            <summary><strong>PBC with Features of Autoimmune Hepatitis (AIH)</strong></summary>
+            <div>
+                <ul><li>- Occurs in <q>~8-10%</q> of patients, sometimes called 'overlap syndrome'.</li><li>- Can present simultaneously with PBC or develop sequentially years later.</li><li>- Prognosis is generally worse than for PBC alone.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnosis</strong></summary>
+            <div>
+                <ul><li>- <b>Liver biopsy is considered mandatory</b> to confirm features of AIH.</li><li>- Suspect in patients with disproportionately high <b>ALT</b> and/or <b>IgG</b> levels.</li><li>- The <b>Paris criteria</b> are most commonly used for definition.</li></ul>
+                
+        <details>
+            <summary><strong>Paris Criteria</strong></summary>
+            <div>
+                <ul><li>- Requires meeting criteria for both PBC and AIH.</li><li>- <b>PBC (≥2 of 3)</b>: ALP ≥2xULN or GGT ≥5xULN; AMA ≥1:40; Florid duct lesion.</li><li>- <b>AIH (≥2 of 3)</b>: ALT ≥5xULN; IgG ≥2xULN or SMA positive; Moderate/severe interface hepatitis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment</strong></summary>
+            <div>
+                <ul><li>- <b>Dual therapy is required.</b></li><li>- <b>UDCA</b> at standard dose (<q>13-15 mg/kg/day</q>) for the PBC component.</li><li>- <b>Immunosuppression</b> for the AIH component, typically with corticosteroids (prednisone/prednisolone) +/- azathioprine.</li><li>- EASL suggests immunosuppression for <u>severe interface hepatitis</u> and consideration for <u>moderate</u> cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pregnancy</strong></summary>
+            <div>
+                <ul><li>- Pregnancy is typically <b>well-tolerated in non-cirrhotic patients</b>.</li><li>- Patients with cirrhosis and portal hypertension have a higher risk of maternal and fetal complications and require specialist pre-conception counseling and monitoring.</li></ul>
+                
+        <details>
+            <summary><strong>Medication Management</strong></summary>
+            <div>
+                <ul><li>- <b>UDCA</b>: Should be <u>continued</u>. Considered safe during conception, pregnancy, and lactation.</li><li>- <b>Cholestyramine</b>: Considered safe for pruritus.</li><li>- <b>Rifampicin</b>: Can be used for severe pruritus, with expert opinion suggesting use from the <q>third trimester</q> onwards.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Considerations</strong></summary>
+            <div>
+                <ul><li>- Pruritus may worsen during pregnancy.</li><li>- Post-partum cholestatic flares have been described, requiring follow-up.</li><li>- Cirrhotic patients should undergo endoscopy to screen for varices, preferably in the <q>second trimester</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Liver Transplantation</strong></summary>
+            <div>
+                <ul><li>- The ultimate therapy for end-stage disease. PBC as an indication for transplant has declined due to effective medical therapies.</li></ul>
+                
+        <details>
+            <summary><strong>Indications for Assessment</strong></summary>
+            <div>
+                <ul><li>- <b>Decompensated Cirrhosis</b>: Ascites, variceal hemorrhage, encephalopathy.</li><li>- <b>Biochemical Markers of Severity</b>:</li><li>- MELD score <q>≥15</q></li><li>- Persistently rising bilirubin <q>>50-85 µmol/L</q> (<q>3-5 mg/dL</q>)</li><li>- <b>Refractory Symptoms</b>: Severe, intractable pruritus unresponsive to all medical therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes & Post-Transplant Course</strong></summary>
+            <div>
+                <ul><li>- <b>Survival</b>: Excellent, with 5-year survival rates of <q>80-85%</q>, often better than for other liver diseases.</li><li>- <b>Fatigue</b>: Often <u>persists</u> after transplantation and is <u>NOT</u> an indication for transplant.</li><li>- <b>PBC Recurrence</b>: Occurs in <q>~20%</q> of patients. Diagnosis requires histology. Rarely leads to graft loss. UDCA may be used to treat biochemical abnormalities in recurrent PBC.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Long-Term Monitoring & Care Organization</strong></summary>
+            <div>
+                <ul><li>- All patients require structured, lifelong follow-up to monitor disease activity, assess treatment response, and screen for complications.</li></ul>
+                
+        <details>
+            <summary><strong>Monitoring Schedule</strong></summary>
+            <div>
+                <ul><li>- <b>Liver Tests & Platelets</b>: Every <q>3 to 6 months</q>. (UpToDate specifies every 3 months for patients on OCA).</li><li>- <b>Thyroid Function</b>: TSH annually to screen for hypothyroidism.</li><li>- <b>Bone Density</b>: DEXA scan every <q>2 years</q> (UpToDate) or as indicated by risk.</li><li>- <b>Fat-Soluble Vitamins</b>: Annually check Vitamin A, D, and prothrombin time (for Vitamin K).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cirrhosis Surveillance</strong></summary>
+            <div>
+                <ul><li>- <b>HCC</b>: Liver ultrasound every <q>6 months</q>.</li><li>- <b>Varices</b>: Upper endoscopy every <q>2 to 3 years</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>General Measures</strong></summary>
+            <div>
+                <ul><li>- <b>Immunizations</b>: Vaccinate for Hepatitis A and B if non-immune. Provide pneumococcal and annual influenza vaccines.</li><li>- <b>Alcohol</b>: Advise patients to abstain from alcohol, especially heavy use.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Care Standards & Patient Support (EASL)</strong></summary>
+            <div>
+                <ul><li>- Recommends development of local <b>Care Pathways</b> to standardize management.</li><li>- Suggests using <b>Clinical Audit Standards</b> to improve quality of care.</li><li>- Patients should be informed of <b>Patient Support Groups</b> for education and coping strategies, particularly for managing fatigue and social isolation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
