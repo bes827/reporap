@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Building a Generic Knowledge Extraction AI Framework for Organization-Specific Use Cases</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Building a Generic Knowledge Extraction AI Framework for Organization-Specific Use Cases</strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Data Science Collective, Medium</li><li>- <b>Core Idea:</b> Demonstrates a flexible knowledge extraction system that converts natural language requirements into Pydantic schemas and extracts structured data from documents using LLMs.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What are the <u>five main components</u> of the system's architecture?</li><li>- What is the purpose of the `detect_structure_type()` function?</li><li>- Which custom parser is highlighted for handling complex PDF layouts and multi-page tables?</li><li>- What OpenAI feature does the `DataExtractor` use to ensure the LLM's response conforms to the Pydantic schema?</li><li>- What Pydantic configuration is used to reject unexpected fields in the LLM output?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🎯 Introduction & Core Problem</strong></summary>
+            <div>
+                <ul><li>- <b>High Demand:</b> Extracting structured data from unstructured documents (invoices, medical records, legal contracts) is a growing need.</li><li>- <b>Challenge:</b> Manually defining structured models (e.g., Pydantic) requires domain expertise and is labor-intensive.</li><li>- <b>Solution:</b> An AI framework that automates schema generation from plain language and performs type-safe data extraction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚙️ System Architecture & Workflow</strong></summary>
+            <div>
+                <ul><li>- The system is composed of five main modular components.</li><li>- The complete workflow starts from a plain language requirement and ends with validated, structured data.</li><li>- The five main components are: <q>i) requirement parser, ii) format detector, iii) document parsers, iv) schema generator, and v) extractor</q>.</li></ul>
+                
+        <details>
+            <summary><strong>1. Requirement Parsing & Format Detection</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Understand user's extraction needs from plain English.</li><li>- Converts natural language descriptions into structured field specifications and determines the data structure.</li></ul>
+                
+        <details>
+            <summary><strong>Parsing User Requirements</strong></summary>
+            <div>
+                <ul><li>- The `parse_user_requirements()` function analyzes the user's text input.</li><li>- It extracts field definitions, including names, types, descriptions, and validation rules.</li></ul>
+                
+        <details>
+            <summary><strong>Output ---> `FieldSpec` & `ExtractionRequirements`</strong></summary>
+            <div>
+                <ul><li>- The parser converts requirements into a list of `FieldSpec` objects.</li><li>- These are bundled into an `ExtractionRequirements` object.</li></ul>
+                
+        <details>
+            <summary><strong>Class: `FieldSpec`</strong></summary>
+            <div>
+                <ul><li>- <b>`field_name`</b>: <q>snake_case</q> (enforced by validator).</li><li>- <b>`field_type`</b>: e.g., `str`, `int`, `decimal`, `list[str]`.</li><li>- <b>`description`</b>: Text description of the field.</li><li>- <b>`required`</b>: boolean.</li><li>- <b>`enum`</b>: Optional list of allowed string values.</li><li>- <b>`pattern`</b>: Optional regex pattern for validation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Format Detection: Flat vs. Nested</strong></summary>
+            <div>
+                <ul><li>- The `detect_structure_type()` function determines the output data structure from the user's prompt.</li><li>- It decides if the schema should be <q><b>flat</b> (one record per document) or <b>nested_list</b> (multiple items within a document)</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Logic for Detection</strong></summary>
+            <div>
+                <ul><li>- <b><u>FLAT</u>:</b> Used for one record per document (e.g., 'extract invoice number, date, total').</li><li>- <b><u>NESTED_LIST</u>:</b> Used when a document contains multiple items to extract (e.g., 'extract all products from an invoice').</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Output ---> `StructureAnalysis`</strong></summary>
+            <div>
+                <ul><li>- The function returns a `StructureAnalysis` object containing:</li><li>- <b>`structure_type`</b>: 'flat' or 'nested_list'.</li><li>- <b>`parent_container_name`</b>: e.g., 'line_items'.</li><li>- <b>`reasoning`</b>: Explanation for the choice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rationale for Decoupling</strong></summary>
+            <div>
+                <ul><li>- Separating requirement parsing from schema generation provides flexibility.</li><li>- Allows for inspection, editing, or persistence of LLM-derived specs.</li><li>- Enables manual creation of `ExtractionRequirements` to bypass the LLM entirely.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Document Parsing</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Convert source documents into a format that LLMs can effectively process (e.g., markdown).</li><li>- The framework includes a library of parsers for different document complexities.</li></ul>
+                
+        <details>
+            <summary><strong>Parser Library</strong></summary>
+            <div>
+                <ul><li>- <b>`VisionParser`</b>: Custom parser for complex PDFs using Vision API.</li><li>- <b>`PyMuPDFParser`</b>: Standard PDF text extraction.</li><li>- <b>`DoclingParser`</b></li><li>- <b>`DocxParser`</b></li></ul>
+                
+        <details>
+            <summary><strong>🔎 Deep Dive: `VisionParser`</strong></summary>
+            <div>
+                <ul><li>- Designed for complex layouts, such as tables spanning multiple pages.</li><li>- Uses OpenAI's Vision API to convert PDF pages to markdown while preserving structure.</li></ul>
+                
+        <details>
+            <summary><strong>Core Workflow</strong></summary>
+            <div>
+                <ul><li>- <b>PDF to Image:</b> Uses <q><b>PyMuPDF</b></q> to render each page as a high-resolution image (e.g., <q>300 DPI</q>).</li><li>- <b>Vision API Processing:</b> Sends images to the Vision API with engineered prompts.</li><li>- <b>Context Injection:</b> Passes content from the previous page to maintain continuity.</li><li>- <b>Table Merging:</b> Post-processes markdown to merge tables split across pages.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Context-Aware Processing</strong></summary>
+            <div>
+                <ul><li>- <b>Challenge:</b> Traditional parsers break tables at page boundaries.</li><li>- <b>Solution:</b> When processing page N, it includes the markdown from page N-1 as context.</li><li>- This helps the model understand when a table continues, avoiding repeated headers or artificial breaks.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>LLM-Powered Table Merging</strong></summary>
+            <div>
+                <ul><li>- An optional post-processing step (`clean_output=True`).</li><li>- An LLM is used to:</li><li>- Merge tables split across `---PAGE_BREAK---` markers.</li><li>- Remove hallucinated empty table rows.</li><li>- Consolidate repeated headers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Schema Generation</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Dynamically create type-safe Pydantic models based on the parsed requirements.</li><li>- These models enforce the LLM to output data in the exact required format.</li></ul>
+                
+        <details>
+            <summary><strong>`SchemaGenerator` Class</strong></summary>
+            <div>
+                <ul><li>- The main user-facing interface for schema creation.</li><li>- The `generate_schema()` method orchestrates the entire workflow: structure detection, requirement parsing, and model creation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dynamic Model Creation (`create_extraction_model`)</strong></summary>
+            <div>
+                <ul><li>- This core function takes `ExtractionRequirements` and produces a Pydantic model class.</li></ul>
+                
+        <details>
+            <summary><strong>Key Features of Generated Models</strong></summary>
+            <div>
+                <ul><li>- <b>Type Safety:</b> Correct Python types (`str`, `int`, `Decimal`).</li><li>- <b>Enum Validation:</b> Uses `Literal` types for strict value checking.</li><li>- <b>Pattern Validation:</b> Can include regex constraints.</li><li>- <b>Required vs. Optional:</b> Correctly defines fields as mandatory or optional.</li><li>- <b>Strictness:</b> Rejects any unexpected fields in the LLM output using <q><u>`ConfigDict(extra='forbid')`</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Handling Nested Structures</strong></summary>
+            <div>
+                <ul><li>- When `structure_type` is `nested_list`, the generator creates two models:</li><li>- <b>1. Item Model:</b> Represents a single item (e.g., `InvoiceLineItem_Extraction`).</li><li>- <b>2. Container Model:</b> Wraps a list of item models (e.g., `InvoiceLineItems_Collection`).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Data Extraction Engine</strong></summary>
+            <div>
+                <ul><li>- <b>Goal:</b> Use the generated schema to extract structured data from the parsed documents.</li></ul>
+                
+        <details>
+            <summary><strong>`DataExtractor` Class</strong></summary>
+            <div>
+                <ul><li>- Takes parsed documents (text/markdown) and the generated Pydantic schema as input.</li><li>- Uses an LLM to populate the schema with data from the document.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Structured Outputs API</strong></summary>
+            <div>
+                <ul><li>- The engine leverages OpenAI’s <q><u>structured outputs</u></q> feature.</li><li>- This guarantees the LLM's JSON response will conform to the Pydantic schema or fail with a clear error.</li><li>- Ensures deterministic outputs by setting `temperature=0` and a fixed seed (<q>`seed=12345`</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Extraction Prompt Design</strong></summary>
+            <div>
+                <ul><li>- Uses a carefully designed system prompt (`SYSTEM_PARSER`).</li><li>- <b>Instructions to LLM:</b></li><li>- Extract data exactly as specified.</li><li>- Do not invent or hallucinate data.</li><li>- Preserve original values and formats where possible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>💻 Usage Examples</strong></summary>
+            <div>
+                <ul><li>- The project includes four examples in the `examples/` directory to demonstrate various capabilities.</li></ul>
+                
+        <details>
+            <summary><strong>extraction_example_1.py</strong></summary>
+            <div>
+                <ul><li>- Demonstrates the <b>basic workflow</b>: natural language requirements ---> schema generation ---> data extraction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>extraction_example_2.py</strong></summary>
+            <div>
+                <ul><li>- Shows handling of <b>nested structures</b> and hierarchical extraction.</li><li>- Also demonstrates <b>document classification</b> to route documents to appropriate schemas.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>extraction_example_3.py</strong></summary>
+            <div>
+                <ul><li>- Shows how to <b>manually define</b> a Pydantic model and use it with the `DataExtractor`.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>extraction_example_4.py</strong></summary>
+            <div>
+                <ul><li>- Demonstrates how to <b>serialize a generated schema</b> to a file and reload it later for reuse.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🚀 Potential Extensions</strong></summary>
+            <div>
+                <ul><li>- The article suggests several directions for future development to enhance the framework.</li></ul>
+                
+        <details>
+            <summary><strong>Confidence Scoring</strong></summary>
+            <div>
+                <ul><li>- Add confidence scores or uncertainty tags for each extracted field to route low-confidence results to human reviewers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Streaming Extraction</strong></summary>
+            <div>
+                <ul><li>- Support for very large documents by chunking, preserving context between chunks, and merging partial results.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Active Learning Loop</strong></summary>
+            <div>
+                <ul><li>- Implement a feedback loop where user corrections are used to refine prompts, schemas, or models over time.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Advanced Validation & Verification</strong></summary>
+            <div>
+                <ul><li>- <b>Pluggable validation hooks</b> for domain-specific business rules.</li><li>- <b>LLM-as-judge workflow</b> where another LLM verifies the extraction quality.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
