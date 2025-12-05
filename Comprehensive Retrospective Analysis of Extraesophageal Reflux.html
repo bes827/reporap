@@ -1,0 +1,896 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comprehensive Retrospective Analysis of Extraesophageal Reflux</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Comprehensive Retrospective Analysis of Extraesophageal Reflux</strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Research Report (Synthesizing literature from 2018-2025)</li><li>- <b>Objective:</b> To bridge the clinical divide between Otolaryngology (ENT) and Gastroenterology (GI) in the management of Laryngopharyngeal Reflux (LPR), also known as Extraesophageal Reflux (EER).</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the prevalence of Eosinophilic Esophagitis (EoE) in patients with refractory reflux?</li><li>- What is the reported prevalence range for Cervical Inlet Patches?</li><li>- What RSI score is considered suggestive of LPR?</li><li>- What RFS score is generally considered positive for LPR?</li><li>- What is the satisfaction rate for LPR patients after Laparoscopic Nissen Fundoplication (LNF)?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>1. Core Concepts & Pathophysiology</strong></summary>
+            <div>
+                <ul><li>- <b>Laryngopharyngeal Reflux (LPR):</b> A distinct variant of GERD where gastric refluxate breaches the <u>Upper Esophageal Sphincter (UES)</u>, irritating the laryngeal and pharyngeal mucosa.</li><li>- <b>Laryngeal Hypersensitivity:</b> The respiratory epithelium of the larynx is exquisitely sensitive to injury.</li><li>- As few as <q><b>three reflux events per week</b></q> can induce significant laryngeal inflammation, whereas the esophagus can withstand dozens daily.</li></ul>
+                
+        <details>
+            <summary><strong>The "Reflux vs. Reflex" Debate</strong></summary>
+            <div>
+                <ul><li>- A critical distinction between two primary pathophysiological mechanisms.</li></ul>
+                
+        <details>
+            <summary><strong>Direct Injury (<u>Reflux</u>)</strong></summary>
+            <div>
+                <ul><li>- Micro-aspiration of <b>acid, pepsin, and bile salts</b> directly injures the laryngeal mucosa.</li><li>- Causes edema, erythema, and granuloma formation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Vagal Reflex (<u>Reflex</u>)</strong></summary>
+            <div>
+                <ul><li>- Distal esophageal acidification triggers a <b>vagally mediated reflex arc</b>.</li><li>- Induces chronic cough and throat clearing <u>even without laryngeal refluxate</u>.</li><li>- This "esophageal-bronchial reflex" complicates diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Diagnostic Discordance: Larynx vs. Esophagus</strong></summary>
+            <div>
+                <ul><li>- The most significant barrier to effective LPR management is the <u>lack of a "gold standard" diagnostic tool</u>.</li><li>- ENT relies on visual surrogates of inflammation, while GI demands physiological evidence of reflux.</li><li>- The correlation between these two paradigms is historically poor.</li></ul>
+                
+        <details>
+            <summary><strong>Otolaryngologic Paradigm (ENT)</strong></summary>
+            <div>
+                <ul><li>- Utilizes flexible transnasal or rigid transoral laryngoscopy to visualize the larynx.</li></ul>
+                
+        <details>
+            <summary><strong>Reflux Finding Score (RFS)</strong></summary>
+            <div>
+                <ul><li>- An 8-item scale to standardize subjective findings (e.g., edema, erythema, granuloma).</li><li>- A score of <q><b>> 7</b></q> is generally considered positive for LPR.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reflux Symptom Index (RSI)</strong></summary>
+            <div>
+                <ul><li>- A 9-item patient-reported outcome measure for symptom severity.</li><li>- A score of <q><b>> 13</b></q> is suggestive of LPR.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitations of Visual Diagnosis</strong></summary>
+            <div>
+                <ul><li>- <b>Low Specificity:</b> "Reflux signs" are not pathognomonic; can be caused by allergies, smoking, vocal abuse.</li><li>- <b>Poor Correlation:</b> Visual improvement after surgery (e.g., fundoplication) does not always track with patient-perceived recovery.</li><li>- <b>Low Inter-rater Reliability:</b> Especially for signs like "erythema".</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Gastroenterologic Paradigm (GI)</strong></summary>
+            <div>
+                <ul><li>- Prioritizes objective evidence of mucosal injury or acid exposure.</li></ul>
+                
+        <details>
+            <summary><strong>Esophagogastroduodenoscopy (EGD)</strong></summary>
+            <div>
+                <ul><li>- <b>High Specificity</b> for GERD if Erosive Esophagitis (EE) or Barrett’s Esophagus (BE) is present.</li><li>- <b>Extremely Low Sensitivity</b> for LPR; <q>fewer than <b>30%</b></q> of LPR patients show erosive esophagitis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ambulatory Reflux Monitoring</strong></summary>
+            <div>
+                <ul><li>- The diagnostic cornerstone, using a 24-hour pH-impedance catheter or 96-hour wireless pH capsule.</li><li>- Guidelines emphasize testing <u>off acid suppression</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Impedance-pH</strong></summary>
+            <div>
+                <ul><li>- Superior to simple pH testing as it detects <b>non-acid (gas/liquid) reflux</b>, a hypothesized major driver of LPR.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dual-Sensor Probes</strong></summary>
+            <div>
+                <ul><li>- Historically used to measure pharyngeal acid exposure but have fallen out of favor due to artifact susceptibility and poor reproducibility.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Knowledge Gap: Statistical Uncoupling</strong></summary>
+            <div>
+                <ul><li>- A profound disconnect exists between laryngeal signs (RFS) and esophageal metrics (EGD, DeMeester scores).</li><li>- This suggests distinct LPR phenotypes.</li></ul>
+                
+        <details>
+            <summary><strong>Systemic/Esophageal LPR</strong></summary>
+            <div>
+                <ul><li>- Patients with incompetent LES, hiatal hernia, and secondary laryngeal spillover.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Isolated/Laryngeal LPR</strong></summary>
+            <div>
+                <ul><li>- Patients with competent LES but potential UES dysfunction or extreme laryngeal hypersensitivity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Phenotypes & Demographics</strong></summary>
+            <div>
+                <ul><li>- The LPR demographic profile is increasingly distinct from the classic GERD "obese smoker" stereotype.</li></ul>
+                
+        <details>
+            <summary><strong>The Obesity Paradox</strong></summary>
+            <div>
+                <ul><li>- The relationship between Body Mass Index (BMI) and LPR is conflicting.</li></ul>
+                
+        <details>
+            <summary><strong>GERD-like LPR Cohort</strong></summary>
+            <div>
+                <ul><li>- Obese patients may report more severe symptoms and have higher acid exposure, aligning with GERD mechanics.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Isolated LPR Cohort</strong></summary>
+            <div>
+                <ul><li>- Significant data indicates that isolated pharyngeal reflux events <u>do not correlate with BMI</u>.</li><li>- Suggests the mechanism breaching the UES is distinct from the mechanism breaching the LES (abdominal pressure).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Psychogenic 'Hypervigilant' Phenotype</strong></summary>
+            <div>
+                <ul><li>- Patients often present with globus, throat clearing, and breathlessness but have <u>normal physiological testing</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanisms</strong></summary>
+            <div>
+                <ul><li>- <b>Laryngeal Hyperresponsiveness:</b> A sensory neuropathy where the symptom threshold is lowered.</li><li>- <b>Esophageal Hypervigilance:</b> High anxiety scores are associated with elevated UES basal pressure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment Shift</strong></summary>
+            <div>
+                <ul><li>- San Diego Consensus recommends laryngeal recalibration therapy and neuromodulators (e.g., <q><b>gabapentin, tricyclics</b></q>) over PPIs for this group.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Structural Pathologies: Hidden Drivers</strong></summary>
+            <div>
+                <ul><li>- Structural abnormalities play a critical, often under-evaluated role in LPR.</li></ul>
+                
+        <details>
+            <summary><strong>Heterotopic Gastric Mucosa (Cervical Inlet Patch)</strong></summary>
+            <div>
+                <ul><li>- Islands of ectopic gastric mucosa in the proximal esophagus, just below the UES.</li><li>- Prevalence: Reported between <q><b>1% and 14%</b></q>; frequently missed on EGD.</li><li>- Significance: Can secrete acid and pepsin locally, acting as a <u>"proximal acid factory"</u> that bypasses the LES entirely.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Hiatal Hernia (HH)</strong></summary>
+            <div>
+                <ul><li>- Disrupts the mechanical anti-reflux barrier.</li><li>- Small hernias (<q><b><2cm</b></q>) are often dismissed but may be sufficient to allow a "jet" of refluxate to reach the pharynx.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cricopharyngeal Dysfunction (CP Bar)</strong></summary>
+            <div>
+                <ul><li>- A prominent "bar" on barium swallow indicating hypertrophy or fibrosis of the UES muscle.</li><li>- Causes dysphagia and globus, symptoms identical to LPR.</li><li>- <u>Barium esophagrams</u> are critical for identification.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5. The Helicobacter pylori Paradox</strong></summary>
+            <div>
+                <ul><li>- The relationship between H. pylori and LPR is highly polarized.</li></ul>
+                
+        <details>
+            <summary><strong>The Protective Hypothesis (Inverse Relationship)</strong></summary>
+            <div>
+                <ul><li>- <b>Mechanism:</b> H. pylori gastritis (especially corpus-predominant) leads to glandular atrophy and reduced parietal cell mass ---> <u>hypochlorhydria (low acid)</u>.</li><li>- <b>Risk:</b> Eradicating H. pylori can restore acid secretion, leading to de novo or worsened GERD.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Aggravating Hypothesis (Positive Association)</strong></summary>
+            <div>
+                <ul><li>- <b>Prevalence:</b> Meta-analyses show a significantly higher prevalence of H. pylori in LPR patients vs. controls (e.g., <q><b>86.4% vs 50%</b></q>).</li><li>- <b>Mechanism:</b> The bacterium or its inflammatory byproducts may be present in the refluxate aerosol.</li><li>- <b>Benefit:</b> Some studies show H. pylori eradication + PPIs leads to greater symptom improvement than PPIs alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>6. Comorbidities: 'Mimics' & 'Aggravators'</strong></summary>
+            <div>
+                <ul><li>- LPR frequently co-exists with or is mimicked by other pathologies.</li></ul>
+                
+        <details>
+            <summary><strong>Obstructive Sleep Apnea (OSA)</strong></summary>
+            <div>
+                <ul><li>- The relationship is bidirectional and synergistic.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism: 'Negative Pressure' Theory</strong></summary>
+            <div>
+                <ul><li>- During apneic events, struggling to breathe against a closed airway generates profound negative intrathoracic pressure.</li><li>- This vacuum effect can <u>"suck" gastric content</u> retrograde into the pharynx.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Therapeutic Overlap</strong></summary>
+            <div>
+                <ul><li>- <b>CPAP</b> therapy acts as a "pneumatic splint" for the airway and esophagus.</li><li>- Studies show CPAP use significantly reduces RSI and RFS scores, <u>independent of PPI use</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Eosinophilic Esophagitis (EoE)</strong></summary>
+            <div>
+                <ul><li>- An immune-mediated, allergic inflammation of the esophagus that can mimic LPR.</li></ul>
+                
+        <details>
+            <summary><strong>The Mimic</strong></summary>
+            <div>
+                <ul><li>- A subset of patients diagnosed with "refractory LPR" actually have undiagnosed EoE.</li><li>- Prevalence: EoE is present in <q><b>4-8.8%</b></q> of refractory reflux patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Gap</strong></summary>
+            <div>
+                <ul><li>- Requires EGD with biopsy showing <q><b>>15 eosinophils/HPF</b></q>.</li><li>- Biopsies are often not taken if the esophageal mucosa appears normal, missing "histologic" EoE.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>7. Motility & Functional Disorders</strong></summary>
+            <div>
+                <ul><li>- Motility disorders compromise the clearance of physiologic reflux, prolonging mucosal contact time.</li></ul>
+                
+        <details>
+            <summary><strong>Dysmotility & Clearance</strong></summary>
+            <div>
+                <ul><li>- High-Resolution Manometry (HRM) reveals subtle defects in LPR patients.</li></ul>
+                
+        <details>
+            <summary><strong>Ineffective Esophageal Motility (IEM)</strong></summary>
+            <div>
+                <ul><li>- Weak or fragmented peristalsis is common in LPR.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proximal Contractile Integral (PCI)</strong></summary>
+            <div>
+                <ul><li>- Reduced contractility in the <u>proximal esophagus</u> independently predicts increased pharyngeal reflux.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>8. Surgical Intervention & Outcomes</strong></summary>
+            <div>
+                <ul><li>- Laparoscopic Nissen Fundoplication (LNF) is the standard surgical option, but its utility for LPR is debated.</li></ul>
+                
+        <details>
+            <summary><strong>The 'Responder' Dilemma</strong></summary>
+            <div>
+                <ul><li>- LNF is highly effective for typical heartburn but less predictable for LPR.</li></ul>
+                
+        <details>
+            <summary><strong>Success Rates & Predictors</strong></summary>
+            <div>
+                <ul><li>- Satisfaction rates for LPR patients after LNF are around <q><b>78.4%</b></q>, lower than for typical GERD.</li><li>- <b>Better outcomes</b> are seen in patients with "Mixed" symptoms (LPR + Heartburn).</li><li>- <b>Predictors of success:</b> Higher resting LES pressure and abnormal DeMeester scores.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Transoral Incisionless Fundoplication (TIF)</strong></summary>
+            <div>
+                <ul><li>- TIF combined with hiatal hernia repair is an emerging viable option.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk of Dysphagia</strong></summary>
+            <div>
+                <ul><li>- Anti-reflux surgery carries a risk of exacerbating dysphagia, especially in LPR patients with baseline globus.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>9. Integrated Conclusion & Strategic Framework</strong></summary>
+            <div>
+                <ul><li>- Requires a paradigm shift from a "gastric acid-centric" model to a <u>"multi-factorial aerodigestive" model</u>.</li><li>- LPR is a heterogeneous syndrome involving structural, mucosal, microbial, and neuro-psychological factors.</li></ul>
+                
+        <details>
+            <summary><strong>Key Takeaways for Study Design</strong></summary>
+            <div>
+                <ul><li>- <b>Phenotyping is Mandatory:</b> Stratify patients into "Acid/Structural" vs. "Functional/Non-Acid" groups.</li><li>- <b>Structural Vigilance:</b> Actively quantify Inlet Patches and small Hiatal Hernias in refractory cases.</li><li>- <b>Comorbidity Screening:</b> Assess for "missed" diagnoses like EoE and OSA.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
