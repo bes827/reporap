@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Literature Mind Map: Two Study Protocols</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Medical Literature Mind Map: Two Study Protocols</strong></summary>
+            <div>
+                <ul><li>- This mind map contains structured summaries of two separate medical research proposals.</li><li>- <b>Article 1:</b> Pharmacist-Led Board Authorized Protocols (BAPs) for Acute Conditions.</li><li>- <b>Article 2:</b> Regenerative Peripheral Nerve Interface (RPNI) for Postmastectomy Pain Syndrome (PMPS).</li></ul>
+                
+        <details>
+            <summary><strong><b>Article 1:</b> Pharmacist-Led Board Authorized Protocols (BAPs) for Acute Conditions</strong></summary>
+            <div>
+                <ul><li>- A study proposal to compare outcomes for patients receiving care by pharmacists for UTIs, GAS, and COVID-19 to those receiving care from traditional providers.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the age range for the UTI BAP?</li><li>- What is the primary antibiotic for the GAS protocol in this study?</li><li>- Within how many days must nirmatrelvir/ritonavir be initiated for COVID-19?</li><li>- What is the definition of recurrent UTIs in the exclusion criteria?</li><li>- What is the comparator effectiveness rate for nirmatrelvir/ritonavir in this study?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Specific Aims & Hypothesis</u></strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> To compare outcomes for patients treated by pharmacists under Board Authorized Protocols (BAPs) versus traditional providers for three acute conditions: UTI, GAS, and COVID-19.</li></ul>
+                
+        <details>
+            <summary><strong><b>Hypothesis</b></strong></summary>
+            <div>
+                <ul><li>- Patients receiving care under pharmacist-driven BAPs will have <u>similar outcomes</u> compared to those receiving care under traditional providers.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Approach & Methodology</u></strong></summary>
+            <div>
+                <ul><li>- The study will utilize a three-manuscript approach, one for each disease state.</li></ul>
+                
+        <details>
+            <summary><strong><b>Study Design</b></strong></summary>
+            <div>
+                <ul><li>- <b>Design:</b> <u>Retrospective single cohort study</u>.</li><li>- <b>Rationale:</b> To review the effectiveness of an already implemented clinical practice change.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Study Population</b></strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Patients at UK HealthCare at specified locations.</li><li>- <b>Timeframe:</b> Encounters between <q>October 1, 2022</q> and <q>September 30, 2025</q>.</li><li>- <b>Inclusion:</b> Any patient who received testing and treatment for UTI, GAS, or COVID-19 by a pharmacist under a BAP.</li><li>- A single patient can be included multiple times for multiple encounters.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Data Collection</b></strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Electronic Health Record (EHR).</li><li>- Data collection will involve both easily extractable data and manual chart review.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Disease Protocol 1:</b> Urinary Tract Infection (UTI)</strong></summary>
+            <div>
+                <ul><li>- Focuses on pharmacist-managed uncomplicated UTI in women.</li></ul>
+                
+        <details>
+            <summary><strong>Inclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Gender:</b> Female.</li><li>- <b>Age:</b> <q>18-64 years old</q>.</li><li>- <b>History:</b> Prior history of at least one UTI.</li><li>- <b>Symptoms:</b> At least one symptom (dysuria, frequency, urgency).</li><li>- <b>Test:</b> Positive Point of Care Test (POCT) for <u>nitrites and leukocytes</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Exclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Male, age <18 or ≥65, pregnant, post-menopausal.</li><li>- Symptoms of vaginitis or symptoms >1 week.</li><li>- Immunocompromised status.</li><li>- Abnormal urinary tract structure.</li><li>- Concern for <u>pyelonephritis</u> (fever ≥100.4°F, N/V, flank pain).</li><li>- Diabetes, renal dysfunction.</li><li>- Recent UTI treatment or inpatient admission (within <q>1 month</q>).</li><li>- Recurrent UTIs (defined as <q>four or more a year</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes & Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Primary Outcome:</b> Rate of <u>clinical cure</u> compared to literature values.</li><li>- Clinical cure is defined as: no repeat UTI testing/treatment sought within <q><b>7 days</b></q> of the original POCT.</li><li>- <b>Secondary Outcomes:</b> Time to prescription pick-up, adverse events requiring follow-up within 7 days.</li><li>- <b>Statistical Test:</b> <u>Student’s t-test</u> for the primary outcome.</li></ul>
+                
+        <details>
+            <summary><strong>Antibiotic-Specific Comparators</strong></summary>
+            <div>
+                <ul><li>- <b>Nitrofurantoin:</b> Comparator cure rate of <q>79-92%</q>.</li><li>- <b>SMX-TMP:</b> Comparator cure rate of <q>79-100%</q>.</li><li>- <b>Fosfomycin:</b> Comparator cure rate of <q>79-92%</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Disease Protocol 2:</b> Group A Streptococcus (GAS)</strong></summary>
+            <div>
+                <ul><li>- Focuses on pharmacist-managed GAS pharyngitis.</li></ul>
+                
+        <details>
+            <summary><strong>Inclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Age:</b> <q>5 years old or older</q>.</li><li>- <b>Symptoms:</b> Consistent with GAS (sore throat, fever, swollen lymph nodes, etc.).</li><li>- <b>Test:</b> Positive GAS POCT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Exclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Age <5, pregnant/breastfeeding.</li><li>- Renal dysfunction, immunocompromised.</li><li>- History of rheumatic fever/heart disease, scarlet fever, or GAS-induced glomerulonephritis.</li><li>- Antibiotic therapy within <q>1 month</q> for similar symptoms.</li><li>- <u>Clinically unstable</u> (e.g., BP <90/60, HR >125, RR >30, Temp <q>≥103°F</q>).</li><li>- Concern for viral symptoms (rhinorrhea, cough, oral ulcers).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes & Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Primary Outcome:</b> Rate of <u>clinical cure</u> compared to literature.</li><li>- Clinical cure defined as: no repeat testing/treatment sought within <q><b>7 days</b></q> of original POCT.</li><li>- <b>Study Scope:</b> Only patients receiving <b>amoxicillin</b> will be included.</li><li>- <b>Secondary Outcomes:</b> Time to prescription pick-up, adverse events within 7 days.</li><li>- <b>Statistical Test:</b> <u>Student’s t-test</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Comparator Data</strong></summary>
+            <div>
+                <ul><li>- Literature focuses on bacteriologic failure, not clinical cure.</li><li>- A small pediatric study will be used as a comparator.</li><li>- Comparator value: Treatment failure with persistent symptoms at day 6 is around <q><b>4.75%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Disease Protocol 3:</b> COVID-19 (Nirmatrelvir/Ritonavir)</strong></summary>
+            <div>
+                <ul><li>- Focuses on pharmacist-managed dispensing of nirmatrelvir/ritonavir (Paxlovid).</li></ul>
+                
+        <details>
+            <summary><strong>Inclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Age:</b> <q>≥ 12 years old</q>.</li><li>- <b>Weight:</b> <q>≥ 40kg</q>.</li><li>- <b>Test:</b> Positive SARS-CoV-2 test within <q><b>5 days</b></q>.</li><li>- <b>Risk:</b> At risk for hospitalization or severe disease progression.</li><li>- Must have received nirmatrelvir/ritonavir treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Exclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Renal:</b> Severe impairment (eGFR <q><30ml/min</q>).</li><li>- <b>Hepatic:</b> Severe impairment (Child-Pugh Class <q><b>C</b></q>).</li><li>- <b>Drug Interactions:</b> Potential for life-threatening reactions or treatment failure.</li><li>- Requiring hospital admission.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes & Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Primary Outcome:</b> <u>Hospital admission or death</u> within <q><b>30 days</b></q> of a positive test.</li><li>- <b>Comparator:</b> An effectiveness of <q><b>80%</b></q> in preventing the primary outcome.</li><li>- <b>Secondary Outcomes:</b> Time to prescription pick-up, adverse events within 7 days.</li><li>- <b>Statistical Test:</b> <u>Student’s t-test</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Comparator Rationale</strong></summary>
+            <div>
+                <ul><li>- Based on a 2022 US study showing <q>79.6%</q> effectiveness if given within 5 days.</li><li>- Effectiveness increased to <q>89.6%</q> if dispensed on the same day as testing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Article 2:</b> Regenerative Peripheral Nerve Interface (RPNI) for Postmastectomy Pain Syndrome (PMPS)</strong></summary>
+            <div>
+                <ul><li>- A study proposal to prospectively evaluate the efficacy of RPNI in preventing and treating chronic neuropathic pain in breast cancer patients undergoing mastectomy.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of mastectomy patients experience PMPS?</li><li>- How is PMPS defined in terms of duration?</li><li>- What is the target sample size per group in this study?</li><li>- What is the primary pain questionnaire being used?</li><li>- At what time point is the post-procedure evaluation conducted for both aims?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Background: Postmastectomy Pain Syndrome (PMPS)</strong></summary>
+            <div>
+                <ul><li>- <b>Definition:</b> Moderate to severe chronic neuropathic pain that persists for at least <q><b>six months</b></q> and is present at least <q><b>50%</b></q> of the time.</li><li>- <b>Prevalence:</b> Occurs in <q><b>35% to 60%</b></q> of breast cancer patients post-mastectomy.</li><li>- <b>Origin:</b> Believed to result from surgical injury to major peripheral nerves (e.g., intercostal nerves), leading to neuroma formation.</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Manifestations</strong></summary>
+            <div>
+                <ul><li>- Dull dragging sensation, shooting neuropathic pain, or numbness.</li><li>- <b>Allodynia:</b> Pain from normally non-painful stimuli.</li><li>- <b>Hyperalgesia:</b> Exaggerated response to painful stimuli.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intervention: Regenerative Peripheral Nerve Interface (RPNI)</strong></summary>
+            <div>
+                <ul><li>- <b>Technique:</b> An established surgical technique to control postamputation pain.</li><li>- <b>Procedure:</b> A muscle graft (harvested from nearby pectoralis or serratus muscles) is wrapped around the nerve ending and sutured in place.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Specific Aims & Hypotheses</u></strong></summary>
+            <div>
+                <ul><li>- The study has two primary aims: one focused on prevention and the other on treatment.</li></ul>
+                
+        <details>
+            <summary><strong><b>Aim 1: Prevention</b></strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> Determine if RPNI can <u>prevent</u> chronic neuropathic chest pain in patients undergoing mastectomies.</li><li>- <b>Hypothesis:</b> Patients who undergo RPNI will have <u>no or almost no</u> neuropathic chest pain compared to those who do not.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Aim 2: Treatment</b></strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> Determine if RPNI can <u>decrease pain levels</u> in patients with established PMPS.</li><li>- <b>Hypothesis:</b> Patients with PMPS who undergo RPNI will have a <u>significant decrease</u> in their pain levels.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Approach & Methodology</u></strong></summary>
+            <div>
+                <ul><li>- <b>Study Design:</b> <u>Cohort prospective study</u>.</li><li>- <b>Enrollment Period:</b> <q>December 1st, 2025</q> to <q>December 30th, 2030</q>.</li></ul>
+                
+        <details>
+            <summary><strong><b>Study Population</b></strong></summary>
+            <div>
+                <ul><li>- <b>Recruitment:</b> Breast cancer patients who underwent unilateral or bilateral mastectomies.</li></ul>
+                
+        <details>
+            <summary><strong>Inclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Female, adult patients <q>> 18 years old</q>.</li><li>- Underwent unilateral or bilateral total skin-sparing mastectomies.</li><li>- <b>AND</b> either underwent prophylactic RPNI OR have PMPS and are interested in RPNI for treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Exclusion Criteria</strong></summary>
+            <div>
+                <ul><li>- Males, pregnant, or prisoners.</li><li>- Female patients <q>< 18 years old</q>.</li><li>- Patients who do not consent.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sample Size</strong></summary>
+            <div>
+                <ul><li>- <b>Target:</b> <q><b>100 patients</b></q> per group (Aim 1 and Aim 2).</li><li>- <b>Power:</b> Designed to have <q><b>80%</b></q> power to detect an effect size of <q><b>0.39</b></q> in mean pain level.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Experimental Conditions</b></strong></summary>
+            <div>
+                <ul><li>- The study follows two distinct cohorts based on the aims.</li></ul>
+                
+        <details>
+            <summary><strong>Aim 1 Cohort (Prevention)</strong></summary>
+            <div>
+                <ul><li>- Recruit <q>100</q> patients who underwent mastectomy with RPNI.</li><li>- <b>Follow-up:</b> Complete a survey and attend a clinical evaluation at <q><b>6 months</b></q> post-surgery.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Aim 2 Cohort (Treatment)</strong></summary>
+            <div>
+                <ul><li>- Recruit <q>100</q> patients with established PMPS interested in RPNI.</li><li>- <b>Procedure:</b> Complete a pre-surgical survey and evaluation.</li><li>- <b>Follow-up:</b> Complete the same survey and evaluation at <q><b>6 months</b></q> post-RPNI surgery.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Data Collection & Endpoints</b></strong></summary>
+            <div>
+                <ul><li>- Data will be collected on demographics, disease characteristics, surgery details, and pain medication use.</li></ul>
+                
+        <details>
+            <summary><strong>Survey-Based Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b><u>Short-form McGill Pain Questionnaire 2 (SF-MPQ-2)</u>:</b> Assesses pain quality and intensity (0-10 scale).</li><li>- <b><u>Pain Level</u>:</b> Single question on average chest pain in the last week (0-10).</li><li>- <b><u>Breast-Q Questionnaire v2</u>:</b> Physical Well-Being: Chest (PWBC) scale for satisfaction (0-100).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Evaluation Outcomes</strong></summary>
+            <div>
+                <ul><li>- <b><u>Tinel’s Sign</u>:</b> Assessed for presence or absence.</li><li>- <b><u>Pressure Algometry</u>:</b> Quantifies mechanical pain threshold at standardized sites.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Bias Management</b></strong></summary>
+            <div>
+                <ul><li>- <b>Selection Bias:</b> Minimized by clear inclusion/exclusion criteria.</li><li>- <b>Measurement Bias:</b> Minimized by using standardized surveys and tools.</li><li>- <b>Observer Bias:</b> The researcher performing clinical evaluations will be <u><b>blinded</b></u> to the participant's group and evaluation timing.</li><li>- <b>Reporting Bias:</b> Minimized by a predefined analysis plan.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Data Analysis</b></strong></summary>
+            <div>
+                <ul><li>- <b>Statistical Significance:</b> Set at P < <q><b>0.05</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Variable Analysis</strong></summary>
+            <div>
+                <ul><li>- <b>Continuous Variables:</b> Expressed as means (SD). Compared using <u>T-test</u> or <u>multiple regression</u> for confounding variables.</li><li>- <b>Pre/Post Comparison (Aim 2):</b> A <u><b>paired T-test</b></u> will be used.</li><li>- <b>Categorical Variables:</b> Presented as frequencies (%). Compared using <u>chi-square</u> or <u>Fisher's exact tests</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
