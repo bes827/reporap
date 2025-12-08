@@ -1,0 +1,725 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Critique of a Study on Pharmacist-Managed POCT and Treatment</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Critique of a Study on Pharmacist-Managed POCT and Treatment</strong></summary>
+            <div>
+                <ul><li>- <b>Source:</b> Peer review (BSC 731 template) of a research proposal.</li><li>- <b>Study Title:</b> Evaluation of pharmacist-managed POCT and treatment for UTI, GAS, and COVID-19 vs traditional providers.</li><li>- <b>Study Design:</b> Retrospective, single-cohort.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the proposed follow-up window for UTI/GAS that is considered too short?</li><li>- What statistical test was inappropriately proposed for comparing proportions of outcomes?</li><li>- What is a major source of bias in the COVID-19 arm's inclusion criteria?</li><li>- What is the primary weakness of using "literature values" as a comparator group?</li><li>- What is the more accurate term suggested for the "Clinical Cure" outcome?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🔬 Research Proposal Overview</strong></summary>
+            <div>
+                <ul><li>- <b>Objective:</b> To evaluate the real-world outcomes of pharmacist-managed care for common acute conditions under Board Approved Protocols (BAPs).</li></ul>
+                
+        <details>
+            <summary><strong>Conditions Studied</strong></summary>
+            <div>
+                <ul><li>- Uncomplicated Urinary Tract Infection (UTI)</li><li>- Group A Streptococcus (GAS) Pharyngitis</li><li>- COVID-19</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Hypothesis</strong></summary>
+            <div>
+                <ul><li>- The study aims to show that pharmacist-led care produces <b>"similar outcomes"</b> to care from traditional providers (MDs, NPs, PAs).</li><li>- This framing implies a <u>non-inferiority</u> or <u>equivalence</u> hypothesis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proposed Design</strong></summary>
+            <div>
+                <ul><li>- <b>Design:</b> Retrospective, single-cohort study.</li><li>- <b>Data Source:</b> Electronic Health Record (EHR) data from a single health system.</li><li>- <b>Study Period:</b> <q>2022–2025</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⭐ Factor 1: Importance & Innovation</strong></summary>
+            <div>
+                <ul><li>- Overall assessment of the research question's relevance and novelty.</li></ul>
+                
+        <details>
+            <summary><strong>✅ Strengths</strong></summary>
+            <div>
+                <ul><li>- <b>High Practical Relevance:</b> Addresses a critical policy issue of expanding pharmacist scope of practice to alleviate provider shortages.</li><li>- <b>Multi-Disease Approach:</b> Evaluating UTI, GAS, and COVID-19 increases the generalizability of findings for pharmacist-driven protocols.</li><li>- <b>Real-World Evidence:</b> Uses EHR data from an implemented program, providing high external validity for similar practice settings.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚠️ Weaknesses</strong></summary>
+            <div>
+                <ul><li>- <b>Incremental Innovation:</b> Many studies on pharmacist interventions already exist; novelty must be clearly defined (e.g., multi-BAP comparison).</li><li>- <b>Disconnect between Aims & Design:</b> The aim is to compare against "traditional providers," but the proposed method is a comparison against <q><u>"previously reported literature values."</u></q></li><li>- This is a major flaw, as using historical external data is less rigorous than a direct internal comparison.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🛠️ Factor 2: Rigor & Feasibility (Methodology Critique)</strong></summary>
+            <div>
+                <ul><li>- Detailed analysis of the proposed study's methodological flaws and suggested remedies.</li></ul>
+                
+        <details>
+            <summary><strong>1. Study Design & Comparator Group</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The study uses a single cohort design compared against <q><b>"literature values"</b></q> (historical controls).</li><li>- <u>Problem:</u> This introduces significant confounding and <q><u>history bias</u></q>. Care standards, patient populations, and pathogen characteristics (e.g., COVID variants) change over time.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- Define and extract a <b>contemporaneous control cohort</b> from the same health system (patients treated by non-pharmacists in the same clinics/timeframe).</li><li>- Use statistical methods to balance covariates between groups, such as:</li><li>- Propensity score matching</li><li>- Multivariable adjustment</li><li>- Inverse probability weighting</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Outcome Definitions & Follow-up</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The primary outcome for UTI and GAS, termed "clinical cure," is defined as "no repeat testing/treatment within <q><b>7 days</b></q>" at the same health system.</li><li>- <u>Problem:</u> This definition lacks <b>Construct Validity</b> and risks measurement error.</li></ul>
+                
+        <details>
+            <summary><strong>Identified Issues</strong></summary>
+            <div>
+                <ul><li>- <b>Follow-up too short:</b> A 7-day window may misclassify clinical failures.</li><li>- <b>Misclassification Risk:</b> Patients may seek follow-up care elsewhere (e.g., another clinic, urgent care, ER), which would be incorrectly counted as a "cure."</li><li>- <b>Overestimation of Success:</b> The flawed definition is likely to significantly overestimate the true success rate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- Extend the primary follow-up window to a more clinically appropriate duration, such as <q><u>14 days for UTI</u></q> and <q><u>7–14 days for GAS</u></q>.</li><li>- Add objective secondary outcomes like 30-day return visits, emergency department visits, or hospitalizations.</li><li>- Re-label the outcome precisely to what is being measured, e.g., <q><b>"Rate of Treatment Re-escalation within System"</b></q> instead of "Clinical Cure."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Statistical Methods</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The proposal states that a <q><u>Student’s t-test</u></q> will be used to compare primary outcomes.</li><li>- <u>Problem:</u> This is statistically incorrect. The t-test is for <b>continuous variables</b> (e.g., blood pressure), while the study's primary outcomes are <b>categorical/binary</b> (e.g., Cure vs. No Cure).</li></ul>
+                
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- For unadjusted comparisons of proportions, use <q><b>Chi-square</b></q> or <q><b>Fisher’s exact tests</b></q>.</li><li>- For adjusted analyses, use <q><u>logistic regression</u></q> and report odds ratios.</li><li>- For time-to-event outcomes (e.g., COVID hospitalization/death), use <q><b>survival analysis</b></q> (Kaplan-Meier, Cox proportional hazards) and report hazard ratios.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Handling Multiple Encounters</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The plan includes patients with multiple encounters but does not specify the analytic approach.</li><li>- <u>Problem:</u> Treating multiple encounters from the same patient as independent observations violates statistical assumptions and can bias variance estimates.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- Prespecify the unit of analysis (the encounter or the patient).</li><li>- If encounters are the unit, use models that account for within-person correlation, such as:</li><li>- <q><b>Mixed-effects models</b></q> (with patient as a random effect)</li><li>- <q><b>Generalized estimating equations (GEE)</b></q> with robust standard errors.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5. Selection Bias in COVID-19 Arm</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The COVID-19 arm only includes patients who <q><u>accepted treatment</u></q> (e.g., nirmatrelvir/ritonavir).</li><li>- <u>Problem:</u> This introduces selection bias, as the sample is skewed towards individuals who are willing and able to receive treatment. It is not representative of all diagnosed patients.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- Ensure the comparator group is similarly defined (i.e., patients treated by traditional providers who also accepted therapy).</li><li>- Alternatively, use an <q><u>intention-to-treat</u></q> approach if comparing against literature that does so.</li><li>- Adjust for potential confounders like vaccination status, symptom onset timing, and comorbidities.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>6. Non-Inferiority Hypothesis</strong></summary>
+            <div>
+                <ul><li>- <u>Weakness:</u> The hypothesis of "similar outcomes" implies non-inferiority, but no formal plan is provided.</li><li>- <u>Problem:</u> Claiming non-inferiority requires a pre-specified, clinically meaningful margin (delta) and a formal statistical test.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Suggested Fix</strong></summary>
+            <div>
+                <ul><li>- <b>Option 1 (Test Non-Inferiority):</b> Prespecify a non-inferiority margin for each outcome and perform sample size/power calculations.</li><li>- <b>Option 2 (Descriptive/Comparative):</b> Avoid non-inferiority language and frame the study as providing adjusted effectiveness estimates.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>7. Other Methodological Issues</strong></summary>
+            <div>
+                <ul><li>- A summary of additional identified weaknesses in the research plan.</li></ul>
+                
+        <details>
+            <summary><strong>Temporal Confounding</strong></summary>
+            <div>
+                <ul><li>- <u>Issue:</u> The <q><b>2022–2025</b></q> study period covers significant changes in COVID-19 (variants, immunity, treatments).</li><li>- <u>Fix:</u> Adjust for calendar time, vaccination status, and prior infection. Consider stratified analyses by time epoch.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Generalizability</strong></summary>
+            <div>
+                <ul><li>- <u>Issue:</u> UTI exclusion criteria (e.g., age <q><b>>65</b></q>, <b>diabetics</b>) limit external validity to populations that commonly experience UTIs.</li><li>- <u>Fix:</u> Justify exclusions and consider a sensitivity analysis with broader criteria.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Power & Sample Size</strong></summary>
+            <div>
+                <ul><li>- <u>Issue:</u> No sample size or power calculations were presented.</li><li>- <u>Fix:</u> Provide a priori power calculations or, if retrospective, report the minimal detectable differences given the available sample size.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Data Quality & Blinding</strong></summary>
+            <div>
+                <ul><li>- <u>Issue:</u> No plan for ensuring inter-rater reliability for manual chart review or for blinding assessors.</li><li>- <u>Fix:</u> Develop a data dictionary, double-code a subset of charts (calculate kappa), and blind chart reviewers/adjudicators to provider type where feasible.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📝 Actionable Recommendations Checklist</strong></summary>
+            <div>
+                <ul><li>- A summary of the most critical steps to improve the study's rigor.</li></ul>
+                
+        <details>
+            <summary><strong>Top Priorities</strong></summary>
+            <div>
+                <ul><li>- <b>1. Define Comparator Cohorts:</b> Use a contemporaneous internal control group with propensity score matching or multivariable modeling.</li><li>- <b>2. Correct Statistical Tests:</b> Replace t-test with <u>chi-square/Fisher's exact</u> for proportions and <u>logistic regression/Cox models</u> for adjusted/time-to-event outcomes.</li><li>- <b>3. Refine Outcomes:</b> Extend follow-up windows to <q><b>14–30 days</b></q> and use more precise outcome definitions.</li><li>- <b>4. Address Repeated Measures:</b> Use <u>mixed-effects models or GEE</u> for multiple encounters per patient.</li><li>- <b>5. Adjust for Confounding:</b> Control for temporal trends (calendar time, vaccination status for COVID).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🏆 Overall Impact & Conclusion</strong></summary>
+            <div>
+                <ul><li>- <b>Potential:</b> The project addresses a highly relevant and actionable question about the role of pharmacists in healthcare.</li><li>- <b>Current State:</b> The study's impact is currently limited by major methodological weaknesses.</li><li>- <b>Path Forward:</b> If rigor is strengthened, the study can provide valuable <u>real-world evidence</u> to inform policy and clinical workflows.</li></ul>
+                
+        <details>
+            <summary><strong>Final Assessment</strong></summary>
+            <div>
+                <ul><li>- The work’s greatest potential impact is as an <b>implementation / health-services contribution</b>, not as a formal efficacy trial.</li><li>- With improved analytic rigor, the findings could significantly influence how BAPs are evaluated and implemented in health systems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
