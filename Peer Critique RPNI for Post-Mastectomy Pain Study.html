@@ -1,0 +1,797 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Peer Critique: RPNI for Post-Mastectomy Pain Study</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Peer Critique: RPNI for Post-Mastectomy Pain Study</strong></summary>
+            <div>
+                <ul><li>- Source: BSC 731 Peer Review Template</li><li>- Topic: Prospective evaluation of Regenerative Peripheral Nerve Interface (RPNI) to prevent and treat post-mastectomy neuropathic chest pain (PMPS).</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the most critical methodological flaw identified for Aim 1 (prevention)?</li><li>- What advanced statistical method is recommended for the pre/post analysis in Aim 2?</li><li>- What type of bias is introduced by recruiting patients through flyers and emails?</li><li>- To account for patient dropouts, by what percentage should the recruitment target be inflated?</li><li>- What objective clinical measure, besides patient surveys, is used to assess neuropathic pain?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overall Impact & Impression</strong></summary>
+            <div>
+                <ul><li>- <b>High clinical importance</b>: Addresses a common, debilitating problem (PMPS) with limited effective treatments.</li><li>- <b>Moderate-to-high innovation</b>: Applies a plausible biologic intervention (RPNI) in a prospective study.</li><li>- <b>Current major weakness</b>: Methodological ambiguities, especially the lack of control/comparator groups, limit causal inference and dampen the study's potential impact.</li></ul>
+                
+        <details>
+            <summary><strong>Potential</strong></summary>
+            <div>
+                <ul><li>- If methodological issues are fixed, the study could provide <u>robust evidence</u> to change surgical practice and pain management after mastectomy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Current Risk</strong></summary>
+            <div>
+                <ul><li>- As planned, the study is promising but at high risk of <u>bias</u>, making results difficult to interpret.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Factor 1: Importance & Innovation</strong></summary>
+            <div>
+                <ul><li>- Evaluates the significance of the research question and its novelty.</li></ul>
+                
+        <details>
+            <summary><strong>Strengths</strong></summary>
+            <div>
+                <ul><li>- <b>Addresses a clinical gap</b>: PMPS is a significant problem, and RPNI offers a physiological solution (neuroma prevention).</li><li>- <b>Translational value</b>: Includes two complementary aims: <u>prevention</u> (prophylactic) and <u>treatment</u> (therapeutic).</li><li>- <b>Feasibility</b>: Multi-site recruitment within a single health system supports generalizability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Weaknesses</strong></summary>
+            <div>
+                <ul><li>- <b>Incremental Innovation</b>: Prior case series exist, so novelty depends on the rigor of this prospective study.</li><li>- <b>Unclear Scope</b>: Proposal should clarify how this study is a significant step up from the 'couple of case series' already published (e.g., first large-scale prospective study).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Factor 2: Rigor & Feasibility (Approach)</strong></summary>
+            <div>
+                <ul><li>- This section details the major methodological flaws and provides actionable recommendations for improvement.</li></ul>
+                
+        <details>
+            <summary><strong>1. Comparator / Causal Inference</strong></summary>
+            <div>
+                <ul><li>- <b>CRITICAL FLAW</b>: The study design, as proposed, cannot establish causality due to the lack of appropriate control groups.</li></ul>
+                
+        <details>
+            <summary><strong>Aim 1 (Prevention) Weakness</strong></summary>
+            <div>
+                <ul><li>- Plans to enroll 100 patients who receive RPNI but has <u>no defined contemporaneous control group</u> of mastectomy patients who did not.</li><li>- This makes it impossible to determine if lower pain rates are due to RPNI or other factors like <q><b>selection bias</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Add a <b>contemporaneous control cohort</b> of similar mastectomy patients without RPNI from the same sites and time frame.</li><li>- <b>Ideal Design</b>: <q><u>Randomized Controlled Trial (RCT)</u></q>.</li><li>- <b>Alternative Designs</b>: Prospective cohort with <q>propensity score matching</q> or multivariable adjustment for confounders (age, reconstruction type, etc.).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Aim 2 (Treatment) Weakness</strong></summary>
+            <div>
+                <ul><li>- The pre/post within-subject design is stronger but lacks a comparator for <q><b>placebo effects</b></q>, natural recovery, or regression to the mean.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Consider a <q><u>wait-list or delayed-treatment control</u></q> group.</li><li>- If not feasible, emphasize within-subject change but rigorously adjust for concomitant interventions (pain meds, physical therapy).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Sample Size & Power</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: Justification is minimal (single effect size of <q>0.39</q> cited without source/variance).</li><li>- <b>Weakness</b>: Proposal fails to account for patient dropouts (attrition).</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Define the <b>Minimal Clinically Important Difference (MCID)</b> for the chosen pain scales (SF-MPQ-2, BREAST-Q).</li><li>- Calculate sample size based on MCID, using mean/SD estimates from prior literature.</li><li>- <u>Inflate the recruitment target</u> by <q><b>15-20%</b></q> to ensure the final analyzed sample size is met after anticipated dropouts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Statistical Methods</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: The planned use of simple t-tests is inadequate for the data structure and potential confounders.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- For Aim 2 (pre/post): Use <q><u>linear mixed-effects models</u></q> or repeated measures ANCOVA to handle repeated measures and subject variability.</li><li>- For Aim 1 (comparative): Use logistic or linear regression; consider <q>propensity score methods</q> to balance covariates.</li><li>- Pre-specify the primary endpoint to limit issues with multiple comparisons.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Measurement & Bias Reduction</strong></summary>
+            <div>
+                <ul><li>- Strengths include using validated instruments (SF-MPQ-2, BREAST-Q) and objective measures.</li></ul>
+                
+        <details>
+            <summary><strong>Blinding</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: Surgeon and patient cannot be blinded, but outcome assessors can be.</li><li>- <b>Fix</b>: Ensure clinical evaluators performing <q><b>Tinel’s sign</b></q> and <q><b>pressure algometry</b></q> are <u>blinded</u> to the patient's group and time point.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Standardization</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: RPNI technique may vary between surgeons, confounding results.</li><li>- <b>Fix</b>: Use a detailed <u>operations manual</u> to standardize the surgical technique. Document intraoperative variables (nerve resected, graft size) and surgeon experience.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Follow-up Timing</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: A single endpoint at 6 months may miss important pain trajectories.</li><li>- <b>Fix</b>: Collect data at multiple time points (e.g., baseline, 1, 3, 6, and 12 months) to characterize pain onset, persistence, and durability of effect.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5. Recruitment & Selection Bias</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: Recruitment relies on flyers, emails, and patient interest, leading to <q><u>Self-Selection Bias</u></q>.</li><li>- Patients with very severe or very mild symptoms may be more likely to participate, making the sample not representative.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Utilize a <b>systematic screening</b> of all eligible mastectomy records at the study sites.</li><li>- Aim for a <u>consecutive sample</u> to improve representativeness and reduce selection bias.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>6. Data Management & Quality</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: Data entry, coding, and quality control steps are not detailed.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Use a dedicated data management system like <q><b>REDCap</b></q> with audit trails.</li><li>- Create a data dictionary, train abstractors, and perform double-coding on a subset of data to ensure reliability.</li><li>- Blind statisticians to group allocation for primary analyses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>7. Ethics & Consent</strong></summary>
+            <div>
+                <ul><li>- <b>Strength</b>: Offering the procedure as standard of care regardless of study participation prevents coercion.</li><li>- <b>Weakness</b>: The distinction between clinical consent for surgery and research consent for data collection needs to be clearer.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- Create <b>separate consent forms</b> for clinical care (the RPNI surgery) and research participation (surveys, extra assessments).</li><li>- Ensure compensation does not create coercion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>8. Reporting & Protocol Registration</strong></summary>
+            <div>
+                <ul><li>- <b>Weakness</b>: No mention of protocol registration or adherence to reporting guidelines.</li></ul>
+                
+        <details>
+            <summary><strong>Recommended Fix</strong></summary>
+            <div>
+                <ul><li>- <b>Pre-register</b> the study protocol on a site like <q>clinicaltrials.gov</q>.</li><li>- Follow established reporting guidelines: <u>SPIRIT</u> for the protocol, and <u>CONSORT</u> (for RCT) or <u>STROBE</u> (for cohort) for the final report.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Actionable Checklist (Summary)</strong></summary>
+            <div>
+                <ul><li>- Key steps to improve the research proposal.</li></ul>
+                
+        <details>
+            <summary><strong>1. Solidify Study Design</strong></summary>
+            <div>
+                <ul><li>- Choose and justify the design for Aim 1: <b>RCT</b> or a <b>prospective matched cohort</b> with a contemporaneous non-RPNI comparator.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Refine Endpoints & Sample Size</strong></summary>
+            <div>
+                <ul><li>- Pre-specify primary endpoint(s) and the <b>MCID</b> for pain instruments.</li><li>- Re-calculate sample size accounting for MCID, realistic standard deviations, and dropout.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Standardize Procedures</strong></summary>
+            <div>
+                <ul><li>- Create an <b>operations manual</b> for the surgical technique.</li><li>- Develop a training plan for assessors and measure <u>inter-rater reliability</u> (e.g., kappa/ICC).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Develop Statistical Analysis Plan (SAP)</strong></summary>
+            <div>
+                <ul><li>- Detail model choices (e.g., mixed models), covariate handling, and missing data strategy (e.g., multiple imputation).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5. Register & Report</strong></summary>
+            <div>
+                <ul><li>- Register the protocol and pre-specify the analysis plan.</li><li>- Prepare to report according to SPIRIT/CONSORT/STROBE guidelines.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>6. Implement Data & Safety Plans</strong></summary>
+            <div>
+                <ul><li>- Set up data management in REDCap.</li><li>- Define a safety monitoring plan and a process for adjudicating adverse events.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inclusion & Regulatory Items</strong></summary>
+            <div>
+                <ul><li>- Considerations for patient populations, safety, and ethics.</li></ul>
+                
+        <details>
+            <summary><strong>Patient Demographics</strong></summary>
+            <div>
+                <ul><li>- <b>Exclusion of Males</b>: The proposal excludes males. This limits <u>generalizability</u> (external validity).</li><li>- <b>Suggestion</b>: Unless there is a strong physiological reason, this exclusion should be removed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Human Subjects Protection</strong></summary>
+            <div>
+                <ul><li>- Appears appropriate, but requires clear separation of clinical vs. research consent.</li><li>- A <b>Data & Safety Monitoring Plan</b> is needed to report and adjudicate adverse events (e.g., wound issues, infection).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
