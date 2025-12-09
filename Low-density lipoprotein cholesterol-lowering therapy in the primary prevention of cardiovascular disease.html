@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Low-density lipoprotein cholesterol-lowering therapy in the primary prevention of cardiovascular disease</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Low-density lipoprotein cholesterol-lowering therapy in the primary prevention of cardiovascular disease</strong></summary>
+            <div>
+                <ul><li>- <b>Journal:</b> UpToDate</li><li>- <b>Literature review current through:</b> Nov 2025</li><li>- <b>Topic last updated:</b> Jun 27, 2024</li></ul>
+                
+        <details>
+            <summary><strong>🧠 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the 10-year CVD risk threshold where statin therapy is generally indicated for patients with an LDL-C >100 mg/dL?</li><li>- For a patient with an LDL-C ≥190 mg/dL, what is the recommended initial statin intensity?</li><li>- What is the approximate LDL-C reduction expected from ezetimibe monotherapy?</li><li>- In the CLEAR OUTCOMES trial, what non-statin drug was shown to reduce cardiovascular events in statin-intolerant patients?</li><li>- For primary prevention, what is the general target for LDL-C in high-risk patients after starting therapy?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📌 Introduction & Key Concepts</strong></summary>
+            <div>
+                <ul><li>- <b>Primary prevention:</b> Lowering low-density lipoprotein cholesterol (LDL-C) to reduce atherosclerotic cardiovascular disease (CVD) risk in people <u>without</u> established CVD.</li><li>- <b>CVD Definition:</b> Includes fatal/nonfatal MI, ACS, sudden cardiac death, coronary revascularization, stroke, and peripheral arterial disease.</li><li>- <b>Core Principle:</b> The decision to use pharmacotherapy is based on both the <u>LDL-C level</u> and the patient's estimated <u>10-year CVD risk</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📊 CVD Risk Assessment</strong></summary>
+            <div>
+                <ul><li>- Perform risk evaluation for patients aged <q>20 years</q> or at their first encounter if older.</li><li>- <b>Initial Steps:</b></li><li>- Measure a lipid panel: total cholesterol, HDL-C, triglycerides, and LDL-C.</li><li>- Use an atherosclerotic CVD (ASCVD) risk calculator to estimate 10-year risk for patients aged <q>30 to 79</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Categories (Author's Preferred)</strong></summary>
+            <div>
+                <ul><li>- <b>Low:</b> <q><5%</q></li><li>- <b>Intermediate:</b> <q>5 to 7.4%</q></li><li>- <b>High:</b> <q>7.5 to 19.9%</q></li><li>- <b>Very high:</b> <q>≥20%</q></li></ul>
+                
+        <details>
+            <summary><strong>Comparison with ACC/AHA Labels</strong></summary>
+            <div>
+                <ul><li>- The ACC/AHA labels these categories differently:</li><li>- <b>Intermediate (5-7.4%)</b> is called <q>“borderline”</q> risk.</li><li>- <b>High (7.5-20%)</b> is called <q>“intermediate”</q> risk.</li><li>- <b>Very high (≥20%)</b> is called <q>“high”</q> risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk-Benefit Discussion</strong></summary>
+            <div>
+                <ul><li>- A reasonable expectation for statin therapy is a <q>30%</q> <u>relative</u> risk reduction.</li><li>- This translates into an <u>absolute</u> risk reduction that is proportional to the patient's baseline risk.</li><li>- <b>Example:</b> A 60-year-old man with a 9% 10-year risk would see his risk drop to <q>6%</q> (a 3 percentage-point absolute reduction).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🥗 Lifestyle Modification</strong></summary>
+            <div>
+                <ul><li>- Recommended for <u>all</u> patients with high LDL-C.</li><li>- <b>Key Components:</b> Aerobic exercise, healthy diet, and weight loss for those with overweight/obesity.</li><li>- Obtain a dietary history to identify patterns that raise LDL-C (e.g., <q>ketogenic or paleolithic diets</q>).</li></ul>
+                
+        <details>
+            <summary><strong>Dietary Impact</strong></summary>
+            <div>
+                <ul><li>- Dietary modification alone has <u>not</u> shown material decreases in cardiovascular events in prior trials.</li><li>- Diets shown to lower LDL-C and/or 10-year risk include: <q>Mediterranean, DASH, vegetarian, and vegan</q>.</li><li>- The Mediterranean diet's CVD benefit may be mediated by lower blood pressure and improved dysglycemia, not primarily lower LDL-C.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Combined Approach</strong></summary>
+            <div>
+                <ul><li>- Concomitant <b>exercise and dietary modification</b> lowers LDL-C more effectively than either alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>💊 Indications for Statin Therapy</strong></summary>
+            <div>
+                <ul><li>- Recommendations are based on LDL-C level and baseline CVD risk (see Algorithm 1).</li><li>- <b>Goal:</b> Reduce CVD events via LDL-C lowering.</li><li>- <u>Shared decision-making</u> is crucial, especially for intermediate-risk patients.</li></ul>
+                
+        <details>
+            <summary><strong>LDL-C ≥ 190 mg/dL (≥4.9 mmol/L)</strong></summary>
+            <div>
+                <ul><li>- <b>Action:</b> Initiate <u>high-intensity</u> statin therapy.</li><li>- A CVD risk calculation is <u>not needed</u> to start treatment.</li><li>- Always perform a work-up for <b>Familial Hypercholesterolemia (FH)</b>.</li></ul>
+                
+        <details>
+            <summary><strong>High-Intensity Statin Examples (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Atorvastatin:</b> <q>40 to 80 mg</q> daily</li><li>- <b>Rosuvastatin:</b> <q>20 to 40 mg</q> daily</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>LDL-C < 190 mg/dL (<4.9 mmol/L)</strong></summary>
+            <div>
+                <ul><li>- For patients without diabetes, statin indication is guided by the 10-year estimated CVD risk group.</li></ul>
+                
+        <details>
+            <summary><strong><b>High (7.5-20%)</b> & <b>Very High (≥20%)</b> Risk</strong></summary>
+            <div>
+                <ul><li>- <b>Indication:</b> Initiate statin therapy if LDL-C is <q>>100 mg/dL</q>.</li><li>- <b>Initial Dosing:</b> Usually start with a <u>moderate-intensity</u> statin.</li><li>- It is reasonable to start with <u>high-intensity</u> therapy for those with a 10-year risk <q>≥20%</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Moderate-Intensity Statin Examples (Table 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Atorvastatin:</b> <q>10 to 20 mg</q></li><li>- <b>Rosuvastatin:</b> <q>5 to 10 mg</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Supporting Evidence (CTT Collaboration)</strong></summary>
+            <div>
+                <ul><li>- Meta-analysis of >175,000 patients showed significant risk reduction per 1 mmol/L LDL-C reduction:</li><li>- <b>Major coronary event:</b> RR <q>0.79</q></li><li>- <b>Stroke:</b> RR <q>0.85</q></li><li>- <b>Coronary revascularization:</b> RR <q>0.76</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Intermediate (5-7.4%)</b> Risk</strong></summary>
+            <div>
+                <ul><li>- <b>Action:</b> Undertake <u>shared decision-making</u>.</li><li>- The absolute benefits are smaller in this group.</li><li>- CTT meta-analysis showed a modest absolute risk reduction of <q>0.47%</q> over a five-year period.</li></ul>
+                
+        <details>
+            <summary><strong>Factors Favoring Statin Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>LDL-C Level:</b> Recommend statin therapy if LDL-C is <q>>160 mg/dL</q>.</li><li>- <b>Risk-Enhancing Factors:</b> Presence of these factors favors statin initiation (See Table 2).</li></ul>
+                
+        <details>
+            <summary><strong>Key Risk-Enhancing Factors (Table 2)</strong></summary>
+            <div>
+                <ul><li>- Family history of premature ASCVD.</li><li>- Chronic kidney disease (eGFR 15-59).</li><li>- Chronic inflammatory conditions (e.g., psoriasis, RA, HIV).</li><li>- History of preeclampsia.</li><li>- High-risk ethnicity (e.g., South Asian).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Additional Risk Stratification</strong></summary>
+            <div>
+                <ul><li>- <b>Coronary Artery Calcium (CAC):</b> Consider in reluctant patients with LDL-C <160 mg/dL.</li><li>- Recommend statin if CAC score is <q>≥100 Agatston units</q> (many cardiologists treat for any CAC >0).</li><li>- If CAC score is <q>0</q>, statin therapy can be deferred.</li><li>- <b>Other Markers:</b> Elevated hsCRP (≥2 mg/L) or Lp(a) (≥50 mg/dL).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Low (<5%)</b> Risk</strong></summary>
+            <div>
+                <ul><li>- <b>Action:</b> For most patients, do <u>not</u> start statin therapy.</li><li>- Absolute risk reduction is very modest (<q>0.18%</q> over five years in CTT meta-analysis).</li><li>- Calcium scoring can help identify higher-risk individuals within this group.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🔄 Subsequent Management</strong></summary>
+            <div>
+                <ul><li>- Follow-up is crucial to assess efficacy, adherence, and side effects.</li></ul>
+                
+        <details>
+            <summary><strong>Monitoring & Assessment</strong></summary>
+            <div>
+                <ul><li>- <b>Repeat LDL-C:</b> Measure <q>4 to 6 weeks</q> after initiating statin therapy.</li><li>- Some physicians also check creatinine phosphokinase (CPK) and liver function tests (LFTs).</li><li>- For patients not starting a statin, reassess ASCVD risk periodically.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Medication Adjustment</strong></summary>
+            <div>
+                <ul><li>- <b>Target LDL-C:</b> For primary prevention, a general target is <q><100 mg/dL</q>.</li><li>- <b>Action if not at target (in high/very high risk):</b></li><li>- 1. Intensify statin dose (e.g., to high-intensity).</li><li>- 2. Add a non-statin medication.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Side Effects & Adherence</strong></summary>
+            <div>
+                <ul><li>- <b>Most major adverse reaction:</b> <u>Muscle symptoms</u>.</li><li>- Statins can increase risk of new-onset diabetes in a dose-dependent fashion.</li><li>- <b>Cognitive function:</b> Large trials show <u>no effect</u>.</li><li>- Assess adherence at follow-up visits; check prescription fill history in EHR.</li></ul>
+                
+        <details>
+            <summary><strong>Managing Statin Intolerance</strong></summary>
+            <div>
+                <ul><li>- Consider alternative statins like <q>fluvastatin</q> or <q>pitavastatin</q>.</li><li>- Use alternate-day regimens (e.g., <q>rosuvastatin 2.5 mg three times per week</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>➕ Non-Statin Treatment</strong></summary>
+            <div>
+                <ul><li>- Used for statin-intolerant patients or as add-on therapy in high-risk patients not at LDL-C goal.</li></ul>
+                
+        <details>
+            <summary><strong>Indications</strong></summary>
+            <div>
+                <ul><li>- <b>Statin Intolerance:</b> Ezetimibe and bempedoic acid have shown to reduce CV events in this population.</li><li>- <b>Inadequate LDL-C Lowering:</b> For high/very high-risk patients not at goal on max-tolerated statin, add <q>ezetimibe 10 mg daily</q> first.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Available Agents (Table 3)</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong><b>Ezetimibe</b> (First-line non-statin)</strong></summary>
+            <div>
+                <ul><li>- <b>LDL Reduction:</b> <q>~20 to 25%</q>.</li><li>- <b>Side Effects:</b> No effect on muscle symptoms or diabetes risk.</li><li>- <b>Evidence:</b> <u>EWTOPIA 75 trial</u> showed benefit in patients ≥75 years old.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Bempedoic Acid</b></strong></summary>
+            <div>
+                <ul><li>- <b>LDL Reduction:</b> <q>~20 to 25%</q>.</li><li>- <b>Evidence:</b> <u>CLEAR OUTCOMES trial</u> showed reduced CV events in statin-intolerant patients (including primary prevention subgroup).</li><li>- <b>Side Effects:</b> Higher rates of <q>gout, cholelithiasis, and kidney function impairment</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Colesevelam</b> (Bile Acid Sequestrant)</strong></summary>
+            <div>
+                <ul><li>- <b>LDL Reduction:</b> <q>~15 to 20%</q>.</li><li>- <b>Barrier to use:</b> Requires <q>six tablets daily</q>.</li><li>- Lacks an outcomes trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>PCSK9 Inhibitors</b></strong></summary>
+            <div>
+                <ul><li>- <b>Inclisiran</b> is now FDA-approved for primary prevention.</li><li>- <b>Barrier to use:</b> Much higher cost.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>👥 Special Populations</strong></summary>
+            <div>
+                <ul><li>- Management may need to be tailored for specific patient groups.</li></ul>
+                
+        <details>
+            <summary><strong>Age >75 years</strong></summary>
+            <div>
+                <ul><li>- Use the same criteria to initiate statin therapy.</li><li>- <b>Key Point:</b> Relative risk reduction may be smaller, but <u>absolute risk reduction is larger</u> due to high baseline risk.</li><li>- A meta-analysis found statins reduced major vascular events by <q>26%</q> per 1 mmol/L LDL-C reduction in this age group.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diabetes Mellitus</strong></summary>
+            <div>
+                <ul><li>- <b>LDL-C ≥190 mg/dL:</b> Treat with high-intensity statin (same as non-diabetics).</li><li>- <b>Age ≥40 & LDL-C <190:</b> Start a <u>moderate-intensity</u> statin.</li><li>- <b>Age 20-39 with risk factors:</b> Shared decision-making about starting a moderate-intensity statin.</li><li>- <b>High ASCVD risk (≥20%):</b> Consider starting a <u>high-intensity</u> statin with a lower LDL-C goal of <q><70 mg/dL</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Childbearing Potential & Pregnancy</strong></summary>
+            <div>
+                <ul><li>- <b>Contraindication:</b> Statins are <u>contraindicated</u> during pregnancy.</li><li>- <b>Counseling:</b> Discuss the need for effective contraception when initiating a statin.</li><li>- <b>If trying to conceive:</b> Withdraw the statin.</li><li>- <b>Reassurance:</b> FDA update found no increased risk if a patient was on a statin when pregnancy was discovered, as long as it is stopped promptly.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Populations</strong></summary>
+            <div>
+                <ul><li>- <b>HIV Infection:</b> Associated with excess ASCVD risk. (See separate topic).</li><li>- <b>Chronic Kidney Disease:</b> (See separate topic).</li><li>- <b>Liver Disease:</b> (See separate topic).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>📜 Summary & Recommendations</strong></summary>
+            <div>
+                <ul><li>- Approach is guided by LDL-C level and 10-year CVD risk.</li></ul>
+                
+        <details>
+            <summary><strong>LDL-C ≥190 mg/dL</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation:</b> Treat with <u>high-dose</u> statin therapy (Grade 1A).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>LDL-C 100 to <190 mg/dL</strong></summary>
+            <div>
+                <ul><li>- <b>High/Very High Risk (>7.5%):</b> Recommend <u>statin therapy</u> (Grade 1A). Start with moderate-intensity.</li><li>- <b>Intermediate Risk (5-7.4%):</b> Suggest <u>statin therapy</u> (Grade 2A) via shared decision-making. More likely to encourage if LDL-C >160 mg/dL or risk enhancers are present.</li><li>- <b>Low Risk (<5%):</b> Do not start statin therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Follow-up & Goals</strong></summary>
+            <div>
+                <ul><li>- <b>Goal LDL-C:</b> <q><100 mg/dL</q>.</li><li>- If goal is not met in high-risk patients, intensify statin and/or add non-statin therapy (ezetimibe first).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Statin-Intolerant Patients</strong></summary>
+            <div>
+                <ul><li>- <b>Alternatives:</b> Ezetimibe and bempedoic acid are reasonable alternatives. Ezetimibe is preferred due to its side effect profile.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
