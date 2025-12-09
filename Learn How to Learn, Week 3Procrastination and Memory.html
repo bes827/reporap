@@ -1,0 +1,861 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Learn How to Learn, Week 3
+Procrastination and Memory</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Learn How to Learn, Week 3</strong><br><em>Procrastination and Memory</em></summary>
+            <div>
+                <ul><li>- Source: Coursera Course - Learning How to Learn</li><li>- Instructor: Barbara Oakley, Terrence Sejnowski</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What are the <u>four components</u> of a habit?</li><li>- What is the key difference between focusing on 'process' versus 'product' to avoid procrastination?</li><li>- What famous patient lost the ability to form new memories after the removal of his hippocampus?</li><li>- What did researchers find was the only difference in Einstein's brain compared to an average human's?</li><li>- What is the 'memory palace' technique and what is it useful for?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🚫 Procrastination</strong></summary>
+            <div>
+                <ul><li>- This section covers the psychology of procrastination and provides practical, low-willpower strategies to overcome it.</li></ul>
+                
+        <details>
+            <summary><strong>Introduction to Procrastination</strong></summary>
+            <div>
+                <ul><li>- Procrastination is intimately related to memory because building solid long-term memory takes time and cannot be done at the last minute.</li></ul>
+                
+        <details>
+            <summary><strong>The Arsenic Analogy</strong></summary>
+            <div>
+                <ul><li>- Just as arsenic eaters build up an immunity to a poison that is slowly damaging them, procrastinators get used to putting things off, which has unseen long-term negative effects.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Neurological Basis</strong></summary>
+            <div>
+                <ul><li>- We procrastinate on things that make us uncomfortable.</li><li>- Thinking about an unpleasant task activates the <b>pain centers</b> of the brain.</li><li>- To stop the pain, you shift your focus to something more enjoyable, providing temporary relief.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences of Habitual Procrastination</strong></summary>
+            <div>
+                <ul><li>- It can become a <u>keystone bad habit</u>, influencing many important areas of your life.</li><li>- It shares features with <b>addiction</b>, offering temporary excitement and relief from boring reality.</li><li>- It leads to cramming, which does not build solid neural structures for learning.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Willpower is a Limited Resource</strong></summary>
+            <div>
+                <ul><li>- Willpower uses a lot of neural resources.</li><li>- It's best not to waste it on fending off procrastination except when absolutely necessary.</li><li>- The following strategies are designed to minimize the need for willpower.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Habit Loop: Your Inner Zombies</strong></summary>
+            <div>
+                <ul><li>- Habits are energy savers that allow our minds to free up for other activities by going into a 'zombie mode'.</li><li>- Understanding the components of a habit is key to changing it.</li></ul>
+                
+        <details>
+            <summary><strong>1. The Cue</strong></summary>
+            <div>
+                <ul><li>- The trigger that launches you into 'zombie mode'.</li><li>- A cue itself is neither helpful nor harmful.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. The Routine</strong></summary>
+            <div>
+                <ul><li>- This is the 'zombie mode' itself – the habitual response to the cue.</li><li>- This is the part of the habit you want to change.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. The Reward</strong></summary>
+            <div>
+                <ul><li>- Every habit develops because it rewards us with an immediate feeling of pleasure.</li><li>- Procrastination's reward is fast: shifting focus to something more pleasant.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. The Belief</strong></summary>
+            <div>
+                <ul><li>- Habits are powerful because of our belief in them (e.g., 'I'll never be able to change').</li><li>- To change a habit, you must change the underlying belief.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Strategies to Overcome Procrastination</strong></summary>
+            <div>
+                <ul><li>- Focus on simple, practical techniques that don't require much willpower.</li></ul>
+                
+        <details>
+            <summary><strong>Focus on <u>Process</u>, Not Product</strong></summary>
+            <div>
+                <ul><li>- <b>Product</b>: The outcome (e.g., a finished homework assignment). Focusing on the product can trigger the pain that causes procrastination.</li><li>- <b>Process</b>: The flow of time and the actions within it (e.g., 'I will spend <q>20 minutes</q> working').</li></ul>
+                
+        <details>
+            <summary><strong>Benefits of Process-Focus</strong></summary>
+            <div>
+                <ul><li>- It's easier to enlist your 'zombie' habit to help with a process.</li><li>- It allows you to relax into the flow of work without judging your progress towards the final product.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Pomodoro Technique</strong></summary>
+            <div>
+                <ul><li>- A key process-based tool.</li><li>- Involves a timed work session of <q><b>25 minutes</b></q> of uninterrupted focus, followed by relaxation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Harnessing Your Zombies: Modifying the Habit Loop</strong></summary>
+            <div>
+                <ul><li>- The trick is to change your <b>reaction to a cue</b>.</li><li>- This is the <u>only place</u> you need to apply willpower.</li></ul>
+                
+        <details>
+            <summary><strong>1. The Cue: Isolate Your Triggers</strong></summary>
+            <div>
+                <ul><li>- Recognize what launches your procrastination.</li><li>- Cues usually fall into four categories: <q>Location, Time, How you feel, and Reactions</q>.</li><li>- <b>Strategy</b>: Prevent cues by shutting off your phone or disconnecting from the internet for brief periods.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. The Routine: Have a Plan</strong></summary>
+            <div>
+                <ul><li>- You must actively focus on rewiring your old habit by planning a new routine.</li><li>- <b>Examples</b>: Go to a quiet spot in the library, leave your phone in the car, use the Pomodoro technique as your new routine.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. The Reward: Give Yourself a Treat</strong></summary>
+            <div>
+                <ul><li>- Habits are powerful because they create neurological cravings.</li><li>- You must add a <b>new reward</b> to overcome previous cravings.</li><li>- The brain will only start rewiring once it begins expecting the new reward.</li><li>- <b>Examples</b>: A latte, guilt-free web surfing, a sense of pride, setting a mini-deadline like stopping work at <q>5 p.m.</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. The Belief: Trust the New System</strong></summary>
+            <div>
+                <ul><li>- The most important part is believing you can do it.</li><li>- <b>Strategy</b>: Develop a new community by hanging out with classmates who have a 'can-do' philosophy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Planning: Juggling Life and Learning</strong></summary>
+            <div>
+                <ul><li>- Effective planning frees up mental resources for problem-solving.</li></ul>
+                
+        <details>
+            <summary><strong>Weekly & Daily Lists</strong></summary>
+            <div>
+                <ul><li>- <b>Weekly</b>: Once a week, write a brief list of key tasks.</li><li>- <b>Daily</b>: Each evening, write a list of tasks for the <u>next day</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Why the Evening Before?</strong></summary>
+            <div>
+                <ul><li>- Research shows this helps your <b>subconscious</b> grapple with the tasks.</li><li>- It enlists your 'zombies' to help you accomplish the items the next day.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Plan Your Quitting Time</strong></summary>
+            <div>
+                <ul><li>- Planning your quitting time is as important as planning your work time.</li><li>- Study expert Cal Newport used a <q><b>5 p.m. quitting time</b></q> throughout his student career, eventually getting a PhD from MIT.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Eat Your Frogs First</strong></summary>
+            <div>
+                <ul><li>- Work on your most important and most disliked task first thing in the morning.</li><li>- Even just one Pomodoro on this task can be incredibly effective.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Summary: Tackling Procrastination</strong></summary>
+            <div>
+                <ul><li>- <b>Keep a planner journal</b> to track goals and what works.</li><li>- <b>Commit to routines</b> and tasks each day.</li><li>- <b>Write task lists the night before</b> to engage your subconscious.</li><li>- <b>Arrange work into small challenges</b> (e.g., Pomodoros).</li><li>- <b>Reward yourself</b> after completing tasks.</li><li>- <b>Watch for procrastination cues</b> and change your environment (e.g., go to a library).</li><li>- <b>Trust your new system</b> so you can relax guilt-free.</li><li>- <b>Have backup plans</b> for when you still procrastinate.</li><li>- <b>Eat your frogs first</b> every day.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>🧠 Memory</strong></summary>
+            <div>
+                <ul><li>- This section explores how memory works and introduces powerful techniques to improve retention and recall.</li></ul>
+                
+        <details>
+            <summary><strong>Tapping into Natural Memory Systems</strong></summary>
+            <div>
+                <ul><li>- Humans have outstanding <b>visual and spatial</b> memory systems.</li></ul>
+                
+        <details>
+            <summary><strong>Evolutionary Basis</strong></summary>
+            <div>
+                <ul><li>- Our ancestors needed to remember locations (how to get home, where berries were) more than names or numbers.</li><li>- This resulted in a superior 'where things are' and 'how they look' memory system.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Technique: Create Memorable Visual Images</strong></summary>
+            <div>
+                <ul><li>- To remember a key item, create a memorable visual image for it.</li><li>- Images connect directly to the right brain's visual-spatial centers.</li><li>- <b>Example</b>: To remember Newton's second law (<b>F=ma</b>), imagine a gigantic <b>F</b>lying <b>M</b>ule (F, m) braying 'a'.</li></ul>
+                
+        <details>
+            <summary><strong>Enhance the Image</strong></summary>
+            <div>
+                <ul><li>- The more evocative and funny the image, the better.</li><li>- Engage multiple senses: <u>smell</u> the mule, <u>feel</u> the wind, <u>hear</u> it braying.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>From Working Memory to Long-Term Memory</strong></summary>
+            <div>
+                <ul><li>- To move information from temporary working memory to long-term memory, two things must happen.</li></ul>
+                
+        <details>
+            <summary><strong>1. Make it Memorable</strong></summary>
+            <div>
+                <ul><li>- The idea must be encoded in a way that is easy to recall, like the flying mule example.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Repeat It (Spaced Repetition)</strong></summary>
+            <div>
+                <ul><li>- Repetition is crucial to strengthen the neural pattern of a memory before it fades.</li><li>- Repetition should be done <b>sporadically over several days</b>, not all at once.</li><li>- As you become more certain of mastery, you should <q>gradually extend the time</q> between repetitions.</li></ul>
+                
+        <details>
+            <summary><strong>Helpful Tools</strong></summary>
+            <div>
+                <ul><li>- <b>Index Cards (Flashcards)</b>: Writing by hand helps encode information. Saying the word and meaning aloud creates auditory hooks.</li><li>- <b>Interleaving</b>: Mix cards from different topics to strengthen learning.</li><li>- <b>Flashcard Systems</b>: Apps like <q>Anki</q> use built-in algorithms for spaced repetition.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Neuroscience of Memory</strong></summary>
+            <div>
+                <ul><li>- Insights from clinical cases and modern research.</li></ul>
+                
+        <details>
+            <summary><strong>Patient H.M. and the Hippocampus</strong></summary>
+            <div>
+                <ul><li>- Patient <b>H.M.</b> had his <q><b>hippocampus</b></q> removed at age 27 to treat epilepsy.</li><li>- The operation was a success, but he became profoundly amnesic, unable to form new memories of facts and events.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Memory Consolidation & Reconsolidation</strong></summary>
+            <div>
+                <ul><li>- <b>Consolidation</b>: The process of storing new memories in the cortex. This can take <q>many years</q> and occurs during sleep.</li><li>- <b>Reconsolidation</b>: The process where recalling a memory changes it. Memories are not fixed; they are living parts of the brain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Astrocytes and Intelligence</strong></summary>
+            <div>
+                <ul><li>- Astrocytes are a type of glial (supporting) cell in the brain.</li><li>- An experiment showed that when human astrocytes were put into mouse brains, the mice <q>learned faster</q>.</li><li>- The only difference found in Einstein's brain was that he had <q><b>many more astrocytes</b></q> than the average human.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Advanced Memory Techniques</strong></summary>
+            <div>
+                <ul><li>- Powerful methods for grouping and remembering information.</li></ul>
+                
+        <details>
+            <summary><strong>Create Meaningful Groups</strong></summary>
+            <div>
+                <ul><li>- Simplify material by grouping it.</li><li>- <b>Example</b>: To remember four plants (Garlic, Rose, Hawthorn, Mustard), the first letters abbreviate to GRHM, which can be remembered as a <q>graham cracker</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Use Mnemonics</strong></summary>
+            <div>
+                <ul><li>- Memorable sentences where the first letter of each word corresponds to an item on a list.</li><li>- <b>Medical Example</b>: To memorize carpal bones: '<q>Some Lovers Try Positions That They Can't Handle</q>'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Memory Palace Technique</strong></summary>
+            <div>
+                <ul><li>- A powerful way of grouping items by using a familiar place (like your house) as a visual notepad.</li><li>- You 'deposit' concept images you want to remember in different locations within your mental 'palace'.</li><li>- <b>Example (Grocery List)</b>: Imagine a giant bottle of <b>milk</b> by your front door, a loaf of <b>bread</b> on the couch, and a cracked <b>egg</b> on the coffee table.</li></ul>
+                
+        <details>
+            <summary><strong>Benefits</strong></summary>
+            <div>
+                <ul><li>- A study showed a person could remember <q>more than 95%</q> of a 40-50 item list after only one or two practice walks.</li><li>- Speeds up the acquisition of chunks and big-picture understanding.</li><li>- Expands working memory by providing easy access to long-term memory.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Summary: Memory</strong></summary>
+            <div>
+                <ul><li>- <b>Two Main Systems</b>: Long-term memory (storage warehouse) and working memory (a poor blackboard that holds about <q><b>four items</b></q>).</li><li>- <b>Chunking</b>: Mastering a concept compacts it, freeing up space in working memory.</li><li>- <b>Tap into Visual/Spatial Systems</b>: Use memorable, evocative, and funny images to encode information.</li><li>- <b>Repetition is Key</b>: Use spaced repetition over several days to store items in long-term memory.</li><li>- <b>Use Memory Techniques</b>: Create meaningful groups, use mnemonics, and build a Memory Palace to simplify and chunk what you are trying to learn.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
