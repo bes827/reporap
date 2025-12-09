@@ -1,0 +1,825 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Learn How to Learn, Week 1
+What is Learning</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Learn How to Learn, Week 1</strong><br><em>What is Learning</em></summary>
+            <div>
+                <ul><li>- Instructors: <b>Barbara Oakley</b> & <b>Terrence Sejnowski</b></li><li>- Course Goal: To reframe how you think about learning, reduce frustration, and increase understanding using insights from neuroscience and cognitive psychology.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the name of the technique that uses a 25-minute timer to overcome procrastination?</li><li>- According to modern research, approximately how many 'chunks' of information can the working memory hold?</li><li>- What physical change happens to brain cells during sleep that allows toxins to be washed away?</li><li>- What famous surrealist painter used a key-dropping technique to access ideas from the diffuse mode?</li><li>- What is the term for the memory improvement technique that involves repeating what you're trying to retain over a number of days?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Concept: Two Modes of Thinking</strong></summary>
+            <div>
+                <ul><li>- The brain has two fundamentally different modes of thinking: <b>Focused</b> and <b>Diffuse</b>.</li><li>- You can only be in one mode at a time, like two sides of a coin.</li><li>- Effective learning requires alternating between these two modes.</li></ul>
+                
+        <details>
+            <summary><strong>Focused Mode</strong></summary>
+            <div>
+                <ul><li>- Involves intense concentration on a specific task or problem.</li><li>- Utilizes familiar thought patterns and established neural pathways.</li></ul>
+                
+        <details>
+            <summary><strong><u>Analogy</u>: Pinball Machine</strong></summary>
+            <div>
+                <ul><li>- The rubber bumpers are placed <b>very close</b> to one another.</li><li>- A thought (the pinball) moves smoothly along a familiar, well-paved road (an existing neural pathway).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Neural Basis</u></strong></summary>
+            <div>
+                <ul><li>- Primarily centered in the <q><b>prefrontal cortex</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diffuse Mode</strong></summary>
+            <div>
+                <ul><li>- A relaxed, big-picture thinking style related to a set of neural <b>resting states</b>.</li><li>- Allows for new neural connections and novel approaches to problems.</li></ul>
+                
+        <details>
+            <summary><strong><u>Analogy</u>: Pinball Machine</strong></summary>
+            <div>
+                <ul><li>- The rubber bumpers are <b>widely spaced</b>.</li><li>- A thought can travel a long way and move widely, making new connections.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Neural Basis</u>: Default Mode Network</strong></summary>
+            <div>
+                <ul><li>- Refers to brain areas that are most active in a <b>resting state</b>.</li><li>- Brain connectivity is dynamic, with constant turnover of synapses (new ones forming, others disappearing).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Techniques to Access the Diffuse Mode</strong></summary>
+            <div>
+                <ul><li>- Intentionally relaxing and letting the mind wander after a period of focused work is key to accessing the diffuse mode.</li></ul>
+                
+        <details>
+            <summary><strong>Salvador Dali's Method</strong></summary>
+            <div>
+                <ul><li>- He would relax in a chair holding a <b>key</b> over the floor.</li><li>- As he fell asleep, the key would drop and the clatter would wake him.</li><li>- This allowed him to capture ideas and connections from his diffuse state.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Thomas Edison's Method</strong></summary>
+            <div>
+                <ul><li>- A similar technique, but he would sit in a chair holding <q><b>ball bearings</b></q> in his hand.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Everyday Methods</strong></summary>
+            <div>
+                <ul><li>- Going for a walk.</li><li>- Taking a shower.</li><li>- Drifting off to sleep.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Learning Process & Building Neural Structure</strong></summary>
+            <div>
+                <ul><li>- Learning requires building and strengthening neural connections, a process that takes time and consistency.</li><li>- This is why cramming is ineffective for long-term retention.</li></ul>
+                
+        <details>
+            <summary><strong><u>Analogy</u>: Weight Lifting</strong></summary>
+            <div>
+                <ul><li>- You cannot build muscle by working out intensely for only one day before a competition.</li><li>- Effective learning, like muscle growth, requires a <b>little work every day</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Analogy</u>: Mortar Drying</strong></summary>
+            <div>
+                <ul><li>- If you don't leave time for the mortar to dry when building a brick wall, the structure will be poor.</li><li>- Similarly, learning requires time for synaptic connections to form and strengthen.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practice Makes Permanent</strong></summary>
+            <div>
+                <ul><li>- Neurons become linked together through repeated use.</li><li>- The more abstract a concept is, the more important it is to practice to make the neural patterns real and concrete.</li></ul>
+                
+        <details>
+            <summary><strong>Evolution of a Neural Pattern</strong></summary>
+            <div>
+                <ul><li>- <b>Initial Understanding</b> ---> A very weak, faint neural pattern.</li><li>- <b>Solving Again</b> ---> The pattern becomes deeper and darker.</li><li>- <b>Mastery</b> ---> The pattern is a dark, firm, and easily accessible pathway.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Memory Systems in Learning</strong></summary>
+            <div>
+                <ul><li>- For this course, memory is divided into two major systems: <b>Working Memory</b> and <b>Long-Term Memory</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Working Memory</strong></summary>
+            <div>
+                <ul><li>- Deals with what you are <b>immediately and consciously</b> processing.</li><li>- Centered in the <q>prefrontal cortex</q>.</li></ul>
+                
+        <details>
+            <summary><strong><u>Capacity</u></strong></summary>
+            <div>
+                <ul><li>- Previously thought to hold around seven items.</li><li>- Now widely believed to hold only about <q><b>four chunks</b></q> of information.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Analogy</u>: A Poor Blackboard</strong></summary>
+            <div>
+                <ul><li>- Information can easily fall out or be erased.</li><li>- Requires constant <b>repetition</b> to keep items in memory (e.g., repeating a phone number).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Long-Term Memory</strong></summary>
+            <div>
+                <ul><li>- Stores fundamental concepts and techniques for later retrieval.</li><li>- It is distributed over a large area of the brain.</li></ul>
+                
+        <details>
+            <summary><strong><u>Analogy</u>: Storage Warehouse</strong></summary>
+            <div>
+                <ul><li>- Has an immense capacity for <q>billions of items</q>.</li><li>- Items can get 'buried', so practice is needed for easy retrieval.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Technique: Spaced Repetition</strong></summary>
+            <div>
+                <ul><li>- Involves repeating what you're trying to retain over a <b>number of days</b>.</li><li>- This is far more effective than cramming (repeating many times in one evening).</li></ul>
+                
+        <details>
+            <summary><strong>Rationale</strong></summary>
+            <div>
+                <ul><li>- Allows time for synaptic connections to form and strengthen, analogous to letting mortar dry.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Importance of Sleep in Learning</strong></summary>
+            <div>
+                <ul><li>- Sleep is not a waste of time; it is a critical part of the learning and memory process.</li></ul>
+                
+        <details>
+            <summary><strong>Brain Cleansing</strong></summary>
+            <div>
+                <ul><li>- The process of being awake creates <b>toxic products</b> in the brain.</li><li>- Sleep is the brain's way of keeping itself clean and healthy.</li></ul>
+                
+        <details>
+            <summary><strong>Mechanism</strong></summary>
+            <div>
+                <ul><li>- During sleep, brain cells <q><b>shrink</b></q>.</li><li>- This increases the space between cells, allowing fluid to flow through and wash the toxins out.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences of Sleep Deprivation</strong></summary>
+            <div>
+                <ul><li>- Impaired thinking is like trying to drive a car with <q>sugar in its gas tank</q>.</li><li>- Long-term effects include headaches, depression, heart disease, diabetes, and a shorter lifespan.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Memory & Learning Consolidation</strong></summary>
+            <div>
+                <ul><li>- During sleep, the brain tidies up, rehearses, and strengthens what you have learned.</li></ul>
+                
+        <details>
+            <summary><strong>Strengthening & Pruning</strong></summary>
+            <div>
+                <ul><li>- It erases less important parts of memories.</li><li>- It simultaneously <b>strengthens</b> areas you need or want to remember.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Rehearsal & Problem Solving</strong></summary>
+            <div>
+                <ul><li>- The brain rehearses difficult material, deepening neural patterns.</li><li>- Deactivation of the conscious prefrontal cortex allows other brain areas to communicate and find neural solutions to problems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Dreaming</strong></summary>
+            <div>
+                <ul><li>- Studying right before sleep increases the chance of dreaming about the material.</li><li>- Dreaming about what you're studying can <q>substantially enhance your ability to understand</q> and consolidate memories into easier-to-grasp chunks.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overcoming Learning Challenges</strong></summary>
+            <div>
+                <ul><li>- Understanding the brain's mechanisms can help overcome common hurdles like procrastination and difficulty with abstract concepts.</li></ul>
+                
+        <details>
+            <summary><strong>Procrastination</strong></summary>
+            <div>
+                <ul><li>- Arises from the brain's natural tendency to avoid tasks that cause discomfort.</li></ul>
+                
+        <details>
+            <summary><strong>The Procrastination Loop</strong></summary>
+            <div>
+                <ul><li>- <b>1. Cue</b>: You observe a task you'd rather not do.</li><li>- <b>2. Discomfort</b>: You activate areas of the brain associated with <q><b>pain</b></q>.</li><li>- <b>3. Shift</b>: You turn your attention to something more pleasant to make the sensation go away.</li><li>- <b>4. Reward</b>: You feel happier, but only temporarily.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Insight</strong></summary>
+            <div>
+                <ul><li>- The neuro-discomfort <q><b>disappears</b></q> not long after you actually start working on the task.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Tool</u>: The Pomodoro Technique</strong></summary>
+            <div>
+                <ul><li>- Invented by <q>Francesco Cirillo</q> in the early 1980s.</li><li>- 'Pomodoro' is Italian for <q>tomato</q>.</li></ul>
+                
+        <details>
+            <summary><strong>How to Use</strong></summary>
+            <div>
+                <ul><li>- <b>1.</b> Set a timer for <q><b>25 minutes</b></q>.</li><li>- <b>2.</b> Turn off all interruptions and focus intently on the task.</li><li>- <b>3.</b> When the timer rings, give yourself a small reward (e.g., web surfing, coffee, stretching).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Learning Abstract Concepts</strong></summary>
+            <div>
+                <ul><li>- Subjects like math and science can be challenging due to the abstract nature of their ideas.</li></ul>
+                
+        <details>
+            <summary><strong>The Challenge of Abstraction</strong></summary>
+            <div>
+                <ul><li>- Unlike the word 'cow', you cannot point to a physical 'plus sign' or 'multiplication' symbol in a field.</li><li>- These ideas are not always tied to emotions like 'love' or 'hope', making them harder to grasp intuitively.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Solution: Practice</strong></summary>
+            <div>
+                <ul><li>- Practice is essential to build and strengthen the <b>real and concrete</b> neural thought patterns that represent these abstract ideas.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
