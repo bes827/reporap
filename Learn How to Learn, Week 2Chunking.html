@@ -1,0 +1,753 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Learn How to Learn, Week 2
+Chunking</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Learn How to Learn, Week 2</strong><br><em>Chunking</em></summary>
+            <div>
+                <ul><li>- Source: Learning How to Learn, Week 2</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What are the three key neuromodulators discussed that influence learning and motivation?</li><li>- What is the most productive learning technique demonstrated by psychologist Jeffrey Karpicke's research?</li><li>- What is the term for the loss of interest in things that once gave you pleasure, often linked to a loss of dopamine neurons?</li><li>- What is the "law of serendipity" in the context of learning?</li><li>- What is a key concern when using worked-out examples to learn a new concept?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction to Chunking</strong></summary>
+            <div>
+                <ul><li>- <b>Chunks</b> are compact packages of information that your mind can easily access.</li></ul>
+                
+        <details>
+            <summary><strong>What is a Chunk?</strong></summary>
+            <div>
+                <ul><li>- A mental leap that unites bits of information together through <u>meaning</u>.</li><li>- Converts complex information into a single, easy-to-remember logical whole.</li><li>- Analogous to converting a large computer file into a <q>ZIP file</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Neuroscientific Basis</strong></summary>
+            <div>
+                <ul><li>- A network of neurons that are used to firing together.</li><li>- Allows for thinking a thought or performing an action smoothly and effectively.</li><li>- Created through focused practice and repetition, which builds strong memory traces.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Working Memory & Attention</strong></summary>
+            <div>
+                <ul><li>- Working memory has about <q><u>four slots</u></q> and is located in the prefrontal cortex.</li><li>- Focused attention (the "octopus of attention") uses these slots to connect information from different brain parts.</li><li>- <b>Stress</b>, anger, or fear impairs the "attentional octopus," making it difficult to form connections.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Benefits of Chunking</strong></summary>
+            <div>
+                <ul><li>- Makes remembering easier.</li><li>- Helps fit the chunk into the larger picture of what you're learning.</li><li>- Allows the brain to run more efficiently by not needing to recall all underlying details.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>How to Form a Chunk</strong></summary>
+            <div>
+                <ul><li>- A three-step process involving focus, understanding, and context to build robust neural patterns.</li></ul>
+                
+        <details>
+            <summary><strong><b>Step 1:</b> <u>Focused Attention</u></strong></summary>
+            <div>
+                <ul><li>- Requires <b>undivided attention</b> on the information you want to chunk.</li><li>- Distractions (e.g., TV, phone notifications) prevent the brain from focusing and making new neural patterns.</li><li>- Distractions use up limited slots in working memory, hindering connection-making.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Step 2:</b> <u>Understanding</u> the Basic Idea</strong></summary>
+            <div>
+                <ul><li>- Synthesize the "gist" or main idea of the concept.</li><li>- Understanding acts like a "superglue" that helps hold underlying memory traces together.</li><li>- A chunk created without understanding is often useless and won't connect to other material.</li></ul>
+                
+        <details>
+            <summary><strong><b>Pitfall:</b> Confusing Understanding with Expertise</strong></summary>
+            <div>
+                <ul><li>- An "Aha!" moment of understanding is <u>not</u> solid expertise.</li><li>- Just seeing a solution doesn't mean you can solve it yourself.</li><li>- <b>Action:</b> Close the book and test yourself. <q>Only doing it yourself helps create the neural patterns that underlie true mastery.</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Step 3:</b> Gaining <u>Context</u></strong></summary>
+            <div>
+                <ul><li>- See not just <u>how</u> to use a chunk, but also <u>when</u> to use it.</li><li>- Practice with both related and unrelated problems to see when the chunk applies and when it doesn't.</li><li>- This broadens the neural networks connected to the chunk, making it accessible from many different paths.</li></ul>
+                
+        <details>
+            <summary><strong>Top-Down & Bottom-Up Learning</strong></summary>
+            <div>
+                <ul><li>- <b>Bottom-up:</b> Practice and repetition build and strengthen individual chunks.</li><li>- <b>Top-down:</b> Seeing the big picture and where chunks fit in.</li><li>- Context is where these two processes meet.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Techniques for Context</strong></summary>
+            <div>
+                <ul><li>- Do a rapid <q><u>two-minute picture walk</u></q> through a chapter before studying.</li><li>- Glance at pictures and section headings to get a sense of the big picture.</li><li>- Learn major concepts/points first, then fill in the details.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Illusions of Competence & Effective Study</strong></summary>
+            <div>
+                <ul><li>- Common ineffective study methods can fool your mind into thinking you're learning when you are not.</li></ul>
+                
+        <details>
+            <summary><strong>The Ineffectiveness of Rereading</strong></summary>
+            <div>
+                <ul><li>- One of the most common but least productive study methods.</li><li>- Rereading is only effective if significant time passes between sessions, turning it into <q>spaced repetition</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Power of <u>Recall</u></strong></summary>
+            <div>
+                <ul><li>- <b>Technique:</b> After reading, simply look away and see what you can recall.</li><li>- Research by psychologist <q>Jeffrey Karpicke</q> showed students learned far more and at a deeper level with recall than any other method (including rereading or concept mapping).</li><li>- The retrieval process itself enhances deep learning and helps form chunks by creating "neural hooks".</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Illusions of Competence</strong></summary>
+            <div>
+                <ul><li>- Methods that trick you into thinking you've mastered material.</li></ul>
+                
+        <details>
+            <summary><strong>Highlighting & Underlining</strong></summary>
+            <div>
+                <ul><li>- Can be misleading; the physical motion can fool you into thinking you've placed the concept in your brain.</li><li>- <b>Effective Use:</b> Look for main ideas first and limit highlighting to <q><u>one sentence or less per paragraph</u></q>.</li><li>- <b>Better Alternative:</b> Write notes in the margin that synthesize key concepts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Looking at Solutions</strong></summary>
+            <div>
+                <ul><li>- Merely glancing at a solution and thinking "I see why they did that" is a common illusion.</li><li>- It does almost nothing to knit concepts into your own underlying neural circuitry.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Open-Book Studying</strong></summary>
+            <div>
+                <ul><li>- Having a book or Google open provides the illusion that the material is also in your brain.</li><li>- Students persist because it's easier to look at the book than to recall.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Value of Mistakes</strong></summary>
+            <div>
+                <ul><li>- Mistakes made during self-testing are <u>very valuable</u>.</li><li>- They allow you to make repairs in your thinking flaws bit by bit before high-stakes tests.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Varying Your Study Environment</strong></summary>
+            <div>
+                <ul><li>- Recalling material outside your usual study place strengthens your grasp of it.</li><li>- When learning, you take in subliminal cues from the room, which are absent during a test in a different room.</li><li>- Varying locations makes you <q>independent of the cues from any one given location</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Neuroscience of Motivation & Learning</strong></summary>
+            <div>
+                <ul><li>- Neuromodulators are chemicals that influence how a neuron responds, carrying information about the importance and value of an experience.</li></ul>
+                
+        <details>
+            <summary><strong><b>Acetylcholine</b></strong></summary>
+            <div>
+                <ul><li>- Important for <u>focused learning</u> when you are paying close attention.</li><li>- Activates circuits that control synaptic plasticity, leading to <q>new long-term memory</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Dopamine</b></strong></summary>
+            <div>
+                <ul><li>- Controls <u>motivation</u> and <u>reward learning</u>.</li><li>- Released from neurons in the brain stem when we receive an <q>unexpected reward</q>.</li><li>- Predicts future rewards, motivating actions that may not be immediately rewarding (e.g., studying now for a future benefit).</li></ul>
+                
+        <details>
+            <summary><strong>Dopamine Dysfunction</strong></summary>
+            <div>
+                <ul><li>- <b>Addictive drugs:</b> Artificially increase dopamine, hijacking free will.</li><li>- <b>Loss of Dopamine:</b> Leads to lack of motivation and <q><b>anhedonia</b></q> (a loss of interest in things that once gave you pleasure).</li><li>- <b>Severe Loss:</b> Causes <q>Parkinson's disease</q> (resting tremor, slowness, rigidity).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Serotonin</b></strong></summary>
+            <div>
+                <ul><li>- Strongly affects <u>social life</u> and <u>risk-taking behavior</u>.</li><li>- In monkey troops, the <q>alpha male has the highest level</q> of serotonin activity.</li><li>- Low levels are linked to higher risk-taking; inmates in jail for violent crimes have some of the lowest levels.</li><li>- Antidepressant Prozac works by <q>raising the level of Serotonin activity</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Emotions & The Amygdala</strong></summary>
+            <div>
+                <ul><li>- Emotions are intertwined with perception, attention, learning, and memory.</li><li>- The <q><b>amygdala</b></q>, an almond-shaped structure, is a major center where cognition and emotion are integrated.</li><li>- It is part of the limbic system, involved in processing memory, decision-making, and regulating emotional reactions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Value of a Library of Chunks</strong></summary>
+            <div>
+                <ul><li>- Building a mental library of chunks is the foundation of expertise, creativity, and problem-solving.</li></ul>
+                
+        <details>
+            <summary><strong>Building Expertise</strong></summary>
+            <div>
+                <ul><li>- Experts gradually build the number of chunks in their mind.</li><li>- Example: Chess masters can access <q>thousands of different chess patterns</q>.</li><li>- The bigger and more well-practiced your chunked library, the more easily you can solve problems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fostering Creativity & Innovation</strong></summary>
+            <div>
+                <ul><li>- The ability to combine chunks in new and original ways underlies innovation.</li><li>- The <b>diffuse mode</b> can help connect two or more chunks in new ways to solve novel problems.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Transfer of Knowledge</strong></summary>
+            <div>
+                <ul><li>- Grasping one chunk can help you understand similar chunks in very different fields.</li><li>- This concept is called <b>transfer</b>.</li><li>- Example: Problem-solving methods from physics can be similar to chunked concepts in business.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Two Problem-Solving Approaches</strong></summary>
+            <div>
+                <ul><li>- <b>Sequential Reasoning:</b> A step-by-step, deliberate process involving the <q><u>focused mode</u></q>.</li><li>- <b>Holistic Intuition:</b> A creative linking of different thoughts, involving the <q><u>diffuse mode</u></q>.</li><li>- Most difficult problems are grasped through intuition, but these insights <u>must be verified</u> using the focused mode.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Law of Serendipity</strong></summary>
+            <div>
+                <ul><li>- A principle in learning: "<q>Lady luck favors the one who tries</q>."</li><li>- Once you put the first problem or concept in your mental library, the second becomes a little easier to learn, and the third easier still.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
