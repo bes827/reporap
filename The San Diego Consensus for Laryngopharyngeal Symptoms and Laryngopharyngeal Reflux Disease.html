@@ -7,24 +7,27 @@
 <style>
 
 <style>
+/* ===== GENERAL LAYOUT ===== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f0f4ff, #fafafa);
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
     color: #2c2c2c;
-    padding: 40px;
+    padding: 30px;
+    margin: 0;
 }
 
-/* Mindmap container */
+/* Centered mindmap container */
 .mindmap {
-    max-width: 900px;
+    max-width: 800px;
     margin: auto;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.7;
 }
 
+/* ===== LISTS ===== */
 .mindmap ul {
-    margin: 0.5em 0 1em 1em;
-    padding-left: 1.5em;
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
     list-style: disc;
     color: #555;
     font-size: 0.95em;
@@ -33,7 +36,7 @@ body {
 }
 
 .mindmap li::marker {
-    color: #a855f7; /* prettier bullets */
+    color: #8b5cf6; /* accent bullet color */
 }
 
 .mindmap li {
@@ -41,37 +44,48 @@ body {
     padding-left: 4px;
 }
 
-
-/* Collapsible sections */
+/* ===== COLLAPSIBLE SECTIONS ===== */
 .mindmap details {
-    border-left: 4px solid #8b5cf6;
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
     background: #ffffff;
-    margin: 15px 0;
-    padding: 16px 20px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.12);
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
     transition: all 0.3s ease;
     position: relative;
 }
 
-/* Hover glow */
-.mindmap details:hover {
-    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.2);
-    background: linear-gradient(135deg, #ffffff, #f3f0ff);
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
 }
 
-/* Summary styling */
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
 .mindmap summary {
     cursor: pointer;
-    font-size: 1.15em;
+    font-size: 1.1em;
     font-weight: 600;
     list-style: none;
     position: relative;
-    padding-left: 28px;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
     color: #4c1d95;
+    outline: none;
 }
 
-/* Custom arrow */
+/* Custom arrow icon */
 .mindmap summary::before {
     content: "▶";
     position: absolute;
@@ -82,14 +96,15 @@ body {
     color: #7c3aed;
 }
 
+/* Rotated arrow when open */
 .mindmap details[open] > summary::before {
     transform: rotate(90deg);
 }
 
-/* Titles */
+/* Section title emphasis */
 .mindmap summary strong {
     display: block;
-    font-size: 1.3em;
+    font-size: 1.25em;
     color: #4c1d95;
 }
 
@@ -99,63 +114,191 @@ body {
     font-size: 0.95em;
 }
 
-/* Description bullets */
-.mindmap ul {
-    padding-left: 22px;
-    margin-top: 10px;
-    margin-bottom: 12px;
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
 }
 
-.mindmap li {
-    margin-bottom: 6px;
-    font-size: 0.97em;
-    color: #444;
-    list-style-type: disc;
-    position: relative;
-    padding-left: 4px;
-}
-
-/* Nesting indent style */
-.mindmap details > div > details {
-    margin-left: 20px;
-    border-color: #a855f7;
-    background: #f9f5ff;
-}
-
-/* Fade-in effect */
+/* Smooth fade for expanded content */
 .mindmap details[open] > div {
     animation: fadeIn 0.3s ease-in;
 }
 
-/* Description box */
+/* ===== DESCRIPTION BOXES ===== */
 .mindmap .desc-box {
     background: #fdfcff;
-    border: 1px solid #e5d9fb;
+    border: 2px solid #e5d9fb;
     border-left: 4px solid #c084fc;
-    padding: 4px 6px;
+    padding: 6px 10px;
     margin: 12px 0 18px 0;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.06);
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
     transition: background 0.3s ease;
 }
-
 .mindmap .desc-box:hover {
-    background: #f9f4ff;
+    background: #f8f4ff;
 }
 
-
+/* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-3px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
 </style>
-
-
-
 
 </style>
 </head>
 <body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
 <div class="mindmap">
 
     <div class="mindmap">
@@ -163,245 +306,690 @@ body {
         <details>
             <summary><strong>The San Diego Consensus for Laryngopharyngeal Symptoms and Laryngopharyngeal Reflux Disease</strong></summary>
             <div>
-                <ul><li>This article presents the San Diego Consensus for Laryngopharyngeal Symptoms (LPS) and Laryngopharyngeal Reflux Disease (LPRD).</li><li>It aims to establish a modern, interdisciplinary care paradigm for evaluating and managing these conditions.</li><li>The consensus was developed by an international panel of experts from gastroenterology, otolaryngology, speech-language pathology, and clinical psychology.</li></ul>
+                <ul><li>- Am J Gastroenterol 2025;00:1–15.</li><li>- https://doi.org/10.14309/ajg.0000000000003482</li></ul>
                 
         <details>
-            <summary><strong>Background</strong></summary>
+            <summary><strong>Knowledge Test</strong></summary>
             <div>
-                <ul><li>Laryngopharyngeal reflux (LPR) is a term often used for aerodigestive symptoms without objective reflux evidence.</li><li>This leads to diagnostic uncertainty and prolonged, often unsuccessful, treatments.</li><li>The initiative aims to create evidence-based recommendations for LPS evaluation and management.</li></ul>
+                <ul><li>- What is the recommended duration for a trial of twice-daily PPI therapy for LPS to determine a symptomatic response?</li><li>- What percentage of patients diagnosed with LPR have normal objective ambulatory reflux monitoring studies?</li><li>- What distal esophageal acid exposure time (AET) on ambulatory reflux monitoring is considered definitively abnormal and meets the criteria for proven GERD?</li><li>- What validated patient-reported outcome instrument can help identify individuals with elevated levels of hypervigilance and anxiety related to their LPS?</li><li>- What is the diagnostic yield of GERD in patients referred for LPS when using prolonged wireless pH monitoring versus 24-hour pH impedance monitoring?</li></ul>
                 
             </div>
         </details>
+        <br>
         
         <details>
-            <summary><strong>Methods</strong></summary>
+            <summary><strong>Core Concepts: Definition & Terminology</strong></summary>
             <div>
-                <ul><li>A 28-member international, inter-disciplinary working group was formed.</li><li>The group included gastroenterologists, laryngologists, speech-language pathologists, and a clinical psychologist.</li><li>The RAND Appropriateness Method (RAM) was used to determine the appropriateness of statements, with ≥80% agreement required for recommendations.</li></ul>
+                <ul><li>- A key distinction is made between <b>Laryngopharyngeal Symptoms (LPS)</b> and the objective diagnosis of <b>Laryngopharyngeal Reflux Disease (LPRD)</b>.</li><li>- The presence of LPS does <u>NOT</u> equate to LPRD.</li></ul>
                 
         <details>
-            <summary><strong>Working Group Meetings</strong></summary>
+            <summary><strong><b>Laryngopharyngeal Symptoms (LPS)</b></strong></summary>
             <div>
-                <ul><li>The initiative spanned one year (October 2023 to October 2024).</li><li>Comprised seven working group meetings: five virtual and two hybrid with in-person meetings in Hong Kong (May 2024) and Austria (October 2024).</li><li>Several rounds of independent voting and sub-group meetings were conducted.</li></ul>
+                <ul><li>- Chronic and frequent throat/upper airway symptoms with the <u>potential</u> to be induced by reflux.</li><li>- The term <b>LPS</b> itself does <u>not</u> implicate reflux as the etiology.</li></ul>
+                
+        <details>
+            <summary><strong>Criteria</strong></summary>
+            <div>
+                <ul><li>- <b>Frequent:</b> Occurring at least <q>twice weekly</q>.</li><li>- <b>Chronic:</b> Present for more than <q>8 weeks</q>.</li></ul>
                 
             </div>
         </details>
+        <br>
         
         <details>
-            <summary><strong>Sub-groups</strong></summary>
+            <summary><strong>Included Symptoms</strong></summary>
             <div>
-                <ul><li>14 members were assigned to sub-groups.</li><li>These sub-groups focused on: Definition &amp; Terminology, Initial Diagnostic Evaluation, Reflux Monitoring, Therapeutic Trial, Behavioral Factors &amp; Therapy, and Risk Stratification.</li><li>Each sub-group was led by two interdisciplinary co-chairs.</li></ul>
+                <ul><li>- <b>Cough</b> (<q>89%</q> agreement)</li><li>- <b>Voice hoarseness/change</b> (<q>80%</q> agreement)</li><li>- <b>Throat clearing</b> (<q>86%</q> agreement)</li><li>- <b>Excess throat phlegm</b> (<q>82%</q> agreement)</li><li>- <b>Throat pain/sore throat</b> (<q>89%</q> agreement)</li></ul>
                 
             </div>
         </details>
+        <br>
         
         <details>
-            <summary><strong>RAND Appropriateness Method (RAM)</strong></summary>
+            <summary><strong>Globus</strong></summary>
             <div>
-                <ul><li>A validated methodology was utilized for determining the appropriateness of statements.</li><li>This method included independent electronic voting to determine the appropriateness of each statement.</li><li>Statements ranked as appropriate with ≥80% agreement were included as final recommendations.</li></ul>
+                <ul><li>- An important symptom warranting evaluation.</li><li>- Often a <u>negative predictor</u> of reflux physiology.</li></ul>
                 
             </div>
         </details>
-        
-            </div>
-        </details>
+        <br>
         
         <details>
-            <summary><strong>Definition &amp; Terminology</strong></summary>
+            <summary><strong>Symptom Presentation</strong></summary>
             <div>
-                <ul><li>Laryngopharyngeal Symptoms (LPS) are defined as chronic and frequent throat and upper airway symptoms potentially induced by retrograde flow of gastric content.</li><li>LPS includes cough, voice hoarseness/change, throat clearing, excess phlegm, and throat pain/sore throat.</li><li>Laryngopharyngeal Reflux Disease (LPRD) requires chronic troublesome LPS AND objective evidence supporting the relationship between symptoms and gastroesophageal reflux.</li></ul>
-                
-        <details>
-            <summary><strong>Laryngopharyngeal Symptoms (LPS)</strong></summary>
-            <div>
-                <ul><li>Symptoms must be frequent, occurring at least twice weekly, and present for more than 8 weeks.</li><li>Commonly cited symptoms include cough (89%), regurgitation (89%), throat pain/sore throat (89%), throat clearing (86%), excess phlegm (82%), and hoarseness/voice change (80%).</li><li>Globus is an important symptom warranting further evaluation but did not reach agreement for inclusion as an LPS.</li></ul>
+                <ul><li>- Can be <b>isolated</b>.</li><li>- Can be <b>concurrent</b> with typical esophageal reflux symptoms (heartburn, regurgitation, chest pain).</li></ul>
                 
             </div>
         </details>
-        
-        <details>
-            <summary><strong>Laryngopharyngeal Reflux Disease (LPRD)</strong></summary>
-            <div>
-                <ul><li>The proportion of individuals found to have objective LPRD on diagnostic evaluation is low, approximately 35%.</li><li>Both LPS and objective evidence of gastro-esophageal reflux are needed for a diagnosis of LPRD.</li><li>Diagnostic evidence supporting the relationship between LPS and gastroesophageal reflux is required prior to invasive anti-reflux management.</li></ul>
-                
-            </div>
-        </details>
+        <br>
         
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Laryngopharyngeal Reflux Disease (LPRD)</b></strong></summary>
+            <div>
+                <ul><li>- True LPRD is much less common than LPS.</li><li>- As many as <q>60%</q> of patients diagnosed with LPR have normal objective ambulatory reflux monitoring studies.</li><li>- The proportion of individuals with LPS found to have objective LPRD is only <q>~35%</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Diagnostic Requirements</strong></summary>
+            <div>
+                <ul><li>- Requires BOTH:</li><li>- 1. Chronic, troublesome <b>LPS</b>.</li><li>- 2. <b>Objective evidence</b> supporting a relationship between symptoms and gastroesophageal reflux.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Forms of Objective Evidence</strong></summary>
+            <div>
+                <ul><li>- LPS response to anti-reflux therapy (<u>only if</u> esophageal symptoms coexist).</li><li>- OR Diagnostic evidence on upper GI endoscopy or ambulatory reflux monitoring.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact & Burden</strong></summary>
+            <div>
+                <ul><li>- Accounts for up to <q>10%</q> of otolaryngology and gastroenterology visits.</li><li>- Healthcare costs are <q>5.4 times higher</q> than for GERD, partly from diagnostic uncertainty.</li><li>- Significant negative impact on quality of life (anxiety, depression).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
         <details>
             <summary><strong>Diagnostic Evaluation of LPS</strong></summary>
             <div>
-                <ul><li>Laryngoscopy is a necessary part of evaluation of LPS to assess for other non-reflux related otolaryngologic processes including malignancy.</li><li>LPRD cannot be diagnosed based on laryngoscopy findings alone.</li><li>The presence of concurrent esophageal reflux symptoms versus absence, referred to as isolated LPS, should be determined.</li></ul>
+                <ul><li>- A structured approach is needed, starting with laryngoscopy and symptom characterization based on the presence or absence of esophageal symptoms.</li></ul>
                 
         <details>
             <summary><strong>Role of Laryngoscopy</strong></summary>
             <div>
-                <ul><li>Laryngoscopy is necessary to rule out alternate laryngeal pathologies including neoplasia.</li><li>Findings on laryngoscopy alone cannot diagnose LPRD.</li><li>Laryngoscopic findings such as infraglottic edema, interarytenoid mucosal hypertrophy, and post-cricoid mucosal edema are non-specific for LPRD.</li></ul>
-                
-            </div>
-        </details>
-        
-        <details>
-            <summary><strong>Symptom Characterization &amp; Role of Medical Trials</strong></summary>
-            <div>
-                <ul><li>The presence of concurrent esophageal reflux symptoms versus absence, referred to as isolated LPS, should be determined.</li><li>In patients with LPS &amp; esophageal reflux symptoms, a trial of medical anti-reflux management, along with dietary and lifestyle modification, is appropriate.</li><li>In patients with isolated LPS, esophageal evaluation is recommended instead of empiric medical trials.</li></ul>
+                <ul><li>- <b>Primary Role:</b> A <u>necessary</u> step to assess for non-reflux causes, especially <b>malignancy</b>.</li><li>- <b>LPRD cannot be diagnosed based on laryngoscopy findings alone.</b></li></ul>
                 
         <details>
-            <summary><strong>Medical Anti-Reflux Trial</strong></summary>
+            <summary><strong>Findings</strong></summary>
             <div>
-                <ul><li>Includes twice daily PPI for 3 months with or without alginate therapy.</li><li>Alginate therapy taken four times daily (after meals and before bedtime) can decrease LPS.</li><li>In patients with isolated LPS, acid-reducing medications are not recommended as first-line therapy without diagnostic evidence of reflux.</li></ul>
+                <ul><li>- Findings like infraglottic edema, mucosal hypertrophy, and erythema are <u>nonspecific</u> for LPRD.</li><li>- These findings may be present in healthy, asymptomatic individuals.</li></ul>
                 
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Scoring Instruments</strong></summary>
+            <div>
+                <ul><li>- Instruments like the <b>Reflux Finding Score (RFS)</b> and <b>Reflux Sign Assessment</b> are <u>not diagnostic</u> of LPRD due to suboptimal specificity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Videostroboscopy</strong></summary>
+            <div>
+                <ul><li>- Should be performed when white-light laryngoscopy is unrevealing in patients with <b>hoarseness</b> to evaluate for other etiologies.</li></ul>
+                
+            </div>
+        </details>
+        <br>
         
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Symptom Characterization & Medical Trials</strong></summary>
+            <div>
+                <ul><li>- The first step is to determine if LPS is <b>isolated</b> or occurs with <b>concurrent esophageal reflux symptoms</b>.</li></ul>
+                
+        <details>
+            <summary><strong>LPS <u>with</u> Esophageal Symptoms</strong></summary>
+            <div>
+                <ul><li>- A trial of medical anti-reflux management is <u>appropriate</u>.</li><li>- Should be accompanied by dietary and lifestyle modifications.</li></ul>
+                
+        <details>
+            <summary><strong>PPI Trial</strong></summary>
+            <div>
+                <ul><li>- <b>Twice daily (BID) PPI</b> (e.g., omeprazole <q>20mg</q> BID).</li><li>- A <q><b>3-month</b></q> trial is sufficient to determine symptomatic response.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alginate Therapy</strong></summary>
+            <div>
+                <ul><li>- Can be used in conjunction with a PPI trial.</li><li>- Taken <q>4 times daily</q> (after meals and before bedtime).</li></ul>
+                
+            </div>
+        </details>
+        <br>
         
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Isolated</u> LPS</strong></summary>
+            <div>
+                <ul><li>- Empiric medical trials are <u>not recommended</u> as a first-line therapy.</li><li>- Reflux testing can personalize management better than empiric trials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
         <details>
             <summary><strong>Esophageal Evaluation</strong></summary>
             <div>
-                <ul><li>Esophageal evaluation, including upper GI endoscopy and/or ambulatory reflux monitoring, is the next step in the investigation of LPS with typical esophageal symptoms when unresponsive to empiric treatment trials, and in isolated LPS.</li></ul>
+                <ul><li>- Performed for LPS unresponsive to empiric trials (if applicable) or for isolated LPS.</li><li>- Includes Upper GI Endoscopy and/or Ambulatory Reflux Monitoring.</li></ul>
                 
         <details>
             <summary><strong>Upper GI Endoscopy</strong></summary>
             <div>
-                <ul><li>Conclusive evidence of GERD on upper GI endoscopy includes Los Angeles grades B, C, D esophagitis and/or biopsy proven Barrett’s esophagus.</li><li>The presence of disrupted esophagogastric junction on endoscopy, such as hiatal hernia, may serve as adjunctive evidence for LPRD.</li><li>Office-based transnasal esophagoscopy (TNE) has been shown to be similarly diagnostic for Barrett’s esophagus and certain other esophageal pathologies compared to standard upper endoscopy.</li></ul>
+                <ul><li>- Performed off acid suppression to establish GERD presence.</li><li>- Up to <q>47%</q> of patients with LPS may show erosive findings or hiatal hernia.</li></ul>
+                
+        <details>
+            <summary><strong>Conclusive GERD Evidence</strong></summary>
+            <div>
+                <ul><li>- <b>Los Angeles (LA) grades <q>B, C, or D</q> esophagitis</b>.</li><li>- Biopsy-proven <b>Barrett’s esophagus</b>.</li></ul>
                 
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Supportive Evidence</strong></summary>
+            <div>
+                <ul><li>- Disrupted esophagogastric junction (e.g., hiatal hernia).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cervical Inlet Patch</strong></summary>
+            <div>
+                <ul><li>- Area of heterotopic gastric mucosa in the proximal esophagus.</li><li>- Association with LPS is unclear; value of ablation is not established.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
         <details>
             <summary><strong>Ambulatory Reflux Monitoring</strong></summary>
             <div>
-                <ul><li>Ambulatory reflux monitoring is the reference standard for diagnosing LPRD.</li><li>LPRD diagnosis is required prior to invasive anti-reflux management.</li><li>In patients with isolated LPS, reflux testing can personalize management better than empiric treatment trials.</li></ul>
+                <ul><li>- The <u><b>reference standard</b></u> for diagnosing LPRD.</li><li>- Should be performed <b>off acid suppression</b> in patients with unproven GERD.</li></ul>
                 
         <details>
             <summary><strong>Indications</strong></summary>
             <div>
-                <ul><li>Diagnostic evaluation for LPRD should be considered if long-term medical anti-reflux management is recommended.</li><li>Evidence of abnormal reflux burden is essential prior to endoscopic or surgical antireflux interventions.</li><li>In the absence of endoscopic evidence of GERD, ambulatory reflux monitoring is the reference standard for diagnosing LPRD.</li></ul>
+                <ul><li>- <b>Required</b> prior to any invasive anti-reflux management (endoscopic or surgical).</li><li>- For isolated LPS to personalize management.</li><li>- Should be considered if long-term medical management is planned.</li></ul>
                 
             </div>
         </details>
-        
-            </div>
-        </details>
+        <br>
         
         <details>
-            <summary><strong>Modality &amp; Interpretation of Ambulatory Reflux Monitoring</strong></summary>
+            <summary><strong>Modalities: pH-Impedance vs. Wireless pH</strong></summary>
             <div>
-                <ul><li>Ambulatory reflux monitoring for evaluation of LPRD in patients with unproven GERD should be performed off acid suppression therapy.</li><li>pH-impedance and wireless pH monitoring measure different properties of LPRD and are not mutually exclusive.</li><li>Distal esophageal acid exposure time (AET) greater than 6.0% on ambulatory reflux monitoring meets criteria for proven GERD.</li></ul>
+                <ul><li>- These two methods are <u>not mutually exclusive</u> and have distinct roles. (See Table 3)</li></ul>
                 
         <details>
-            <summary><strong>pH-Impedance Monitoring</strong></summary>
+            <summary><strong>24-hour pH-Impedance</strong></summary>
             <div>
-                <ul><li>A diagnostic option for LPRD, particularly in patients with isolated laryngopharyngeal symptoms.</li><li>Offers the ability to detect proximal reflux events with greater detail.</li><li>Hypopharyngeal reflux events were demonstrated using dual channel or hypopharyngeal-esophageal multichannel intraluminal impedance with dual pH (HEMII-pH) catheters.</li></ul>
+                <ul><li>- <b>Best for:</b> Patients with <u>isolated LPS</u> to understand mechanisms.</li><li>- Detects proximal, weakly-acidic, and non-acidic reflux events.</li><li>- HEMII-pH catheters can identify pharyngeal reflux in <q>81%</q> of patients.</li></ul>
                 
             </div>
         </details>
+        <br>
         
         <details>
-            <summary><strong>Prolonged Wireless pH Testing</strong></summary>
+            <summary><strong>96-hour Wireless pH</strong></summary>
             <div>
-                <ul><li>A diagnostic option for LPRD, particularly in patients with concomitant esophageal reflux symptoms and prior to escalation of reflux management.</li><li>AET less than 4.0% on all four days of 96-hour wireless pH monitoring predicts low likelihood of symptom response with anti-secretory therapy.</li><li>Prolonged pH monitoring also provides a higher diagnostic yield of pathologic GERD in patients with LPS.</li></ul>
+                <ul><li>- <b>Best for:</b> Patients with <u>concomitant esophageal symptoms</u> and before escalating management.</li><li>- Accounts for day-to-day variability, which is a major advantage.</li><li>- Higher diagnostic yield for GERD in LPS patients (<q>50%</q>) compared to 24-hr pH-impedance (<q>27%</q>).</li></ul>
                 
             </div>
         </details>
-        
-        <details>
-            <summary><strong>Oropharyngeal pH Testing</strong></summary>
-            <div>
-                <ul><li>Oropharyngeal pH monitoring alone has poor specificity for LPRD in patients with laryngopharyngeal symptoms.</li><li>This technique is not specific, cannot detect weakly-acidic or non-acidic reflux, has poor concordance with traditional pH-impedance monitoring, and does not correlate with clinical outcomes.</li></ul>
-                
-            </div>
-        </details>
+        <br>
         
             </div>
         </details>
-        
-            </div>
-        </details>
+        <br>
         
         <details>
-            <summary><strong>Laryngeal Hyperresponse and Hypervigilance</strong></summary>
+            <summary><strong>Interpretation of Findings</strong></summary>
             <div>
-                <ul><li>Hyperresponsive laryngeal behaviors, with or without true LPRD, may contribute to or be the primary etiology of LPS.</li><li>Laryngeal symptom-specific anxiety and hypervigilance may contribute to or be the primary etiology of LPS.</li><li>The Laryngeal Cognitive Affective Tool can help identify individuals with symptom-specific anxiety and hypervigilance.</li></ul>
+                <ul><li>- Focuses on distal esophageal Acid Exposure Time (AET).</li></ul>
                 
         <details>
-            <summary><strong>Laryngeal Behavioral Factors</strong></summary>
+            <summary><strong>Proven GERD</strong></summary>
             <div>
-                <ul><li>The larynx is a critical intersection of breathing, communication and swallowing.</li><li>Laryngeal hyperresponse can manifest as repetitive laryngeal behaviors such as throat clearing or coughing, breath-holding, or as biomechanical strain at the vocal folds.</li><li>Laryngeal hypervigilance, defined as increased threat-induced attention to the larynx, and symptom-specific anxiety, defined as fear/worry about LPS and perceived consequences, are psychological processes that can influence LPS.</li></ul>
+                <ul><li>- Distal esophageal AET <q><b>> 6.0%</b></q>.</li></ul>
                 
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physiologic Reflux</strong></summary>
+            <div>
+                <ul><li>- Distal esophageal AET <q><b>< 4.0%</b></q>.</li><li>- If AET is <4.0% on <u>all 4 days</u> of wireless monitoring, it predicts a <b>low likelihood</b> of response to antisecretory therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Oropharyngeal pH Monitoring (e.g., Restech)</strong></summary>
+            <div>
+                <ul><li>- <u>Not recommended</u> as a stand-alone tool.</li><li>- Has <b>poor specificity</b> for LPRD and poor concordance with other methods.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Laryngeal Hyperresponse & Hypervigilance</strong></summary>
+            <div>
+                <ul><li>- Addresses non-reflux mechanisms and <b>brain-larynx interactions</b> that contribute to LPS.</li><li>- These factors can be the primary etiology of LPS, with or without pathologic reflux.</li></ul>
+                
+        <details>
+            <summary><strong>Behavioral Factors</strong></summary>
+            <div>
+                <ul><li>- A predisposition to manifest emotional distress through sensory changes in the larynx or voice.</li></ul>
+                
+        <details>
+            <summary><strong>Laryngeal Hyperresponse</strong></summary>
+            <div>
+                <ul><li>- Repetitive laryngeal behaviors ---> throat clearing, coughing, breath-holding.</li><li>- Biomechanical strain at the vocal folds ---> altered voice quality or globus sensation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Laryngeal Hypervigilance</strong></summary>
+            <div>
+                <ul><li>- Increased threat-induced attention to the larynx.</li><li>- Often coexists with symptom-specific anxiety (fear/worry about LPS and its consequences).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Laryngeal Cognitive-Affective Tool (LCAT)</strong></summary>
+            <div>
+                <ul><li>- A validated patient-reported outcome (PRO) instrument.</li><li>- Helps identify individuals with elevated levels of <b>hypervigilance</b> and symptom-specific <b>anxiety</b> related to their LPS.</li><li>- Useful for selecting candidates who may benefit from behavioral intervention.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
         <details>
             <summary><strong>Laryngeal Behavioral Therapy</strong></summary>
             <div>
-                <ul><li>Individuals with LPS can undergo initial laryngeal recalibration therapy (LRT) provided by a voice-specialized speech-language pathologist.</li><li>LRT involves combined voice therapy techniques, autonomic regulation and cognitive reframing to address perceived and confirmed irritation manifesting as cough, throat-clearing, dyspnea and voice change.</li><li>Behavioral therapies used to address psychological targets, such as cognitive behavioral therapy, can be used alone or in combination with other modalities in patients with LPS.</li></ul>
-                
-            </div>
-        </details>
-        
-        <details>
-            <summary><strong>Neuromodulation</strong></summary>
-            <div>
-                <ul><li>Neuromodulators may improve laryngeal hypersensitivity. These include tricyclic antidepressants, as well as gabapentin and pregabalin (particularly studied in cough).</li><li>Pharmacologic neuromodulation may attenuate laryngeal hypersensitivity and may be considered in LPRD patients with suboptimal response to anti-secretory therapy or SLP intervention and in isolated LPS with negative esophageal testing.</li><li>Tricyclic antidepressants, commonly prescribed for the treatment of functional GI disorders, should be used with caution because of anticholinergic effects which may cause dry mouth and aggravate LPS.</li></ul>
-                
-            </div>
-        </details>
-        
-            </div>
-        </details>
-        
-        <details>
-            <summary><strong>PRO Instruments &amp; Risk Stratification Tools</strong></summary>
-            <div>
-                <ul><li>Common PRO instruments for GERD (GERDQ, GERD-HRQL) are valuable in assessing the severity and treatment response of esophageal symptoms, but have suboptimal diagnostic yield for LPS and LPRD.</li><li>Currently available LPRD-specific PRO instruments should not be used to diagnose LPRD due to insufficient specificity.</li><li>Some clinical risk stratification tools (HAS-BEER, COuGH RefluX) were developed in recent years to help direct initial diagnostic and management strategies in patients with LPS.</li></ul>
-                
-            </div>
-        </details>
-        
-        <details>
-            <summary><strong>Discussion</strong></summary>
-            <div>
-                <ul><li>The San Diego Consensus for LPS &amp; LPRD (SD-LPRD) is a modern-day evidence-based paradigm for evaluation and management of LPS.</li><li>The physiological mechanisms underlying “LPR” are often unclear and can be neurogenic, inflammatory, behavioral or motility related.</li><li>A major distinction is between presenting symptoms pertaining to the upper aerodigestive tract, termed LPS, from confirmed reflux-mediated pathophysiology based on objective findings, termed LPRD.</li></ul>
+                <ul><li>- Aims to modify dysregulated laryngeal patterns and cognitive perspectives associated with LPS.</li><li>- Can be used alone or in combination with other modalities like neuromodulators.</li></ul>
                 
         <details>
-            <summary><strong>Key Distinctions</strong></summary>
+            <summary><strong><b>Laryngeal Recalibration Therapy (LRT)</b></strong></summary>
             <div>
-                <ul><li>An expert evaluation of the larynx using laryngoscopy ± stroboscopy is an important step in evaluating any patient with LPS, not only to document findings, but also to rule out non-reflux etiologies for LPS.</li><li>The presence of typical esophageal symptoms should be assessed as evaluation and management algorithms differ for isolated LPS and concurrent LPS with esophageal reflux symptoms.</li><li>Prior to initiating anti-reflux therapy in isolated LPS, or when empiric treatment trials fail in LPS associated with esophageal symptoms, further esophageal evaluation includes upper GI endoscopy and ambulatory reflux monitoring.</li></ul>
+                <ul><li>- Provided by a <u>voice-specialized speech-language pathologist (SLP)</u>.</li><li>- A structured approach combining:</li><li>- - Traditional voice therapy techniques.</li><li>- - Autonomic regulation (heart rate variability biofeedback).</li><li>- - Cognitive reframing (Acceptance and Commitment Therapy).</li></ul>
                 
             </div>
         </details>
+        <br>
         
         <details>
-            <summary><strong>Ambulatory Reflux Monitoring</strong></summary>
+            <summary><strong>Cognitive Behavioral Therapy (CBT)</strong></summary>
             <div>
-                <ul><li>In planning ambulatory reflux monitoring, the diagnostic evaluation of LPS potentially related to reflux may require the determination of whether symptoms arise from a reflux mediated mechanism or a reflex mechanism.</li><li>pH-impedance monitoring, particularly using a HEMII-pH or dual pH impedance catheter, can distinguish between these mechanisms and provide definitive evidence of reflux events.</li><li>Prolonged wireless reflux monitoring provides precise information regarding the presence or absence of pathologic acid burden.</li></ul>
+                <ul><li>- Considered if psychological processes persist after LRT or neuromodulation.</li><li>- Targets specific cognitive, emotional, and behavioral processes exacerbating symptoms.</li><li>- Delivered by a mental health professional with specialized health psychology training.</li></ul>
                 
             </div>
         </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
         <details>
-            <summary><strong>Laryngeal Hyperresponsiveness and Hypervigilance</strong></summary>
+            <summary><strong>Pharmacologic Neuromodulation</strong></summary>
             <div>
-                <ul><li>In the case of isolated LPS or when LPS fail to respond to anti-reflux therapies even in confirmed LPRD, overlap with laryngeal hyperresponsiveness and hypervigilance should be considered, and behavioral therapy and/or neuromodulation recommended.</li><li>Laryngeal behavioral therapies offered through trained SLPs and other behavioral therapists can hold value in disorders with laryngeal hyperresponsiveness and hypervigilance independent of the underlying mechanism.</li><li>The LCAT holds potential to identify patients with LPS who could benefit from behavioral therapies and/or neuromodulation.</li></ul>
+                <ul><li>- May improve <b>laryngeal hypersensitivity</b>.</li><li>- Considered in LPRD with poor response to acid suppression or in isolated LPS with negative reflux testing.</li></ul>
+                
+        <details>
+            <summary><strong>Gabapentin & Pregabalin</strong></summary>
+            <div>
+                <ul><li>- May be an effective adjunct to LRT for LPS, especially <b>cough</b>.</li></ul>
                 
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Tricyclic Antidepressants (TCAs)</strong></summary>
+            <div>
+                <ul><li>- May help LPS symptoms.</li><li>- <u>Caution:</u> Anticholinergic side effects like <b>xerostomia</b> (dry mouth) should be monitored.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>SSRIs & SNRIs</strong></summary>
+            <div>
+                <ul><li>- Not specifically studied in LPS.</li><li>- May benefit individuals with LPS and concomitant clinical <b>anxiety</b> and/or <b>depression</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
         
             </div>
         </details>
+        <br>
         
             </div>
         </details>
+        <br>
+        
+        <details>
+            <summary><strong>Patient-Reported Outcome (PRO) Instruments & Risk Tools</strong></summary>
+            <div>
+                <ul><li>- PROs are used to assess symptoms and treatment response, but are <u>not diagnostic tools</u> for LPRD.</li></ul>
+                
+        <details>
+            <summary><strong>LPRD-Specific PROs</strong></summary>
+            <div>
+                <ul><li>- Instruments like LPR-HRQL, Reflux Symptom Index (RSI), and Reflux Symptom Score (RSS) are <u><b>not specific enough to diagnose LPRD</b></u>.</li></ul>
+                
+        <details>
+            <summary><strong>Reflux Symptom Index (RSI)</strong></summary>
+            <div>
+                <ul><li>- Nonspecific for LPRD but can track laryngological complaints over time.</li><li>- A cutoff of <q>≥13</q> is <u>not</u> considered clinically significant or reliable for diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>GERD-Specific PROs</strong></summary>
+            <div>
+                <ul><li>- Instruments like GERDQ and GERD-HRQL are useful for assessing <b>esophageal symptoms</b> but are not specific for LPS.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Stratification Tools</strong></summary>
+            <div>
+                <ul><li>- Tools like HAS-BEER and COuGH RefluX are promising but require more data before they can be adopted into the consensus algorithm.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>San Diego Consensus: Clinical Paradigm Summary</strong></summary>
+            <div>
+                <ul><li>- This consensus provides a modern, evidence-based, interdisciplinary paradigm for LPS and LPRD.</li></ul>
+                
+        <details>
+            <summary><strong>Core Principle: Distinguish LPS from LPRD</strong></summary>
+            <div>
+                <ul><li>- <b>LPS:</b> The symptomatic presentation (cough, throat clearing, etc.).</li><li>- <b>LPRD:</b> The objective diagnosis, requiring both LPS and objective evidence of reflux.</li><li>- This distinction is critical to separate patients needing reflux therapy from those needing symptomatic/behavioral interventions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Underlying Mechanisms</strong></summary>
+            <div>
+                <ul><li>- Mechanisms are varied and not limited to simple reflux, explaining why fewer than <q>50%</q> of LPS patients respond to antisecretory therapy.</li><li>- Mechanisms include:</li><li>- - <b>Direct Injury:</b> From acid, pepsin, bile salts.</li><li>- - <b>Indirect Injury:</b> Repetitive trauma from vagally-mediated cough/clearing.</li><li>- - <b>Reflex Pathway:</b> Vagally-mediated airway stimulation.</li><li>- - <b>Brain-Larynx Interaction:</b> Heightened cognitive-behavioral responses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proposed Evaluation & Management Algorithm</strong></summary>
+            <div>
+                <ul><li>- See Figure 1 for the full algorithm.</li></ul>
+                
+        <details>
+            <summary><strong>Initial Evaluation</strong></summary>
+            <div>
+                <ul><li>- <b>1. Laryngoscopy:</b> To rule out non-reflux causes (e.g., malignancy).</li><li>- <b>2. Symptom Assessment:</b> Differentiate between <u>isolated LPS</u> and LPS with <u>concurrent esophageal symptoms</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management Pathway: LPS + Esophageal Symptoms</strong></summary>
+            <div>
+                <ul><li>- <b>1. Empiric Trial:</b> Twice-daily PPI for <q>3 months</q> ± alginates, plus lifestyle changes.</li><li>- <b>2. Assess Response:</b></li><li>- - <u>Full Response:</u> Likely LPRD, continue management.</li><li>- - <u>Partial/No Response:</u> Proceed to objective esophageal testing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management Pathway: Isolated LPS</strong></summary>
+            <div>
+                <ul><li>- <b>1. Objective Testing First:</b> Proceed with objective esophageal testing (endoscopy, reflux monitoring) <u>before</u> anti-reflux management to personalize care.</li><li>- <b>2. Consider Brain-Larynx Interaction:</b> Disordered laryngeal behaviors should be considered at the outset.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Objective Testing</strong></summary>
+            <div>
+                <ul><li>- <b>Required</b> before any invasive anti-reflux therapy (endoscopic or surgical).</li><li>- Absence of GERD (AET <q><4.0%</q>) makes it unlikely that anti-reflux therapies will improve LPS.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consideration for Non-Responders</strong></summary>
+            <div>
+                <ul><li>- In isolated LPS or when LPS fails to respond to anti-reflux therapies (even in confirmed LPRD), consider overlap with <b>laryngeal hyperresponsiveness and hypervigilance</b>.</li><li>- Recommend behavioral therapy (LRT, CBT) and/or neuromodulation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
         
     </div>
     
 </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
 </body>
 </html>
