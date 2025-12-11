@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ASCRS Clinical Practice Guidelines for the Evaluation and Management of Chronic Constipation</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>ASCRS Clinical Practice Guidelines for the Evaluation and Management of Chronic Constipation</strong></summary>
+            <div>
+                <ul><li>- <b>Journal</b>: Diseases of the Colon & Rectum</li><li>- <b>Publication Date</b>: 2024; 67: 1244–1257</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of patients with slow colonic transit may not respond adequately to increased dietary fiber? <q>80%</q></li><li>- What is the success rate of biofeedback for pelvic floor dysfunction compared to laxatives/dietary changes? <q>80%</q> vs <q>22%</q></li><li>- What is the reported failure rate for segmental colectomy in treating slow-transit constipation? As high as <q>100%</q></li><li>- In the STARR procedure for ODS, what percentage of patients experienced fecal urgency in one study? <q>27.8%</q></li><li>- After TAC-IRA for slow-transit constipation, what percentage of patients in a 15-year follow-up study eventually required a permanent ileostomy? <q>19%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Overview of Chronic Constipation</strong></summary>
+            <div>
+                <ul><li>- One of the most common GI disorders in ambulatory medicine clinics.</li><li>- Worldwide prevalence of <q><b>15%</b></q>.</li><li>- More frequently diagnosed in <u>North America</u> and <u>Europe</u> compared to Asia.</li></ul>
+                
+        <details>
+            <summary><strong>Risk Factors</strong></summary>
+            <div>
+                <ul><li>- Age <q>> 65 years</q></li><li>- <b>Female</b> sex</li><li>- Inactivity</li><li>- Low socioeconomic status</li><li>- Low-fiber diet</li><li>- Non-White race</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Primary Constipation Subtypes</strong></summary>
+            <div>
+                <ul><li>- Characterized by dysfunctional colonic motility and/or outlet dysfunction.</li></ul>
+                
+        <details>
+            <summary><strong>Normal Transit Constipation</strong></summary>
+            <div>
+                <ul><li>- Also known as <u>functional constipation</u>.</li><li>- Meets Rome IV criteria.</li></ul>
+                
+        <details>
+            <summary><strong>Rome IV Criteria for Functional Constipation</strong></summary>
+            <div>
+                <ul><li>- Must include <b>≥2</b> of the following for >25% of defecations:</li><li>- Straining</li><li>- Lumpy/hard stools</li><li>- Sensation of incomplete evacuation</li><li>- Sensation of anorectal blockage</li><li>- Requiring manual maneuvers</li><li>- Fewer than <q>3</q> spontaneous defecations per week.</li><li>- Symptoms must be present for <q>3 to 6 months</q> before diagnosis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Irritable Bowel Syndrome with Constipation (IBS-C)</strong></summary>
+            <div>
+                <ul><li>- Overlaps with normal transit constipation.</li><li>- Distinguishing symptom: <u>Abdominal pain</u> more than once per week that resolves with flatulence or a bowel movement.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Delayed Transit Time Constipation</strong></summary>
+            <div>
+                <ul><li>- Also known as slow-transit constipation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outlet Dysfunction Constipation</strong></summary>
+            <div>
+                <ul><li>- Difficulty expelling stool from the rectum.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Secondary Constipation</strong></summary>
+            <div>
+                <ul><li>- Cause is multifactorial.</li><li>- Can include diet, medications, metabolic or neurological disorders, and psychosocial issues.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Initial Evaluation and Management</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>1. History and Physical Examination</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strong</u> (based on low-quality evidence).</li><li>- Goal: Ensure a serious or life-threatening disease is not the underlying cause.</li></ul>
+                
+        <details>
+            <summary><strong>History: Red Flag Symptoms</strong></summary>
+            <div>
+                <ul><li>- Rectal bleeding</li><li>- Change in caliber of stools</li><li>- Blood in the stool</li><li>- Weight loss</li><li>- Anemia</li><li>- Family history of colorectal cancer</li><li>- These symptoms warrant <u>endoscopic evaluation</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>History: Medication Review</strong></summary>
+            <div>
+                <ul><li>- Common contributing medications:</li><li>- Opioids</li><li>- Antidepressants</li><li>- Anticholinergics</li><li>- Calcium channel blockers</li><li>- Calcium supplements</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physical Examination Focus</strong></summary>
+            <div>
+                <ul><li>- <b>Abdominal</b>: Check for distention or palpable masses.</li><li>- <b>Anorectal</b>: Inspect for distorted anatomy, neoplasms.</li><li>- <b>Digital Rectal Exam</b>: Can reveal anal hypertonia, paradoxical puborectalis contraction, rectocele, mass, stricture, or fecal impaction.</li><li>- <b>Valsalva Maneuver</b>: May help determine degree of pelvic descent or presence of puborectalis dysfunction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Workup</strong></summary>
+            <div>
+                <ul><li>- <b>Laboratory testing</b>: Can identify hypothyroidism, hyperparathyroidism, or diabetes mellitus but is nonspecific.</li><li>- <b>Imaging (CT)</b>: Can demonstrate colonic dilation or fecal loading but is unlikely to show an anatomic abnormality unless symptoms are suspicious.</li></ul>
+                
+        <details>
+            <summary><strong>Role of Colonoscopy</strong></summary>
+            <div>
+                <ul><li>- Constipation <u>alone</u> is not associated with an increased risk of colorectal cancer.</li><li>- A colonoscopy should be recommended if patients meet criteria for general screening or present with concerning symptoms (hematochezia, weight loss, etc.).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Objective Measures & Quality of Life</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- Useful for directing treatment and assessing response over time.</li><li>- Recommended tools by the Pelvic Floor Disorders Consortium:</li><li>- <u>Patient Assessment of Constipation Symptom Questionnaire</u></li><li>- <u>Constipation Severity Instrument</u></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Initial Management: Diet & Fiber</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strong</u> (based on low-quality evidence).</li><li>- Considered <b>first-line treatment</b>.</li><li>- Involves dietary modifications, ensuring adequate fluid intake, and fiber supplementation.</li></ul>
+                
+        <details>
+            <summary><strong>Fiber Supplementation Efficacy</strong></summary>
+            <div>
+                <ul><li>- Daily oat bran supplementation allowed discontinuation of laxatives in <q><b>59% to 80%</b></q> of elderly patients.</li><li>- Soluble fiber led to improvements in global constipation symptoms (<q>86.5%</q> vs 47.4% with placebo) and straining (<q>55.6%</q> vs 28.6% with placebo).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limitations of Fiber Therapy</strong></summary>
+            <div>
+                <ul><li>- <q><b>80%</b></q> of patients with <u>slow colonic transit</u> may not respond adequately.</li><li>- <q><b>63%</b></q> of patients with constipation due to <u>outlet obstruction</u> may not respond adequately.</li><li>- <q><b>85%</b></q> of patients without an underlying pathological finding may see symptomatic improvement.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Medical Therapy: Laxatives</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strong</u> (based on moderate-quality evidence).</li></ul>
+                
+        <details>
+            <summary><strong>First-Line: Osmotic Laxatives</strong></summary>
+            <div>
+                <ul><li>- Preferred agents include <b>polyethylene glycol (PEG)</b> and magnesium salt–based products.</li><li>- A meta-analysis showed PEG is superior to lactulose in improving stool frequency, consistency, and relieving abdominal pain.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Second-Line/Rescue: Stimulant Laxatives</strong></summary>
+            <div>
+                <ul><li>- e.g., <b>bisacodyl</b>, sodium picosulfate.</li><li>- Can be considered for rescue therapy or as second-line therapy.</li><li>- Most frequent side effect is <q><u>abdominal pain</u></q>.</li><li>- There is a lack of RCTs for anthraquinone stimulants like senna, cascara, and aloe.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Management of Refractory Constipation & Defecatory Disorders</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>5. Evaluation for Outlet Dysfunction</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- Should be performed in patients who fail dietary changes, fiber, and osmotic laxatives.</li><li>- Outlet dysfunction is the <u>most common cause</u> of medically refractory chronic constipation.</li></ul>
+                
+        <details>
+            <summary><strong>Balloon Expulsion Test (BET)</strong></summary>
+            <div>
+                <ul><li>- A direct test of evacuation (expelling a 50mL water-filled balloon).</li><li>- Has low sensitivity (<q><b>50%</b></q>) but is highly specific and can predict response to biofeedback therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anorectal Manometry & Sensation Testing</strong></summary>
+            <div>
+                <ul><li>- Indirect tests to clarify functional causes.</li><li>- Evaluates rectoanal inhibitory reflex, which is absent in <q><u>Hirschsprung disease</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Defecography</strong></summary>
+            <div>
+                <ul><li>- The <u>only direct test</u> of evacuation that evaluates both anatomical and functional causes.</li><li>- Can be fluoroscopic (seated) or MRI (supine).</li><li>- Fluoroscopic defecography is considered to have the most construct validity.</li></ul>
+                
+        <details>
+            <summary><strong>Common Pathological Findings</strong></summary>
+            <div>
+                <ul><li>- High-grade (Oxford III/IV) intussusception: <q>23.7%</q></li><li>- Large (>4 cm) rectoceles: <q>15.9%</q></li><li>- Enterocele descent: <q>16.8%</q></li><li>- Perineal descent: <q>44.4%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>6. Colonic Motility Testing</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strong</u> (based on low-quality evidence).</li><li>- <b>Must be measured before surgical intervention is considered.</b></li><li>- The most common modality is the transit time of <u>radiopaque markers</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>7. Biofeedback Therapy</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strong</u> (based on moderate-quality evidence).</li><li>- Considered a <b>first-line treatment</b> for patients with symptomatic pelvic floor dyssynergia.</li></ul>
+                
+        <details>
+            <summary><strong>Efficacy</strong></summary>
+            <div>
+                <ul><li>- Electromyography (EMG) biofeedback is superior to non-EMG biofeedback (OR <q>6.74</q>).</li><li>- A Cochrane Review showed biofeedback was successful in <q><b>80%</b></q> of patients compared to only a <q><b>22%</b></q> success rate with laxatives and dietary modifications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>8. Botulinum Toxin (BTX) Injection</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- May be considered for outlet dysfunction related to a <u>nonrelaxing puborectalis muscle</u>.</li><li>- Symptomatic relief is typically temporary, with efficacy decreasing within <q><b>3 months</b></q> post-injection.</li></ul>
+                
+        <details>
+            <summary><strong>Study Example</strong></summary>
+            <div>
+                <ul><li>- In a study of patients unresponsive to biofeedback, an injection of <q><b>100 units</b></q> of BTX-A was used.</li><li>- <q><b>74.2%</b></q> of patients who had previously failed the BET were able to successfully expel the balloon after the injection.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>9. Surgical Repair of Rectocele</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on moderate-quality evidence).</li><li>- May be considered for significant outlet dysfunction from a rectocele.</li><li>- <b>Prerequisite</b>: Any concomitant functional causes (e.g., nonrelaxing puborectalis) must be addressed first.</li></ul>
+                
+        <details>
+            <summary><strong>Surgical Approaches & Outcomes</strong></summary>
+            <div>
+                <ul><li>- Approaches include transanal, transvaginal, transperineal, and abdominal.</li><li>- Success rates are variable, ranging from <q><b>50% to 100%</b></q>.</li><li>- The transvaginal approach may be associated with a higher incidence of <q><u>dyspareunia</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>10. Stapled Transanal Rectal Resection (STARR)</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Strongly NOT recommended</u> for repair of a rectocele or internal rectal intussusception.</li><li>- Reason: <b>High complication rates</b> associated with the procedure.</li></ul>
+                
+        <details>
+            <summary><strong>Reported Complications</strong></summary>
+            <div>
+                <ul><li>- Postoperative complication rates range from <q>10% to 78%</q>.</li><li>- Specific complications include rectovaginal fistula, pelvic sepsis (<q>1.3%</q>), fecal urgency (<q>27.8%</q>), and staple line dehiscence (<q>4.2%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>11. Repair of Rectal Intussusception</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- May be considered in patients with severe obstructed defecation when nonoperative treatments are unsuccessful.</li><li>- Surgery may restore anatomy but <u>does not guarantee functional improvement</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Delorme Procedure</strong></summary>
+            <div>
+                <ul><li>- A mucosal proctectomy that excises redundant mucosa and plicates the underlying muscularis.</li><li>- A study of 100 patients reported significant improvement in constipation scores at 6 months (from <q>18.9 to 5</q>).</li><li>- Recurrence rate was <q><b>6%</b></q> with an excellent safety profile.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ventral Mesh Rectopexy</strong></summary>
+            <div>
+                <ul><li>- Associated with improvement in constipation in <q><b>80% to 95%</b></q> of patients.</li><li>- Features minimal new-onset constipation and a <q><b>5%</b></q> recurrence rate.</li><li>- Long-term follow-up (median 60 months) showed no mesh-related complications and sustained improvement in symptoms at 7 years.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>12. Total Abdominal Colectomy with Ileorectal Anastomosis (TAC-IRA)</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- May benefit patients with <b>isolated refractory colonic slow-transit constipation</b>.</li><li>- In contrast, segmental colectomy for this condition can have a failure rate as high as <q><b>100%</b></q>.</li></ul>
+                
+        <details>
+            <summary><strong>Outcomes & Morbidity</strong></summary>
+            <div>
+                <ul><li>- Associated with clinical improvement in <q><b>50% to 100%</b></q> of patients.</li><li>- Potential morbidity includes anastomotic leak, bowel obstruction, and prolonged ileus.</li><li>- Post-operative symptoms can include diarrhea, abdominal pain, fecal incontinence, or recurrent constipation.</li></ul>
+                
+        <details>
+            <summary><strong>15-Year Follow-Up Study</strong></summary>
+            <div>
+                <ul><li>- <q><b>50%</b></q> of patients had fewer than 4 BMs per day.</li><li>- <q><b>21%</b></q> experienced severe incontinence.</li><li>- <q><b>19%</b></q> of patients eventually required a permanent ileostomy.</li><li>- Despite this, overall patient satisfaction was high.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Patient Satisfaction</strong></summary>
+            <div>
+                <ul><li>- In one survey, despite diarrhea in <q>46%</q> of patients, more than <q><b>90%</b></q> reported they would undergo TAC-IRA again.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Alternative: Jinling Procedure</strong></summary>
+            <div>
+                <ul><li>- A subtotal colectomy with side-to-side <u>cecorectal anastomosis</u>.</li><li>- Theoretically preserves the ileocecal valve to reduce diarrhea risk.</li><li>- Efficacy compared with TAC-IRA remains unclear.</li></ul>
+                
+        <details>
+            <summary><strong>Comparative Data</strong></summary>
+            <div>
+                <ul><li>- A retrospective comparison showed cecorectal anastomosis was more often associated with persistent constipation and lower patient satisfaction (<q>73%</q>) compared to ileosigmoid anastomosis (<q>93%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>13. Fecal Diversion (Ostomy)</strong></summary>
+            <div>
+                <ul><li>- <b>Recommendation</b>: <u>Conditional</u> (based on low-quality evidence).</li><li>- Considered a <b>last resort</b> for patients with intractable constipation refractory to other treatments.</li></ul>
+                
+        <details>
+            <summary><strong>Ileostomy</strong></summary>
+            <div>
+                <ul><li>- Successful in alleviating constipation in <q><b>96%</b></q> of patients in one analysis.</li><li>- Must be weighed against risks of dehydration, parastomal hernia, and retraction.</li><li>- In one series, <q><b>55%</b></q> of patients required additional stoma-related procedures.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Colostomy</strong></summary>
+            <div>
+                <ul><li>- Less evidence available.</li><li>- One series showed <q><b>100%</b></q> improvement in patients with rectosigmoid dilation, but no benefit for those with pancolonic dilation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Quality of Life</strong></summary>
+            <div>
+                <ul><li>- Despite a reoperation rate of <q><b>20%</b></q> in one study, more than <q><b>70%</b></q> of patients were satisfied with their quality of life post-ostomy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
