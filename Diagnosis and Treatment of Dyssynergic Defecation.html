@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Diagnosis and Treatment of Dyssynergic Defecation</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Diagnosis and Treatment of Dyssynergic Defecation</strong></summary>
+            <div>
+                <ul><li>- J Neurogastroenterol Motil 2016;22:423-435</li></ul>
+                
+        <details>
+            <summary><strong>knowledge test</strong></summary>
+            <div>
+                <ul><li>- What percentage of patients with chronic constipation are affected by dyssynergic defecation?</li><li>- What is the normal time for a balloon expulsion test?</li><li>- What is the success rate of biofeedback therapy in randomized controlled trials?</li><li>- What is the recommended daily fiber intake for standard constipation treatment?</li><li>- What is the sensitivity and specificity of a Digital Rectal Examination (DRE) for identifying dyssynergia?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction to Dyssynergic Defecation</strong></summary>
+            <div>
+                <ul><li>- An <u>acquired behavioral problem</u> due to the inability to coordinate abdominal and pelvic floor muscles for stool evacuation.</li><li>- Affects up to <q>one half</q> of patients with chronic constipation.</li><li>- The term <b>dyssynergic defecation</b> is endorsed by the Rome criteria as it aptly describes the core pathophysiology of incoordination.</li></ul>
+                
+        <details>
+            <summary><strong>Alternative Terminology</strong></summary>
+            <div>
+                <ul><li>- This condition has been described by several terms, which are now less preferred:</li><li>- Anismus</li><li>- Pelvic floor dyssynergia</li><li>- Obstructive defecation</li><li>- Paradoxical puborectalis contraction</li><li>- Pelvic outlet obstruction</li><li>- Spastic pelvic floor syndrome</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Epidemiology & Impact</strong></summary>
+            <div>
+                <ul><li>- The global prevalence of chronic constipation in the community ranges from <q>11% to 18%</q>.</li><li>- Dyssynergic defecation is detected in <q>27-59%</q> of patients with chronic constipation.</li></ul>
+                
+        <details>
+            <summary><strong>Demographics</strong></summary>
+            <div>
+                <ul><li>- More common in women, with a female:male ratio of <q>2.2:1</q>.</li><li>- Prevalence increases with age, particularly after age <q>65</q>.</li><li>- Higher prevalence in African Americans, lower socioeconomic status, pregnancy, and neurological diseases (e.g., Parkinson's, multiple sclerosis).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Economic & Social Impact</strong></summary>
+            <div>
+                <ul><li>- Significant healthcare resource utilization.</li><li>- In the US, direct per-patient expenditure ranges from <q>$1912 to $7522</q> per year.</li><li>- Results in <q>13.7 million</q> days of restricted activity.</li><li>- Impairs ability to work in <q>60%</q> of patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychological Distress & Quality of Life</strong></summary>
+            <div>
+                <ul><li>- Associated with increased anxiety, depression, somatization, and obsessive-compulsiveness.</li><li>- Patients with dyssynergia show greater psychological distress than those with slow transit constipation (STC).</li><li>- A history of abuse is common:</li><li>- Sexual abuse: reported by <q>22-48%</q> of subjects.</li><li>- Physical abuse: reported by <q>31-74%</q> of subjects.</li><li>- Health-related quality of life is significantly impaired, often more so than in STC.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Etiology & Pathophysiology</strong></summary>
+            <div>
+                <ul><li>- The etiology is often unclear, but it is considered an acquired condition.</li></ul>
+                
+        <details>
+            <summary><strong>Onset of Condition</strong></summary>
+            <div>
+                <ul><li>- A prospective survey found the problem began:</li><li>- During childhood in <q>31%</q> of patients.</li><li>- After a specific event (pregnancy, trauma, back injury) in <q>29%</q>.</li><li>- With no identifiable cause in <q>40%</q>.</li><li>- Excessive straining to expel hard stools over time may lead to dyssynergia.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Pathophysiology</strong></summary>
+            <div>
+                <ul><li>- The primary problem is <b>incoordination (dyssynergia)</b> of the muscles involved in defecation, not simply anal spasm.</li><li>- Myectomy or Botulinum toxin injections, which target spasm, have shown minimal improvement (<q>10-30%</q> and minimal, respectively).</li></ul>
+                
+        <details>
+            <summary><strong>Mechanisms of Dyssynergia</strong></summary>
+            <div>
+                <ul><li>- Failure of rectoanal coordination consists of:</li><li>- <b>Inadequate propulsive force</b> from abdominal muscles.</li><li>- <b>Paradoxical anal contraction</b> during attempted defecation.</li><li>- <b>Inadequate anal relaxation</b>.</li><li>- Impaired rectal sensation is also present in <q>50-60%</q> of patients.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phenotypes of Dysfunction</strong></summary>
+            <div>
+                <ul><li>- A large study identified 3 distinct phenotypes:</li><li>- 1. High anal sphincter pressure at rest and during defecation.</li><li>- 2. Inadequate propulsive force.</li><li>- 3. A hybrid of both disturbances.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Evaluation & Diagnosis</strong></summary>
+            <div>
+                <ul><li>- The first step is to exclude underlying metabolic or pathologic disorders and structural abnormalities (e.g., rectoceles, fissures, prolapse).</li></ul>
+                
+        <details>
+            <summary><strong>Clinical Features & Symptoms</strong></summary>
+            <div>
+                <ul><li>- Symptoms alone <u>cannot reliably differentiate</u> between slow transit constipation (STC) and dyssynergic defecation.</li></ul>
+                
+        <details>
+            <summary><strong>Common Symptoms</strong></summary>
+            <div>
+                <ul><li>- Excessive straining: <q>85%</q></li><li>- Feeling of incomplete evacuation: <q>75%</q></li><li>- Passage of hard stools: <q>65%</q></li><li>- Stool frequency < 3/week: <q>62%</q></li><li>- Use of digital maneuvers to facilitate defecation: <q>66%</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Associated Conditions</strong></summary>
+            <div>
+                <ul><li>- A substantial number of patients have overlapping <b>IBS</b> features.</li><li>- <q>85%</q> of patients with suspected <b>levator ani syndrome</b> without constipation have physiologic features of dyssynergic defecation.</li><li>- Many patients with <b>solitary rectal ulcer syndrome</b> also exhibit dyssynergia.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychological Factors</strong></summary>
+            <div>
+                <ul><li>- Obsessive-compulsive disorder (e.g., belief that a daily bowel movement is necessary).</li><li>- Phobia for painful defecation.</li><li>- Association with bulimia or anorexia nervosa.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Procedures</strong></summary>
+            <div>
+                <ul><li>- A combination of clinical evaluation and objective testing is required for a definitive diagnosis.</li></ul>
+                
+        <details>
+            <summary><strong>Digital Rectal Examination (DRE)</strong></summary>
+            <div>
+                <ul><li>- Often the <u>most revealing part</u> of a clinical evaluation.</li><li>- Assesses for stricture, spasm, tenderness, and stool presence (awareness of which suggests normal rectal sensitivity).</li><li>- <b>Key Maneuver:</b> Ask patient to push/bear down ---> examiner should feel <u>relaxation of the external anal sphincter/puborectalis</u> and <u>perineal descent</u>.</li><li>- Diagnostic Accuracy: Sensitivity of <q>75%</q> and specificity of <q>87%</q> for identifying dyssynergia.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Anorectal Manometry</strong></summary>
+            <div>
+                <ul><li>- <u><b>Essential for a diagnosis</b></u> of dyssynergic defecation.</li><li>- Assesses rectal sensation, reflexes, and coordination during attempted defecation.</li></ul>
+                
+        <details>
+            <summary><strong>Manometric Patterns of Dyssynergia (Fig. 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Type I:</b> Adequate propulsive force with <u>paradoxical anal contraction</u>.</li><li>- <b>Type II:</b> Inadequate propulsive force with <u>paradoxical anal contraction</u>.</li><li>- <b>Type III:</b> Adequate propulsive force with <u>inadequate (< <q>20%</q>) anal relaxation</u>.</li><li>- <b>Type IV:</b> Inadequate propulsive force with <u>inadequate anal relaxation</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Clinical Considerations</strong></summary>
+            <div>
+                <ul><li>- Dyssynergic patterns can be seen in asymptomatic controls, partly due to testing in a non-physiologic (left lateral) position.</li><li>- Proper coaching can sometimes normalize manometric findings.</li><li>- Measures the <b>Defecation Index</b> (ratio of intrarectal pressure to anal residual pressure) as a quantitative measure of coordination.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Balloon Expulsion Test (BET)</strong></summary>
+            <div>
+                <ul><li>- An <u>essential component</u> of physiologic testing.</li><li>- Patient is asked to expel a balloon filled with <q>50 mL</q> of warm water.</li><li>- Normal individuals can expel the balloon within <q><b>one minute</b></q>.</li><li>- It is a useful screening test with high specificity (<q>80-90%</q>) but low sensitivity (<q>50%</q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Defecography & MR Defecography</strong></summary>
+            <div>
+                <ul><li>- Dynamic imaging studies that visualize the evacuation process.</li><li>- Useful for identifying structural changes like rectoceles, prolapse, and intussusception.</li><li>- MR defecography offers excellent soft tissue resolution without radiation exposure.</li><li>- Often used as an <u>adjunct test</u> when manometry and BET results are equivocal.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Colonic Transit Study</strong></summary>
+            <div>
+                <ul><li>- Measures the time it takes for stool to move through the colon using radio-opaque markers or a wireless motility capsule (WMC).</li><li>- Up to <q>two-thirds</q> of patients with dyssynergic defecation also have delayed colonic transit.</li><li>- <b>Recommendation:</b> Evaluate and treat dyssynergia <u>first</u>, as colonic transit often improves after successful treatment of the outlet dysfunction.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Diagnostic Criteria (Proposed Rome IV)</strong></summary>
+            <div>
+                <ul><li>- Diagnosis requires satisfying criteria from all three categories below:</li></ul>
+                
+        <details>
+            <summary><strong>1. Symptom Criteria</strong></summary>
+            <div>
+                <ul><li>- Patient must satisfy the diagnostic criteria for <b>functional constipation</b> and/or <b>constipation-predominant IBS (IBS-C)</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Manometric Criteria</strong></summary>
+            <div>
+                <ul><li>- Patient must demonstrate a dyssynergic pattern of defecation (Types I-IV) during repeated attempts on manometry, imaging, or EMG.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Corroborative Test Criteria</strong></summary>
+            <div>
+                <ul><li>- Patient must satisfy <u>one or more</u> of the following:</li><li>- Inability to expel a 50 mL water-filled balloon within <q>1-2 minutes</q>.</li><li>- Inability to evacuate or <q>≥ 50%</q> retention of barium during defecography.</li><li>- Prolonged colonic transit time (e.g., >5 markers retained at 120 hours).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment of Dyssynergic Defecation</strong></summary>
+            <div>
+                <ul><li>- Treatment should be customized, considering symptoms, pathophysiology, age, and patient expectations.</li></ul>
+                
+        <details>
+            <summary><strong>Standard Treatment & Lifestyle</strong></summary>
+            <div>
+                <ul><li>- Includes correction of coexisting issues and behavioral modifications.</li></ul>
+                
+        <details>
+            <summary><strong>General Measures</strong></summary>
+            <div>
+                <ul><li>- Avoid constipating medications.</li><li>- Ensure adequate fiber (up to <q>25 g per day</q>) and fluid intake.</li><li>- Regular exercise.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Timed Toilet Training</strong></summary>
+            <div>
+                <ul><li>- Educate patient to attempt a bowel movement at least <u>twice a day</u>, usually <q>30 minutes</q> after meals.</li><li>- Instruct to push at <q>50-70%</q> of maximum effort.</li><li>- Strain for no more than <q>5 minutes</q> per attempt.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fiber Supplements</strong></summary>
+            <div>
+                <ul><li>- Soluble fiber (e.g., psyllium) is beneficial for mild-to-moderate constipation.</li><li>- Patients with dyssynergic defecation or slow colonic transit respond <u>poorly</u> to fiber supplementation alone.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pharmacologic Approaches</strong></summary>
+            <div>
+                <ul><li>- Laxatives and newer drugs have not been systematically evaluated in dyssynergic defecation but can be used as <u>adjunctive treatment</u> with biofeedback therapy.</li><li>- Newer drugs include Linaclotide, Lubiprostone, and Prucalopride.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biofeedback Therapy</strong></summary>
+            <div>
+                <ul><li>- The <u><b>mainstay of treatment</b></u> for dyssynergic defecation.</li><li>- An instrument-based 'operant conditioning' technique.</li><li>- Assigned a <b>Grade A recommendation</b> by ANMS and ESNM.</li></ul>
+                
+        <details>
+            <summary><strong>Goals of Biofeedback</strong></summary>
+            <div>
+                <ul><li>- 1. To correct the <b>incoordination</b> of abdominal and pelvic floor muscles during evacuation.</li><li>- 2. To improve perception of rectal filling in patients with <b>impaired rectal sensation</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Efficacy & Outcomes (See Table)</strong></summary>
+            <div>
+                <ul><li>- Treatment efficacy is <q><b>70-80%</b></q> in randomized controlled trials (RCTs).</li><li>- More effective than sham therapy, polyethylene glycol (PEG), or diazepam.</li><li>- Efficacy is maintained long-term, for more than <q>2 years</q> after treatment.</li><li>- Symptom improvement correlates with correction of the underlying pathophysiology.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Treatment Protocol</strong></summary>
+            <div>
+                <ul><li>- Typically requires <q>4 to 6 sessions</q>, each lasting <q>60 minutes</q>, scheduled about <q>2 weeks</q> apart.</li><li>- <b>Phase I:</b> Evaluation & Education (explaining physiology, diaphragmatic breathing).</li><li>- <b>Phase II:</b> Active Therapy (visual/auditory feedback training).</li><li>- <b>Phase III:</b> Reinforcement (sessions at 6 weeks, 3, 6, and 12 months).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Biofeedback Techniques</strong></summary>
+            <div>
+                <ul><li>- Training is ideally performed while the patient is seated on a commode.</li></ul>
+                
+        <details>
+            <summary><strong>1. Correcting Dyssynergia</strong></summary>
+            <div>
+                <ul><li>- <b>Rectoanal Coordination:</b> Patient uses visual feedback from a manometry or EMG monitor to learn how to generate an abdominal push while simultaneously relaxing the anal sphincter.</li><li>- <b>Simulated Defecation:</b> Patient practices expelling a <q>50 mL</q> water-filled balloon to reinforce the correct technique.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Rectal Sensory Training</strong></summary>
+            <div>
+                <ul><li>- Goal is to improve awareness of rectal filling and the urge to defecate.</li><li>- A balloon is progressively inflated in the rectum, and the patient learns to recognize smaller volumes, using visual cues to re-establish sensory thresholds.</li><li>- Barostat-assisted sensory training is superior to syringe-assisted training.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Other Measures</strong></summary>
+            <div>
+                <ul><li>- These methods are generally <u>less effective</u> than biofeedback therapy.</li><li>- <b>Botulinum toxin injection:</b> Mixed results, with improvement in less than half of patients and a risk of incontinence.</li><li>- <b>Myectomy or Surgery:</b> Generally not recommended as primary therapy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Summary & Conclusion</strong></summary>
+            <div>
+                <ul><li>- Dyssynergic defecation is a common, diagnosable, and treatable cause of chronic constipation.</li><li>- Diagnosis relies on a careful history, DRE, and anorectal physiologic tests (manometry, BET).</li><li>- <b>Biofeedback therapy</b> is the first-line treatment, proven to be highly effective in both the short and long term by correcting the underlying pathophysiology.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
