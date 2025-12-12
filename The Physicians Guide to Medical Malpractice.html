@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Physician's Guide to Medical Malpractice</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Physician's Guide to Medical Malpractice</strong></summary>
+            <div>
+                <ul><li>- Baylor University Medical Center Proceedings | 2001;14:109–112</li><li>- DOI: 10.1080/08998280.2001.11927742</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the deadline in Texas state court for a defendant to file an answer to a petition after being served?</li><li>- By how many days does sending a notice letter extend the standard 2-year statute of limitations?</li><li>- Until what age is a medical malpractice claim viable for a minor plaintiff?</li><li>- What is the common term for the stressful period of waiting for a jury's decision?</li><li>- What is the consequence if a plaintiff fails to produce a qualified expert report within the statutory 180-day period?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Medical Malpractice Insurance Policy</strong></summary>
+            <div>
+                <ul><li>- Understanding the policy is crucial for navigating a legal claim.</li></ul>
+                
+        <details>
+            <summary><strong>Duties of the Carrier (Insurance Company)</strong></summary>
+            <div>
+                <ul><li>- The carrier has two primary obligations: <b>Defense</b> and <b>Indemnity</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Duty to Defend</strong></summary>
+            <div>
+                <ul><li>- Carrier must <u>retain a lawyer</u> to defend legal claims against the physician.</li><li>- Carrier must pay all expenses related to the defense.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Duty to Indemnify</strong></summary>
+            <div>
+                <ul><li>- Carrier must pay for a settlement or judgment on any covered claim, up to the <q>policy limits</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Assignment of Counsel</strong></summary>
+            <div>
+                <ul><li>- Carrier typically assigns an approved lawyer.</li><li>- A physician's request for a specific attorney is often honored.</li><li>- A physician may hire a personal lawyer, but the carrier <q>will not pay those fees</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consent to Settle Clause</strong></summary>
+            <div>
+                <ul><li>- Some policies require the physician's consent to settle a case.</li><li>- Giving consent transfers the decision-making power to the insurance company.</li><li>- <b>Important:</b> Settlements, like adverse judgments, are reported to the <q><u>National Practitioner Data Bank</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Duties of the Insured Physician</strong></summary>
+            <div>
+                <ul><li>- The policy requires the physician to fulfill two key duties to maintain coverage.</li></ul>
+                
+        <details>
+            <summary><strong>Prompt Notice</strong></summary>
+            <div>
+                <ul><li>- Insureds must provide the carrier with <u>prompt notice</u> of any potential claims or lawsuits.</li><li>- Failure to provide prompt notice could jeopardize the carrier's obligations to both <q>defend and indemnify</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Cooperation</strong></summary>
+            <div>
+                <ul><li>- A 'cooperation clause' requires insured physicians to cooperate in the defense of a legal claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phase One: The Presuit Notice Period</strong></summary>
+            <div>
+                <ul><li>- This is the <b>most critical phase</b> because the physician must react before having a lawyer's guidance.</li></ul>
+                
+        <details>
+            <summary><strong>The Notice Letter</strong></summary>
+            <div>
+                <ul><li>- A letter from a plaintiff's attorney indicating an intent to bring a suit.</li><li>- Required by Texas law (Article 4590i) to encourage presuit negotiations.</li><li>- <b>Key Point:</b> It is <u>NOT</u> a lawsuit and is not filed with the court.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Immediate Actions Upon Notice</strong></summary>
+            <div>
+                <ul><li>- Two immediate and critical steps must be taken upon receiving a notice letter.</li></ul>
+                
+        <details>
+            <summary><strong>1. Immediately Notify the Carrier</strong></summary>
+            <div>
+                <ul><li>- Forward any relevant papers to the insurance carrier without delay.</li><li>- Delaying notification can <q>jeopardize coverage</q>.</li><li>- Also notify the carrier if contacted by a plaintiff's lawyer who is just 'considering' a claim.</li></ul>
+                
+        <details>
+            <summary><strong>Best Strategy if Contacted by a Lawyer</strong></summary>
+            <div>
+                <ul><li>- <u>Refrain from discussing the case</u>.</li><li>- Immediately call the insurance carrier.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Secure the Patient's Chart</strong></summary>
+            <div>
+                <ul><li>- Pull the patient's chart and place it somewhere safe.</li><li>- <b><u>CRITICAL</u>:</b> Make <q>no changes, alterations, or deletions</q> to the chart.</li><li>- Even the *appearance* of an alteration can have a <q>devastating impact</q> on the defense.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discussing the Claim</strong></summary>
+            <div>
+                <ul><li>- Avoid the temptation to discuss the claim with colleagues.</li><li>- Such conversations would likely be discoverable in a lawsuit.</li><li>- Discuss claims <b>only</b> with your <q>insurance carrier and your lawyer</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phase Two: The Life of a Lawsuit</strong></summary>
+            <div>
+                <ul><li>- This phase begins with the formal filing of a petition and involves significant time and effort from the physician.</li></ul>
+                
+        <details>
+            <summary><strong>Lawsuit Initiation</strong></summary>
+            <div>
+                <ul><li>- A lawsuit formally begins with the filing of a petition and service of a citation on the physician.</li><li>- <b>Action:</b> Immediately notify the carrier by phone, then forward copies of all documents.</li></ul>
+                
+        <details>
+            <summary><strong>Answer Deadline (Texas)</strong></summary>
+            <div>
+                <ul><li>- A defendant's answer must be filed by the <q>Monday following 20 days after service</q>.</li><li>- Failure to file on time can result in a <q><u>default judgment</u></q> against the physician.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discovery Phase</strong></summary>
+            <div>
+                <ul><li>- The process where each party obtains relevant information and documents from the other parties.</li><li>- The standard is broad: anything 'likely to lead to the discovery of admissible evidence'.</li><li>- Preparing for a deposition requires the physician's <q>undivided focus</q>.</li></ul>
+                
+        <details>
+            <summary><strong>Forms of Discovery</strong></summary>
+            <div>
+                <ul><li>- Discovery is conducted through several methods:</li></ul>
+                
+        <details>
+            <summary><strong>Interrogatories</strong></summary>
+            <div>
+                <ul><li>- Written questions served by one party on another.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Requests for Disclosure</strong></summary>
+            <div>
+                <ul><li>- Standardized requests for basic information (witnesses, experts, damages).</li><li>- Must be produced <q>without objection</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Requests for Production</strong></summary>
+            <div>
+                <ul><li>- Requests for written documentation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Requests for Admissions</strong></summary>
+            <div>
+                <ul><li>- Require a party to 'admit' or 'deny' specific facts.</li><li>- <b>Highly time-sensitive:</b> Failure to respond can result in the admissions being <q>deemed against the party</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expert Reports</strong></summary>
+            <div>
+                <ul><li>- Parties must exchange reports containing the expert's opinion and its basis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Depositions</strong></summary>
+            <div>
+                <ul><li>- Question-and-answer sessions where witnesses provide sworn testimony.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Primary Defenses</strong></summary>
+            <div>
+                <ul><li>- Key legal arguments used to defend against a malpractice claim.</li></ul>
+                
+        <details>
+            <summary><strong>Failure of Plaintiff's Expert</strong></summary>
+            <div>
+                <ul><li>- A plaintiff <u>must</u> present a qualified expert to testify on both <b>negligence</b> and <b>proximate cause</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Negligence</strong></summary>
+            <div>
+                <ul><li>- Defined as the failure to use ordinary care.</li><li>- i.e., failing to do what a physician of <q>ordinary prudence</q> would have done in the same or similar circumstances.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proximate Cause</strong></summary>
+            <div>
+                <ul><li>- Defined as the cause that, in a continuous sequence, produces an event <q>foreseeable</q> by the physician.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expert Qualifications</strong></summary>
+            <div>
+                <ul><li>- Must be a physician practicing at the time of testimony OR at the time of the care in question.</li><li>- Factors include board certification, substantial training/experience, and active practice relevant to the claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Statute of Limitations</strong></summary>
+            <div>
+                <ul><li>- The time period within which a plaintiff must file a lawsuit.</li><li>- Generally, this is <q><b>2 years</b></q> from the date of the treatment in question.</li></ul>
+                
+        <details>
+            <summary><strong>Exceptions & Adjustments</strong></summary>
+            <div>
+                <ul><li>- Three situations can adjust the strict 2-year rule:</li></ul>
+                
+        <details>
+            <summary><strong>Notice Letter</strong></summary>
+            <div>
+                <ul><li>- Sending a notice letter extends the 2-year period by <q><b>75 days</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Minor Plaintiff</strong></summary>
+            <div>
+                <ul><li>- The 2-year statute is 'tolled' (paused) until the minor turns 18.</li><li>- A claim is therefore viable until the minor turns <q><b>20</b></q>.</li><li>- <b>Exception:</b> Claims for medical bills for a minor must be filed by parents within <q>2 years</q> of treatment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discovery Rule</strong></summary>
+            <div>
+                <ul><li>- Applies when a plaintiff could not reasonably discover the basis of the lawsuit within 2 years (e.g., a retained surgical instrument).</li><li>- Allows filing within a 'reasonable time' after discovery.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Mediation</strong></summary>
+            <div>
+                <ul><li>- A <q>nonbinding</q> process where a neutral third-party mediator facilitates settlement discussions.</li><li>- The mediator can only persuade; they cannot impose a settlement.</li><li>- Typically takes a half or full day and requires attendance of all parties, lawyers, and an insurance representative with settlement authority.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pretrial Modes of Disposition</strong></summary>
+            <div>
+                <ul><li>- Methods by which a lawsuit can be resolved before reaching a trial.</li></ul>
+                
+        <details>
+            <summary><strong>Motion for Summary Judgment</strong></summary>
+            <div>
+                <ul><li>- A dispositive motion that, if granted, is a final judgment on the merits.</li><li>- Often used to assert defenses like the statute of limitations or to challenge the plaintiff's expert.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Motion to Dismiss</strong></summary>
+            <div>
+                <ul><li>- A dispositive motion typically filed when a plaintiff fails to produce a qualified expert report within the <q>180-day</q> statutory period.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Voluntary Nonsuit</strong></summary>
+            <div>
+                <ul><li>- When a plaintiff decides to drop the claim.</li><li>- This is <u>not</u> a dismissal on the merits and can be refiled if the statute of limitations has not expired.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Settlement</strong></summary>
+            <div>
+                <ul><li>- Parties execute a compromise agreement.</li><li>- Can include language stating the physician <q>does not admit negligence</q>.</li><li>- The case is formally closed by a judge's order of nonsuit.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Phase Three: Trial</strong></summary>
+            <div>
+                <ul><li>- An extremely demanding undertaking that is emotionally, physically, and psychologically exhausting.</li></ul>
+                
+        <details>
+            <summary><strong>Trial Setting & Timeline</strong></summary>
+            <div>
+                <ul><li>- It can take several years for a case to go to trial after being filed.</li><li>- Typical timelines in Texas:</li><li>- Large county district court: <q>1.5 to 3 years</q></li><li>- Large county court at law: <q>1 to 1.5 years</q></li><li>- Small county district court: <q>1 to 2 years</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Physician's Role at Trial</strong></summary>
+            <div>
+                <ul><li>- Requires complete focus and concentration.</li><li>- It is best for the physician to be present at the counsel table for the <q><u>entire trial</u></q>, which may take 1 to 2 weeks.</li><li>- The stressful wait for a jury's decision is termed '<q>sweating a jury</q>'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion & Key Takeaways</strong></summary>
+            <div>
+                <ul><li>- Knowledge of the legal process allows physicians to respond appropriately to a claim.</li><li>- A lawsuit will require a significant investment of time, effort, and focus.</li></ul>
+                
+        <details>
+            <summary><strong>Best Practices for Physicians</strong></summary>
+            <div>
+                <ul><li>- <b>Involve your carrier immediately.</b></li><li>- Be open and candid with your lawyer.</li><li>- Be compliant, available, and ready to devote time and effort.</li><li>- Rely on your legal team to manage the defense so you can continue to practice medicine.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
