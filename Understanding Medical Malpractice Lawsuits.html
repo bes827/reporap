@@ -1,0 +1,941 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Understanding Medical Malpractice Lawsuits</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Understanding Medical Malpractice Lawsuits</strong></summary>
+            <div>
+                <ul><li>- Journal: Stroke</li><li>- Publication Date: March 2023</li><li>- DOI: 10.1161/STROKEAHA.122.038559</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the name of the judicial doctrine that can preclude liability if a physician's actions are endorsed by a significant portion of their peers, even if not the majority?</li><li>- Within how many days must a malpractice payment be reported to the National Practitioner Data Bank (NPDB)?</li><li>- What is the legal term for a motion made by the defense after the plaintiff has presented their case, arguing that the plaintiff has failed to demonstrate all the necessary elements of negligence?</li><li>- What percentage of malpractice lawsuits actually reach a judge or jury verdict?</li><li>- After receiving a Complaint & Summons, within what timeframe must a physician's Answer typically be filed to avoid a default judgment?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction & Physician Risk</strong></summary>
+            <div>
+                <ul><li>- Physicians are at increased risk for malpractice if they fail to provide care a <u>minimally competent physician</u> would under similar circumstances.</li><li>- <b>Stroke care</b> providers have even greater exposure due to high-risk, time-sensitive, and complex decision-making.</li></ul>
+                
+        <details>
+            <summary><strong>Malpractice Claim Statistics</strong></summary>
+            <div>
+                <ul><li>- A NEJM study estimated that by age 65:</li><li>- <q><b>75%</b></q> of physicians in <u>low-risk</u> specialties will face a claim.</li><li>- <q><b>99%</b></q> of physicians in <u>high-risk</u> specialties will face a claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Medical Malpractice Stress Syndrome</strong></summary>
+            <div>
+                <ul><li>- A traumatic reaction to a malpractice claim impacting a provider’s emotional and physical health.</li><li>- Negatively impacts both provider well-being and <u>patient safety</u> during and after litigation.</li></ul>
+                
+        <details>
+            <summary><strong>Mitigation Strategy</strong></summary>
+            <div>
+                <ul><li>- A common recommendation is provider empowerment through <b>process knowledge</b> and participation in their own defense.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>What is Malpractice? (Legal Theory)</strong></summary>
+            <div>
+                <ul><li>- Medical malpractice claims are based on the legal theory of <b>negligence</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Four Elements of Negligence</strong></summary>
+            <div>
+                <ul><li>- The patient-plaintiff must prove <u>all four</u> elements by a <b>preponderance of the evidence</b>.</li><li>- This means it is more likely than not (a <q><u>>50% probability</u></q>) that professional negligence occurred.</li></ul>
+                
+        <details>
+            <summary><strong>1. Duty</strong></summary>
+            <div>
+                <ul><li>- The physician had a duty to the patient to provide non-negligent care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Breach of Duty</strong></summary>
+            <div>
+                <ul><li>- The physician breached that duty by providing negligent care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Proximate Causation</strong></summary>
+            <div>
+                <ul><li>- The breach of duty was the proximate cause of the injury.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Injury / Damages</strong></summary>
+            <div>
+                <ul><li>- The patient suffered an actual injury or damages.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Focus of Most Cases</strong></summary>
+            <div>
+                <ul><li>- Duty and injury are often simple to demonstrate.</li><li>- Most cases hinge on proving <b>Breach of Standard of Care</b> and <b>Causation</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Legal Concepts</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Breach of Standard of Care</strong></summary>
+            <div>
+                <ul><li>- Defined as providing care that a <u>minimally competent physician</u> in the same field would provide under similar circumstances.</li></ul>
+                
+        <details>
+            <summary><strong>Jurisdictional Variation</strong></summary>
+            <div>
+                <ul><li>- <b>State governments</b>, not the federal government, primarily establish medical malpractice law.</li><li>- Definitions of the standard of care can vary by state.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Role of Medical Expert Testimony</strong></summary>
+            <div>
+                <ul><li>- Most malpractice cases are heavily reliant on medical experts to explain the professional standard to a layperson jury.</li></ul>
+                
+        <details>
+            <summary><strong>Expert Witness Qualifications</strong></summary>
+            <div>
+                <ul><li>- Experts do <u>not</u> need to be in the same specialty as the defendant.</li><li>- They do not even need to be a physician, as long as they have general experience with the clinical issue.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Temporal Standard</strong></summary>
+            <div>
+                <ul><li>- The physician is held to the standard of care that existed <b>at the time of the alleged event</b>, not a newer standard that may exist at the time of the trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Basis of Testimony</strong></summary>
+            <div>
+                <ul><li>- Testimony must be grounded in a review of the medical record and comparison to the standard of care (e.g., using practice guidelines).</li><li>- It cannot be based on <u>personal anecdotes</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Respectable Minority Rule</strong></summary>
+            <div>
+                <ul><li>- A judicial doctrine in some states that precludes liability when a <u>respectable minority</u> of physicians endorse the course of treatment in question.</li><li>- This offers some protection when deviating from the majority opinion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Causation (Proximate Cause)</strong></summary>
+            <div>
+                <ul><li>- Requires showing the harm would not have occurred <b>but for</b> the physician's actions.</li><li>- The harm must also have been a <b>reasonably foreseeable</b> result of the treatment decisions.</li></ul>
+                
+        <details>
+            <summary><strong>Shared Causation</strong></summary>
+            <div>
+                <ul><li>- A plaintiff does <u>not</u> need to show the physician’s actions were the <b>sole cause</b> of harm.</li><li>- However, liability can be reduced if the plaintiff contributed to their own injury by acting unreasonably.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Avoiding Lawsuits & Managing Adverse Events</strong></summary>
+            <div>
+                <ul><li>- There is no surefire way to prevent a lawsuit, but tactics exist to reduce its likelihood.</li></ul>
+                
+        <details>
+            <summary><strong>Communication and Resolution Programs (CRPs)</strong></summary>
+            <div>
+                <ul><li>- Health system initiatives to lower malpractice premiums and avoid reputational damage.</li><li>- Formally endorsed by major medical professional groups.</li></ul>
+                
+        <details>
+            <summary><strong>Core Elements of CRPs</strong></summary>
+            <div>
+                <ul><li>- <b>Transparency</b> with patients about risks and adverse events.</li><li>- <b>Action plans</b> to prevent recurrence.</li><li>- <b>Emotional support</b> for patient, family, and care team.</li><li>- <b>Proactive resolution</b>: Promptly offering financial/nonfinancial resolution for events caused by unreasonable care.</li><li>- <b>Educate patients</b> on their right to seek legal representation.</li><li>- <b>Collaborate</b> with other organizations and insurers.</li><li>- <b>Constant assessment</b> of the CRP’s effectiveness.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Lawsuit Process: A Step-by-Step Guide</strong></summary>
+            <div>
+                <ul><li>- Malpractice lawsuits are typically <b>state-based civil negligence disputes</b>, not criminal cases.</li></ul>
+                
+        <details>
+            <summary><strong>Pleadings and Initiation</strong></summary>
+            <div>
+                <ul><li>- <b>Plaintiff</b> files a <u>Complaint and Summons (C&S)</u>.</li><li>- <b>Defendant</b> files an <u>Answer</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Statute of Limitations</strong></summary>
+            <div>
+                <ul><li>- Initiation must occur within the relevant statute of limitations, which is typically <q><b>1–3 years</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Initial Physician Actions</strong></summary>
+            <div>
+                <ul><li>- Upon receiving a C&S, a physician must immediately contact their <b>malpractice insurer</b>.</li><li>- The insurer will select and pay for an attorney.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Demand Letter</strong></summary>
+            <div>
+                <ul><li>- A pre-lawsuit letter from a patient-plaintiff demanding payment.</li><li>- Should be brought to an attorney and communicated to the insurance carrier immediately.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Working with Your Attorney</strong></summary>
+            <div>
+                <ul><li>- A cooperative and productive relationship is instrumental to litigation success.</li></ul>
+                
+        <details>
+            <summary><strong>Initial Meetings & Deadlines</strong></summary>
+            <div>
+                <ul><li>- The physician and attorney will investigate the claim, determine strategy, and draft an Answer to the C&S.</li><li>- The Answer must be filed within a required period (typically <q><b>15–20 days</b></q>) to avoid a <u>default judgment</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Principles for Collaboration</strong></summary>
+            <div>
+                <ul><li>- Be <b>open, honest, and forthcoming</b> about all events.</li><li>- Attorney-client conversations are <u>confidential</u>.</li><li>- Heed your attorney’s advice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pre-Trial Phases</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Judgment on the Pleadings</strong></summary>
+            <div>
+                <ul><li>- An early motion for rapid resolution based only on the filed pleadings.</li><li>- Rarely successful as there is usually disagreement on critical facts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discovery</strong></summary>
+            <div>
+                <ul><li>- The pre-trial phase for examining witnesses and documents.</li></ul>
+                
+        <details>
+            <summary><strong>Interrogatories</strong></summary>
+            <div>
+                <ul><li>- <b>Written questions</b> answered in writing, under oath.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Depositions</strong></summary>
+            <div>
+                <ul><li>- <b>Oral questions</b> and answers provided under oath.</li><li>- <u>Standard rules of evidence do not apply</u>, and virtually any question may be asked.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Requests for Fact Admissions</strong></summary>
+            <div>
+                <ul><li>- Asking the opposing side to agree to specific, undisputed facts.</li><li>- If not answered or opposed, the information is considered <b>acknowledged as true</b> for trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Trial</strong></summary>
+            <div>
+                <ul><li>- Only <q><b>5%</b></q> of malpractice suits reach a judge or jury verdict.</li><li>- Physicians are <u>likely to prevail</u> in cases that do go to a verdict.</li></ul>
+                
+        <details>
+            <summary><strong>Trial Proceedings</strong></summary>
+            <div>
+                <ul><li>- <b>Jury Selection</b></li><li>- <b>Opening Statements</b></li><li>- <b>Plaintiff's Case</b> (Direct & Cross-Examination)</li><li>- <b>Defendant's Case</b> (Direct & Cross-Examination)</li><li>- <b>Closing Arguments</b></li><li>- <b>Jury Instructions & Deliberation</b></li><li>- <b>Verdict & Judgment</b></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physician's Role During Trial</strong></summary>
+            <div>
+                <ul><li>- Consider attending the trial and taking copious notes.</li><li>- Assist your attorney in identifying weaknesses in the plaintiff's representations.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Motions During Trial</strong></summary>
+            <div>
+                <ul><li>- <b>Directed Verdict</b>: A motion the defendant can make after the plaintiff presents their case.</li><li>- Argues that the plaintiff has failed to demonstrate all required elements of negligence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Trial and Appeals</strong></summary>
+            <div>
+                
+                
+        <details>
+            <summary><strong>Post-Trial Motions</strong></summary>
+            <div>
+                <ul><li>- The losing party may move for a <b>Judgment Notwithstanding the Verdict (JNOV)</b> or a new trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Appeals</strong></summary>
+            <div>
+                <ul><li>- A party may generally appeal once as a matter of right.</li><li>- The appellate court focuses on <u>legal errors</u>, not re-evaluating the facts of the case.</li><li>- Further appeals (e.g., to a Supreme Court) are discretionary and rarely granted.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Case Reporting: National Practitioner Data Bank (NPDB)</strong></summary>
+            <div>
+                <ul><li>- A confidential repository detailing US malpractice payments and certain adverse actions.</li></ul>
+                
+        <details>
+            <summary><strong>Reporting Triggers</strong></summary>
+            <div>
+                <ul><li>- Any payment made on a physician’s behalf in a malpractice settlement or judgment.</li><li>- Alterations of a physician’s license or penalties associated with clinical care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reporting Process</strong></summary>
+            <div>
+                <ul><li>- The payor (e.g., insurer, hospital) must report the payment to the NPDB and the state licensing board within <q><b>30 days</b></q>.</li><li>- The physician receives a notice when they are reported.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physician's Rights</strong></summary>
+            <div>
+                <ul><li>- Physicians may file factual challenges with the entity that made the report.</li><li>- If the report is uncorrected after <q><b>60 days</b></q>, the physician may appeal to the Secretary of Health and Human Services (HHS).</li></ul>
+                
+        <details>
+            <summary><strong>Scope of Appeal</strong></summary>
+            <div>
+                <ul><li>- The appeal can challenge <u>how</u> the report was submitted or if it <u>inaccurately states</u> the basis for the action.</li><li>- The appeal <b>cannot</b> review the underlying reasons or merits of the malpractice claim itself.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>NPDB Usage</strong></summary>
+            <div>
+                <ul><li>- Hospitals <b>must</b> use the NPDB to evaluate new privilege applications.</li><li>- Hospitals must also query the NPDB <q><b>biennially</b></q> (every two years) for current staff.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusions & Takeaways for Stroke Care</strong></summary>
+            <div>
+                <ul><li>- It is a near certainty that physicians practicing stroke care will face a malpractice claim at some point.</li></ul>
+                
+        <details>
+            <summary><strong>Primary Cause in Stroke-Related Suits</strong></summary>
+            <div>
+                <ul><li>- The 2021 Medscape Malpractice Report found that <u>failure to diagnose</u> (e.g., stroke) was a leading cause of malpractice lawsuits.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Proactive Recommendations</strong></summary>
+            <div>
+                <ul><li>- <b>Understand</b> the legal process to manage stress and assist in your defense.</li><li>- <b>Develop</b> an open, honest, and collaborative relationship with your attorney if sued.</li><li>- These steps improve patient safety and support physician well-being.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
