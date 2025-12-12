@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Professional Liability Risk and Mitigation for Gastroenterologists</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Medical Professional Liability Risk and Mitigation for Gastroenterologists</strong></summary>
+            <div>
+                <ul><li>Source: New Gastroenterol. 2021.</li><li>- A focused review for GI trainees, early-career, and seasoned gastroenterologists on Medical Professional Liability (MPL) concepts, trends, risk scenarios, and mitigation strategies.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of procedure-related MPL claims in GI involve <b>colonoscopy</b>?</li><li>- From 2009-2018, what was the average paid amount for a GI-related MPL claim?</li><li>- What is the legal standard of proof in MPL cases?</li><li>- What is the term for providers avoiding high-risk clinical interventions due to fear of MPL?</li><li>- What is the legal principle where a gastroenterologist can be liable for the actions of personnel they supervise?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Principles of Medical Professional Liability (MPL)</strong></summary>
+            <div>
+                <ul><li>- MPL falls under <u>tort law</u>, which is a branch of <u>civil law</u> (as opposed to criminal law).</li><li>- A tort is a 'civil wrong that unfairly causes another to experience loss or harm resulting in legal liability'.</li></ul>
+                
+        <details>
+            <summary><strong>Basis of MPL Claims: <u>Negligence</u></strong></summary>
+            <div>
+                <ul><li>- MPL claims assert the tort of <b>negligence</b>.</li><li>- Aims to compensate the harmed patient and dissuade sub-optimal medical care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Four Elements of a Successful Claim</strong></summary>
+            <div>
+                <ul><li>- A successful MPL claim must prove all four elements.</li></ul>
+                
+        <details>
+            <summary><strong>1. <b>Duty of Care</b></strong></summary>
+            <div>
+                <ul><li>- The provider (tortfeasor) owed a duty of care to the injured party.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. <b>Breach of Duty</b></strong></summary>
+            <div>
+                <ul><li>- The provider breached that duty of care.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. <b>Causation</b></strong></summary>
+            <div>
+                <ul><li>- The breach of duty directly caused the damages.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. <b>Damages</b></strong></summary>
+            <div>
+                <ul><li>- The patient experienced quantifiable harm or loss.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Burden of Proof</strong></summary>
+            <div>
+                <ul><li>- The standard is <u>not</u> 'beyond a reasonable doubt' as in criminal law.</li><li>- The standard is '<q><b>to a reasonable medical probability</b></q>'.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Trends in MPL Claims</strong></summary>
+            <div>
+                <ul><li>- Gastroenterology (GI) is the <q><b>2nd-highest</b></q> internal medicine subspecialty in both MPL claims made and paid.</li></ul>
+                
+        <details>
+            <summary><strong>Overall Claim Statistics (1985–2012)</strong></summary>
+            <div>
+                <ul><li>- GI ranked <q>17th out of 20</q> specialties surveyed for total claims.</li><li>- GI-related claims constituted <q>1.8%</q> of the 278,220 total MPL claims.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Claim Volume vs. Payout (1985-2012)</strong></summary>
+            <div>
+                <ul><li>- The number of paid GI claims <u>decreased</u> by <q><b>34.6%</b></q> (from 18.5 to 12.1 cases per 1,000 physician-years).</li><li>- Simultaneously, the average claim compensation (payout) <u>increased</u> by <q><b>23.3%</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recent Costs (2009-2018)</strong></summary>
+            <div>
+                <ul><li>- Average legal defense costs for paid GI claims: <q><b>$97,392</b></q>.</li><li>- Average paid amount per claim: <q><b>$330,876</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>GI-Specific MPL Risk Scenarios</strong></summary>
+            <div>
+                <ul><li>- Many claims relate to medical errors or adverse events (AEs), both procedural and non-procedural.</li></ul>
+                
+        <details>
+            <summary><strong>Informed Consent</strong></summary>
+            <div>
+                <ul><li>- Claims can arise from both inadequately informed <u>consent</u> and inadequately informed <u>refusal</u>.</li><li>- Most states apply the '<b>reasonable patient standard</b>': providing enough information for an average patient to be an active participant in decision-making.</li></ul>
+                
+        <details>
+            <summary><strong>Key Components of Consent (Figure 1)</strong></summary>
+            <div>
+                <ul><li>- 1. Nature of the proposed procedure/treatment.</li><li>- 2. Risks and benefits of undergoing vs. not undergoing it.</li><li>- 3. Presentation of reasonable alternatives.</li><li>- 4. Risks and benefits of those alternatives.</li><li>- 5. Assessment of the patient's comprehension of all points.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Best Practices</strong></summary>
+            <div>
+                <ul><li>- <b>Tailor consent</b> to each patient and procedure; avoid a one-size-fits-all approach.</li><li>- <b>Document</b> the patient's understanding of the specific, tailored information provided to improve consent quality and decrease MPL risk.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Endoscopic Procedures</strong></summary>
+            <div>
+                <ul><li>- Procedure-related claims represent approximately <q><b>25%</b></q> of all GI-related MPL claims.</li></ul>
+                
+        <details>
+            <summary><strong>Claim Breakdown by Procedure</strong></summary>
+            <div>
+                <ul><li>- <b>Colonoscopy</b>: <q>52%</q> of procedure-related claims.</li><li>- <b>ERCP</b>: <q>16%</q>.</li><li>- <b>EGD</b>: <q>11%</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Procedure AE Management</strong></summary>
+            <div>
+                <ul><li>- If signs/symptoms of a potential AE develop (e.g., tachycardia, fever, pain, hypotension):</li><li>- ---> Initiate <b>stabilizing measures</b> and <b>evaluation</b> (e.g., bloodwork, imaging).</li><li>- ---> Consider <b>hospital admission</b> until discharge is deemed safe.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>ERCP-Specific Risks</strong></summary>
+            <div>
+                <ul><li>- ERCP has historically had the <u>highest average compensation</u> of any GI procedure.</li><li>- A majority of claims involve an allegation that the procedure was <u>not indicated</u> or was performed for <u>diagnostic</u> purposes instead of using non-invasive imaging.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>PEG Placement Risks</strong></summary>
+            <div>
+                <ul><li>- Carries a high potential for MPL claims despite a low AE rate (<q>0.1–1%</q>).</li><li>- High morbidity/mortality from AEs is often due to severe underlying patient comorbidities.</li><li>- Timing of a patient's demise may coincide with PEG placement, prompting unfounded perceptions of causality.</li></ul>
+                
+        <details>
+            <summary><strong>Safeguards for PEG in Patients Lacking Capacity</strong></summary>
+            <div>
+                <ul><li>- Ask the family to select <b>one surrogate decision-maker</b>.</li><li>- Discuss risks, benefits, and goals in the context of the patient's overall clinical trajectory and life expectancy.</li><li>- Base consent or refusal on what the patient would have wished.</li><li>- Consider having a <b>medical professional witness</b> this discussion.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Peri-procedural Anti-thrombotic Agents</strong></summary>
+            <div>
+                <ul><li>- Management of anti-coagulants and anti-platelets can be complex and pose MPL risk.</li></ul>
+                
+        <details>
+            <summary><strong>Key Considerations</strong></summary>
+            <div>
+                <ul><li>- Procedural bleeding risk.</li><li>- Indication for anti-thrombotic therapy and risk of a thrombotic event.</li><li>- Duration of action of the agent and available bridging options.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Optimal Management Strategy (Figure 1)</strong></summary>
+            <div>
+                <ul><li>- Engage in <b>shared decision-making</b>.</li><li>- Discuss with the <u>provider managing the anti-thrombotic therapy</u> to conduct a risk-benefit assessment.</li><li>- Involve the patient in the final decision.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Provider Defensive Mechanisms</strong></summary>
+            <div>
+                <ul><li>- Behaviors intended to mitigate MPL risk can, paradoxically, <u>increase</u> it.</li></ul>
+                
+        <details>
+            <summary><strong>Assurance Behaviors</strong></summary>
+            <div>
+                <ul><li>- The practice of recommending or performing additional services (e.g., imaging, procedures, referrals) that are <u>not clearly indicated</u>.</li><li>- Driven by fear of MPL risk or missing a diagnosis.</li></ul>
+                
+        <details>
+            <summary><strong>Prevalence & Consequences</strong></summary>
+            <div>
+                <ul><li>- > <q><b>50%</b></q> of gastroenterologists worldwide have performed procedures without clear indications.</li><li>- Nearly <q><b>one-third</b></q> of annual endoscopic procedures have questionable indications.</li><li>- This can inadvertently <b>increase AE risk, MPL risk, and healthcare costs</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Avoidance Behaviors</strong></summary>
+            <div>
+                <ul><li>- Providers avoiding participation in potentially high-risk clinical interventions, even those for which they are credentialed.</li><li>- Driven by fear of MPL risk.</li></ul>
+                
+        <details>
+            <summary><strong>Examples</strong></summary>
+            <div>
+                <ul><li>- An advanced endoscopist referring a 'high-risk' elderly patient with cholangitis for ERCP to another provider.</li><li>- A gastroenterologist referring a large polyp resection they are proficient in performing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Negative Consequences</strong></summary>
+            <div>
+                <ul><li>- Patients may not receive indicated interventions or experience delays in care.</li><li>- Increased potential for loss to follow-up.</li><li>- Can be viewed as non-compliance with the standard of care, thus <b>increasing MPL risk</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Documentation Tenets</strong></summary>
+            <div>
+                <ul><li>- Thorough documentation can significantly decrease MPL risk as it is often used as <u>legal evidence</u>.</li><li>- Remember the adage: '<b>If it’s not documented, it did not occur.</b>'</li></ul>
+                
+        <details>
+            <summary><strong>Key Areas to Document (Figure 1)</strong></summary>
+            <div>
+                <ul><li>- Pre-procedure discussion of potential AEs (e.g., bleeding, perforation), risk of procedural failure (e.g., missed lesions), and medication/sedation risks.</li><li>- Steps taken during a procedure and anatomic landmarks encountered to prove competency.</li><li>- Use of language services and provision of translated materials.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>'Curbside' vs. Formal Consults</strong></summary>
+            <div>
+                <ul><li>- <b>Curbside</b>: A general query where information is provided. <q><u>Does not</u> require documentation</q>.</li><li>- <b>Consultation</b>: Providing medical advice for a specific patient (e.g., identifiers shared, EHR accessed). <q><u>Should be documented</u></q>, even if seemingly trivial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Language & Cultural Factors (Figure 1)</strong></summary>
+            <div>
+                <ul><li>- Use <b>24/7 telephone interpreter services</b> for non-English speakers.</li><li>- Provide native/preferred language written materials (e.g., consent forms) when available.</li><li>- <b>Document all such efforts</b> to best protect against MPL claims.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Challenges Posed by Telemedicine</strong></summary>
+            <div>
+                <ul><li>- Increased utilization does not lessen the clinician’s duty to the patient and may expose them to greater MPL risk.</li></ul>
+                
+        <details>
+            <summary><strong>Principle 1: Standard of Care</strong></summary>
+            <div>
+                <ul><li>- The <b>same standard of care</b> applies to both virtual and in-person encounters.</li><li>- Do not overlook necessary pre-procedure workups (e.g., anesthesia consult, labs) for patients seen via telemedicine.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Principle 2: Privacy & HIPAA</strong></summary>
+            <div>
+                <ul><li>- Patient privacy and HIPAA regulations are <b>not waived</b> during telemedicine encounters.</li><li>- Breaches of privacy may result in an MPL claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Procedure Triage</strong></summary>
+            <div>
+                <ul><li>- During periods of decreased procedural capacity, triaging can be challenging.</li><li>- It is advisable to use <b>standardized institutional criteria</b> to prioritize procedures, while allowing for justifiable exceptions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Vicarious Liability</strong></summary>
+            <div>
+                <ul><li>- Liability can extend to individuals who did not commit a wrong but on whose behalf the wrongdoer acted.</li><li>- Gastroenterologists may be liable not only for their own actions but also for those of personnel they supervise (e.g., <q><b>fellow trainees, non-physician practitioners</b></q>).</li></ul>
+                
+        <details>
+            <summary><strong>Purpose & Model</strong></summary>
+            <div>
+                <ul><li>- Aims to ensure systemic checks and balances are in place to mitigate or avoid harm.</li><li>- Illustrated by Reason’s '<b>Swiss Cheese Model</b>' of system failure.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Conclusion & Key Mitigation Strategies</strong></summary>
+            <div>
+                <ul><li>- Being informed about MPL tenets and high-risk situations can assuage anxiety and highlight proactive risk mitigation strategies.</li></ul>
+                
+        <details>
+            <summary><strong>General Mitigation Practices (Figure 1)</strong></summary>
+            <div>
+                <ul><li>- <b>Effective communication</b> with patients.</li><li>- <b>Adequate informed consent/refusal</b> processes.</li><li>- <b>Thorough documentation</b> of counseling, peri-procedure events, and post-procedure recommendations.</li><li>- Maintenance of proper <b>certification and privileging</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
