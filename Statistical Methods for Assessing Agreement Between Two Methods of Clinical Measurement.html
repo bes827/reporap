@@ -1,0 +1,806 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Statistical Methods for Assessing Agreement Between Two Methods of Clinical Measurement</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Statistical Methods for Assessing Agreement Between Two Methods of Clinical Measurement</strong></summary>
+            <div>
+                <ul><li>- J. Martin Bland, Douglas G. Altman</li><li>- Lancet, 1986; i: 307-310</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- Why is the correlation coefficient (r) considered a misleading and inappropriate measure for assessing agreement between two clinical measurement methods?</li><li>- What is the name of the recommended graphical plot for assessing agreement, and what is plotted on its X and Y axes?</li><li>- What are the 'limits of agreement' and how are they calculated from the mean difference (d) and the standard deviation of the differences (s)?</li><li>- If the difference between two methods increases as the average measurement increases, what data transformation is recommended before analysis?</li><li>- How does the repeatability of a measurement method impact the potential agreement between it and another method?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Introduction: The Clinical Problem</strong></summary>
+            <div>
+                <ul><li>- The need to compare a <b>new</b> measurement technique with an <b>established</b> one.</li><li>- Goal: To determine if they agree sufficiently for the new to <u>replace</u> the old, or for them to be used <u>interchangeably</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Agreement vs. Calibration</strong></summary>
+            <div>
+                <ul><li>- <b>Agreement Analysis</b>: Used when the <u>true value is unknown</u> and neither method is a definitive 'gold standard'.</li><li>- <b>Calibration</b>: Used when comparing a new method against known quantities or a highly accurate reference method.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Pitfall: Misuse of Correlation</strong></summary>
+            <div>
+                <ul><li>- Many studies inappropriately use the product-moment correlation coefficient (r) as an indicator of agreement.</li><li>- This is described as a <u>totally inappropriate method</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inappropriate Use of Correlation Coefficient (r)</strong></summary>
+            <div>
+                <ul><li>- A high correlation (e.g., r=<q>0.94</q> in the sample PEFR data) <u>does not</u> mean the two methods agree.</li></ul>
+                
+        <details>
+            <summary><strong>1. Measures Relation, Not Agreement</strong></summary>
+            <div>
+                <ul><li>- Correlation measures the <u>strength of a linear relationship</u> between two variables.</li><li>- Perfect agreement requires points to lie on the <b>line of equality</b> (y=x).</li><li>- Perfect correlation (r=1.0) occurs if points lie on <b>any straight line</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2. Unaffected by Scale Changes</strong></summary>
+            <div>
+                <ul><li>- A change in the scale of measurement does not affect correlation, but it fundamentally changes agreement.</li><li>- Example: Plotting skinfold caliper measurements vs. half the value would yield r=<q>1.0</q>, but the values would not agree (one is always twice the other).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3. Depends on Data Range</strong></summary>
+            <div>
+                <ul><li>- Correlation is highly dependent on the range of values in the sample.</li><li>- A <u>wider range</u> of measurements will almost guarantee a <b>high correlation</b>, regardless of the agreement at specific values.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4. Significance Test is Irrelevant</strong></summary>
+            <div>
+                <ul><li>- A significant p-value for `r` only indicates that the two methods are related, which is expected for two instruments measuring the same quantity.</li><li>- It says nothing about the <u>magnitude of disagreement</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>5. High `r` Can Conceal Poor Agreement</strong></summary>
+            <div>
+                <ul><li>- Data with clinically important discrepancies can produce high correlation coefficients.</li><li>- Example 1: Gestational age comparison showed a wide range of 34 to 39.5 weeks for a value of 35 weeks, yet r was high at <q>0.85</q>.</li><li>- Example 2: A PEFR meter comparison with r=<q>0.992</q> was described as having a 'material improvement' when correlation increased to <q>0.996</q>, implying 0.992 was not sufficient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recommended Method: Measuring Agreement</strong></summary>
+            <div>
+                <ul><li>- The core question is: By how much is the new method likely to differ from the old?</li><li>- Is this difference clinically acceptable? This threshold should ideally be defined in advance.</li></ul>
+                
+        <details>
+            <summary><strong>Step 1: Plot the Data</strong></summary>
+            <div>
+                <ul><li>- A simple plot of one method vs. the other with a line of equality (Fig 1) is a useful start but can be hard to interpret.</li></ul>
+                
+        <details>
+            <summary><strong><b>Bland-Altman Plot</b> (Difference vs. Mean)</strong></summary>
+            <div>
+                <ul><li>- A more informative plot is the <b>difference</b> between the two measurements (Y-axis) against their <b>mean</b> (X-axis).</li><li>- This plot (Fig 2) clearly visualizes the magnitude and distribution of the differences.</li></ul>
+                
+        <details>
+            <summary><strong>Rationale for using the Mean</strong></summary>
+            <div>
+                <ul><li>- The true value is unknown, so the mean of the two measurements is the <u>best estimate</u>.</li><li>- Plotting the difference against either individual measurement creates a statistical artifact where the difference is inherently related to that value.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Step 2: Calculate Limits of Agreement</strong></summary>
+            <div>
+                <ul><li>- This step is appropriate when the plot shows <u>no systematic relationship</u> between the difference and the mean.</li></ul>
+                
+        <details>
+            <summary><strong>Bias & Standard Deviation</strong></summary>
+            <div>
+                <ul><li>- <b>Bias</b>: Estimated by the <u>mean of the differences</u> (d). A consistent bias can be corrected for.</li><li>- <b>Variation</b>: Estimated by the <u>standard deviation of the differences</u> (s).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Limits of Agreement Calculation</strong></summary>
+            <div>
+                <ul><li>- Assuming differences are Normally distributed, 95% of differences will lie between these limits.</li><li>- Formula: <b>d ± 1.96s</b> (approximated as <b>d ± 2s</b>).</li><li>- <u>Interpretation</u>: If this range is not clinically important, the two methods can be used interchangeably.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: PEFR Data</strong></summary>
+            <div>
+                <ul><li>- Mean difference (d): <q><b>-2.1 l/min</b></q> (large meter - mini meter).</li><li>- Standard deviation of differences (s): <q><b>38.8 l/min</b></q>.</li><li>- Limits of Agreement: <q>-2.1 ± (2 * 38.8)</q> ---> <q><b>-79.7 to +75.5 l/min</b></q>.</li><li>- <u>Conclusion</u>: A potential difference of almost 80 l/min is clinically unacceptable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Precision of the Limits</strong></summary>
+            <div>
+                <ul><li>- The calculated limits are estimates from a sample and have their own uncertainty.</li><li>- Confidence intervals (CIs) can be calculated to show the precision of the estimates.</li></ul>
+                
+        <details>
+            <summary><strong>Standard Errors (SE)</strong></summary>
+            <div>
+                <ul><li>- SE of the mean difference (d): <q>s / √n</q></li><li>- SE of the limits of agreement (d ± 2s): approx. <q>√(3s²/n)</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: PEFR Data CIs</strong></summary>
+            <div>
+                <ul><li>- 95% CI for the bias: <q>-22.0 to 17.8 l/min</q>.</li><li>- 95% CI for lower limit: <q>-114.3 to -45.1 l/min</q>.</li><li>- 95% CI for upper limit: <q>40.9 to 110.1 l/min</q>.</li><li>- <u>Conclusion</u>: The wide CIs show that even on the most optimistic interpretation, the agreement is not acceptable.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example of Good Agreement</strong></summary>
+            <div>
+                <ul><li>- Comparison of oxygen saturation monitor vs. pulsed oximeter (Fig 3).</li><li>- Mean difference: <q>0.42</q> percentage points.</li><li>- Limits of agreement: <q>-2.0 to 2.8</q> percentage points.</li><li>- <u>Conclusion</u>: This small range is clinically acceptable, so the new method can replace the old.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Handling Non-Uniform Differences</strong></summary>
+            <div>
+                <ul><li>- Sometimes the difference between methods varies systematically over the range of measurement (e.g., scatter increases as the mean increases).</li></ul>
+                
+        <details>
+            <summary><strong>Solution: Logarithmic Transformation</strong></summary>
+            <div>
+                <ul><li>- If the difference is proportional to the mean, a <b>logarithmic transformation</b> of the original data is recommended.</li><li>- The standard analysis (difference vs. mean) is then performed on the log-transformed data.</li></ul>
+                
+        <details>
+            <summary><strong>Interpreting Log-Transformed Results</strong></summary>
+            <div>
+                <ul><li>- The limits of agreement will be on the log scale.</li><li>- To interpret them, take the <b>antilogs</b> of the limits.</li><li>- The result is a <u>dimensionless ratio</u>.</li></ul>
+                
+        <details>
+            <summary><strong>Example: VCF Data</strong></summary>
+            <div>
+                <ul><li>- After log transformation, limits of agreement were <q>-0.098</q> and <q>0.106</q>.</li><li>- Antilogs are <q>0.80</q> and <q>1.27</q>.</li><li>- <u>Interpretation</u>: For 95% of cases, the new measurement will be between <q>0.80 times</q> and <q>1.27 times</q> the old measurement (i.e., from <b>20% below to 27% above</b>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Complex Relationships</strong></summary>
+            <div>
+                <ul><li>- If the relationship between difference and mean is complex and log transformation doesn't work, a formal analysis is difficult.</li><li>- The Bland-Altman plot itself remains very helpful for visually comparing the methods.</li><li>- Using the standard limits of agreement calculation in this case will tend to give limits that are <u>too wide</u>, which is a safe error (won't lead to accepting a poor method).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Repeatability</strong></summary>
+            <div>
+                <ul><li>- Repeatability of each method <u>limits the maximum possible agreement</u> between them.</li><li>- Poor repeatability in one or both methods will guarantee poor agreement.</li></ul>
+                
+        <details>
+            <summary><strong>Examining Repeatability</strong></summary>
+            <div>
+                <ul><li>- Take <b>repeated measurements</b> on a series of subjects with the <u>same method</u>.</li><li>- Plot the difference between repeated measures against their mean for each subject (similar to a Bland-Altman plot).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Repeatability Coefficient</strong></summary>
+            <div>
+                <ul><li>- Defined by the British Standards Institution.</li><li>- Assumes the mean difference between repeated measures is zero (if not, there's a systematic issue).</li><li>- Calculation: <q><b>2 * standard deviation of the differences</b></q> between repeated measurements.</li><li>- <u>Interpretation</u>: We expect 95% of differences between two measurements by the same method to be less than this value.</li></ul>
+                
+        <details>
+            <summary><strong>Example: PEFR Meters</strong></summary>
+            <div>
+                <ul><li>- Mini Wright Meter: An outlier was noted but retained. Repeatability coefficient was <q><b>56.4 l/min</b></q>.</li><li>- Large Wright Meter: Repeatability coefficient was <q><b>43.2 l/min</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>More than Two Repeated Measurements</strong></summary>
+            <div>
+                <ul><li>- Calculations are more complex.</li><li>- Involves plotting the standard deviation for each subject against their mean.</li><li>- Requires one-way analysis of variance (ANOVA).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Measuring Agreement Using Repeated Measurements</strong></summary>
+            <div>
+                <ul><li>- If you have repeated measurements by <u>both</u> methods on the same subjects, you can get a more precise estimate of agreement.</li></ul>
+                
+        <details>
+            <summary><strong>Procedure</strong></summary>
+            <div>
+                <ul><li>- 1. For each subject, calculate the <b>mean measurement</b> for each of the two methods.</li><li>- 2. Use these pairs of means to perform the standard agreement analysis (Bland-Altman plot, limits of agreement).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Correcting the Standard Deviation</strong></summary>
+            <div>
+                <ul><li>- Using the means reduces the measurement error, so the calculated standard deviation of the differences (sD) will be <u>too small</u>.</li><li>- A correction is needed to account for the within-method variability.</li></ul>
+                
+        <details>
+            <summary><strong>Correction Formula</strong></summary>
+            <div>
+                <ul><li>- Let sD = SD of differences between method means.</li><li>- Let s1 = SD of differences for repeated measures of method 1.</li><li>- Let s2 = SD of differences for repeated measures of method 2.</li><li>- Corrected SD (sc): <q><b>√(sD² + s1²/4 + s2²/4)</b></q> (for two repeats per method).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Example: PEFR Data</strong></summary>
+            <div>
+                <ul><li>- sD (from means) = <q>33.2 l/min</q></li><li>- s1 (large meter) = <q>21.6 l/min</q></li><li>- s2 (mini meter) = <q>28.2 l/min</q></li><li>- Corrected sc = <q><b>37.7 l/min</b></q>.</li><li>- This is a more accurate estimate than the <q>38.8 l/min</q> obtained using only a single measurement.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Discussion & Conclusion</strong></summary>
+            <div>
+                <ul><li>- The correlation coefficient (r) and regression analysis are <b>inappropriate</b> for method comparison studies.</li><li>- The proposed method (Bland-Altman plot and limits of agreement) is simple to perform and interpret.</li></ul>
+                
+        <details>
+            <summary><strong>Why is Correlation Misused?</strong></summary>
+            <div>
+                <ul><li>- <b>Pattern Recognition</b>: A scatter plot of two methods looks like a textbook example for correlation.</li><li>- <b>Imitation</b>: Researchers see correlation used in previously published papers and copy the method without questioning its validity.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Call to Action</strong></summary>
+            <div>
+                <ul><li>- Journals and referees should help rectify this error.</li><li>- Papers using incorrect statistical techniques for method comparison should be returned for reanalysis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
