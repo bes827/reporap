@@ -1,0 +1,968 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Healthcare Provider Asset Protection Dynamics in Kentucky</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Healthcare Provider Asset Protection Dynamics in Kentucky</strong></summary>
+            <div>
+                <ul><li>- Journal: A Comprehensive Guide</li><li>- Focus: What can and cannot be protected after a medical malpractice lawsuit is filed in Kentucky.</li></ul>
+                
+        <details>
+            <summary><strong>💡 Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the specific monetary value of Kentucky's homestead exemption for a primary residence?</li><li>- Under Kentucky's Voidable Transactions Act, what is the standard "look-back" period for a creditor to challenge a transfer?</li><li>- What is the maximum percentage of a provider's disposable income that can be garnished in Kentucky to satisfy a judgment?</li><li>- What is the critical legal event that severely limits asset protection strategies: the date the negligent act occurs or the date the lawsuit is filed?</li><li>- Are all IRAs in Kentucky as strongly protected from creditors as employer-sponsored 401(k) plans?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Part 1: Core Legal Concepts & Timeline</strong></summary>
+            <div>
+                <ul><li>- Understanding the timeline and key legal doctrines is the most critical aspect of asset protection.</li></ul>
+                
+        <details>
+            <summary><strong>1.1 The "Claim Arising" Doctrine</strong></summary>
+            <div>
+                <ul><li>- This is the <u>legal turning point</u> where most asset protection strategies become unavailable or fraudulent.</li></ul>
+                
+        <details>
+            <summary><strong>When Does a Claim "Arise"?</strong></summary>
+            <div>
+                <ul><li>- A claim legally arises when the <b>negligent act occurs</b>, <u>NOT</u> when the lawsuit is filed.</li><li>- This includes when the incident happens, the patient discovers the injury, or the provider learns of the incident.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Pre-Claim vs. Post-Claim Strategies</strong></summary>
+            <div>
+                <ul><li>- <b><u>PRE-CLAIM</u></b>: Robust strategies like irrevocable trusts, LLCs, and proper asset titling are available and effective.</li><li>- <b><u>POST-CLAIM</u></b>: Very limited and risky. Virtually ALL transfers become vulnerable to challenge as "fraudulent transfers."</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>1.2 The Fraudulent Transfer Problem</strong></summary>
+            <div>
+                <ul><li>- Governed by <b>Kentucky's Fraudulent Transfer Law (KRS 378A)</b>, the Uniform Voidable Transactions Act (UVTA).</li><li>- A transfer is "voidable" (can be undone by a court) if made with intent to hinder, delay, or defraud creditors.</li></ul>
+                
+        <details>
+            <summary><strong>The Timing Problem</strong></summary>
+            <div>
+                <ul><li>- ANY transfer of assets made <u>AFTER</u> a claim has arisen (the negligent act) is vulnerable to being attacked as fraudulent, even if no lawsuit has been filed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Look-Back Period</strong></summary>
+            <div>
+                <ul><li>- Kentucky law allows creditors to challenge transfers made within <q><b>4 years</b></q> of the transfer date.</li><li>- Or, within <q><b>1 year</b></q> of the discovery of the transfer, whichever is longer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Intent: Constructive vs. Intentional Fraud</strong></summary>
+            <div>
+                <ul><li>- <b>Constructive Fraud</b>: No fraudulent intent required. Occurs if you receive less than "reasonably equivalent value" for a transfer AND were insolvent (or became insolvent).</li><li>- <b>Intentional Fraud</b>: Proven by circumstantial evidence called "badges of fraud." Courts will infer intent.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚖️ "Badges of Fraud" - What Courts Look For</strong></summary>
+            <div>
+                <ul><li>- The more badges present, the higher the risk a transfer will be deemed fraudulent.</li></ul>
+                
+        <details>
+            <summary><strong>Key Badges</strong></summary>
+            <div>
+                <ul><li>- Transfer to a <b>family member</b> or insider.</li><li>- <b>Retention of control</b> over the transferred property.</li><li>- Transfer made shortly <b>before or after a claim arises</b>.</li><li>- Transfer of substantially all assets.</li><li>- Transfer made while insolvent.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Part 2: Assets That CAN Be Protected (Even After a Lawsuit)</strong></summary>
+            <div>
+                <ul><li>- Certain assets have inherent legal protection from creditors in Kentucky.</li></ul>
+                
+        <details>
+            <summary><strong>2.1 Qualified Retirement Plans (ERISA)</strong></summary>
+            <div>
+                <ul><li>- Plans governed by the Employee Retirement Income Security Act (ERISA) have <b>strong federal creditor protection</b>.</li></ul>
+                
+        <details>
+            <summary><strong>What ERISA Protects</strong></summary>
+            <div>
+                <ul><li>- <b>401(k)</b> plans</li><li>- <b>Pension</b> plans</li><li>- <b>403(b)</b> plans</li><li>- These are generally <u>NOT reachable</u> by medical malpractice creditors in Kentucky.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚠️ Critical Limitations</strong></summary>
+            <div>
+                <ul><li>- <b>Exceptions</b>: Protection is lost for Qualified Domestic Relations Orders (QDROs) in divorce, and for federal tax liens.</li><li>- <b>Plan Loans</b>: The amount you borrow from your 401(k) is <u>not</u> protected.</li><li>- <b><u>Post-Claim Contributions</u></b>: NEW contributions made after a claim arises can be challenged as a fraudulent transfer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Individual Retirement Accounts (IRAs) - More Complex</strong></summary>
+            <div>
+                <ul><li>- IRA protection in Kentucky is less certain than ERISA plans, especially outside of bankruptcy.</li></ul>
+                
+        <details>
+            <summary><strong>Rollover vs. Non-Rollover IRAs</strong></summary>
+            <div>
+                <ul><li>- <b>Rollover IRAs</b> (from a prior 401k) have <u>stronger</u> federal protection.</li><li>- <b>Non-rollover IRAs</b> (direct contributions) have <u>less certain</u> protection in Kentucky state courts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Bankruptcy Protection</strong></summary>
+            <div>
+                <ul><li>- In bankruptcy, federal law protects Traditional IRAs up to an aggregate of <q><b>$1.362 million</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2.2 Homestead Exemption</strong></summary>
+            <div>
+                <ul><li>- Provides very limited protection for equity in your primary residence.</li></ul>
+                
+        <details>
+            <summary><strong>Amount of Protection</strong></summary>
+            <div>
+                <ul><li>- Kentucky provides a homestead exemption of up to <q><b>$5,000</b></q> of equity in your primary residence.</li><li>- <u>Equity</u> = Fair Market Value - Mortgage Balance.</li><li>- This does <u>not</u> apply to vacation homes or rental properties.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Practical Value</strong></summary>
+            <div>
+                <ul><li>- The <q><b>$5,000</b></q> protection is minimal and should <u>not</u> be relied upon as a primary asset protection tool.</li><li>- It does not prevent a judgment lien from attaching to your home, but can prevent a forced sale in most cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2.3 Life Insurance & Annuities</strong></summary>
+            <div>
+                <ul><li>- These vehicles generally have strong creditor protection in Kentucky.</li></ul>
+                
+        <details>
+            <summary><strong>Life Insurance</strong></summary>
+            <div>
+                <ul><li>- <b>Protected</b>: Proceeds paid upon death to a <u>designated beneficiary</u> (e.g., spouse, child, trust).</li><li>- <b>NOT Protected</b>: The policy's <u>cash value</u> while the insured is living, or proceeds made payable to the "estate".</li><li>- <b><u>Beneficiary designation is critical.</u></b></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Annuities</strong></summary>
+            <div>
+                <ul><li>- Annuities have <b>strong creditor protection</b> in Kentucky.</li><li>- This includes annuity payments to the annuitant and death benefits.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚠️ Policy Timing Issues</strong></summary>
+            <div>
+                <ul><li>- Purchasing life insurance or annuities <u>AFTER</u> a claim has arisen can be attacked as a fraudulent transfer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2.4 Business Entities (LLC & Partnership)</strong></summary>
+            <div>
+                <ul><li>- Protection is primarily through the "Charging Order" doctrine.</li></ul>
+                
+        <details>
+            <summary><strong>The Charging Order Doctrine</strong></summary>
+            <div>
+                <ul><li>- A creditor of an LLC/partnership owner gets a "charging order."</li><li>- This entitles the creditor to receive any <b>distributions</b> made from the entity.</li><li>- It does <u>NOT</u> grant the creditor ownership, voting rights, or the ability to force a sale of business assets.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚠️ Major Red Flag: Post-Claim LLCs</strong></summary>
+            <div>
+                <ul><li>- Creating an LLC and transferring assets into it <u>AFTER</u> a claim has arisen will almost certainly be deemed a <b>fraudulent transfer</b>.</li><li>- The LLC must have a legitimate business purpose established before any claim arises.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>2.5 Spouse's Property</strong></summary>
+            <div>
+                <ul><li>- Kentucky recognizes specific forms of joint ownership that offer protection.</li></ul>
+                
+        <details>
+            <summary><strong>Tenancy by the Entirety</strong></summary>
+            <div>
+                <ul><li>- Property held jointly by a married couple as "tenancy by the entirety" provides protection.</li><li>- A creditor of only <u>one spouse</u> cannot force the sale of the property.</li><li>- This protection applies only if the ownership was established <u>BEFORE</u> the claim arose.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>⚠️ Transferring Assets to Spouse Post-Claim</strong></summary>
+            <div>
+                <ul><li>- This is a classic "badge of fraud" (transfer to an insider).</li><li>- If you transfer assets to your spouse <u>AFTER</u> a claim arises, it will likely be deemed a <b>fraudulent transfer</b> and undone by the court.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Part 3: Assets That CANNOT Be Effectively Protected</strong></summary>
+            <div>
+                <ul><li>- Understanding what is exposed is as important as knowing what is protected.</li></ul>
+                
+        <details>
+            <summary><strong>3.1 Personal Assets</strong></summary>
+            <div>
+                <ul><li>- Most personal assets are fully reachable by creditors.</li></ul>
+                
+        <details>
+            <summary><strong>Exposed Assets</strong></summary>
+            <div>
+                <ul><li>- <b>Investment accounts</b> (stocks, bonds, mutual funds)</li><li>- Savings and checking accounts</li><li>- Real estate (beyond the <q><b>$5,000</b></q> homestead exemption)</li><li>- Vehicles, jewelry, cash, and collectibles.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3.2 Business & Professional Practice Assets</strong></summary>
+            <div>
+                <ul><li>- The assets of your medical practice are generally not protected from your own professional liability.</li></ul>
+                
+        <details>
+            <summary><strong>Reachable Practice Assets</strong></summary>
+            <div>
+                <ul><li>- Patient <b>accounts receivable</b></li><li>- Medical equipment</li><li>- Practice goodwill and income stream.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Entity Structure Limitation</strong></summary>
+            <div>
+                <ul><li>- A Professional Corporation (PC) or LLC protects you from the liability of your partners/employees (vicarious liability).</li><li>- It does <u>NOT</u> protect your personal assets from your <b>OWN</b> malpractice liability.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3.3 Transfers Made After a Claim Arises</strong></summary>
+            <div>
+                <ul><li>- This is the most common and failed strategy. <b><u>These transfers will fail.</u></b></li></ul>
+                
+        <details>
+            <summary><strong>Why Post-Claim Transfers Fail</strong></summary>
+            <div>
+                <ul><li>- The law presumes they are fraudulent due to the presence of multiple "badges of fraud," especially timing.</li><li>- Creditors have a strong legal remedy (under <b>KRS 378A</b>) to sue and have the court "avoid" or undo the transfer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>3.4 Intentional Asset Hiding</strong></summary>
+            <div>
+                <ul><li>- Actively hiding assets during litigation has severe consequences.</li></ul>
+                
+        <details>
+            <summary><strong>The Discovery Process</strong></summary>
+            <div>
+                <ul><li>- In a lawsuit, you must disclose all assets, financial accounts, and recent transfers under oath.</li><li>- Lying or failing to disclose can lead to <b>perjury charges</b>, contempt of court, and sanctions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Consequences</strong></summary>
+            <div>
+                <ul><li>- The fraud of hiding assets is often viewed as <u>worse than the underlying judgment</u>.</li><li>- It destroys your credibility and can lead to criminal charges.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Part 4: What Happens After a Lawsuit is Filed</strong></summary>
+            <div>
+                <ul><li>- Understanding the litigation and collection process.</li></ul>
+                
+        <details>
+            <summary><strong>4.1 Discovery Requirements</strong></summary>
+            <div>
+                <ul><li>- You will be legally required to provide comprehensive financial information.</li></ul>
+                
+        <details>
+            <summary><strong>Required Disclosures</strong></summary>
+            <div>
+                <ul><li>- A detailed <b>financial affidavit</b> listing all assets and liabilities.</li><li>- Bank and investment statements (often for 12+ months).</li><li>- Tax returns (often 3-5 years).</li><li>- You must answer questions truthfully in a deposition.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>4.2 Post-Judgment Collection Actions</strong></summary>
+            <div>
+                <ul><li>- If a judgment is entered against you, the creditor can use legal tools to collect.</li></ul>
+                
+        <details>
+            <summary><strong>Garnishment</strong></summary>
+            <div>
+                <ul><li>- A court order to your employer to withhold a portion of your paycheck.</li><li>- In Kentucky, this is limited to <q><b>25%</b></q> of your disposable income.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Judgment Lien</strong></summary>
+            <div>
+                <ul><li>- The creditor can record a lien against your real property.</li><li>- The lien attaches to any equity you have above the <q><b>$5,000</b></q> homestead exemption.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Levy & Charging Orders</strong></summary>
+            <div>
+                <ul><li>- <b>Levy</b>: A creditor can freeze and seize funds from your bank accounts.</li><li>- <b>Charging Order</b>: Used against your LLC/partnership interests to claim any distributions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Part 5: Key Takeaways & Actionable Guidance</strong></summary>
+            <div>
+                <ul><li>- A summary of what to do and what to avoid.</li></ul>
+                
+        <details>
+            <summary><strong>For an IMMEDIATE Situation (After Claim Arises)</strong></summary>
+            <div>
+                <ul><li>- The harsh truth: Once a claim has arisen, there are <b><u>NO effective asset protection strategies</u></b>. Transfers will be attacked as fraudulent.</li></ul>
+                
+        <details>
+            <summary><strong>✅ DO:</strong></summary>
+            <div>
+                <ul><li>- <b>Consult with an asset protection attorney immediately.</b></li><li>- Notify your malpractice carrier and work with them on settlement.</li><li>- Disclose all assets completely and truthfully during discovery.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>❌ DO NOT:</strong></summary>
+            <div>
+                <ul><li>- <b>Transfer ANY assets</b> to anyone (spouse, family, trust).</li><li>- Create new LLCs or trusts to hold assets.</li><li>- Hide bank accounts or lie during deposition.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>For FUTURE Planning (Before Any Claim Arises)</strong></summary>
+            <div>
+                <ul><li>- The only real protection is established long before a problem occurs.</li></ul>
+                
+        <details>
+            <summary><strong>✅ DO:</strong></summary>
+            <div>
+                <ul><li>- <b>Maximize contributions</b> to protected retirement plans (401k, etc.).</li><li>- Obtain substantial life insurance and annuities.</li><li>- Use proper asset titling (e.g., Tenancy by the Entirety) and legitimate business entities.</li><li>- Consult an estate planning attorney about trusts (DAPTs, ILITs).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>❌ DO NOT:</strong></summary>
+            <div>
+                <ul><li>- Wait until a claim arises to start planning.</li><li>- Assume you can transfer assets later to protect them.</li><li>- Set up complex schemes without professional legal and tax advice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Mistakes to Avoid</strong></summary>
+            <div>
+                <ul><li>- Actions that will almost certainly backfire.</li></ul>
+                
+        <details>
+            <summary><strong>Top Mistakes</strong></summary>
+            <div>
+                <ul><li>- #1: <b>Transferring assets after a claim arises.</b></li><li>- #2: Creating an LLC after a claim arises to hide assets.</li><li>- #3: Hiding assets or lying during the discovery process.</li><li>- #4: Documenting intent to hide assets in emails or texts.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
