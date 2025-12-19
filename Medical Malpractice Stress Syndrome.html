@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Malpractice Stress Syndrome</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Medical Malpractice Stress Syndrome</strong></summary>
+            <div>
+                <ul><li>- Journal: Emerg Med Clin N Am 43 (2025) 1–7</li><li>- This mind map focuses on the psychological impact of medical malpractice litigation on physicians and strategies for coping.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What percentage of emergency physicians in the US will be named in a malpractice claim during their career?</li><li>- Of the malpractice cases that go to trial, what percentage result in a verdict for the <u>defendant</u> physician?</li><li>- Over a 40-year career, what percentage of time does the average US physician spend with at least one open, unresolved malpractice claim?</li><li>- By age 65, what percentage of physicians in <u>high-risk</u> specialties are projected to have faced a malpractice claim?</li><li>- In a study of over 6,700 closed claims, what percentage were ultimately dropped, withdrawn, or dismissed without a payment?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Litigation Stress & Medical Malpractice Stress Syndrome (MMSS)</strong></summary>
+            <div>
+                <ul><li>- A predictable psychological response to the significant, long-term stressor of being sued for malpractice.</li><li>- Exists on a continuum from mild litigation stress to the more severe MMSS.</li></ul>
+                
+        <details>
+            <summary><strong>Prevalence & Context</strong></summary>
+            <div>
+                <ul><li>- Nearly <q><b>75%</b></q> of emergency physicians in the United States will be named in a malpractice claim.</li><li>- The accusation and prolonged litigation add significant mental distress beyond the initial adverse patient outcome.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impacts of MMSS (Box 1)</strong></summary>
+            <div>
+                <ul><li>- MMSS is not a formal DSM diagnosis but has self-reported dimensions across multiple domains of life.</li></ul>
+                
+        <details>
+            <summary><strong><u>Cognitive</u></strong></summary>
+            <div>
+                <ul><li>- Struggle to concentrate</li><li>- Low tolerance for frustration</li><li>- Difficulty making decisions</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Emotional</u></strong></summary>
+            <div>
+                <ul><li>- Depression & Anxiety</li><li>- Isolation & Shame</li><li>- Disillusionment, shock, overwhelm, & apathy</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Physical</u></strong></summary>
+            <div>
+                <ul><li>- Insomnia</li><li>- Palpitations</li><li>- Gastrointestinal upset</li><li>- Headaches & shakiness</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Spiritual</u></strong></summary>
+            <div>
+                <ul><li>- Withdrawal from spiritual community</li><li>- Loss of sense of purpose or faith</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><u>Interpersonal</u></strong></summary>
+            <div>
+                <ul><li>- Withdrawal from relationships</li><li>- Conflict within personal relationships</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Severe MMSS Symptoms</strong></summary>
+            <div>
+                <ul><li>- Represents the more significant end of the litigation stress spectrum.</li></ul>
+                
+        <details>
+            <summary><strong>Professional Impact</strong></summary>
+            <div>
+                <ul><li>- Significant difficulties with work performance</li><li>- Higher rates of medical errors</li><li>- Burnout & productivity changes</li><li>- Interpersonal issues with coworkers</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Personal Impact</strong></summary>
+            <div>
+                <ul><li>- Worsening depression, anxiety, or stress-related physical symptoms</li><li>- Coping via substance use or relapse of a substance-use disorder</li><li>- Frequent disruption of family relationships</li><li>- Increased risk of suicidality</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk Factors for Developing MMSS</strong></summary>
+            <div>
+                <ul><li>- Certain factors can increase a physician's vulnerability to severe litigation stress.</li></ul>
+                
+        <details>
+            <summary><strong>Personal Factors</strong></summary>
+            <div>
+                <ul><li>- Previous underlying depression or anxiety disorder</li><li>- History of substance-use disorder</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Case-Related Factors</strong></summary>
+            <div>
+                <ul><li>- Cases with serious outcomes (e.g., neurologic devastation, death)</li><li>- Cases where the defendant feels they made a serious error</li><li>- High-profile press involvement</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Process-Related Stressors</strong></summary>
+            <div>
+                <ul><li>- Each phase of litigation presents unique stressors:</li><li>- Initial service of the complaint</li><li>- Deposition (questioning under oath)</li><li>- Trial and testimony</li><li>- Awaiting and receiving the verdict</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Gaining Perspective on Litigation</strong></summary>
+            <div>
+                <ul><li>- Reframing the experience is crucial for psychological well-being.</li></ul>
+                
+        <details>
+            <summary><strong>Psychological Impact on Practice</strong></summary>
+            <div>
+                <ul><li>- Litigation can feel like an <b>assault on a physician's identity</b>.</li><li>- Can lead to post-traumatic symptoms: flashbacks, rumination, panic physiology.</li><li>- May cause fear of going to work, leading to career dissatisfaction, burnout, or career abandonment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Litigation Outcome Statistics</strong></summary>
+            <div>
+                <ul><li>- Being sued is <u>not</u> a definitive sign of being a poor physician. Data shows most claims do not result in a plaintiff verdict.</li></ul>
+                
+        <details>
+            <summary><strong>Study of 6,779 Closed Claims</strong></summary>
+            <div>
+                <ul><li>- <q><b>65.9%</b></q> were dropped, withdrawn, or dismissed.</li><li>- <q><b>22.8%</b></q> of claims settled for an average indemnity of <q><b>$297,709</b></q>.</li><li>- Only <q><b>7.6%</b></q> of cases went to trial.</li></ul>
+                
+        <details>
+            <summary><strong>Trial Outcomes</strong></summary>
+            <div>
+                <ul><li>- Juries returned verdicts for the <u>defendant</u> in <q><b>92.6%</b></q> of cases (477 out of 515).</li><li>- Juries returned verdicts for the <u>plaintiff</u> in only <q><b>7.4%</b></q> of cases (38 out of 515).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Indemnity by Injury Severity</strong></summary>
+            <div>
+                <ul><li>- Claims with major permanent injury had the highest paid-to-closed ratio.</li><li>- Claims with grave injury had the highest average indemnity of <q><b>$686,239</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Understanding Settlements</strong></summary>
+            <div>
+                <ul><li>- A settlement is <u>not</u> an admission of guilt or poor care.</li><li>- Many factors influence a settlement decision, including:</li><li>- How the case optics might appear to a jury of laypeople.</li><li>- The decision to settle may not be in the physician's hands, depending on the malpractice insurance policy.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reframing the Narrative</strong></summary>
+            <div>
+                <ul><li>- <b>Plaintiff's Attorney Strategy:</b> They may try to make the physician feel like a bad person; this is a <u>deliberate tactic</u> and should not be internalized.</li><li>- <b>Occupational Hazard:</b> It is more helpful to consider litigation as a frequent occupational hazard.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Strategies for Litigation Stress Support</strong></summary>
+            <div>
+                <ul><li>- Proactive strategies can mitigate the negative impacts of litigation stress.</li></ul>
+                
+        <details>
+            <summary><strong>Communication & Support Systems</strong></summary>
+            <div>
+                <ul><li>- The admonition to "Don’t talk about it" is misguided and unhealthy.</li></ul>
+                
+        <details>
+            <summary><strong>What to Discuss (and with whom)</strong></summary>
+            <div>
+                <ul><li>- <b>With your legal team ONLY:</b> Specific details of the case (presentation, documentation, testing, management).</li><li>- <b>With trusted peers, family, therapists:</b> The emotional toll, the existence of the lawsuit, and information in the public record (legal complaint).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Support Resources</strong></summary>
+            <div>
+                <ul><li>- Peer support, therapy, or coaching.</li><li>- Speaking with physicians who have previously been sued.</li><li>- Professional societies (e.g., ACEP List of Resources).</li><li>- Sara Charles Physician Litigation Stress Resource Center.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Wellness & Self-Care</strong></summary>
+            <div>
+                <ul><li>- Prioritizing well-being is essential for resilience.</li></ul>
+                
+        <details>
+            <summary><strong>Core Pillars</strong></summary>
+            <div>
+                <ul><li>- <b>Exercise</b></li><li>- <b>Good Nutrition</b></li><li>- <b>Adequate Sleep</b></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Lifestyle Adjustments</strong></summary>
+            <div>
+                <ul><li>- Nurture personal relationships and schedule non-work activities.</li><li>- Consider reducing hours or taking a leave of absence if overwhelmed.</li><li>- Be vigilant with alcohol, other drugs, or sleep aids.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Managing Rumination</strong></summary>
+            <div>
+                <ul><li>- <u>Schedule</u> time to think, worry, and learn about the litigation.</li><li>- Use positive distractions to prevent constant rumination and catastrophizing.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Developing Your Litigation Skill Set</strong></summary>
+            <div>
+                <ul><li>- Becoming educated about the legal process can restore a sense of control.</li></ul>
+                
+        <details>
+            <summary><strong>Educational Resources</strong></summary>
+            <div>
+                <ul><li>- Read books about malpractice litigation.</li><li>- Consult resources from your professional society.</li><li>- Attend lectures and listen to podcasts on the topic.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Goal</strong></summary>
+            <div>
+                <ul><li>- Become a more confident, effective, and less anxious defendant.</li><li>- Understand what you can control to positively influence the outcome.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Recognizing Red Flags for Intervention</strong></summary>
+            <div>
+                <ul><li>- These signs warrant <u>immediate</u> professional intervention or a leave of absence.</li></ul>
+                
+        <details>
+            <summary><strong>Key Warning Signs</strong></summary>
+            <div>
+                <ul><li>- Thoughts of <b>suicide</b></li><li>- Increased errors or near-misses at work</li><li>- Elevated use of alcohol or other drugs</li><li>- Withdrawal or isolation</li><li>- Aggression or rage</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Fostering Cultural Change</strong></summary>
+            <div>
+                <ul><li>- Openly discussing litigation can lessen shame and stigma.</li><li>- Medical colleagues should understand the gravity of litigation stress and reach out to peers who may be struggling.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Key Statistics & Takeaways (Clinics Care Points)</strong></summary>
+            <div>
+                <ul><li>- High-yield facts regarding medical malpractice litigation.</li></ul>
+                
+        <details>
+            <summary><strong>Career Impact</strong></summary>
+            <div>
+                <ul><li>- The average US physician will spend <q><b>50.7 months</b></q>, or <q><b>11%</b></q> of a 40-year career, with at least one open, unresolved malpractice claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Risk by Specialty (Projections)</strong></summary>
+            <div>
+                <ul><li>- By age 45, <q><b>36%</b></q> of low-risk vs. <q><b>88%</b></q> of high-risk specialists will face a claim.</li><li>- By age 65, <q><b>75%</b></q> of low-risk vs. <q><b>99%</b></q> of high-risk specialists will face a claim.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physician Communication Styles</strong></summary>
+            <div>
+                <ul><li>- Physicians <u>without</u> malpractice claims are more likely to:</li><li>- Have longer visits</li><li>- Solicit patient opinions and invite further comment</li><li>- Use orientation statements to convey the flow of the visit</li><li>- Use more humor</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
