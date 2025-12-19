@@ -1,0 +1,1274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Interim: Between the Event and the Lawsuit</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>The Interim: Between the Event and the Lawsuit</strong></summary>
+            <div>
+                <ul><li>- Excerpts from: <b>Adverse Events, Stress, and Litigation: A Physician’s Guide</b> by Sara Charles, MD, and Paul R. Frisch, JD (2005).</li><li>- Provided by the Physician Litigation Stress Resource Center.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the legal term for a court issuing a judgment despite a jury's verdict, which can only be requested if a party has already moved for a directed verdict?</li><li>- In a deposition, if a lawyer asks if you recognize a textbook as 'authoritative,' what is the legally safer response instead of 'Yes'?</li><li>- What is the term for the legal strategy, used in states like Oregon, that prohibits pretrial disclosure of expert witness identities?</li><li>- If a lawyer asks a compound question, what is the clue from your own lawyer's objection ('Objection, compound question') about how you should respond?</li><li>- What specific document, often overlooked, must a physician know thoroughly before their first meeting with their defense attorney?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Interim: Between an Adverse Event and a Lawsuit</strong></summary>
+            <div>
+                <ul><li>- Recommendations for physicians to manage the period following an adverse event but before litigation officially begins.</li></ul>
+                
+        <details>
+            <summary><strong>Initial Actions & Assessments</strong></summary>
+            <div>
+                <ul><li>- Proactive steps to understand your position and prepare for potential legal action.</li></ul>
+                
+        <details>
+            <summary><strong>Inquire About the <u>Statute of Limitations</u></strong></summary>
+            <div>
+                <ul><li>- The risk manager or claims representative can provide this information.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Review <u>Insurance Coverage</u></strong></summary>
+            <div>
+                <ul><li>- Helps allay anxiety and identify immediate issues.</li><li>- Claims personnel are a key resource during this waiting period.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Reexamine <u>Financial Health</u></strong></summary>
+            <div>
+                <ul><li>- Review protections in place for financial security and personal assets.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Personal Well-being & Stress Management</strong></summary>
+            <div>
+                <ul><li>- Strategies to manage personal health and stress, which is complicated by the adverse event.</li></ul>
+                
+        <details>
+            <summary><strong>Acknowledge & Observe Stress</strong></summary>
+            <div>
+                <ul><li>- Recognize that an adverse event complicates ordinary work stress.</li><li>- Develop the habit of <b>self-observation</b> to monitor changes in feelings and regain emotional control.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Identify Controllable Stressors</strong></summary>
+            <div>
+                <ul><li>- Balance sufficient control with healthy flexibility in medical practice.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Work for a Balanced Life</strong></summary>
+            <div>
+                <ul><li>- Use the interim period as an opportunity to initiate constructive changes in behavior and goals.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Attend to Health</strong></summary>
+            <div>
+                <ul><li>- Pay attention to any significant changes in physical or emotional health.</li><li>- If you don't have a personal physician, this is an ideal time to choose one.</li><li>- Promptly attending to health changes diminishes the risk of self-medicating or other destructive behaviors.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Address Personal Vulnerabilities</strong></summary>
+            <div>
+                <ul><li>- Recognize and admit vulnerabilities exacerbated by stress to lessen their impact.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Handling Information Requests</strong></summary>
+            <div>
+                <ul><li>- Be <b>attentive and wary</b> when receiving requests for information about the event; seek consultation if in doubt.</li></ul>
+                
+        <details>
+            <summary><strong>Recredentialing, Licensing, or Insurance Inquiries</strong></summary>
+            <div>
+                <ul><li>- <u>Honesty is the best policy</u>, but it never demands saying more than the minimum required.</li><li>- If you have no knowledge of a pending claim (a demand for money or services), do not provide unnecessary information.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Serious or Catastrophic Events</strong></summary>
+            <div>
+                <ul><li>- If an event is likely to lead to legal action, you should bring this to the attention of the appropriate forum.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Managed Care Inquiries</strong></summary>
+            <div>
+                <ul><li>- Unless your agreement specifically requires it, you are under <q><b>no obligation</b></q> to reveal incidents that have not matured into legal cases.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outline of the Legal Process</strong></summary>
+            <div>
+                <ul><li>- A sequential overview of the key stages in a medical malpractice lawsuit, based on Table 7-1.</li></ul>
+                
+        <details>
+            <summary><strong><b>Summons & Complaint</b></strong></summary>
+            <div>
+                <ul><li>- <b>Summons</b>: A formal legal document notifying that a suit has been filed.</li><li>- <b>Complaint</b>: Accompanies the summons and details the nature of the complaint in legal terms.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Pleading Stage</b></strong></summary>
+            <div>
+                <ul><li>- The attorney communicates with the court by filing <b>motions</b> (requests for the court to do something).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Discovery Stage</b></strong></summary>
+            <div>
+                <ul><li>- Process to discover information relevant to the case.</li><li>- Includes <b>depositions</b> (oral questions under oath) and <b>interrogatories</b> (written questions).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Expert Witnesses</b></strong></summary>
+            <div>
+                <ul><li>- A malpractice case proceeds only if each side presents expert opinions on the standard of care.</li><li>- Exceptions: Cases of <q><u>res ipsa loquitor</u></q> or <q><u>informed consent</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Summary Judgment</b></strong></summary>
+            <div>
+                <ul><li>- An application for judgment before trial where no material questions of fact exist.</li><li>- If granted, the case is resolved <u>without a jury trial</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Settlement</b></strong></summary>
+            <div>
+                <ul><li>- An agreement between parties that resolves the legal dispute.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>The Trial</b></strong></summary>
+            <div>
+                <ul><li>- Occurs if pretrial maneuvers to resolve the case fail.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>The Verdict</b></strong></summary>
+            <div>
+                <ul><li>- The decision reached by the deciding body (judge or jury).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Verdict Motions</strong></summary>
+            <div>
+                <ul><li>- Legal maneuvers that can occur after a verdict is reached.</li></ul>
+                
+        <details>
+            <summary><strong>Directed Verdict</strong></summary>
+            <div>
+                <ul><li>- A request made at the close of an opponent's case.</li><li>- If granted, the court decides as a matter of law that a party failed to prove their case, issuing a verdict without jury deliberation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Judgment Notwithstanding the Verdict (JNOV)</strong></summary>
+            <div>
+                <ul><li>- A court may issue a judgment <q>despite the verdict reached by a jury</q>.</li><li>- A party requesting JNOV must have previously moved for a directed verdict.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Post-trial Activities</b></strong></summary>
+            <div>
+                <ul><li>- Procedures to appeal the outcome, such as a post-trial motion or a formal appeal.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Physician's Role in Defense Preparation</strong></summary>
+            <div>
+                <ul><li>- Key actions and mindset for physicians to adopt when a lawsuit begins.</li></ul>
+                
+        <details>
+            <summary><strong>Adopt a Proactive Stance</strong></summary>
+            <div>
+                <ul><li>- A passive approach is a common regret among defendant physicians.</li></ul>
+                
+        <details>
+            <summary><strong>Decide to be a <u>Good Defendant</u></strong></summary>
+            <div>
+                <ul><li>- This requires active work and learning.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Resolve to be <u>Active</u></strong></summary>
+            <div>
+                <ul><li>- Passivity can lead to feelings of being vulnerable and defeated.</li><li>- Active participation motivates your lawyers and claims representatives to work more diligently.</li><li>- Your case is personal; it involves your <b>integrity, reputation, and honor</b>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Balance Activity with Deference</strong></summary>
+            <div>
+                <ul><li>- Be an active team member, but sensibly follow the advice of your attorneys.</li><li>- The attorney must lead the team and will decide how to best use your medical input.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>First Meeting with Defense Counsel</strong></summary>
+            <div>
+                <ul><li>- This is considered the <u><b>most important meeting</b></u> with your lawyers.</li></ul>
+                
+        <details>
+            <summary><strong>Tell the Truth</strong></summary>
+            <div>
+                <ul><li>- Be completely honest; communication is protected by <u>lawyer-client privilege</u>.</li><li>- Avoid 'spinning' facts, as they will emerge later and cause embarrassment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Come Prepared</strong></summary>
+            <div>
+                <ul><li>- Before the meeting, <b>memorize the facts</b> of the case.</li><li>- Review your own notes and the <u>entire hospital chart</u>.</li><li>- Pay special attention to <q><b>nurses' notes</b></q>, as they often play a significant role in supporting or undercutting the case.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disclose All Concerns</strong></summary>
+            <div>
+                <ul><li>- Inform lawyers of any questions you had at the time of the incident.</li><li>- Mention any intuitions you had that the patient was a 'problem' even before the adverse event.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Avoid Blaming Others</strong></summary>
+            <div>
+                <ul><li>- Your primary responsibility is to tell <u>your side</u> of the story honestly and fully.</li><li>- Do not speculate on the culpability or testimony of others.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ongoing Collaboration with Legal Team</strong></summary>
+            <div>
+                <ul><li>- Maintaining a strong, effective working relationship with your attorneys is crucial.</li></ul>
+                
+        <details>
+            <summary><strong>Clarify Misunderstandings</strong></summary>
+            <div>
+                <ul><li>- Ask your attorney to summarize their understanding of what you've said.</li><li>- Immediately correct any misperceptions to prevent them from lingering.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Commit the Necessary Time</strong></summary>
+            <div>
+                <ul><li>- Accept that the legal process has its own, often frustrating, timeline (delays, cancellations).</li><li>- Resisting or delaying requests from your attorney can harm your case.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evolving Roles Throughout the Lawsuit</strong></summary>
+            <div>
+                <ul><li>- Your responsibilities will change as the case progresses.</li></ul>
+                
+        <details>
+            <summary><strong>Initial Phase: Information Gathering</strong></summary>
+            <div>
+                <ul><li>- Carefully review every document before forwarding it to lawyers.</li><li>- Check for missed signatures, unreviewed notes, or overlooked lab/radiology reports.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Expert Witness Selection</strong></summary>
+            <div>
+                <ul><li>- You may be asked to help choose experts.</li><li>- You will be warned to <q><b>refrain from contacting them yourselves</b></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Deposition Preparation</strong></summary>
+            <div>
+                <ul><li>- Help lawyers prepare for depositions of both defense and plaintiff experts.</li><li>- Research experts' reputations, credentials, and publications.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Trial Preparation</strong></summary>
+            <div>
+                <ul><li>- May involve formal coaching or 'witness school'.</li><li>- May be asked to help develop visual aids for the jury.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Demeanor and Behavior in Litigation</strong></summary>
+            <div>
+                <ul><li>- Guidance on professional appearance and conduct during depositions and trial.</li></ul>
+                
+        <details>
+            <summary><strong>Professional Dress</strong></summary>
+            <div>
+                <ul><li>- Dress as an approachable professional, similar to your office attire.</li><li>- For men: <q><b>suit and tie</b></q>. For women: <q><b>business suit or attire</b></q>.</li><li>- This conveys seriousness and respect for the process and participants.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Courtroom Conduct</strong></summary>
+            <div>
+                <ul><li>- Your testimony is only one part of your defense; you are <u>always being observed</u>.</li><li>- Control emotional reactions (disappointment, elation) to court events.</li><li>- Jurors expect professionalism and respect, not overt anger or hostility.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Projecting Authenticity</strong></summary>
+            <div>
+                <ul><li>- Be your 'best self': competent, caring, and knowledgeable.</li><li>- Show genuine interest by listening attentively and taking notes when appropriate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Deposition: A Deep Dive</strong></summary>
+            <div>
+                <ul><li>- A detailed guide to the pretrial discovery process, with a focus on the physician's deposition.</li></ul>
+                
+        <details>
+            <summary><strong>Pretrial Discovery Process</strong></summary>
+            <div>
+                <ul><li>- Goal: For both sides to learn everything possible about each other's case before trial.</li></ul>
+                
+        <details>
+            <summary><strong>Forms of Discovery</strong></summary>
+            <div>
+                <ul><li>- <b>Interrogatories</b>: Written questions under oath.</li><li>- <b>Requests for Admission of Documents</b>: To verify authenticity of records.</li><li>- <b>Requests for Production</b>: To obtain an opponent's documentary evidence.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Disclosure Rules</strong></summary>
+            <div>
+                <ul><li>- Most states and federal courts allow <u>broad discovery</u> and pretrial disclosure.</li><li>- This encourages settlement by revealing the strengths and weaknesses of each case.</li></ul>
+                
+        <details>
+            <summary><strong>Exception: Limited Discovery</strong></summary>
+            <div>
+                <ul><li>- A few states, like <q><b>Oregon</b></q>, prohibit pretrial disclosure of expert witness identities or their testimony.</li><li>- This approach is known as <q><u>'trial by ambush'</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Physician's Deposition</strong></summary>
+            <div>
+                <ul><li>- You will almost certainly be deposed.</li><li>- Your testimony is under oath and is considered <b>evidence</b> that can decisively influence the outcome.</li></ul>
+                
+        <details>
+            <summary><strong>General Directions for Testifying</strong></summary>
+            <div>
+                <ul><li>- Key principles for delivering effective and safe testimony.</li></ul>
+                
+        <details>
+            <summary><strong><b>Tell the Truth</b></strong></summary>
+            <div>
+                <ul><li>- A single untruthful answer can destroy your defense.</li><li>- Ensure you fully hear and understand the question before answering.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Manage Feelings</b></strong></summary>
+            <div>
+                <ul><li>- Plaintiff attorneys may try to provoke anger to disrupt your composure and accuracy.</li><li>- Respond to hostility with <q>enlarged calm and increased self-control</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Answer ONLY the Question Asked</b></strong></summary>
+            <div>
+                <ul><li>- Aim answers precisely at the 'bull's eye' of the question.</li><li>- Example: Q: 'When did you finish your residency?' ---> A: <q>'1987'</q> (NOT 'I finished at Stanford in 1987').</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Take Time to Answer</b></strong></summary>
+            <div>
+                <ul><li>- Beware of rapid-fire 'yes/no' questions designed to trap you.</li><li>- Never feel rushed; pause to think.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Avoid the Impulse to Teach</b></strong></summary>
+            <div>
+                <ul><li>- Do not educate the opposing lawyer, even if they feign ignorance or mix up facts.</li><li>- Withhold correction of inaccurate science or loosely constructed hypotheses.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>Hindsight is Not Admissible</b></strong></summary>
+            <div>
+                <ul><li>- The focus is on events as they occurred at the time of the incident.</li><li>- Avoid the 'retrospectoscope'; frame your decisions as appropriate <q>in the circumstances at the time</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Attorney Goals in Your Deposition</strong></summary>
+            <div>
+                <ul><li>- Understanding the objectives of both the plaintiff and defense attorneys.</li></ul>
+                
+        <details>
+            <summary><strong>Plaintiff Attorney's Goals</strong></summary>
+            <div>
+                <ul><li>- To establish what you know, get admissions, gauge your strength, and identify other evidence.</li></ul>
+                
+        <details>
+            <summary><strong>Get You to Make Admissions</strong></summary>
+            <div>
+                <ul><li>- Example: Asking ifyou recognize a text as 'authoritative,' which can legally turn the book into an expert witness against you.</li></ul>
+                
+        <details>
+            <summary><strong>The 'Authoritative Text' Trap</strong></summary>
+            <div>
+                <ul><li>- Q: '...you recognize this text as authoritative, do you not?'</li><li>- <b>Inappropriate Response</b>: 'Yes.'</li><li>- <b>Appropriate Response</b>: <q>'It is one of many useful texts.'</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ask Trick Questions</strong></summary>
+            <div>
+                <ul><li>- Designed to elicit an emotional or expansive response that opens new lines of inquiry.</li><li>- Example: Q: 'Are you aware that... Dr. Brown just rolled his eyes and shook his head?'</li><li>- <b>Inappropriate Response</b>: 'Well, Dr. Brown has always been critical of my work...'</li><li>- <b>Appropriate Response</b>: <q>'First, I was not aware of that. And second, I know of no reason why Dr. Brown would act that way...'</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Gauge Your Strengths & Weaknesses</strong></summary>
+            <div>
+                <ul><li>- They assess if you are easily rattled, confused, or baited.</li><li>- A strong, credible performance can lead them to <q>re-think whether they should continue with the case</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Identify Other Witnesses or Evidence</strong></summary>
+            <div>
+                <ul><li>- They search your testimony for mention of other people or documents.</li><li>- They may ask directly who you have discussed the case with (other than your lawyer).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Make You a 'Hostile Witness'</strong></summary>
+            <div>
+                <ul><li>- Using your own answers to undermine your testimony, often via 'dilemma questions'.</li><li>- Example: Q: '...if the physician uses reasonable care, this result does not ordinarily occur?'</li><li>- <b>Inappropriate Response</b>: 'That's correct.'</li><li>- <b>Appropriate Response</b>: <q>'Although the result may not ordinarily occur, when it does occur, it is most often due to the inherent risk of the procedure.'</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Preserve Testimony for Trial</strong></summary>
+            <div>
+                <ul><li>- If a key witness may be unavailable for trial (e.g., due to illness), their deposition (especially videotaped) can be used instead.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Defense Attorney's Goals & Tips</strong></summary>
+            <div>
+                <ul><li>- Your attorney's role during the deposition and how they prepare you.</li></ul>
+                
+        <details>
+            <summary><strong>Filter Inappropriate Questions via Objections</strong></summary>
+            <div>
+                <ul><li>- Objections are placed on the record for a judge to rule on later.</li><li>- In some instances, your attorney will instruct you <u>not to answer</u> (e.g., questions about privileged peer review findings).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Provide Clues Through Objections</strong></summary>
+            <div>
+                <ul><li>- <b>Listen to the objection</b>; your lawyer is giving you important information.</li></ul>
+                
+        <details>
+            <summary><strong>Objection: 'Witness has no personal knowledge.'</strong></summary>
+            <div>
+                <ul><li>- <b>Message</b>: You don't know the answer firsthand.</li><li>- <b>Appropriate Response</b>: <q>'I do not know.'</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Objection: 'Compound question.'</strong></summary>
+            <div>
+                <ul><li>- <b>Message</b>: The question has multiple parts.</li><li>- <b>Your Action</b>: <q>Ask the examiner to rephrase or break it down</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Objection: 'Vague and ambiguous.'</strong></summary>
+            <div>
+                <ul><li>- <b>Message</b>: The question is unclear.</li><li>- <b>Your Action</b>: <q>Ask for clarification</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prepare You for the Environment</strong></summary>
+            <div>
+                <ul><li>- Preparation should be thorough, including practice questions and testing reactions to plaintiff lawyer tactics.</li></ul>
+                
+        <details>
+            <summary><strong>Presence of the Plaintiff</strong></summary>
+            <div>
+                <ul><li>- All parties have the right to be present.</li><li>- The plaintiff may sit across from you as an intimidation tactic.</li><li>- Your job is to <q>ignore them and focus on the attorneys and questions</q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Videotaping</strong></summary>
+            <div>
+                <ul><li>- Be prepared for the possibility of a videotaped deposition.</li><li>- This allows a jury to evaluate your demeanor as well as your words.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Attend Plaintiff's Depositions</strong></summary>
+            <div>
+                <ul><li>- Unless advised otherwise, be present during the patient's deposition and those of key plaintiff experts.</li><li>- Your presence can make it more difficult for them to exaggerate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Prepare You for Questioning Styles</strong></summary>
+            <div>
+                <ul><li>- Understanding different types of questions and tactics.</li></ul>
+                
+        <details>
+            <summary><strong>Close-ended vs. Open-ended Questions</strong></summary>
+            <div>
+                <ul><li>- <b>Close-ended</b>: Seek a concession (e.g., 'Isn't it true that...?').</li><li>- <b>Open-ended</b>: Seek information (e.g., 'What did you tell your patient...?'). Your goal is to provide minimal, precise information.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Questions with Assumed Facts</strong></summary>
+            <div>
+                <ul><li>- A question may be embedded with a fact the attorney wants you to confirm.</li><li>- Example: 'Who was in the OR when you made the decision...?' (assumes you made the decision alone).</li><li>- <b>Appropriate Response</b>: <q>'I cannot answer the question as you have phrased it. Please break it up...'</q></li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Varying Cadence & Subject</strong></summary>
+            <div>
+                <ul><li>- Lawyers may vary their pace or jump between subjects to throw you off.</li><li>- <b>Key</b>: Focus only on the one question being asked; do not anticipate the next one.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Getting You 'Off Script'</strong></summary>
+            <div>
+                <ul><li>- Beware of broad questions like 'Can you explain why...?' or 'Give me all the reasons...'.</li><li>- These are designed to make you improvise and drift into dangerous areas. Respond truthfully but in a limited way.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Repeated Questions</strong></summary>
+            <div>
+                <ul><li>- An attorney may ask the same question repeatedly to trick or frustrate you.</li><li>- Do not get angry or show irritation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Defendant Physician's Goals</strong></summary>
+            <div>
+                <ul><li>- Your primary objectives for the deposition.</li></ul>
+                
+        <details>
+            <summary><strong>Finish Without a Major Mistake</strong></summary>
+            <div>
+                <ul><li>- A deposition free of material error provides a firm basis for your defense expert witnesses.</li><li>- Accomplished by answering truthfully, behaving professionally, and mastering the case details.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Appear as a Formidable Opponent</strong></summary>
+            <div>
+                <ul><li>- Convey that you are a competent, caring physician who practiced within the standard of care.</li><li>- A strong performance can lead the plaintiff's attorney to <q>drop the case</q>.</li><li>- Doing well gives you a sense of strength and resolve for a potential trial.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
