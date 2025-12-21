@@ -1,0 +1,662 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How I Survived After Being Sued: Physician Perspectives</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>How I Survived After Being Sued: Physician Perspectives</strong></summary>
+            <div>
+                <ul><li>- Journal: Medscape</li><li>- Publication Date: April 26, 2017</li><li>- Author: Mark Crane</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What was the primary reason a surgeon changed careers after being sued a second time?</li><li>- In one case, how much did the hospital and other doctors settle for before the remaining physician went to trial?</li><li>- What specific change in documentation did a plastic surgeon adopt after his lawsuit?</li><li>- What is a key piece of advice regarding a physician's demeanor during depositions and trials?</li><li>- How long after birth did the baby die in the case against the Kansas obstetrician/gynecologist?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Emotional Toll of a Malpractice Lawsuit</strong></summary>
+            <div>
+                <ul><li>- Getting sued is an <u>intensely personal</u> and devastating experience for physicians.</li><li>- It is described as a 'total affront to everything doctors have trained to do' and can damage the professional psyche.</li></ul>
+                
+        <details>
+            <summary><strong>Immediate Reactions</strong></summary>
+            <div>
+                <ul><li>- <b>Shock</b> and <b>Anger</b>.</li><li>- Feeling of <b>Betrayal</b> by the patient, especially if the relationship was perceived as good.</li><li>- <b>Guilt</b> and self-doubt, questioning one's own actions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Psychological Impact</strong></summary>
+            <div>
+                <ul><li>- Common effects include <b>anxiety</b>, <b>anguish</b>, and <b>depression</b>.</li><li>- Physical symptoms: poor sleep, poor appetite, and ill temper.</li><li>- The emotional distress can be long-lasting, with one OB/GYN still emotional <q><u>21 years</u></q> after winning her case.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sense of Isolation</strong></summary>
+            <div>
+                <ul><li>- Physicians feel a strong sense of isolation and loneliness.</li><li>- They are legally restricted from discussing case details with anyone except their attorney and insurer.</li><li>- This prevents seeking support and advice from colleagues.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Loss of Control</strong></summary>
+            <div>
+                <ul><li>- Doctors are used to being in control, but a lawsuit places them in an environment with <u>very little control</u>.</li><li>- Medical school does not prepare physicians for the reality of malpractice litigation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Navigating the Litigation Process</strong></summary>
+            <div>
+                <ul><li>- The process is lengthy and stressful, often lasting years.</li><li>- One case went on for almost <q><b>7 years</b></q> and reached the state supreme court.</li><li>- Another case took <q><b>7 years</b></q> from filing to trial.</li></ul>
+                
+        <details>
+            <summary><strong>Dealing with Attorneys</strong></summary>
+            <div>
+                <ul><li>- <b>Plaintiff's Attorney:</b> Expect them to be '<u>merciless</u>', to attack you, and to twist your words.</li><li>- <b>Defense Attorney:</b> It is crucial to have a trusting relationship. If trust is absent, find a new lawyer.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Depositions & Trial</strong></summary>
+            <div>
+                <ul><li>- <b>Depositions:</b> Described as 'awful'; every word is scrutinized.</li><li>- <b>Key Advice:</b> <u>Do not lose your temper</u> during depositions or trial, as attorneys may try to provoke you.</li><li>- <b>Trial Demands:</b> It's a 'very bad idea' to work during the trial; it is physically and mentally exhausting.</li></ul>
+                
+        <details>
+            <summary><strong>Trial as 'Theater'</strong></summary>
+            <div>
+                <ul><li>- A helpful perspective is to view the process as 'theater' where you are an actor.</li><li>- This can make personal attacks less painful.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Courtroom Appearance</strong></summary>
+            <div>
+                <ul><li>- Spouses may be advised on how to dress to avoid appearing overly wealthy (e.g., no Gucci bags, diamonds).</li><li>- The goal is a 'conservative and tasteful' appearance.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>The Jury</strong></summary>
+            <div>
+                <ul><li>- It's difficult to know what jurors are thinking, causing significant anxiety.</li><li>- However, one doctor described the jury as 'wonderful' and believes in the system after they took <q><u>less than an hour</u></q> to find him not liable in a complex case.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Inadmissible Evidence</strong></summary>
+            <div>
+                <ul><li>- Juries are often unaware of crucial context that is not admissible as evidence.</li><li>- <b>Example 1:</b> A plaintiff's prior settlements from workers' compensation.</li><li>- <b>Example 2:</b> In one case, the jury was not told the patient had already received <q><b>$8 million</b></q> from the hospital (<q>$5 million</q>) and other doctors (<q>$1 million each</q>) who settled.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Long-Term Consequences & Practice Changes</strong></summary>
+            <div>
+                <ul><li>- The trauma of being sued '<u>never leaves you</u>' and can resurface years later.</li><li>- Many doctors experience significant changes in their professional lives and outlook.</li></ul>
+                
+        <details>
+            <summary><strong>Practice of Defensive Medicine</strong></summary>
+            <div>
+                <ul><li>- A common reaction is to practice more defensively.</li><li>- This includes ordering additional, sometimes unnecessary, imaging studies, labs, and second opinions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Altered Patient Interactions</strong></summary>
+            <div>
+                <ul><li>- Seeing new patients as <u>potential litigants</u>.</li><li>- Feeling that 'we're not on the same team anymore'.</li><li>- Spending more time explaining risks to patients and families.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Changes in Documentation</strong></summary>
+            <div>
+                <ul><li>- Documentation becomes more detailed and burdensome.</li><li>- 'If it isn't written on the chart, it's like it didn't happen.'</li><li>- One surgeon now documents 'completely unnecessary information' and notes on <u>every conversation</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Impact on Collegial Relationships</strong></summary>
+            <div>
+                <ul><li>- Increased reluctance to offer 'curbside consults' or help colleagues at the last minute.</li><li>- Fear of involvement in a case without full knowledge of the patient.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Career Changes</strong></summary>
+            <div>
+                <ul><li>- The stress can lead physicians to leave practice, retire early, or change careers.</li><li>- One orthopedic surgeon gave up surgery and became a chief medical officer for health plans after a <q><u>second lawsuit</u></q>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Coping Strategies & Key Advice</strong></summary>
+            <div>
+                <ul><li>- 'Getting sued is just a part of doing business in medicine. It doesn't mean you're a bad doctor; it's just your turn.'</li></ul>
+                
+        <details>
+            <summary><strong>Build a Strong Support Network</strong></summary>
+            <div>
+                <ul><li>- <b>Crucial:</b> Have someone to talk to, like a supportive spouse or family.</li><li>- 'I don't know what I would have done without her.'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Utilize Professional Support</strong></summary>
+            <div>
+                <ul><li>- Some malpractice carriers (e.g., The Doctors Company, COPIC, ProAssurance) offer support programs.</li><li>- These include weekend retreats for physicians and spouses.</li><li>- 'Care for the caregiver' programs connect sued doctors with colleagues who have been through it.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Maintain Self-Care & Perspective</strong></summary>
+            <div>
+                <ul><li>- <b>Live your life:</b> Don't let the case consume you. Continue hobbies and time with loved ones.</li><li>- <b>Physical Health:</b> Eat well, exercise, and get enough sleep.</li><li>- <b>Trust Yourself:</b> Believe in your training and your team. Remember why you became a doctor.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Post-Trial Recovery</strong></summary>
+            <div>
+                <ul><li>- <b>Don't</b> go back to work the day after the trial ends.</li><li>- Take a vacation, regardless of the outcome, to decompress.</li><li>- It can take almost a <q><u>year</u></q> to see patients in a non-adversarial way again.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
