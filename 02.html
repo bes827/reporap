@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>02</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Selecting and Managing Legal Representation for Medical Malpractice Defense</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Source: User‑provided text (2025)</li>
+<li>Date: 2025‑12‑25</li>
+</ul>
+<details><summary><strong>1. Core Questions to Assess Attorney Fit</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>These six questions uncover partnership status, performance metrics, relevant experience, client focus, settlement tendencies, and court jurisdiction expertise.</li>
+</ul>
+<details><summary><strong>Q1. Are you a partner?</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>**Partner** status (especially **senior partner**) is a proxy for proven trial ability.</li>
+</ul>
+<details><summary><strong>Rationale for Partner Preference</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Attorneys earn **partner** after winning the majority of cases ---&gt; demonstrates litigation success; family ties are an exception.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Q2. What is your win/loss ratio?</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>A high **win/loss ratio** suggests effectiveness, but context matters.</li>
+</ul>
+<details><summary><strong>Interpretation Caveats</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Ratios can be inflated by handling low‑complexity cases ↓ or deflated by taking on the most difficult cases ↑.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Q3. Have you tried any cases similar to mine? *(duplicate in source)*</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Prior experience with **similar case types** improves familiarity with medical nuances.</li>
+</ul>
+<details><summary><strong>Learning Curve Considerations</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Even without direct experience, a competent attorney can **learn the medicine**, so lack of similarity is not an absolute deal‑breaker.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Q4. Do most of your cases entail representing hospitals?</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Attorneys who primarily defend **hospitals** may prioritize early settlements and lack doctor‑focused trial exposure.</li>
+</ul>
+<details><summary><strong>Implications of Hospital‑Focused Practice</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Hospitals often settle quickly → less courtroom experience for the attorney; they represent a faceless entity with deep pockets, which can dilute personal stakes such as insurance and licensure concerns.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Q5. Over the last &lt;u&gt;5 years&lt;/u&gt;, have you settled a majority of your cases?</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>A high settlement rate suggests limited **trial experience** and possible inclination to settle marginally defensible claims.</li>
+</ul>
+<details><summary><strong>Settlement Frequency Indicator</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Majority settlements ↓ trial readiness; may pressure you toward early resolution even when a verdict is attainable.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Q6. Have you tried any cases in federal court?</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Federal‑court exposure matters only if your malpractice suit is filed there, due to distinct procedural rules.</li>
+</ul>
+<details><summary><strong>Federal vs. State Court Differences</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Subtle and drastic procedural variations (see Chapter 8) require specialized knowledge; learning on the fly can jeopardize case strategy.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>2. Interpreting Experience Metrics &amp; Case History</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Understanding how quantitative metrics translate into qualitative trial competence helps you weigh attorney options.</li>
+</ul>
+<details><summary><strong>Trial Experience vs. Settlement Record</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>**Trial experience** is essential for defending physicians who face high‑stakes verdicts.</li>
+</ul>
+<details><summary><strong>Impact on Attorney Incentives</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Attorneys with low trial exposure may favor settlements to protect their reputation, potentially at your expense.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Federal Court Experience</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Relevant only when the complaint resides in federal jurisdiction; otherwise, state‑court expertise suffices.</li>
+</ul>
+<details><summary><strong>Procedural Nuances</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Differences include venue rules, discovery scope, and jury selection — all of which affect case outcomes.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Representing Doctors vs. Hospitals: Psychological &amp; Practical Factors</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Attorneys who habitually defend **physicians** are attuned to the personal ramifications (e.g., future malpractice insurance, licensure).</li>
+</ul>
+<details><summary><strong>Emotional Conflict Management</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Such attorneys understand pre‑trial psychological tactics and can navigate “games” designed to pressure defendants.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>3. Conflict of Interest Risks and Mitigation</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Multi‑defendant representation can create strategic conflicts; recognizing and addressing them protects your interests.</li>
+</ul>
+<details><summary><strong>Multi‑Defendant Scenarios</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>When a single attorney represents multiple parties (e.g., two doctors + hospital), defense tactics may become generic.</li>
+</ul>
+<details><summary><strong>Defense Tactic Alignment (Scenarios a–d)</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>**a)** Tailored to Doctor 1</li>
+<li>**b)** Tailored to Doctor 2</li>
+<li>**c)** Favorable to the corporation/hospital → likely if corporate business dominates the firm’s revenue</li>
+<li>**d)** “One‑size‑fits‑all” approach (most common when conflicts exist)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Hospital as Co‑Defendant: High‑Risk Situations</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Separate counsel is strongly advised when the hospital is a co‑defendant.</li>
+</ul>
+<details><summary><strong>Magic Witnesses</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Unexpected witnesses with perfect recollection but no documentation may appear; dedicated counsel can anticipate and counteract them.</li>
+</ul>
+</div></details>
+<details><summary><strong>Job Jeopardy Threats</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Hospital may threaten employment termination to steer defense strategy → independent attorney shields you from such pressure.</li>
+</ul>
+</div></details>
+<details><summary><strong>Settlement Pressure from Hospital</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Hospitals prefer settlements to protect deep pockets; an attorney aligned with the hospital may push you toward a premature settlement.</li>
+</ul>
+</div></details>
+<details><summary><strong>Indemnification Risks</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Joint‑and‑several liability can expose doctors to additional financial burden.</li>
+</ul>
+<details><summary><strong>Example Calculation</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Policy limit: &lt;u&gt;$1,000,000&lt;/u&gt;</li>
+<li>Verdict: **50 %** liability each → doctor pays &lt;u&gt;$1,000,000&lt;/u&gt;, hospital pays &lt;u&gt;$9,000,000&lt;/u&gt; (assuming a &lt;u&gt;$10,000,000&lt;/u&gt; verdict).</li>
+<li>Hospital may then sue the doctor for the extra &lt;u&gt;$4,000,000&lt;/u&gt; not covered by the doctor&#x27;s policy.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>Conflict Detection Strategies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Look for signs such as shared attorney across defendants, settlement‑heavy track records, and predominant hospital representation.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Changing Attorneys Within a Firm</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>If dissatisfied, you can request an internal reassignment without abandoning the firm’s resources.</li>
+</ul>
+<details><summary><strong>Assessing Attorney Assignment Across Case Stages</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Initial complaint may be handled by a junior associate; deposition and trial should involve a **senior** or **partner‑level** attorney.</li>
+</ul>
+<details><summary><strong>Requesting Senior Trial Attorney</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Explicitly ask that a **partner** or senior associate conduct depositions and trial → ensures experienced advocacy.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Negotiating Switches Internally</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Law firms value physician referrals; they often accommodate reasonable requests to retain you as a “cash cow.”</li>
+</ul>
+<details><summary><strong>Escalation Path: Supervising Attorney → Partner</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>If the primary attorney refuses, contact their supervising partner; continue up the chain until you receive a satisfactory response or a run‑around.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Criteria for Dropping a Firm</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>A firm that will not provide a senior trial attorney after your request should be considered unsuitable and replaced.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Switching Law Firms &amp; Dealing with Insurance Companies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>When internal changes aren’t enough, you may need to move to a new firm; insurance policies dictate the process.</li>
+</ul>
+<details><summary><strong>Policy Review: Right to Choose Counsel</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Verify whether your malpractice **policy** permits selecting your own attorney or law firm.</li>
+</ul>
+<details><summary><strong>Two Scenarios</strong></summary><div style="padding-left: 20px;">
+<p>1. **Cannot choose counsel** – policy restricts selection.</p>
+<p>2. **Can choose or silent** – you have flexibility to switch.</p>
+</div></details>
+</div></details>
+<details><summary><strong>If Choice Is Restricted</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Initiate a formal request with the insurer, emphasizing potential **conflict of interest**.</li>
+</ul>
+<details><summary><strong>Escalation Steps</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Contact front‑line representative → if denied, demand written justification → elevate to supervisor → repeat until compliance.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Formal Complaint &amp; Recusal Requests</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Draft a letter to the senior partner stating: “If you do not recuse yourself, I will report you to the state bar.”</li>
+</ul>
+<details><summary><strong>Documentation Importance</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Keep all communications **in writing**; email trails serve as evidence if disputes arise.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Legal Leverage: Threatening Lawsuit for Breach of Contract</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>If the insurer persists in denying a change, threaten a breach‑of‑contract suit → often compels cooperation.</li>
+</ul>
+</div></details>
+<details><summary><strong>Summary Checklist for Securing Independent Counsel</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Ask insurer to switch firms.</li>
+<li>Escalate using “conflict of interest” language.</li>
+<li>Request recusal of conflicted attorney in writing.</li>
+<li>Document every request and response.</li>
+<li>If necessary, threaten bar complaint or breach‑of‑contract litigation.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

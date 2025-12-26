@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>03</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Coping with a Medical Malpractice Lawsuit – Mind Map</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>**Source:** Ilene R. Brenner, *How to Survive a Medical Malpractice Lawsuit*, Blackwell Publishing, 2010.</li>
+<li>**Date accessed:** 2025‑12‑25</li>
+</ul>
+<details><summary><strong>1. Psychological &amp; Emotional Response</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Overview of the physician’s emotional journey from shock to acceptance, framed by grief and motivation models.</li>
+</ul>
+<details><summary><strong>Kübler‑Ross Five Stages of Grief Applied to Lawsuits</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Framework mapping denial → anger → bargaining → depression → acceptance.</li>
+</ul>
+<details><summary><strong>Denial</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Initial numbness; belief case will “go away”; tendency to ignore attorney advice. &lt;u&gt;↑&lt;/u&gt; risk of harming defense if persisted.</li>
+</ul>
+</div></details>
+<details><summary><strong>Anger</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Directed at self, patient, system; can impair deposition performance and jury perception. Management: anger‑reduction outlets, counseling.</li>
+</ul>
+</div></details>
+<details><summary><strong>Bargaining</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Promises of better practice (“defensive medicine”) to avoid future suits; serves as distraction rather than solution.</li>
+</ul>
+</div></details>
+<details><summary><strong>Depression</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Persistent sadness, tearfulness; indicates progression toward acceptance but may affect courtroom demeanor.</li>
+</ul>
+</div></details>
+<details><summary><strong>Acceptance</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Emotional detachment &amp; objectivity; enables strategic legal engagement and “playing the game”.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Maslow’s Hierarchy of Needs in the Context of Lawsuits</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Explains shift from altruistic practice to defensive behavior under threat.</li>
+</ul>
+<details><summary><strong>Physiological Needs</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Basic survival; generally unaffected directly by lawsuit.</li>
+</ul>
+</div></details>
+<details><summary><strong>Safety Needs</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Financial security, malpractice insurance, asset protection; primary driver of anxiety post‑suit. &lt;u&gt;↑&lt;/u&gt; focus on premiums, legal costs.</li>
+</ul>
+</div></details>
+<details><summary><strong>Social Needs</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Relationships with colleagues, family, patients; strained when stress escalates.</li>
+</ul>
+</div></details>
+<details><summary><strong>Esteem Needs</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Professional reputation and self‑confidence; threatened by litigation exposure.</li>
+</ul>
+</div></details>
+<details><summary><strong>Self‑Actualization</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Ideal of compassionate care; often regresses under sustained threat.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Interaction Between Grief Stages &amp; Maslow Levels</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Threat to safety triggers denial/anger; progression through depression aligns with moving down the hierarchy; acceptance restores higher‑order motivations.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Legal Landscape &amp; Procedural Milestones</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Key steps from service of complaint to trial, including jurisdictional nuances and discovery.</li>
+</ul>
+<details><summary><strong>Initial Service &amp; Complaint Assessment</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Verify proper legal service; confirm statute of limitations.</li>
+</ul>
+<details><summary><strong>Service Verification</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Improper service (e.g., mail only) can be contested → potential dismissal.</li>
+</ul>
+</div></details>
+<details><summary><strong>Statute of Limitations Check</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Identify dates of care; ensure complaint filed within allowable window.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Venue Determination: Federal vs. State Court</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Majority of cases in state court; specific criteria for federal filing.</li>
+</ul>
+<details><summary><strong>Federal Court Triggers</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Cases involving EMTALA or parties from different states with &gt;$75,000 claim → &lt;u&gt;↑&lt;/u&gt; likelihood of federal jurisdiction.</li>
+</ul>
+</div></details>
+<details><summary><strong>Daubert Standard (Federal)</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Strict expert‑witness qualifications; may favor defendant if expert challenged successfully.</li>
+</ul>
+</div></details>
+<details><summary><strong>State Court Variability</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Looser expert rules; jury pool composition differs (local residents vs. registered voters).</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Jury Composition &amp; Demographics</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Influence on trial strategy.</li>
+</ul>
+<details><summary><strong>Federal Jury Pools</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Typically less diverse, drawn from voter registration → potential bias.</li>
+</ul>
+</div></details>
+<details><summary><strong>State Jury Pools</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>County residents; may reflect community demographics more accurately.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Discovery Phase</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Exchange of documents, HIPAA authorizations, subpoenas.</li>
+</ul>
+<details><summary><strong>Record Requests</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Attorney issues HIPAA releases; obtains charts, notes, ancillary records.</li>
+</ul>
+</div></details>
+<details><summary><strong>Subpoena Use</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Employed when treating physicians resist releasing records → can compel deposition for information.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>In‑House Insurance Review</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Insurer’s physician reviewers assess case risk and settlement propensity.</li>
+</ul>
+<details><summary><strong>Potential Conflict of Interest</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Reviewers prioritize insurer’s financial interests; may recommend settlement contrary to defense strategy.</li>
+</ul>
+</div></details>
+<details><summary><strong>Physician Response</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Submit factual rebuttal without emotional tone; request second review if needed.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Settlement Negotiations &amp; Rejection Implications</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Timing, strategic considerations, and policy clauses.</li>
+</ul>
+<details><summary><strong>Initial Settlement Offers</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Often lowball to test willingness → can trigger interest accrual penalties if rejected in some states.</li>
+</ul>
+</div></details>
+<details><summary><strong>Consent‑to‑Settle Clause</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Empowers physician to control settlement decisions; essential for autonomy.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>3. Time, Financial &amp; Career Implications</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Quantifies the hidden costs and professional risks associated with litigation.</li>
+</ul>
+<details><summary><strong>Unreimbursed Hours &amp; Opportunity Cost</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Physicians spend extensive time on legal matters.</li>
+</ul>
+<details><summary><strong>Attorney Meetings &amp; Depositions</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Hours spent preparing testimony, reviewing documents → &lt;u&gt;↑&lt;/u&gt; burnout risk.</li>
+</ul>
+</div></details>
+<details><summary><strong>Independent Research</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Additional self‑directed investigation of case‑related issues; often unpaid.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Insurance Premiums &amp; Liability Exposure</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Direct financial impact on practice sustainability.</li>
+</ul>
+<details><summary><strong>Malpractice Insurance Surge</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Post‑lawsuit premiums can rise dramatically, especially for obstetricians (one plaintiff verdict → “enormous” increase).</li>
+</ul>
+</div></details>
+<details><summary><strong>Asset Protection Strategies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Raising coverage limits, establishing trusts; driven by safety needs.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Board Actions &amp; Licensure Risks</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Potential regulatory consequences beyond civil liability.</li>
+</ul>
+<details><summary><strong>Medical Board Investigations</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Possible license suspension or restrictions; adds to stress and professional uncertainty.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Career Mobility Constraints</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Difficulty joining new groups due to premium spill‑over.</li>
+</ul>
+<details><summary><strong>Group Practice Premium Impact</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Individual’s lawsuit can raise entire group’s rates, limiting employment options.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>4. Coping Strategies &amp; Support Systems</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Practical actions physicians can take to navigate emotional and procedural challenges.</li>
+</ul>
+<details><summary><strong>Five Core Coping Strategies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Structured approach to maintain mental health and case focus.</li>
+</ul>
+<details><summary><strong>1️⃣ Pay Attention to Your Attorney</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Leverage attorney experience; follow strategic advice → improves defense quality.</li>
+</ul>
+</div></details>
+<details><summary><strong>2️⃣ Focus on the Case Details</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Concentrate on factual specifics; reduces uncertainty and anxiety.</li>
+</ul>
+</div></details>
+<details><summary><strong>3️⃣ Maintain Objectivity</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Apply clinical detachment to legal matters; supports clear decision‑making.</li>
+</ul>
+</div></details>
+<details><summary><strong>4️⃣ Learn the Game</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Understand litigation tactics, rules of evidence, and courtroom dynamics → “play to win.”</li>
+</ul>
+</div></details>
+<details><summary><strong>5️⃣ Seek Help When Needed</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Utilize family, colleagues, mental‑health professionals; avoid isolation.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Anger Management &amp; Emotional Regulation Techniques</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Specific methods to mitigate anger’s impact on performance.</li>
+</ul>
+<details><summary><strong>Venting Through Trusted Networks</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Discuss feelings with peers who have survived lawsuits (maintain confidentiality of case specifics).</li>
+</ul>
+</div></details>
+<details><summary><strong>Professional Counseling</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Engage psychiatrists or psychologists; can be career‑saving.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Building a Strong Support Network</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Importance of multidisciplinary support.</li>
+</ul>
+<details><summary><strong>Family &amp; Spouse Involvement</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Emotional anchor; helps maintain perspective.</li>
+</ul>
+</div></details>
+<details><summary><strong>Peer Physician Groups</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Shared experiences normalize stress, provide practical tips.</li>
+</ul>
+</div></details>
+<details><summary><strong>Legal Team Collaboration</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Regular updates and transparent communication reduce uncertainty.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>5. Defensive Medicine &amp; Practice Behavior Changes</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>How litigation risk reshapes clinical decision‑making and patient care.</li>
+</ul>
+<details><summary><strong>Definition &amp; Drivers of Defensive Medicine</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Clinical actions taken primarily to avoid liability rather than improve outcomes.</li>
+</ul>
+<details><summary><strong>Financial Safety Needs → ↑ Defensive Practices</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Higher premiums and fear of lawsuits push physicians toward over‑testing, unnecessary referrals.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Impact on Patient Care Quality</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Potential for increased costs, patient anxiety, and reduced trust.</li>
+</ul>
+<details><summary><strong>Over‑Testing Consequences</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Unnecessary imaging or labs; may expose patients to radiation, false positives.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Strategies to Mitigate Defensive Tendencies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Balancing risk management with evidence‑based care.</li>
+</ul>
+<details><summary><strong>Documentation Excellence</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Detailed records reduce ambiguity in future litigation → supports defense without altering clinical judgment.</li>
+</ul>
+</div></details>
+<details><summary><strong>Shared Decision‑Making</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Involve patients in risk discussion; aligns expectations and may lower lawsuit propensity.</li>
+</ul>
+</div></details>
+<details><summary><strong>Insurance‑Driven Practice Policies</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Institutions can provide guidelines that protect clinicians while encouraging appropriate care.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Long‑Term Outlook: Returning to Self‑Actualization</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Once acceptance achieved, physicians can refocus on altruistic goals.</li>
+</ul>
+<details><summary><strong>Re‑engagement with Core Values</strong></summary><div style="padding-left: 20px;">
+<ul>
+<li>Restoring self‑esteem and professional identity after legal resolution → facilitates return to compassionate practice.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
