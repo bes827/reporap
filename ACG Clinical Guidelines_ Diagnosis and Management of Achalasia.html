@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ACG Clinical Guidelines: Diagnosis and Management of Achalasia  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>ACG Clinical Guidelines: Diagnosis and Management of Achalasia  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: American College of Gastroenterology (2020)  </li>
+<li style="margin-left: 0px;">Topic: Achalasia – esophageal motility disorder  </li>
+</ul>
+<details><summary><strong>1. Introduction &amp; Scope  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Defines achalasia: impaired LES relaxation + aperistalsis.  </li>
+<li style="margin-left: 0px;">Typical presentation: dysphagia solids &amp; liquids, regurgitation, chest pain, weight loss.  </li>
+<li style="margin-left: 0px;">Highlights HRM identification of three subtypes (pressurization patterns).  </li>
+<li style="margin-left: 0px;">Emphasizes endoscopic &amp; barium signs (retained saliva, puckered EGJ, bird‑beak).  </li>
+</ul>
+<details><summary><strong>1.1 Guideline Structure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recommendations ↔ GRADE quality/strength.  </li>
+<li style="margin-left: 0px;">Key concepts: expert opinion + extrapolated evidence (non‑GRADE).  </li>
+<li style="margin-left: 0px;">Evidence summaries provide definitions, data supporting each recommendation.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Methods &amp; Grading Process  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Systematic literature review; GRADE tables applied to each statement.  </li>
+<li style="margin-left: 0px;">Two trained GRADE methodologists performed the assessment.  </li>
+<li style="margin-left: 0px;">Evidence quality tiers: <strong>High</strong>, <em>Moderate</em>, ↓Low, ↓↓Very low*.  </li>
+<li style="margin-left: 0px;">Recommendation strength: <strong>Strong</strong> (benefits ≫ harms) vs <em>Conditional</em> (uncertainty).  </li>
+</ul>
+<details><summary><strong>2.1 Quality Definitions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>High</strong>: further research unlikely to change effect estimate.  </li>
+<li style="margin-left: 0px;"><strong>Moderate</strong>: some confidence; new data may affect estimate.  </li>
+<li style="margin-left: 0px;"><strong>Low</strong>: additional studies likely to impact estimate.  </li>
+<li style="margin-left: 0px;"><strong>Very low</strong>: little confidence; true effect may differ substantially.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Recommendation Types  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Strong</strong>: clear benefit‑risk advantage.  </li>
+<li style="margin-left: 0px;"><strong>Conditional</strong>: balance of benefits/harms uncertain, patient preference matters.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Epidemiology &amp; Diagnostic Framework  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Global incidence ≈ <em>0.03–1.63</em> per 100 000 yr; prevalence ≈ <em>1.8–12.6</em> per 100 000 yr.  </li>
+<li style="margin-left: 0px;">US burden: ~20 000–40 000 affected individuals.  </li>
+<li style="margin-left: 0px;">No sex, racial predilection; peak age 30‑60 y.  </li>
+</ul>
+<details><summary><strong>3.1 Clinical Suspicion  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Classic triad: progressive dysphagia (solids &amp; liquids), regurgitation, weight loss.  </li>
+<li style="margin-left: 0px;">Heartburn present in <em>27%–42%</em> → frequent misdiagnosis as GERD → PPI trial often ineffective.  </li>
+</ul>
+<details><summary><strong>3.1.1 Recommendation 1  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Strong</strong> (very low evidence): evaluate for achalasia if GERD therapy fails.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.2 Pathophysiology Overview  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Selective loss of inhibitory myenteric neurons (VIP, NO) → excitatory‑dominant LES tone.  </li>
+<li style="margin-left: 0px;">Unopposed acetylcholine release → impaired LES relaxation &amp; absent peristalsis.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Diagnostic Testing Algorithm  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Core modalities: <strong>Endoscopy</strong>, <strong>Barium esophagram</strong>, <strong>High‑resolution manometry (HRM)</strong>.  </li>
+</ul>
+<details><summary><strong>4.1 Endoscopic Findings  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Retained saliva/food in esophagus.  </li>
+<li style="margin-left: 0px;">Puckered gastroesophageal junction requiring increased force to traverse.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Barium Esophagram Signs  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Dilated esophagus with “bird‑beak” tapering at LES.  </li>
+<li style="margin-left: 0px;">Early disease may show retained barium above EGJ, mimicking reflux stricture.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 High‑Resolution Manometry (Gold Standard)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">HRM provides pressure topography; superior inter‑rater agreement vs conventional manometry.  </li>
+<li style="margin-left: 0px;">Identifies three Chicago Classification subtypes:  </li>
+</ul>
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Subtype</th>
+<th>Prevalence</th>
+<th>Key Manometric Feature</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Type I</strong></td>
+<td>20%–40%</td>
+<td>Aperistalsis, ↓pan‑esophageal pressurization (&lt;30 mm Hg)</td>
+</tr>
+<tr>
+<td><strong>Type II</strong></td>
+<td>50%–70%</td>
+<td>Aperistalsis + pan‑esophageal pressurization &gt;30 mm Hg</td>
+</tr>
+<tr>
+<td><strong>Type III</strong></td>
+<td>~5%</td>
+<td>Spastic distal contractions ± pressurization</td>
+</tr>
+</tbody>
+</table>
+<details><summary><strong>4.3.1 Recommendation 2  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Strong</strong> (high evidence): use esophageal pressure topography (HRM) over conventional line tracing for diagnosis.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.3.2 Recommendation 3  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Conditional</em> (low evidence): classify achalasia subtypes via Chicago Classification to inform prognosis &amp; therapy choice.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4.4 Adjunctive Tests  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Timed Barium Esophagram (TBE)</strong>: measures barium column height at 1, 2, 5 min → predicts emptying.  </li>
+<li style="margin-left: 0px;"><strong>Functional Lumen Imaging Probe (FLIP)</strong>: assesses EGJ distensibility; useful when HRM equivocal or patient cannot tolerate manometry.  </li>
+</ul>
+<details><summary><strong>4.4.1 Key Concept Statements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">TBE + bird‑beak may be diagnostic in appropriate clinical context.  </li>
+<li style="margin-left: 0px;">Endoscopic retained saliva &amp; puckered EGJ should raise suspicion.  </li>
+<li style="margin-left: 0px;">FLIP can complement pre‑/post‑therapy assessment; high concordance with HRM.  </li>
+</ul>
+<p><em>End of Part 1 (first 3–4 major headings). Subsequent sections will cover therapeutic options, post‑therapy assessment, management of failed therapy, cancer surveillance, and treatment algorithm.</em></p>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>5. Initial Treatment Options  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1 Pharmacologic Therapy (non‑definitive)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Agents: nifedipine 10–30 mg SL qAC, isosorbide dinitrate 5 mg SL qAC, terbutaline, theophylline, anticholinergics, sildenaﬁl 50 mg.  </li>
+<li style="margin-left: 0px;">Mechanism: ↓intracellular Ca²⁺ (CCB) or ↑NO (nitrates) → transient LES pressure reduction.  </li>
+<li style="margin-left: 0px;">Efficacy: LES pressure ↓ <em>13%–65%</em>; symptom relief <em>0%–87%</em>.  </li>
+<li style="margin-left: 0px;">Duration of action 30–120 min → multiple daily doses, common side‑effects (headache, hypotension, edema).  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 4</strong> – <em>Conditional</em> (moderate): reserve pharmacotherapy for patients unfit for definitive therapy or after botulinum toxin failure.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Endoscopic Botulinum Toxin Injection  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Dose: 100 U injected in 0.5–1 mL aliquots above squamocolumnar junction.  </li>
+<li style="margin-left: 0px;">Effect: SNAP‑25 cleavage → ↓acetylcholine release, ~50% LES pressure reduction.  </li>
+<li style="margin-left: 0px;">Symptom relief at 30 days: <em>78.7%</em> (9 studies, 315 pts). Declines to <em>70%</em> @3 mo, <em>53.3%</em> @6 mo, <em>40.6%</em> @12 mo.  </li>
+<li style="margin-left: 0px;">Need for repeat injections in ~46.6%; subsequent interventions required in ~30%.  </li>
+<li style="margin-left: 0px;">Complications: rare reflux, mediastinitis; histology shows inflammatory changes &amp; mild fibrosis.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 5</strong> – <em>Strong</em> (moderate): botulinum toxin does not significantly affect later myotomy outcomes; can be first‑line for non‑surgical candidates.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Pneumatic Dilation (PD)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Devices: graded polyethylene balloons (RigiFlex) 3.0, 3.5, 4.0 cm.  </li>
+<li style="margin-left: 0px;">Technique: fluoroscopic or endoscopic positioning; inflate to 10–15 psi for 15–60 s.  </li>
+<li style="margin-left: 0px;">Protocol: start with 3.0 cm; if symptomatic at 4–6 wk, progress to larger size; younger men (&lt;45 y) may begin with 3.5 cm.  </li>
+<li style="margin-left: 0px;">Success rates: symptom relief <em>50%–93%</em> overall; cumulative success after graded series (3→3.5→4 cm): <em>74%</em> (1‑cm), <em>86%</em> (3.5 cm), <em>90%</em> (4 cm) at mean 1.6 y follow‑up.  </li>
+<li style="margin-left: 0px;">Predictors of favorable response: age &gt;45 y, female sex, nondilated esophagus, post‑PD LES pressure ≤10 mm Hg.  </li>
+<li style="margin-left: 0px;">Complications: perforation overall <em>1.9%</em> (range 0–16%); GERD post‑PD <em>15%–35%</em>.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 6</strong> – <em>Strong</em> (very low): PD superior to medical therapy for symptom &amp; physiologic improvement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Laparoscopic Heller Myotomy (LHM)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Technique: longitudinal LES muscle division via laparoscopic approach; optional fundoplication (Dor or Toupet).  </li>
+<li style="margin-left: 0px;">Outcomes: symptom improvement <em>80%–95%</em>; long‑term success declines modestly (6 mo 89%, 6 y 57%).  </li>
+<li style="margin-left: 0px;">Complications: perforation rare; postoperative GERD without fundoplication ~29%; with Dor/Toupet ↓ to ~9%.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 7</strong> – <em>Strong</em> (moderate): LHM superior to botulinum toxin in fit surgical candidates.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.5 Peroral Endoscopic Myotomy (POEM)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Procedure: submucosal tunnel creation, circular muscle cut ≥6 cm esophagus + 2 cm gastric cardia; length tailored to subtype.  </li>
+<li style="margin-left: 0px;">Success rates: overall <em>&gt;90%</em> symptom relief in treatment‑naïve cohorts; type III response up to <em>98%</em>.  </li>
+<li style="margin-left: 0px;">Adverse events: GERD incidence higher than LHM (≈39% vs 16.8%); perforation rare.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 8</strong> – <em>Strong</em> (moderate): POEM comparable to LHM for overall symptomatic improvement; tailored longer myotomy advantageous in type III.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.6 Comparative Effectiveness Summaries  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Comparison</th>
+<th>Evidence Quality</th>
+<th>Recommendation</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>PD vs Medical Therapy</td>
+<td>Very low</td>
+<td><strong>Strong</strong> – PD superior</td>
+</tr>
+<tr>
+<td>PD vs Botulinum Toxin (12‑mo)</td>
+<td>Moderate</td>
+<td><strong>Strong</strong> – PD more effective long‑term</td>
+</tr>
+<tr>
+<td>PD vs LHM (2‑yr)</td>
+<td>High</td>
+<td><strong>Strong</strong> – comparable efficacy</td>
+</tr>
+<tr>
+<td>POEM vs PD (2‑yr)</td>
+<td>Moderate</td>
+<td><strong>Strong</strong> – POEM superior symptom control</td>
+</tr>
+<tr>
+<td>POEM vs LHM</td>
+<td>Moderate</td>
+<td><strong>Strong</strong> – comparable outcomes, higher GERD with POEM</td>
+</tr>
+<tr>
+<td>Tailored POEM/LHM vs PD for Type III</td>
+<td>Moderate</td>
+<td><strong>Strong</strong> – tailored myotomy more efficacious</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div></details>
+<details><summary><strong>6. Post‑Therapy Assessment  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Symptom Scoring (Eckardt Score)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Components: dysphagia, regurgitation, chest pain, weight loss (0–3 each; total 0–12).  </li>
+<li style="margin-left: 0px;">Threshold for suboptimal outcome: <strong>&gt;3</strong>.  </li>
+<li style="margin-left: 0px;">Limitations: chest‑pain &amp; weight‑loss items reduce reliability; may not reflect bolus retention.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Objective Testing After Definitive Therapy  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.2.1 Timed Barium Esophagram (TBE) – First‑Line  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Measures barium column height at 1, 2, 5 min → assesses esophageal emptying.  </li>
+<li style="margin-left: 0px;">Normalization: complete clearance by 1 min.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 9</strong> – <em>Strong</em> (very low): use TBE rather than HRM/ES alone to evaluate recurrent symptoms.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2.2 High‑Resolution Manometry (HRM)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Useful for detecting incomplete myotomy, residual spasm, or EGJ outflow obstruction.  </li>
+<li style="margin-left: 0px;">Not sufficient alone to define treatment failure.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2.3 Endoscopy  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Indicated when reflux suspected, stricture formation, or to assess mucosal integrity after therapy.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.3 Definition of Treatment Failure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Persistent/recurrent symptoms with ES &gt; 3 <strong>and</strong> objective evidence of bolus retention on TBE or abnormal LES relaxation on HRM.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Management of Failed Therapy / Recurrent Disease  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 PD After Prior LHM or POEM  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Safe and effective salvage; success ~89% in post‑LHM cohort, low complication rate.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 10</strong> – <em>Strong</em> (moderate): PD appropriate after failed myotomy or POEM.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Repeat LHM After Failed PD or POEM  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Consider when anatomy favorable and incomplete myotomy suspected; may avoid esophagectomy.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 11</strong> – <em>Strong</em> (very low): Heller myotomy before esophagectomy in patients with prior PD/POEM failure, if feasible.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 POEM After Prior PD or LHM  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High clinical success (~95% at median 28 mo) even after previous interventions; low adverse event profile.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 12</strong> – <em>Strong</em> (low): POEM safe as salvage after PD or LHM.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Esophagectomy (End‑Stage Disease)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Indicated for megaesophagus (&gt;8 cm), refractory symptoms, or severe malnutrition despite other therapies.  </li>
+<li style="margin-left: 0px;">Mortality ~2% in high‑volume centers; respiratory complications ~10%.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 13</strong> – <em>Strong</em> (low): esophagectomy for surgically fit patients with failed prior interventions and dilated esophagus.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Self‑Expanding Metal Stents (SEMS)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Temporary SEMS show limited benefit; higher symptom recurrence vs botulinum toxin; not widely available.  </li>
+<li style="margin-left: 0px;"><strong>Recommendation 14</strong> – <em>Strong</em> (low): advise against routine stent placement for long‑term dysphagia management.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Cancer Surveillance &amp; Long‑Term Monitoring  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Esophageal Carcinoma Risk  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Incidence ≈ 1 per 300 patient‑years; hazard ratio ≈ 28 for squamous cell carcinoma.  </li>
+<li style="margin-left: 0px;">Cumulative risk: ~205 cases/100 000 yr (squamous), ~21 cases/100 k yr (adenocarcinoma).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Surveillance Recommendations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Routine endoscopic surveillance <strong>not</strong> recommended due to low absolute yield (~400 scopes per cancer detected) and poor survival after diagnosis.  </li>
+<li style="margin-left: 0px;">Consider targeted surveillance in patients with &gt;10–15 yr disease duration, persistent dysphagia, or significant weight loss; interval every 3 yr may be reasonable (expert opinion).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Key Concept Statement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Despite elevated malignancy risk, current evidence does not support systematic screening; focus on symptom‑driven evaluation and management of megaesophagus.  </li>
+</ul>
+<p><em>End of Part 2 (Therapeutic options, post‑therapy assessment, failed therapy management, and cancer surveillance). The final part will present the comprehensive treatment algorithm and concluding statements.</em></p>
+</div></details>
+</div></details>
+<details><summary><strong>9. Diagnostic &amp; Treatment Algorithm  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Initial Clinical Evaluation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Suspect achalasia in progressive dysphagia + regurgitation ± weight loss.  </li>
+<li style="margin-left: 0px;">Exclude GERD: trial PPI; if no response → proceed to work‑up.  </li>
+</ul>
+<details><summary><strong>9.1.1 First‑Line Tests  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Upper endoscopy</strong> – rule out pseudoachalasia, obstructing mass, assess mucosa.  </li>
+<li style="margin-left: 0px;"><strong>High‑resolution manometry (HRM)</strong> – confirm diagnosis, assign Chicago subtype.  </li>
+<li style="margin-left: 0px;"><strong>Timed barium esophagram (TBE)</strong> – supportive if HRM equivocal or to visualize bird‑beak.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9.2 Decision Nodes Based on Subtype &amp; Patient Factors  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Node</th>
+<th>Criteria</th>
+<th>Preferred Initial Therapy</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>A</strong></td>
+<td>Type I or II, fit for definitive therapy</td>
+<td>PD (graded) OR LHM ± fundoplication OR POEM (tailored).</td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>Type III, fit for definitive therapy</td>
+<td>Tailored POEM (extended myotomy) <strong>or</strong> tailored LHM (longer myotomy).</td>
+</tr>
+<tr>
+<td><strong>C</strong></td>
+<td>Significant comorbidities, unfit for invasive procedures</td>
+<td>Botulinum toxin injection <strong>or</strong> pharmacologic agents (CCB, nitrates).</td>
+</tr>
+<tr>
+<td><strong>D</strong></td>
+<td>Prior definitive therapy failed (PD/LHM/POEM)</td>
+<td>Consider alternative definitive modality (e.g., POEM after PD, PD after LHM), then reassess.</td>
+</tr>
+<tr>
+<td><strong>E</strong></td>
+<td>End‑stage megaesophagus (&gt;8 cm), refractory symptoms</td>
+<td>Esophagectomy in high‑volume center.</td>
+</tr>
+</tbody>
+</table>
+<details><summary><strong>9.2.1 Balloon Dilation Protocol (Node A)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Start with 3.0 cm balloon; assess symptom relief at 4–6 wk.  </li>
+<li style="margin-left: 0px;">If inadequate → upsize to 3.5 cm, then 4.0 cm as needed.  </li>
+<li style="margin-left: 0px;">Younger men (&lt;45 y) may begin with 3.5 cm for better efficacy.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.2 Surgical Myotomy Protocol (Node A/B)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">LHM via laparoscopic approach; add <strong>Dor</strong> or <strong>Toupet</strong> fundoplication to reduce postoperative GERD.  </li>
+<li style="margin-left: 0px;">Choose Dor for shorter operative time, Toupet if lower dysphagia recurrence desired (meta‑analysis suggests posterior may improve QoL).  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.3 POEM Protocol (Node A/B)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Create submucosal tunnel; perform myotomy ≥6 cm esophageal + 2 cm gastric.  </li>
+<li style="margin-left: 0px;">Extend length for type III spastic segment based on HRM/FLIP/EUS findings.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9.3 Post‑Therapy Follow‑Up  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.3.1 Early Assessment (≤3 mo)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Eckardt Score</strong>: aim ≤3.  </li>
+<li style="margin-left: 0px;"><strong>TBE</strong>: confirm emptying at 1 min; if retained column &gt;5 cm → consider early retreatment.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3.2 Long‑Term Surveillance (≥12 mo)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Annual symptom review; repeat TBE or HRM if ES rises &gt;3 or new dysphagia.  </li>
+<li style="margin-left: 0px;">Endoscopy with pH monitoring if GERD symptoms develop, especially after POEM without fundoplication.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9.4 Management of Recurrence / Failure  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Scenario</th>
+<th>Recommended Salvage</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Persistent dysphagia after PD (type I/II)</td>
+<td>LHM or POEM (choose based on institutional expertise).</td>
+</tr>
+<tr>
+<td>Recurrent symptoms after LHM (no fundoplication)</td>
+<td>Add fundoplication endoscopically if feasible; otherwise consider POEM.</td>
+</tr>
+<tr>
+<td>Failure of POEM (type III)</td>
+<td>Tailored LHM with extended myotomy; consider repeat POEM if anatomy permits.</td>
+</tr>
+<tr>
+<td>Multiple failed definitive therapies + dilated esophagus</td>
+<td>Esophagectomy (high‑volume center).</td>
+</tr>
+</tbody>
+</table>
+<details><summary><strong>9.4.1 Perforation Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Small perforations: conservative (antibiotics, NPO, possible endoscopic clipping).  </li>
+<li style="margin-left: 0px;">Large perforations or mediastinal contamination: surgical repair via thoracotomy.  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>10. Summary of Key Recommendations  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Area</th>
+<th>Strong Recommendation</th>
+<th>Conditional / Weak</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>GERD‑nonresponsive evaluation</td>
+<td><strong>Yes</strong> – assess for achalasia (very low evidence).</td>
+<td></td>
+</tr>
+<tr>
+<td>HRM over conventional manometry</td>
+<td><strong>Yes</strong> (high evidence).</td>
+<td></td>
+</tr>
+<tr>
+<td>Subtype classification utility</td>
+<td><em>Conditional</em> (low evidence).</td>
+<td></td>
+</tr>
+<tr>
+<td>PD vs medical therapy</td>
+<td><strong>PD superior</strong> (very low).</td>
+<td></td>
+</tr>
+<tr>
+<td>Botulinum toxin as first‑line in unfit patients</td>
+<td><strong>Yes</strong> (moderate).</td>
+<td></td>
+</tr>
+<tr>
+<td>LHM vs botulinum toxin</td>
+<td><strong>LHM preferred</strong> (moderate).</td>
+<td></td>
+</tr>
+<tr>
+<td>POEM vs LHM (overall)</td>
+<td><strong>Comparable outcomes</strong>, POEM higher GERD risk (moderate).</td>
+<td></td>
+</tr>
+<tr>
+<td>Tailored POEM/LHM for type III</td>
+<td><strong>Strong</strong> (moderate).</td>
+<td></td>
+</tr>
+<tr>
+<td>Routine post‑dilation gastrografin esophagram</td>
+<td><em>Do not perform</em> routinely (low).</td>
+<td></td>
+</tr>
+<tr>
+<td>TBE as first‑line post‑therapy test</td>
+<td><strong>Yes</strong> (very low).</td>
+<td></td>
+</tr>
+<tr>
+<td>Fundoplication with myotomy</td>
+<td><strong>Superior</strong> to myotomy alone (moderate).</td>
+<td></td>
+</tr>
+<tr>
+<td>Dor vs Toupet fundoplication</td>
+<td><em>Either acceptable</em> (moderate conditional).</td>
+<td></td>
+</tr>
+<tr>
+<td>Stent placement for chronic dysphagia</td>
+<td><strong>Against</strong> (low).</td>
+<td></td>
+</tr>
+<tr>
+<td>Esophagectomy in megaesophagus after failed therapies</td>
+<td><strong>Yes</strong> (low).</td>
+<td></td>
+</tr>
+<tr>
+<td>Routine cancer surveillance</td>
+<td><strong>Against</strong> (low).</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>11. Implementation &amp; Clinical Practice Points  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Multidisciplinary centers</strong> (gastroenterology, surgery, anesthesia) improve outcomes; refer complex cases to high‑volume institutions.  </li>
+<li style="margin-left: 0px;"><strong>Patient preference</strong> should be incorporated, especially when multiple equally effective options exist (PD vs LHM vs POEM).  </li>
+<li style="margin-left: 0px;"><strong>Documentation</strong>: record subtype, balloon sizes used, myotomy length, fundoplication type, and post‑procedure ES/TBE results for longitudinal tracking.  </li>
+<li style="margin-left: 0px;"><strong>Education</strong>: counsel patients on potential GERD after POEM; discuss need for lifelong PPI in a subset.  </li>
+</ul>
+<p><em>End of Part 3 – complete structured mind map of the ACG achalasia guideline.</em></p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
