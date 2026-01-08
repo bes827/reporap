@@ -1,0 +1,986 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the Methods Section</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+
+    <div class="mindmap">
+        
+        <details>
+            <summary><strong>Writing the Methods Section</strong></summary>
+            <div>
+                <ul><li>A guide for researchers on structuring and writing the Methods section for various types of medical studies.</li></ul>
+                
+        <details>
+            <summary><strong>Knowledge Test</strong></summary>
+            <div>
+                <ul><li>- What is the recommended verb tense for describing methods?</li><li>- What does the acronym CONSORT stand for?</li><li>- In which article format does the Results section immediately follow the Introduction?</li><li>- What is the term for reusing your own previously published text in a new manuscript?</li><li>- What is the typical P value at which differences are considered statistically significant?</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Core Principles of the Methods Section</strong></summary>
+            <div>
+                <ul><li>- Goal: Report the study with <u>sufficient detail</u> to permit an experienced investigator to repeat it.</li><li>- Emphasizes <b>thoroughness</b> and <b>transparency</b> in describing study design, performance, and data analysis.</li></ul>
+                
+        <details>
+            <summary><strong>Key Reporting Guidelines & Initiatives</strong></summary>
+            <div>
+                <ul><li>- Several organizations provide guidelines to enhance <b>rigor</b> and <b>reproducibility</b>.</li></ul>
+                
+        <details>
+            <summary><strong><b>NIH</b> Guidelines</strong></summary>
+            <div>
+                <ul><li>- Published for <u>preclinical research</u>.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>CONSORT</b> (Consolidated Standards of Reporting Trials)</strong></summary>
+            <div>
+                <ul><li>- Provides guidance for reporting <u>randomized controlled trials</u>.</li><li>- Features the <b>CONSORT Statement</b>: a <q><u>25-item checklist</u></q> and flow diagram for transparency.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>EQUATOR</b> Network</strong></summary>
+            <div>
+                <ul><li>- Enhancing the QUAlity and Transparency Of health Research.</li><li>- Maintains a comprehensive database of reporting guidelines.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>ARRIVE</b> Guidelines 2.0</strong></summary>
+            <div>
+                <ul><li>- Animal Research: Reporting In Vivo Experiments.</li><li>- Aims to improve the reporting of research using animals.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>STAR</b> Methods</strong></summary>
+            <div>
+                <ul><li>- Structured, Transparent, Accessible Reporting format from <u>Cell Press</u>.</li><li>- Guides authors in organizing the Methods section to facilitate replication.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Research Resource Identifiers (<b>RRIDs</b>)</strong></summary>
+            <div>
+                <ul><li>- Unique alphanumeric identifiers for materials like cell lines, antibodies, and software.</li><li>- Promoted by the Resource Identification Initiative.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Structure for <u>Animal Studies</u></strong></summary>
+            <div>
+                <ul><li>- Based on the <b>ARRIVE guidelines 2.0</b>.</li></ul>
+                
+        <details>
+            <summary><strong>Animal Provenance & Status</strong></summary>
+            <div>
+                <ul><li>- Detail the source of animals.</li><li>- Report on health/immune status, genetic modification, and genotype.</li><li>- List any previous procedures performed.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Number of Animals</strong></summary>
+            <div>
+                <ul><li>- State the <u>total number</u> of animals used.</li><li>- Provide a <b>justification</b> for the sample size (e.g., power calculations).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Procedures</strong></summary>
+            <div>
+                <ul><li>- Describe <u>what was done</u> to the animals.</li><li>- If animals were euthanized, specify the method.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Experiments</strong></summary>
+            <div>
+                <ul><li>- Describe what experiments were performed, why, and how.</li><li>- Chronological order is often effective.</li><li>- Each experiment can be a separate paragraph, starting with its objective.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Statistical Tests</strong></summary>
+            <div>
+                <ul><li>- See 'Common Statistical Reporting' section for details.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Structure for <u>Retrospective Clinical Studies</u></strong></summary>
+            <div>
+                <ul><li>- A common structure for reporting studies based on existing data (e.g., chart reviews, databases).</li></ul>
+                
+        <details>
+            <summary><strong>Subjects and Selection Criteria</strong></summary>
+            <div>
+                <ul><li>- Specify the <u>source</u> of study subjects (e.g., chart review, database).</li><li>- Detail <b>inclusion</b> and <b>exclusion criteria</b>, including date ranges.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ethics</strong></summary>
+            <div>
+                <ul><li>- State whether the study was approved by an <u>institutional review board (IRB)</u>.</li><li>- Mention the use of informed consent or if it was waived by the IRB.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Data Reviewed</strong></summary>
+            <div>
+                <ul><li>- List the specific types of data extracted from patient records.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Subgroups</strong></summary>
+            <div>
+                <ul><li>- Explain how study subgroups were defined.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Number of Patients</strong></summary>
+            <div>
+                <ul><li>- Report the final number of patients included in the study and in each subgroup.</li><li>- This can be in Methods or at the beginning of Results.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Evaluations and Interventions</strong></summary>
+            <div>
+                <ul><li>- Provide <u>general information</u> on pretreatment evaluations, treatments, and follow-up.</li><li>- If treatment variations are the focus, report numbers per treatment type in the <b>Results</b> section alongside outcomes.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Statistical Tests</strong></summary>
+            <div>
+                <ul><li>- See 'Common Statistical Reporting' section for details.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Structure for <u>Prospective Clinical Studies</u> (<b>CONSORT</b>)</strong></summary>
+            <div>
+                <ul><li>- Follows recommendations from the <b>CONSORT statement</b> for randomized clinical trials.</li></ul>
+                
+        <details>
+            <summary><strong>Trial Design</strong></summary>
+            <div>
+                <ul><li>- Describe the trial design (e.g., <u>parallel</u>, <u>factorial</u>).</li><li>- Include the allocation ratio.</li><li>- Report any important changes to methods after commencement, with reasons.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Participants</strong></summary>
+            <div>
+                <ul><li>- State the <b>eligibility criteria</b> for participants.</li><li>- Describe the settings and locations where data were collected.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Interventions</strong></summary>
+            <div>
+                <ul><li>- Detail the interventions for each group sufficiently to allow <u>replication</u>.</li><li>- Include how and when they were administered.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Outcomes</strong></summary>
+            <div>
+                <ul><li>- Completely define prespecified <b>primary</b> and <b>secondary</b> outcome measures.</li><li>- Include how and when they were assessed.</li><li>- Report any changes to outcomes after the trial started, with reasons.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Sample Size</strong></summary>
+            <div>
+                <ul><li>- Explain <u>how sample size was determined</u>.</li><li>- If applicable, describe any interim analyses and stopping guidelines.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Randomization</strong></summary>
+            <div>
+                <ul><li>- Details on the randomization process.</li></ul>
+                
+        <details>
+            <summary><strong>Sequence Generation</strong></summary>
+            <div>
+                <ul><li>- Method used to generate the random allocation sequence.</li><li>- Type of randomization (e.g., blocking, block size).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Allocation Concealment</strong></summary>
+            <div>
+                <ul><li>- Mechanism used to implement the sequence (e.g., sequentially numbered containers).</li><li>- Describe steps taken to conceal the sequence until assignment.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Implementation</strong></summary>
+            <div>
+                <ul><li>- State <u>who</u> generated the sequence, <u>who</u> enrolled participants, and <u>who</u> assigned them to interventions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Blinding</strong></summary>
+            <div>
+                <ul><li>- If done, state <u>who was blinded</u> (e.g., participants, care providers, outcome assessors) and how.</li><li>- If relevant, describe the similarity of interventions.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Statistical Methods</strong></summary>
+            <div>
+                <ul><li>- See 'Common Statistical Reporting' section for details.</li><li>- Also include methods for additional analyses (e.g., subgroup, adjusted analyses).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Ethical Conduct</strong></summary>
+            <div>
+                <ul><li>- Describe procedures to ensure ethical conduct.</li><li>- e.g., IRB approval, informed consent process.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Statistical Reporting (All Study Types)</strong></summary>
+            <div>
+                <ul><li>- Key elements for the statistical tests subsection.</li></ul>
+                
+        <details>
+            <summary><strong>Outcome Measures</strong></summary>
+            <div>
+                <ul><li>- Define outcome measures.</li><li>- Specify the <u>minimum differences</u> considered clinically important.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Tests Performed</strong></summary>
+            <div>
+                <ul><li>- List all statistical tests performed.</li><li>- Provide references for all but well-known tests (e.g., Student t-test, χ² test).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Software</strong></summary>
+            <div>
+                <ul><li>- Name any software packages used for analysis.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Purpose of Tests</strong></summary>
+            <div>
+                <ul><li>- Explain what each test was used to evaluate.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Significance Level</strong></summary>
+            <div>
+                <ul><li>- State the <b>P value</b> at which differences were considered statistically significant (e.g., <q><b>P < 0.05</b></q>).</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>General Writing Style & Conventions</strong></summary>
+            <div>
+                <ul><li>- Guidelines for formatting, tone, and reusing text.</li></ul>
+                
+        <details>
+            <summary><strong>Journal-Specific Tailoring</strong></summary>
+            <div>
+                <ul><li>- <u>Always check the target journal's instructions for authors.</u></li></ul>
+                
+        <details>
+            <summary><strong>Location of Methods</strong></summary>
+            <div>
+                <ul><li>- Usually after Introduction, before Results.</li><li>- Some journals place it <u>last</u>, after the Discussion.</li><li>- Some place details in figure legends or online supplements.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Level of Detail</strong></summary>
+            <div>
+                <ul><li>- For <b>broad readership</b> journals ---> more detail to be understandable to other fields.</li><li>- For <b>specialized journals</b> ---> less detail for methods well-known to the audience.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Citing Previous Methods</strong></summary>
+            <div>
+                <ul><li>- For a previously described technique, name it and <u>cite the original article</u>.</li><li>- It is helpful to add a brief description (e.g., 'Briefly, ...').</li><li>- <b>Always</b> describe any modifications made to the published technique.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Verb Tense</strong></summary>
+            <div>
+                <ul><li>- The correct tense is crucial for clarity.</li></ul>
+                
+        <details>
+            <summary><strong>Describing Methods</strong></summary>
+            <div>
+                <ul><li>- Use the <q><b>past tense</b></q>.</li><li>- Example: 'We <u>performed</u> PCR analysis...'</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Describing Prior Events</strong></summary>
+            <div>
+                <ul><li>- Use the <q><b>past perfect tense</b></q> for events before the study.</li><li>- Example: '...previous therapy <u>had failed</u>.'</li><li>- Simple past tense is often sufficient if the sequence is clear.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Common Pitfall</strong></summary>
+            <div>
+                <ul><li>- Avoid using present tense, even for routine procedures.</li><li>- The report is about what <u>was done</u> for this specific study, not what is usually done.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Text Recycling ('Self-Plagiarism')</strong></summary>
+            <div>
+                <ul><li>- The reuse of one's own previously published text, called <q><b>text recycling</b></q>, is common but requires care.</li></ul>
+                
+        <details>
+            <summary><strong>General Guideline (COPE, BioMed Central)</strong></summary>
+            <div>
+                <ul><li>- Use of identical phrases in methods is often unavoidable and acceptable.</li><li>- Editors use discretion based on the field.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Author Responsibilities</strong></summary>
+            <div>
+                <ul><li>- <u>Disclose</u> the text recycling in the cover letter to the journal.</li><li>- Provide a <u>citation</u> in the text indicating the original source.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>TRRP Principles</strong></summary>
+            <div>
+                <ul><li>- The Text Recycling Research Project (TRRP) provides key principles:</li><li>- Methods descriptions may be recycled but must be reviewed for accuracy.</li><li>- If corresponding authors differ, permission should be obtained.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Publisher Policies</strong></summary>
+            <div>
+                <ul><li>- Policies vary; <u>always check the target journal's instructions</u>.</li><li>- Example: <b>Anesthesiology</b> permits limited recycling in Methods with proper citation.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Article Formats: <b>IMRAD</b> vs. <b>IRDAM</b></strong></summary>
+            <div>
+                <ul><li>- The placement of the Methods section can depend on the journal's format.</li></ul>
+                
+        <details>
+            <summary><strong><b>IMRAD</b> Format</strong></summary>
+            <div>
+                <ul><li>- <b>I</b>ntroduction, <b>M</b>ethods, <b>R</b>esults, and <b>D</b>iscussion.</li><li>- The most common format in clinical journals.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong><b>IRDAM</b> Format</strong></summary>
+            <div>
+                <ul><li>- <b>I</b>ntroduction, <b>R</b>esults, <b>D</b>iscussion, <b>A</b>nd <b>M</b>ethods.</li><li>- Common in high-impact <u>basic science</u> journals.</li><li>- Rationale: Experiments are often based on results of prior experiments, so results drive the narrative.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+        <details>
+            <summary><strong>Writing for IRDAM</strong></summary>
+            <div>
+                <ul><li>- The Results section is composed of subsections for each experiment.</li><li>- Each subsection includes the goal, basic methods, results, and a brief comment.</li><li>- The main Methods section at the end should contain only <u>technical details</u>, as the 'why' is explained in Results.</li></ul>
+                
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+            </div>
+        </details>
+        <br>
+        
+    </div>
+    
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
