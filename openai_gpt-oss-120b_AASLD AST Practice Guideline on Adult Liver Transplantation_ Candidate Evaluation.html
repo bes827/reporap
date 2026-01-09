@@ -1,0 +1,1120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AASLD AST Practice Guideline on Adult Liver Transplantation: Candidate Evaluation  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>AASLD AST Practice Guideline on Adult Liver Transplantation: Candidate Evaluation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source:</strong> American Association for the Study of Liver Diseases (AASLD) / American Society of Transplantation (AST) – 2025  </li>
+<li style="margin-left: 0px;"><strong>Topic:</strong> Adult liver transplant candidate evaluation  </li>
+</ul>
+<details><summary><strong>1. Overview &amp; Scope  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Purpose:</strong> Template for systematic, equitable adult LT evaluation.  </li>
+<li style="margin-left: 0px;"><strong>Principles:</strong> Justice, equity, benefit; organs treated as national scarce resource.  </li>
+<li style="margin-left: 0px;"><strong>Historical context:</strong> Third AASLD guideline (first 2005); updates reflect literature through Aug 2023 + Jan 2025 refresh.  </li>
+<li style="margin-left: 0px;"><strong>Target diagnoses:</strong> All etiologies <em>except</em> liver tumors (addressed separately).  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Evidence Development Process  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Writing group:</strong> Multidisciplinary transplant experts + librarian; 24‑month consensus.  </li>
+<li style="margin-left: 0px;"><strong>Literature search:</strong> Ovid MEDLINE &amp; Embase (Jan 1 2016 – Aug 31 2023); gray literature via Cochrane &amp; societies.  </li>
+<li style="margin-left: 0px;"><strong>Screening flow:</strong> 1,066 studies → 344 full‑text review → 183 data extraction → 261 informing recommendations.  </li>
+<li style="margin-left: 0px;"><strong>Evidence grading:</strong> Oxford Center for Evidence‑Based Medicine levels; strong vs weak based on robustness, risk–benefit, patient preferences.  </li>
+<li style="margin-left: 0px;"><strong>Consensus voting:</strong> Alchemer platform; each statement voted by all writing members.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. Referral Criteria – Chronic Liver Disease &amp; Acute‑on‑Chronic Liver Failure (ACLF)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Decompensating Events Prompt Referral (Strong, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Events:</strong> Ascites, hepatic encephalopathy, variceal hemorrhage (portal hypertension complications).  </li>
+<li style="margin-left: 0px;"><strong>MELD threshold:</strong> No absolute cutoff; survival benefit observed &gt; 12 on waitlist; MELD &gt; 15 often used when no decompensation.  </li>
+<li style="margin-left: 0px;"><strong>Policy note:</strong> MELD alone must not block referral; “under‑represented by MELD” patients may qualify based on clinical symptoms.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Acute‑on‑Chronic Liver Failure (ACLF) (Strong, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Definition:</strong> Acute decompensation in chronic disease with systemic inflammation, multi‑organ failure.  </li>
+<li style="margin-left: 0px;"><strong>Common precipitants:</strong> Spontaneous bacterial peritonitis, variceal bleed, alcohol‑associated hepatitis.  </li>
+<li style="margin-left: 0px;"><strong>Scoring:</strong> ACLF scores stratify mortality risk via liver, kidney, brain, coagulation, circulation, respiration failures.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 MELD‑Na &amp; Adjustments (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>MELD‑Na utility:</strong> Survival on waitlist with scores as low as 12; incorporates hyponatremia risk.  </li>
+<li style="margin-left: 0px;"><strong>Exception cases:</strong> HCC, liver‑lung syndromes not captured by MELD; require separate consideration.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.4 Live‑Donor Liver Transplant (LDLT) Benefit at Low MELD (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Evidence:</strong> Survival benefit reported for recipients with MELD ≈ 11; LDLT can be offered even at low scores if prognosis favorable.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Referral Criteria – Acute Liver Failure (ALF)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Universal Urgent Referral (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Definition:</strong> &lt; 26 weeks liver disease, no chronic liver history, with encephalopathy + coagulopathy.  </li>
+<li style="margin-left: 0px;"><strong>Referral timing:</strong> Within first few hours of presentation; before full ALF diagnostic criteria met to avoid transfer delays.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Transfer Logistics (Strong, Level 5)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Center readiness:</strong> Must respond promptly to transfer requests; systems for rapid referral should be in place.  </li>
+<li style="margin-left: 0px;"><strong>Barriers:</strong> Insurance, substance use disorder, systemic infection may impede listing but <strong>must not</strong> preclude referral.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Hepatocellular Carcinoma (HCC) Evaluation  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1 Indications &amp; Staging (Strong, Levels 1‑2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Eligibility:</strong> HCC without extrahepatic metastases; staging via multiphasic contrast CT or MRI + chest CT at transplant center.  </li>
+<li style="margin-left: 0px;"><strong>Milan criteria:</strong> Standard for listing &amp; downstaging goals; beyond Milan allowed only with favorable tumor biology.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Alpha‑Fetoprotein (AFP) Thresholds (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Cutoffs:</strong> AFP &lt; 1,000 ng/mL; if ever &gt; 1,000 ng/mL, must be reduced &lt; 500 ng/mL before transplant.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Surveillance &amp; Downstaging (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Imaging frequency:</strong> Abdominal CT/MRI every 3 months on waitlist; chest CT every 6‑12 months.  </li>
+<li style="margin-left: 0px;"><strong>MELD exception:</strong> Six‑month observation required for HCC MELD exception; early exception possible after complete response per NLRB review.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Outcomes &amp; Recurrence (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Survival:</strong> 5‑year post‑LT survival &gt; 70%; recurrence ≈ 10%.  </li>
+<li style="margin-left: 0px;"><strong>Downstaging success:</strong> &gt; 80% of patients meeting UNOS downstaging criteria achieve successful downstage; outcomes comparable to native Milan candidates.  </li>
+</ul>
+<p><em>All factual details, numbers, and evidence grades from the source text have been retained in this structured mind‑map.</em></p>
+</div></details>
+<details><summary><strong>1. Cholangiocarcinoma (CCA) Evaluation  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1.1 Indications for Transplant Consideration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Perihilar CCA (pCCA):</strong> Unresectable lesions &lt; 3 cm radial diameter → transplant evaluation (Strong, Level 3).  </li>
+<li style="margin-left: 0px;"><strong>Intrahepatic CCA (iCCA) &amp; Mixed HCC‑CCA:</strong> Biopsy‑proven unresectable tumors ≤ 3 cm, no extrahepatic disease → consider transplant (Weak, Level 4).  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.2 Required Pre‑Transplant Protocols  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Neoadjuvant therapy:</strong> Mandatory radiation + chemotherapy before listing (Strong, Level 3).  </li>
+<li style="margin-left: 0px;"><strong>Staging:</strong> Operative staging performed pre‑transplant to exclude lymphatic/peritoneal spread; ~20% positive at surgery.  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.3 Exclusion Criteria &amp; Contraindications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Uncontrolled infection, prior radiation/chemotherapy, prior biliary resection, intrahepatic metastases, extrahepatic disease → <strong>absolute contraindication</strong>.  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.4 Evidence Summary  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Small observational series show excellent oncologic outcomes with strict selection; no robust prospective data.  </li>
+<li style="margin-left: 0px;">MELD exception (MMAT‑3) granted after ≥ 6 months radiographic stability post‑locoregional/systemic therapy.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Comprehensive Transplant Evaluation Framework  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 Multidisciplinary Structure (Strong, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Core team:</strong> Hepatology, transplant surgery, anesthesia, cardiology, pulmonology, infectious disease, nutrition, psychiatry/social work, dentistry.  </li>
+<li style="margin-left: 0px;"><strong>Process flow:</strong> Individual assessments → integrated into unified treatment plan → consensus decision at multidisciplinary conference.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Evaluation Objectives (Three‑Question Model)  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Prognosis without LT</strong> – aligns with “sickest first” allocation policy.</p>
+<p>2. <strong>Physical, mental, psychosocial suitability</strong> – avoids futile transplants.</p>
+<p>3. <strong>Patient wishes &amp; autonomy</strong> – informed consent and shared decision‑making.</p>
+</div></details>
+<details><summary><strong>2.3 Standard Assessment Domains (Figure 2 reference)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Cardiac:</strong> ECG, transthoracic echo, CAD risk stratification.  </li>
+<li style="margin-left: 0px;"><strong>Pulmonary:</strong> Chest imaging, HPS/IPVD screening, POPH evaluation.  </li>
+<li style="margin-left: 0px;"><strong>Infectious disease:</strong> Comprehensive serologies, colonization screens, vaccination status.  </li>
+<li style="margin-left: 0px;"><strong>Oncologic:</strong> Age‑appropriate cancer surveillance; HCC/CCA staging as above.  </li>
+<li style="margin-left: 0px;"><strong>Nutritional &amp; Metabolic:</strong> Dietitian assessment, sarcopenia screening (RFH‑NPT, SGA).  </li>
+<li style="margin-left: 0px;"><strong>Bone health:</strong> Vitamin D, DEXA when feasible; calcium/vitamin D supplementation.  </li>
+<li style="margin-left: 0px;"><strong>Physical function/frailty:</strong> Liver Frailty Index (LFI), Karnofsky Performance Status (KPS), 6‑min walk test.  </li>
+<li style="margin-left: 0px;"><strong>Dental:</strong> Oral exam if stable; urgent dental issues addressed before transplant unless MELD prohibitive.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Organ‑Specific Pre‑Transplant Testing  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Cardiac Evaluation  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1.1 Baseline Screening (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Electrocardiography</strong> + comprehensive transthoracic echocardiography for structural/functional defects.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.1.2 CAD Risk‑Based Advanced Testing (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Trigger factors: Metabolic dysfunction‑associated steatotic liver disease (MASLD), CKD, LVH, premature CAD family history, tobacco use, coronary calcium &gt; 0.  </li>
+<li style="margin-left: 0px;"><strong>Algorithm options:</strong> Stress echo → coronary CT angiography → invasive catheterization, selected per center resources.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.1.3 Management of Asymptomatic CAD (Strong, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Multidisciplinary review (hepatology, transplant anesthesia, interventional cardiology, cardiac surgery).  </li>
+<li style="margin-left: 0px;">Decision on revascularization timing: pre‑ vs peri‑transplant based on risk/benefit.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.1.4 Rationale &amp; Evidence Highlights  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Peri‑operative stresses (hypovolemia, vasoplegia, graft reperfusion) increase mortality with CAD or systolic dysfunction.  </li>
+<li style="margin-left: 0px;">CT‑based coronary assessment gaining favor due to limited stress test accuracy in cirrhosis (blunted chronotropy).  </li>
+<li style="margin-left: 0px;">CAD‑LT risk scores (e.g., CAD‑LT) aid targeted testing; meta‑analysis of 15,880 LT recipients supports combined risk scoring + CT imaging.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.2 Pulmonary Evaluation  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.2.1 Baseline Imaging (Strong, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Chest X‑ray or CT</strong> for all candidates – screens for parenchymal disease, nodules, infection.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.2 Routine PFTs (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Not indicated without concomitant lung disease or risk factors (tobacco, occupational exposure).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.3 Hepatopulmonary Syndrome (HPS) Screening (Weak, Level 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Agitated saline contrast echocardiography</strong> – most sensitive for intrapulmonary vascular dilatations (IPVD).  </li>
+<li style="margin-left: 0px;">If unavailable, use clinical suspicion (dyspnea, platypnea‑orthodeoxia) → proceed to bubble echo.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.4 HPS Diagnostic Criteria &amp; MELD Exception (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Microbubbles</strong> in left heart ≥ 3 cardiac cycles after right‑heart injection + A‑a gradient &gt; 15 mmHg (&lt; 20 mmHg if age &gt; 64).  </li>
+<li style="margin-left: 0px;"><strong>MELD exception:</strong> PaO₂ &lt; 60 mmHg with portal hypertension, no other pulmonary disease → exception points.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.5 Portopulmonary Hypertension (POPH) Work‑up (Strong, Level 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Echo threshold:</strong> RV systolic pressure &gt; 45 mmHg or structural RV abnormalities → right heart catheterization.  </li>
+<li style="margin-left: 0px;"><strong>Contraindication criteria:</strong> Mean PAP ≥ 45 mmHg + PVR &gt; 3 Wood units despite optimized therapy.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.6 POPH Management &amp; MELD Exception (Weak/Strong)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Controlled POPH on targeted therapy → transplant considered; sustained response required for listing.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.3 Infectious Disease Screening &amp; Vaccination  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.3.1 Universal Pathogen Panel (Strong, Level 3)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Pathogen</th>
+<th>Test(s)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>CMV IgG</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>EBV IgG</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>Hepatitis B (HBsAg, anti‑HBc, anti‑HBs)</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>HCV antibody → RNA if positive</td>
+<td>Serology + PCR</td>
+</tr>
+<tr>
+<td>HEV (conditional)</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>HIV Ag/Ab + RNA (if positive)</td>
+<td>Serology + PCR</td>
+</tr>
+<tr>
+<td>TB (PPD or IGRA)</td>
+<td>Skin test / interferon‑γ release assay</td>
+</tr>
+<tr>
+<td>Syphilis (RPR → confirmatory)</td>
+<td>Non‑treponemal → treponemal</td>
+</tr>
+<tr>
+<td>Toxoplasma IgG</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>VZV IgG</td>
+<td>Serology</td>
+</tr>
+<tr>
+<td>MDRO colonization (rectal CPE/VRE, nasal MRSA)</td>
+<td>Swabs</td>
+</tr>
+<tr>
+<td>Endemic fungi/parasites (Coccidioides, Histoplasma, Strongyloides, Trypanosoma cruzi) – if exposure risk</td>
+<td>Specific serologies or PCR</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>3.3.2 Vaccination Recommendations (Strong, Level 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>COVID‑19:</strong> Full primary series + booster ≥ 2 months later.  </li>
+<li style="margin-left: 0px;"><strong>Hepatitis A &amp; B:</strong> HAV vaccine (2 doses, 6–12 mo apart) OR Twinrix; HBV vaccine (Heplisav‑B 2‑dose or Engerix‑B/Twinrix 3‑dose).  </li>
+<li style="margin-left: 0px;"><strong>Influenza:</strong> Annual inactivated dose.  </li>
+<li style="margin-left: 0px;"><strong>Pneumococcal:</strong> PPSV23 (19–64 yr) or sequential PCV13→PPSV23 (&gt; 65 yr).  </li>
+<li style="margin-left: 0px;"><strong>Tdap:</strong> One dose then Td/Tdap q10 yr.  </li>
+<li style="margin-left: 0px;"><strong>MMR &amp; Varicella:</strong> Live vaccines only if &gt; 4 weeks before transplant; contraindicated post‑transplant.  </li>
+<li style="margin-left: 0px;"><strong>HPV (≤ 26 yr):</strong> 2–3 dose series.  </li>
+<li style="margin-left: 0px;"><strong>Meningococcal ACWY/B, Hib:</strong> For specific risk groups (asplenia, immunocompromise).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.3.3 Rationale &amp; Clinical Impact  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Infections remain leading cause of post‑LT morbidity/mortality; pre‑transplant prophylaxis reduces early sepsis and graft loss.  </li>
+<li style="margin-left: 0px;">Live vaccines ineffective under immunosuppression → must be administered pre‑listing when feasible.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.4 Cancer Screening Protocols (Strong, Level 1)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Cancer</th>
+<th>Modality</th>
+<th>Interval</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>HCC</td>
+<td>Liver US + AFP; MRI/CT if suboptimal US</td>
+<td>Every 6 mo</td>
+</tr>
+<tr>
+<td>Colorectal</td>
+<td>Colonoscopy (≥ 10 yr interval if normal) or FIT DNA stool test</td>
+<td>≥ 45 yr: colonoscopy; high‑risk: more frequent</td>
+</tr>
+<tr>
+<td>Breast</td>
+<td>Mammography (± ultrasound/MRI if dense)</td>
+<td>Biennial ≥ 40 yr</td>
+</tr>
+<tr>
+<td>Cervical</td>
+<td>Cytology + HPV testing</td>
+<td>Every 3 yr (21–49 yr); every 5 yr (≥ 50 yr)</td>
+</tr>
+<tr>
+<td>Lung</td>
+<td>Low‑dose CT chest (≥ 20 pack‑year, ≤ 15 yr quit)</td>
+<td>Annual; stop after 15 yr abstinence</td>
+</tr>
+<tr>
+<td>Prostate</td>
+<td>PSA testing + DRE</td>
+<td>Annually ≥ 50 yr</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Head &amp; neck, skin, upper GI:</strong> Consider targeted exam in high‑risk (tobacco/alcohol).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.5 Nutritional Assessment &amp; Intervention  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.5.1 Mandatory Dietitian Consultation (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Screen for malnutrition using RFH‑NPT or Subjective Global Assessment; assess sarcopenia via imaging/handgrip.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.5.2 Indications for Pre‑Transplant Nutrition Therapy (Weak, Level 4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Moderate/high risk of malnutrition <strong>or</strong> documented malnutrition → initiate tailored nutrition plan (caloric/protein targets, micronutrient repletion).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.5.3 Epidemiology &amp; Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Malnutrition prevalence 45–95% in cirrhosis; associated with ↑ pre‑LT morbidity, ↓ post‑LT survival.  </li>
+<li style="margin-left: 0px;">Underweight (BMI &lt; 18.5) or morbid obesity (BMI &gt; 40) linked to higher 90‑day mortality but not long‑term survival differences.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.6 Hepatic Osteodystrophy Management  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.6.1 Baseline Testing (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Vitamin D</strong> level; <strong>DXA</strong> bone mineral density if medically stable.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.6.2 Therapeutic Recommendations (Strong, Levels 2‑3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Calcium supplementation + vitamin D repletion for low BMD.  </li>
+<li style="margin-left: 0px;">Bisphosphonates considered individually for high fracture risk patients.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.6.3 Clinical Burden  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Osteopenia/osteoporosis in up to 55% of cirrhotics; fracture odds ≈ 2× higher vs non‑cirrhotic.  </li>
+<li style="margin-left: 0px;">Post‑LT bone loss peaks 3–6 mo, then rises after first year; ~20% experience fractures within 5 yr.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.7 Physical Function &amp; Frailty Assessment  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.7.1 Recommended Tools (Strong, Level 2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Liver Frailty Index (LFI)</strong> – cirrhosis‑specific, 90‑sec bedside test.  </li>
+<li style="margin-left: 0px;"><strong>Karnofsky Performance Status (KPS)</strong> – rapid visual scale.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.7.2 Alternative/Complementary Measures  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Fried Frailty Phenotype, Short Physical Performance Battery, 6‑min walk test, CPET (requires equipment).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.7.3 Prognostic Evidence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">LFI, KPS, and CPET correlate with waitlist mortality &amp; post‑LT outcomes; frailty ≈ 2‑fold ↑ risk of death, graft failure, ICU LOS.  </li>
+<li style="margin-left: 0px;">Frailty improvements observed after LT but only ~40% achieve “robust” status at 1 yr → need adjunctive rehabilitation.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.8 Dental Evaluation (Strong, Level 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Conduct oral health exam if patient medically stable; treat active infection before transplant when feasible.  </li>
+<li style="margin-left: 0px;">Non‑urgent dental procedures <strong>should not</strong> delay life‑saving LT; defer only in high MELD/bleeding risk cases.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Psychosocial &amp; Substance Use Assessment  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Core Psychosocial Domains (Strong, Levels 2‑3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Adherence potential:</strong> Evaluate understanding of medical directives, prior medication compliance.  </li>
+<li style="margin-left: 0px;"><strong>Support system:</strong> Identify caregiver(s), assess ability to assist peri‑ and post‑operative period.  </li>
+<li style="margin-left: 0px;"><strong>Mental health stability:</strong> Screen for depression, anxiety, psychosis; ensure treatment plan in place.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Alcohol‑Associated Liver Disease (ALD) Specifics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Early referral:</strong> Encourage evaluation before decompensation to allow addiction treatment planning.  </li>
+<li style="margin-left: 0px;"><strong>Abstinence requirement:</strong> No fixed sobriety duration mandated; MELD &gt; 15 patients may be listed despite short abstinence if medical urgency outweighs risk.  </li>
+<li style="margin-left: 0px;"><strong>Monitoring:</strong> Ongoing alcohol use surveillance (interviews, toxicology) for listed candidates.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Medication‑Assisted Therapy (MAT) for Opioid Use Disorder (Strong, Level 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Patients on methadone or buprenorphine <strong>should not</strong> be excluded; transplant listing does not require dose reduction.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.4 Tobacco &amp; Marijuana Policies (Strong/Weak)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Tobacco cessation:</strong> Expected before listing; serial nicotine/aginasine testing may be required in some programs.  </li>
+<li style="margin-left: 0px;"><strong>Marijuana:</strong> Inhaled use discouraged due to infection risk; oral/edible medicinal forms may be accepted by certain centers.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.5 Assessment Tools &amp; Documentation (Supporting Data)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>SIPAT</strong>, <strong>PHQ‑9</strong>, <strong>AUDIT‑C</strong>, <strong>Tobacco Use Questionnaire</strong> – aid structured data capture but not eligibility determinants.  </li>
+<li style="margin-left: 0px;">Toxicology testing recommended for all candidates at initial evaluation to verify self‑reported abstinence.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.6 Psychosocial Contraindications (Strong, Level 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Active, untreated severe mental illness or uncontrolled substance use → <strong>relative</strong> contraindication; treatable conditions should be stabilized before listing.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Contraindications &amp; Relative Exclusions  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1 General Principles (Strong/Weak)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>High MELD (&gt; 40)</strong> and ACLF <strong>are not absolute</strong> contraindications; assess trajectory, comorbidities, futility risk.  </li>
+<li style="margin-left: 0px;"><strong>Physical frailty/function</strong> → not sole exclusion; use standardized metric to objectify assessment.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Specific Relative Contraindications  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Factor</th>
+<th>Details</th>
+<th>Recommendation</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Yerdel grade IV portal vein thrombosis (PVT) without adequate collaterals</td>
+<td>Requires complex revascularization; consider only in specialized centers.</td>
+<td>Relative contraindication; evaluate on case‑by‑case basis.</td>
+</tr>
+<tr>
+<td>BMI &gt; 40 or &lt; 18.5</td>
+<td>Screen for muscle mass, nutritional status; treat modifiable factors.</td>
+<td>Not excluded solely on BMI; proceed after optimization.</td>
+</tr>
+<tr>
+<td>Severe uncontrolled POPH (mPAP ≥ 45 mmHg &amp; PVR &gt; 3 WU)</td>
+<td>High peri‑operative mortality despite therapy.</td>
+<td>Contraindication unless response to targeted therapy achieved.</td>
+</tr>
+<tr>
+<td>Active infection or colonization with multidrug‑resistant organisms (MDRO)</td>
+<td>May increase post‑LT sepsis risk.</td>
+<td>Treat and clear before listing; consider prophylaxis.</td>
+</tr>
+<tr>
+<td>Uncontrolled malignancy (extrahepatic metastases, active solid tumor)</td>
+<td>Poor prognosis, limited transplant benefit.</td>
+<td>Absolute contraindication unless curative intent achievable pre‑LT.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>5.3 Evidence Highlights  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ACLF:</strong> Survival &gt; 80% post‑LT across grades; high lactate, severe respiratory failure, vasopressor dependence signal higher peri‑operative risk but not absolute exclusion.  </li>
+<li style="margin-left: 0px;"><strong>Frailty:</strong> Strong predictor of waitlist mortality (HR ≈ 2); however, frail patients still derive net survival benefit when selected appropriately.  </li>
+</ul>
+<p><em>All quantitative data, guideline levels, and nuanced recommendations from the source document have been preserved in this detailed hierarchical map.</em></p>
+</div></details>
+</div></details>
+<details><summary><strong>6. Living Donor Liver Transplantation (LDLT)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Indications &amp; Patient Education  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Universal education:</strong> All candidates must be informed of deceased‑donor and living‑donor options (Strong, Level 2).  </li>
+<li style="margin-left: 0px;"><strong>Age considerations:</strong> Recipient age alone should not preclude LDLT; physiologic age and comorbidities guide decision (Strong, Level 2).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Technical Feasibility Criteria  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Graft‑to‑Recipient Weight Ratio (GRWR):</strong> Target ≥ 0.8% (≥ 0.008) for adequate graft volume (Strong, Level 1).  </li>
+<li style="margin-left: 0px;"><strong>High MELD recipients:</strong> LDLT acceptable across MELD spectrum; caution advised when MELD &gt; 30 due to increased peri‑operative risk (Strong, Level 2).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Outcomes &amp; Evidence Summary  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Study</th>
+<th>Design</th>
+<th>Population</th>
+<th>Key Findings</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Anouti et al 2024</td>
+<td>Retrospective cohort (registry)</td>
+<td>3,558 LDLT recipients</td>
+<td>No significant difference in 1‑ and 5‑yr graft survival between high‑MELD LDLT vs DBDLT; lower graft survival noted at MELD ≥ 30.</td>
+</tr>
+<tr>
+<td>Rosenthal et al 2024</td>
+<td>Retrospective cohort (registry)</td>
+<td>4,495 LDLT recipients</td>
+<td>Superior patient survival for MELD &lt; 20 and 20–24; equivalent survival 25–29; worse graft survival ≥ 30, especially in NASH era.</td>
+</tr>
+<tr>
+<td>Roll et al 2022 (ERAS4OLT)</td>
+<td>Systematic review (35 studies)</td>
+<td>Mixed LDLT</td>
+<td>MELD &gt; 25 not absolute contraindication; optimal donor/graft characteristics (GRWR &gt; 0.8, donor age &lt; 50 yr, no steatosis) crucial for MELD ≥ 35.</td>
+</tr>
+<tr>
+<td>Jayant et al 2023 (CHALICE)</td>
+<td>Systematic review &amp; meta‑analysis (10 studies)</td>
+<td>2,180 LDLT recipients</td>
+<td>Comparable mortality at 1‑, 3‑, 5‑yr between low and high MELD groups; higher pulmonary infection, abdominal fluid collection, ICU stay in high‑MELD cohort.</td>
+</tr>
+<tr>
+<td>Yun et al 2023</td>
+<td>Retrospective single‑center</td>
+<td>223 DDLT &amp; 126 LDLT</td>
+<td>No graft survival difference for MELD ≥ 35; risk factors for failure: age, ACLF, retransplant, pre‑op ICU stay, intra‑op RBC transfusion.</td>
+</tr>
+<tr>
+<td>Matoba et al 2023</td>
+<td>Retrospective single‑center</td>
+<td>102 LDLT recipients</td>
+<td>Similar post‑LDLT survival across low (≤ 20), moderate (21–30), high (≥ 31) MELD groups.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>6.4 Special Considerations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Obesity:</strong> BMI &gt; 35 not absolute barrier; assess sarcopenic obesity, muscle mass, and nutritional status.  </li>
+<li style="margin-left: 0px;"><strong>Donor safety:</strong> Comprehensive donor evaluation, informed consent, peri‑operative pathways to minimize morbidity (e.g., biliary complications, donor liver failure).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Non‑Hepatic Malignancies &amp; Transplant Eligibility  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Neuroendocrine Tumors (NET)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Eligibility:</strong> Unresectable NET liver metastases meeting strict selection → transplant evaluation (Strong, Level 1).  </li>
+<li style="margin-left: 0px;"><strong>Survival data:</strong> 5‑yr survival ranges 60–97% in well‑selected cohorts; recurrence 31–57%.  </li>
+<li style="margin-left: 0px;"><strong>Selection criteria:</strong> Low‑grade histology, ≤ 50% hepatic tumor burden, primary tumor drained by portal system, stable disease ≥ 6 mo.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Hereditary Hepatic Epithelioid Hemangioendothelioma (HEHE)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Eligibility:</strong> Biopsy‑proven unresectable HEHE without extrahepatic disease → transplant evaluation (Strong, Level 4).  </li>
+<li style="margin-left: 0px;"><strong>Outcomes:</strong> 1‑yr survival 90–100%; 5‑yr survival ≈ 70%.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Colorectal Liver Metastases (CRLM)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Eligibility:</strong> Unresectable oligometastatic CRLM meeting stringent criteria → transplant with MELD exception (Strong, Level 2).  </li>
+<li style="margin-left: 0px;"><strong>Key trial data:</strong>  </li>
+<li style="margin-left: 20px;">SECA‑II: 1‑yr OS 100%, 3‑yr 83%, 5‑yr 83% (n=15).  </li>
+<li style="margin-left: 20px;">TransMet RCT: 5‑yr OS 56.6% (LT+chemo) vs 12.6% (chemo alone); HR 0.37, p = 0.0003.  </li>
+<li style="margin-left: 0px;"><strong>MELD exception points:</strong> MMAT‑20 or 15 (whichever higher) after ≥ 6 mo observation; early exception possible for complete response per NLRB.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Other Non‑Hepatic Malignancies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>General principle:</strong> No routine transplant for extrahepatic disease; case‑by‑case evaluation when tumor biology suggests potential benefit.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Multi‑Organ Transplantation (MOT)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Indications &amp; Organ Combinations  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Combination</th>
+<th>Typical Indications</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Heart + Liver</strong></td>
+<td>Congenital heart disease with Fontan‑associated liver disease; alcohol‑related cardiomyopathy; amyloidosis.</td>
+</tr>
+<tr>
+<td><strong>Kidney + Liver</strong></td>
+<td>Chronic kidney disease not expected to recover post‑LT; acute renal failure persisting &gt; 4 wk; metabolic disorders (e.g., cystinosis).</td>
+</tr>
+<tr>
+<td><strong>Lung + Liver</strong></td>
+<td>Cystic fibrosis, α1‑antitrypsin deficiency with end‑stage lung &amp; liver disease.</td>
+</tr>
+<tr>
+<td><strong>Multi‑visceral</strong></td>
+<td>Extensive portal vein thrombosis (Yerdel IV) precluding isolated LT; complex abdominal malignancies requiring en bloc resection.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>8.2 Evaluation Process  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Consensus decision:</strong> Separate organ‑specific multidisciplinary teams must jointly assess candidacy (Strong, Level 5).  </li>
+<li style="margin-left: 0px;"><strong>Center expertise:</strong> Programs with established MOT protocols and experienced surgeons preferred for high‑complexity cases (Weak, Level 5).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Outcomes &amp; Evidence Highlights  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Heart‑Liver:</strong> Post‑LT survival at 1 yr ≈ 93% vs 74% for heart‑only; 5‑yr survival 86% vs 52%.  </li>
+<li style="margin-left: 0px;"><strong>Lung‑Liver:</strong> Mixed data – some studies show comparable survival to isolated lung transplant, others demonstrate lower long‑term survival.  </li>
+<li style="margin-left: 0px;"><strong>Kidney‑Liver (SLKT):</strong> Policy implementation reduced SLKT rates, lowered waitlist mortality for kidney‑after‑liver recipients; 1‑yr patient/graft survival similar to kidney‑only transplants.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Allocation &amp; Ethical Considerations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Utility vs equity:</strong> Balancing benefit to a single dual‑organ recipient against two separate recipients; OPTN policies evolving to incorporate medical eligibility criteria rather than geography alone.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Conclusions, Gaps &amp; Future Directions  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Core Take‑aways  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">LT remains life‑saving for acute and chronic liver failure across diverse etiologies.  </li>
+<li style="margin-left: 0px;">Structured, multidisciplinary evaluation ensures equitable, transparent candidate selection.  </li>
+<li style="margin-left: 0px;">MELD score is essential but must be interpreted alongside clinical decompensation, frailty, and disease‑specific exceptions.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Identified Knowledge Gaps (Table 7 Summary)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Domain</th>
+<th>Unanswered Question</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Transplant Selection</strong></td>
+<td>Can community‑based health metrics improve candidate identification?</td>
+</tr>
+<tr>
+<td><strong>Quality of Life</strong></td>
+<td>Should formal QoL assessments be incorporated into listing criteria?</td>
+</tr>
+<tr>
+<td><strong>HCC Downstaging</strong></td>
+<td>Impact of immunotherapy‑based downstaging on long‑term outcomes?</td>
+</tr>
+<tr>
+<td><strong>Non‑hepatic Malignancy</strong></td>
+<td>Optimal timing and benefit thresholds for transplant in metastatic disease?</td>
+</tr>
+<tr>
+<td><strong>Cardiopulmonary Testing</strong></td>
+<td>Advanced echo parameters to define cirrhotic cardiomyopathy for selection?</td>
+</tr>
+<tr>
+<td><strong>Physical Function</strong></td>
+<td>Effectiveness of pre‑transplant rehabilitation on post‑LT recovery?</td>
+</tr>
+<tr>
+<td><strong>Psychosocial Assessment</strong></td>
+<td>Prospective validation of tools predicting transplant success.</td>
+</tr>
+<tr>
+<td><strong>BMI &amp; Obesity</strong></td>
+<td>Long‑term outcomes with bariatric surgery adjunct to LT?</td>
+</tr>
+<tr>
+<td><strong>Bone Health</strong></td>
+<td>Bisphosphonate efficacy outside primary biliary cholangitis context.</td>
+</tr>
+<tr>
+<td><strong>Multi‑Organ Transplant</strong></td>
+<td>Standardized medical eligibility criteria for combined organ listings.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>9.3 Research Priorities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prospective trials on frailty reversal interventions pre‑LT.  </li>
+<li style="margin-left: 0px;">Randomized studies of immunotherapy downstaging in HCC and NET.  </li>
+<li style="margin-left: 0px;">Longitudinal registries capturing QoL, functional status, and psychosocial metrics post‑transplant.  </li>
+</ul>
+<p><em>All factual statements, numeric data, guideline levels, and citations from the source document have been retained and organized into a machine‑readable hierarchical mind map.</em></p>
+</div></details>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
