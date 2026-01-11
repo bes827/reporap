@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A Large Language Model Assistant for Summarizing Hepatology Referral Documents  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>A Large Language Model Assistant for Summarizing Hepatology Referral Documents  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: American Journal of Gastroenterology (Ahead of Print) DOI:10.14309/ajg.0000000000003905, 2026  </li>
+<li style="margin-left: 0px;">Topic: LLM‑driven summarization of hepatology referral records  </li>
+</ul>
+<details><summary><strong>1. Study Rationale &amp; Objectives  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rising CLD incidence (+13% since 2000) → ↑ referrals &amp; projected 35 % hepatology workforce shortage by 2033.  </li>
+<li style="margin-left: 0px;">Referral triage burden: faxed/scanned PDFs, duplicate/irrelevant data, EHR‑related cognitive load.  </li>
+<li style="margin-left: 0px;">Goal: evaluate whether an LLM can generate accurate, concise summaries to speed triage of new hepatology referrals.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Methods Overview  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 LLM Platform &amp; Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Internal model “AI Virtual Assistant (AVA)” built on Microsoft Azure OpenAI GPT‑4o.  </li>
+<li style="margin-left: 0px;">HIPAA‑compliant secure cloud; study exempt from IRB review.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Phase 1 – Data Element Identification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Audio‑recorded APP (AB) reviewing 47 consecutive referrals (Jan–Feb 2025).  </li>
+<li style="margin-left: 0px;">Transcribed recordings → compiled exhaustive list of discrete triage data elements (Table 1).  </li>
+<li style="margin-left: 0px;">Saturation reached when no new elements appeared.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Phase 2 – Prompt Engineering  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Developed zero‑shot prompt with four sections: Goal, Format, Warnings, Context (per OpenAI guidance).  </li>
+<li style="margin-left: 0px;">Iterative testing on 13 referral PDFs (8 + 5) → refined until accuracy plateaued.  </li>
+<li style="margin-left: 0px;">Final prompt captured <strong>37</strong> target data elements.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.4 Phase 3 – Validation Crossover Study  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">50 consecutive referrals (June–July 2025) uploaded as scanned PDFs → AVA generated AI‑REF summaries.  </li>
+<li style="margin-left: 0px;">Two APPs (APP1, APP2; combined 7.5 yr experience) performed crossover review:  </li>
+<li style="margin-left: 20px;">Group A (patients 1‑25): ORIG‑REF by APP1, AI‑REF by APP2.  </li>
+<li style="margin-left: 20px;">Group B (patients 26‑50): roles reversed.  </li>
+<li style="margin-left: 0px;">Measured: document length (pages), triage time (seconds), summary accuracy (%).  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.5 Outcomes &amp; Statistical Analysis  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary: <strong>accuracy</strong>, <strong>triage time</strong>, <strong>document length</strong> (AI vs. original).  </li>
+<li style="margin-left: 0px;">Accuracy assessed by manual element‑by‑element comparison; errors classified as omissions, inaccuracies, hallucinations; severity graded major/minor.  </li>
+<li style="margin-left: 0px;">Linear mixed‑effects model (log‑triage time) with fixed effects (doc type, reviewer) &amp; random intercept for patient.  </li>
+<li style="margin-left: 0px;">Wilcoxon signed‑rank tests for paired comparisons; descriptive stratifications by reviewer order.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Key Results – Phases 1–3  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Data Elements &amp; Prompt Performance (Phase 1‑2)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Median extracted elements per referral: <strong>15.0</strong> (IQR 14‑17).  </li>
+<li style="margin-left: 0px;">Median accuracy of extraction: <strong>94.4 %</strong> (IQR 90.4‑97.3 %).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Document Length &amp; Accuracy (Phase 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ORIG‑REF median length: <strong>23.0 pages</strong> (IQR 10.2‑38.8).  </li>
+<li style="margin-left: 0px;">AI‑REF median length: <strong>2.0 pages</strong> (IQR 2‑3); <strong>p&lt;0.001</strong>.  </li>
+<li style="margin-left: 0px;">AI‑REF accuracy: <strong>94.6 %</strong> (IQR 86.5‑97.3 %).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Error Profile (Phase 3)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Error Type</th>
+<th>% of total errors (n)</th>
+<th>Median per referral (IQR)</th>
+<th>Representative example</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Omissions</td>
+<td><strong>86.9 %</strong> (119)</td>
+<td>1 (0.25‑4)</td>
+<td>Bilirubin omitted; medication missed</td>
+</tr>
+<tr>
+<td>Inaccuracies</td>
+<td><strong>13.9 %</strong> (19)</td>
+<td>0 (0‑0)</td>
+<td>“2 beers per week” vs. actual 2 beers/session 3‑4 days/week</td>
+</tr>
+<tr>
+<td>Hallucinations</td>
+<td><strong>2.9 %</strong> (4)</td>
+<td>0 (0‑0)</td>
+<td>Fabricated hepatic panel values from blurry OCR</td>
+</tr>
+<tr>
+<td><strong>Major severity</strong></td>
+<td><strong>4.4 %</strong> (6)</td>
+<td>—</td>
+<td>Missed specific clinic location request; wrong insurance info</td>
+</tr>
+<tr>
+<td>Minor severity</td>
+<td><strong>95.6 %</strong> (131)</td>
+<td>—</td>
+<td>Mostly omissions of lab components</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Only <strong>1 major error</strong> altered triage decision (missed provider‑requested clinic).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.4 Triage Time Reduction  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ORIG‑REF median time: <strong>93 s</strong> (IQR 47‑166).  </li>
+<li style="margin-left: 0px;">AI‑REF median time: <strong>40 s</strong> (IQR 24‑53).  </li>
+<li style="margin-left: 0px;">Adjusted mean times (mixed model): <strong>94.2 s</strong> vs. <strong>37.2 s</strong>; <strong>adjusted time ratio 0.40 (95 % CI 0.33‑0.47, p&lt;0.001)</strong> → <strong>≈60 % reduction</strong>.  </li>
+<li style="margin-left: 0px;">Paired Wilcoxon: median paired difference <strong>60.5 s</strong>, ratio <strong>0.33</strong>, p&lt;0.001.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.5 Reviewer‑Specific Findings  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">APP2 showed larger absolute time savings than APP1 (baseline speed differences).  </li>
+<li style="margin-left: 0px;">Both reviewers consistently faster with AI‑REF across individual patients (Supplementary Fig 1).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Discussion Highlights  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">LLM summarization cuts document length &gt;90 % and triage time ≈60 %, while maintaining ~95 % accuracy.  </li>
+<li style="margin-left: 0px;">Low hallucination rate (&lt;3 %) and minimal impact on clinical decisions support safety.  </li>
+<li style="margin-left: 0px;">Human‑in‑the‑loop essential: OCR errors (e.g., bilirubin 0.6→8.6 mg/dL) detected by APPs.  </li>
+<li style="margin-left: 0px;">Prompt refinements (e.g., “Patient’s Home Address” vs. “Location of Residence”) reduced specific extraction errors.  </li>
+<li style="margin-left: 0px;">Limitations: manual OCR/upload workflow, single‑center design, no real‑time EHR integration, lack of page‑reference annotation.  </li>
+<li style="margin-left: 0px;">Future directions: embed within EHR, federated fine‑tuning for specialty‑specific prompts, expand to pre‑visit preparation and longitudinal summaries.  </li>
+</ul>
+<p><em>End of Part 1 (first 3–4 Level 2 headings). Subsequent sections will cover detailed data element list, statistical tables, and broader implications.</em></p>
+</div></details>
+<details><summary><strong>5. Comprehensive Data Element List for Hepatology Referral Triage  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Derived from Phase 1 audio transcription; used to construct LLM prompt.  </li>
+</ul>
+<details><summary><strong>5.1 Referral Details  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reason for referral  </li>
+<li style="margin-left: 0px;">Specific provider or clinic location requested  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Patient Demographics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Name  </li>
+<li style="margin-left: 0px;">Age  </li>
+<li style="margin-left: 0px;">Gender  </li>
+<li style="margin-left: 0px;">Home address (patient’s residence)  </li>
+<li style="margin-left: 0px;">Insurance carrier/type  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Liver Disease History  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary diagnosis (e.g., ALD, MASLD, viral hepatitis)  </li>
+<li style="margin-left: 0px;">History of decompensating events (ascites, encephalopathy, variceal bleed)  </li>
+<li style="margin-left: 0px;">MELD score (if reported)  </li>
+<li style="margin-left: 0px;">Prior TIPS procedure (date, indication)  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Past Medical History (Non‑hepatic)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">List of other chronic diagnoses  </li>
+<li style="margin-left: 0px;">Emergency department visits / hospitalizations (dates &amp; reasons)  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.5 Current Medications &amp; Pregnancy Status  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Full medication list at time of referral  </li>
+<li style="margin-left: 0px;">Pregnancy status (if applicable)  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.6 Alcohol Use History  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Date of last reported alcohol use  </li>
+<li style="margin-left: 0px;">Quantity/frequency details (e.g., “2 beers per session, 3‑4 days/week”)  </li>
+<li style="margin-left: 0px;">Prior treatment for alcohol use disorder (counseling, pharmacotherapy)  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.7 Laboratory Data  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">CBC: hemoglobin, WBC, platelets  </li>
+<li style="margin-left: 0px;">Liver panel: AST, ALT, alkaline phosphatase, total &amp; direct bilirubin, albumin  </li>
+<li style="margin-left: 0px;">BMP: sodium, potassium, creatinine  </li>
+<li style="margin-left: 0px;">Coagulation: INR  </li>
+<li style="margin-left: 0px;">Cancer markers: AFP, CA 19‑9  </li>
+<li style="margin-left: 0px;">Alcohol biomarkers: ethanol level, phosphatidylethanol  </li>
+<li style="margin-left: 0px;">Viral serologies/viral loads: Hepatitis A, B, C  </li>
+<li style="margin-left: 0px;">Total serum bile acids  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.8 Imaging &amp; Procedural Tests  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Radiology: abdominal US, CT, MRI (including pelvis if performed)  </li>
+<li style="margin-left: 0px;">Description of liver lesions or malignancy (size, location)  </li>
+<li style="margin-left: 0px;">Endoscopy reports (EGD, colonoscopy)  </li>
+<li style="margin-left: 0px;">Liver biopsy findings  </li>
+<li style="margin-left: 0px;">Elastography results (e.g., FibroScan values)  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.9 Abbreviations Glossary (for prompt clarity)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">AFP = alpha‑fetoprotein; ALT = alanine aminotransferase; AST = aspartate aminotransferase; CA 19‑9 = cancer antigen 19‑9; CT = computed tomography; INR = international normalized ratio; MELD = Model for End‑Stage Liver Disease; MRI = magnetic resonance imaging; TIPS = transjugular intrahepatic portosystemic shunt; WBC = white blood cells  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Quantitative Comparison of Original vs. AI‑Generated Files  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Summarized from Table 2 (primary outcomes).  </li>
+</ul>
+<details><summary><strong>6.1 Document Length  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ORIG‑REF: median <strong>23.0</strong> pages (IQR 10.2–38.8)  </li>
+<li style="margin-left: 0px;">AI‑REF: median <strong>2.0</strong> pages (IQR 2.0–3.0)  </li>
+<li style="margin-left: 0px;"><strong>Δ length ≈ −90 %</strong>, p &lt; 0.001  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Accuracy of Extracted Elements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">AI‑REF overall accuracy: <strong>94.6 %</strong> (IQR 86.5–97.3 %)  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Triage Time (seconds)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Metric</th>
+<th>ORIG‑REF</th>
+<th>AI‑REF</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Median time</td>
+<td><strong>93 s</strong> (IQR 47–166)</td>
+<td><strong>40 s</strong> (IQR 24–53)</td>
+</tr>
+<tr>
+<td>Adjusted mean (mixed model)</td>
+<td>94.2 s</td>
+<td>37.2 s</td>
+</tr>
+<tr>
+<td>Adjusted time ratio (AI/ORIG)</td>
+<td>—</td>
+<td><strong>0.40</strong> (95 % CI 0.33‑0.47, p&lt;0.001)</td>
+</tr>
+<tr>
+<td>Paired Wilcoxon median difference</td>
+<td>—</td>
+<td><strong>−60.5 s</strong> (ratio 0.33, p&lt;0.001)</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>6.4 Error Breakdown (Table 3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Total errors across 50 AI‑REFs: <strong>137</strong>  </li>
+</ul>
+<details><summary><strong>6.4.1 Omissions (86.9 %, n=119)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Typical: missing bilirubin value, omitted medication, absent decompensation event.  </li>
+<li style="margin-left: 0px;">Median per referral: <strong>1</strong> (IQR 0.25–4).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.4.2 Inaccuracies (13.9 %, n=19)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Mis‑recorded alcohol frequency, mislabeled symptom as decompensating event.  </li>
+<li style="margin-left: 0px;">Median per referral: <strong>0</strong> (IQR 0–0).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.4.3 Hallucinations (2.9 %, n=4)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Fabricated lab values when OCR unreadable; all classified as minor.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.4.4 Severity Classification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Major errors: <strong>4.4 %</strong> (n=6) – e.g., missed specific clinic location request, incorrect insurance capture, omitted alcohol history, erroneous liver‑related labs.  </li>
+<li style="margin-left: 0px;">Minor errors: <strong>95.6 %</strong> (n=131).  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>7. Discussion of Findings &amp; Clinical Implications  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Efficiency Gains  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&gt;90 % reduction in document length translates to faster visual scanning and easier navigation.  </li>
+<li style="margin-left: 0px;">60 % triage‑time savings equates to <strong>≈ 90 min/week</strong> for a practice handling ~100 new referrals.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Accuracy &amp; Safety Profile  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High median accuracy (≈95 %) with low hallucination rate (&lt;3 %).  </li>
+<li style="margin-left: 0px;">Only one major error altered triage decision, underscoring overall safety.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Human‑in‑the‑Loop Necessity  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">OCR imperfections (e.g., blurred bilirubin) still generate occasional omissions or mis‑extractions; APPs identified inconsistencies using clinical context.  </li>
+<li style="margin-left: 0px;">Prompt refinements (clarifying “Patient’s Home Address”) reduced systematic errors.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Comparative Literature Context  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prior AI systems (Chi et al.) achieved 18 % time savings; current LLM approach yields &gt;60 % while maintaining comparable accuracy.  </li>
+<li style="margin-left: 0px;">ENT GPT‑4 pre‑charting study reported 95 % agreement on binary questions but only 49 % perceived time saving—highlighting specialty‑specific workflow differences.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Limitations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Manual OCR and file upload required; not yet fully integrated into EHR.  </li>
+<li style="margin-left: 0px;">Single academic center; external validation needed for community settings.  </li>
+<li style="margin-left: 0px;">No page‑reference annotation in AI summaries → limited traceability for clinicians.  </li>
+<li style="margin-left: 0px;">Study focused on triage (limited data scope); pre‑visit preparation may demand richer temporal sequencing, which LLMs currently struggle with.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.6 Future Directions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Embed AVA directly into Epic or other EHRs to automate PDF ingestion and summary delivery.  </li>
+<li style="margin-left: 0px;">Explore federated learning to fine‑tune the model on multi‑institutional hepatology data while preserving privacy.  </li>
+<li style="margin-left: 0px;">Expand prompt library for other specialties (e.g., cardiology, oncology) by swapping data element sets.  </li>
+<li style="margin-left: 0px;">Add automatic page‑number tagging to enable rapid verification of extracted values.  </li>
+<li style="margin-left: 0px;">Conduct prospective trials measuring downstream outcomes: time‑to‑clinic, diagnostic yield, patient satisfaction.  </li>
+</ul>
+<p><em>End of Part 2 (second 3–4 Level 2 headings). The final part will cover supplementary materials, tables/figures legends, and concluding remarks.</em></p>
+</div></details>
+</div></details>
+<details><summary><strong>8. Supplementary Materials  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Final LLM Prompt (Supplementary Table 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Goal:</strong> Extract 37 predefined data elements from scanned hepatology referral PDF.  </li>
+<li style="margin-left: 0px;"><strong>Format:</strong> Structured JSON with keys matching element names (e.g., <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">&quot;PatientName&quot;</code>, <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">&quot;MELDScore&quot;</code>).  </li>
+<li style="margin-left: 0px;"><strong>Warnings:</strong>  </li>
+<li style="margin-left: 20px;">If element not present → output <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">&quot;NotAvailable&quot;</code>.  </li>
+<li style="margin-left: 20px;">Do not fabricate values; if OCR unreadable, return <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">&quot;Unreadable&quot;</code>.  </li>
+<li style="margin-left: 0px;"><strong>Context:</strong> Provide brief description of hepatology referral workflow and importance of each element for triage.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Descriptive Analyses by Reviewer Assignment (Supplementary Table 2)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Group</th>
+<th>Reviewer for ORIG‑REF</th>
+<th>Reviewer for AI‑REF</th>
+<th>Median triage time (s) – ORIG</th>
+<th>Median triage time (s) – AI</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>A (1‑25)</td>
+<td>APP1</td>
+<td>APP2</td>
+<td>98 (IQR 50–170)</td>
+<td>38 (IQR 22–52)</td>
+</tr>
+<tr>
+<td>B (26‑50)</td>
+<td>APP2</td>
+<td>APP1</td>
+<td>88 (IQR 44–162)</td>
+<td>42 (IQR 26–54)</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Within‑reviewer comparison shows each APP faster with AI summaries (p&lt;0.001 for both).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Individual Patient Triage Times (Supplementary Figure 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Scatter plot of paired ORIG vs. AI times per patient; each line connects the two points.  </li>
+<li style="margin-left: 0px;">Majority of lines slope downward, indicating reduced time with AI.  </li>
+<li style="margin-left: 0px;">Outliers: three patients where AI‑REF time ≈ ORIG time due to unusually short original documents (&lt;5 pages).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Additional Error Classification Details (Table 3 Expanded)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Referral ID</th>
+<th>Omitted Element(s)</th>
+<th>Inaccurate Entry(ies)</th>
+<th>Hallucinated Value(s)</th>
+<th>Major/Minor</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>#12</td>
+<td>Total bilirubin, medication X</td>
+<td>Alcohol frequency mis‑recorded</td>
+<td>None</td>
+<td>Minor</td>
+</tr>
+<tr>
+<td>#27</td>
+<td>Clinic location request</td>
+<td>None</td>
+<td>None</td>
+<td><strong>Major</strong> (location missed)</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div></details>
+<details><summary><strong>9. Limitations &amp; Considerations  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Workflow Manual Steps  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">OCR performed with Adobe Acrobat Pro; quality dependent on scan resolution.  </li>
+<li style="margin-left: 0px;">File upload to AVA required separate secure transfer, adding ~30 s per case (not captured in triage time).  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Generalizability  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Single tertiary academic center; referral patterns may differ in community hospitals.  </li>
+<li style="margin-left: 0px;">Patient population predominantly adult US cohort; external validation needed for pediatric or non‑US settings.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Scope of Summarization  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prompt focused on data elements required for triage; does <strong>not</strong> capture longitudinal narrative, temporal sequencing, or nuanced social determinants beyond address and insurance.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Absence of Source Referencing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">AI summaries lack page‑number citations → clinicians cannot instantly verify a datum without opening original PDF.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Potential Bias in Error Assessment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reviewers aware they were evaluating AI outputs; possible detection bias (more scrutiny on AI files).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Conclusions &amp; Future Outlook  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Feasibility:</strong> An internally hosted LLM can reliably extract &gt;90 % of clinically relevant data from scanned hepatology referrals.  </li>
+<li style="margin-left: 0px;"><strong>Efficiency:</strong> Summaries reduce document length by ~90 % and triage time by ~60 %, translating to substantial clinician workload savings.  </li>
+<li style="margin-left: 0px;"><strong>Safety:</strong> Low hallucination rate and minimal major errors support safe adjunct use; human oversight remains essential, especially for OCR‑related ambiguities.  </li>
+</ul>
+<p><strong>Future implementation roadmap</strong></p>
+<p>1. <strong>EHR Integration:</strong> Embed AVA within Epic’s document ingestion pipeline to automate PDF capture and summary delivery at point of referral receipt.</p>
+<p>2. <strong>Real‑time Page Tagging:</strong> Extend prompt to output line‑level provenance (e.g., <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">&quot;sourcePage&quot;: 3</code>).</p>
+<p>3. <strong>Federated Model Fine‑tuning:</strong> Collaborate with other academic centers to improve domain‑specific performance while preserving patient privacy.</p>
+<p>4. <strong>Expanded Clinical Scope:</strong> Adapt data element list for pre‑visit preparation, longitudinal follow‑up summaries, and other specialties (e.g., cardiology, oncology).</p>
+<p>5. <strong>Outcome Trials:</strong> Conduct prospective studies measuring downstream effects on appointment wait times, diagnostic accuracy, and provider burnout scores.</p>
+<p><em>End of Part 3 – complete structured mind map of the article.</em></p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

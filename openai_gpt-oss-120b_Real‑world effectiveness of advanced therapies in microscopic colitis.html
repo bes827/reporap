@@ -1,0 +1,761 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Real‑world effectiveness of advanced therapies in microscopic colitis  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Real‑world effectiveness of advanced therapies in microscopic colitis  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: Clinical Gastroenterology and Hepatology (2026) – DOI 10.1016/j.cgh.2025.12.019  </li>
+<li style="margin-left: 0px;">Topic: Advanced IBD biologics &amp; small molecules for budesonide‑refractory/dependent MC  </li>
+</ul>
+<details><summary><strong>1. Study Overview &amp; Rationale  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Background:</strong> MC → chronic watery diarrhoea, ↑ prevalence in elderly; budesonide first‑line but &gt;50% relapse or become refractory/dependent.  </li>
+<li style="margin-left: 0px;"><strong>Therapeutic Gap:</strong> Off‑label advanced IBD therapies increasingly used; real‑world efficacy data scarce.  </li>
+<li style="margin-left: 0px;"><strong>Aim:</strong> Multinational retrospective assessment of clinical response, remission, drug durability, and predictors after budesonide failure/intolerance.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Design &amp; Population  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Network:</strong> ECCO CONFER (European Crohn’s &amp; Colitis Organisation Collaborative Network for Exceptionally Rare cases).  </li>
+<li style="margin-left: 0px;"><strong>Study Type:</strong> Observational, multicentre, retrospective cohort; STROBE‑compliant.  </li>
+<li style="margin-left: 0px;"><strong>Inclusion Criteria:</strong> Histologically confirmed MC (collagenous or lymphocytic) treated with any biologic or small‑molecule after budesonide failure/intolerance.  </li>
+<li style="margin-left: 0px;"><strong>Treatment Cycle Definition:</strong> Each initiation of a new advanced therapy counted as a distinct cycle, regardless of prior exposure.  </li>
+<li style="margin-left: 0px;"><strong>Cohort Size:</strong> 142 patients → 229 treatment cycles across 15 countries &amp; 38 centres.  </li>
+</ul>
+<details><summary><strong>Baseline Demographics (Table 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Sex:</strong> Female 85.9% (n=122).  </li>
+<li style="margin-left: 0px;"><strong>Age at MC diagnosis:</strong> Median 52.6 y [IQR 38.3‑61.7].  </li>
+<li style="margin-left: 0px;"><strong>Age at first advanced therapy:</strong> Median 56.6 y [44.3‑65.3]; median 2.7 y after diagnosis.  </li>
+<li style="margin-left: 0px;"><strong>Histology:</strong> Collagenous colitis 52.8% (n=75); Lymphocytic colitis 47.2% (n=67).  </li>
+<li style="margin-left: 0px;"><strong>Budesonide discontinuation reasons:</strong> PNR 11.3%, dependency 45.4%, secondary LOR 35.5%, adverse events 7.8%.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Therapeutic Landscape &amp; Exposure  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Drug Class Utilization (Figure 1)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Anti‑TNF agents:</strong> 55.9% of cycles (n=128).  </li>
+<li style="margin-left: 0px;"><strong>Vedolizumab:</strong> 28.8% (n=66).  </li>
+<li style="margin-left: 0px;"><strong>JAK inhibitors:</strong> 9.2% (n=21) – tofacitinib 3.9%, filgotinib 2.6%, upadacitinib 2.6%.  </li>
+<li style="margin-left: 0px;"><strong>Ustekinumab:</strong> 4.8% (n=11).  </li>
+<li style="margin-left: 0px;"><strong>Anti‑IL23p19 &amp; S1PR modulators:</strong> &lt;1% total.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Line of Therapy Distribution  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">First‑line: Predominantly anti‑TNF, followed by vedolizumab; JAK inhibitors mainly later lines.  </li>
+<li style="margin-left: 0px;">Median exposure (years): infliximab 0.9, adalimumab 0.9, vedolizumab 0.7, ustekinumab 0.6, JAK inhibitors 1.6.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Short‑Term Efficacy (Induction Phase)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Overall Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Clinical response:</strong> 65.1% of cycles.  </li>
+<li style="margin-left: 0px;"><strong>Clinical remission:</strong> 48.9% of cycles (Hjörtswang criteria: ≤3 stools/d or ≤1 watery stool/d).  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Agent‑Specific Induction Results  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Agent</th>
+<th>Baseline SF (stools/24 h) → End‑Induction SF</th>
+<th>Response %</th>
+<th>Remission %</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Infliximab</td>
+<td>7.0 → 3.0 (p&lt;0.001)</td>
+<td>68.1%</td>
+<td>48.6%</td>
+</tr>
+<tr>
+<td>Adalimumab</td>
+<td>6.0 → 4.0 (p&lt;0.001)</td>
+<td>60.8%</td>
+<td>51.0%</td>
+</tr>
+<tr>
+<td>Vedolizumab</td>
+<td>↓ significant (p&lt;0.001)</td>
+<td>59.1%</td>
+<td>40.9%</td>
+</tr>
+<tr>
+<td>Ustekinumab</td>
+<td>↓ (p=0.01)</td>
+<td>54.5%</td>
+<td>36.4%</td>
+</tr>
+<tr>
+<td>JAK inhibitors*</td>
+<td>7.0 → 2.0 (p&lt;0.001)</td>
+<td><strong>95.2%</strong></td>
+<td><strong>81.0%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>\*Predominantly later‑line use; small sample size but markedly superior outcomes.</p>
+</div></details>
+<details><summary><strong>4.3 Comparative Statistics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GEE analysis:</strong> JAK inhibitors vs anti‑TNF (reference) → OR 8.71 for response (95% CI 1.70‑44.74, p=0.009); OR 4.39 for remission (95% CI 1.42‑13.60, p=0.01).  </li>
+<li style="margin-left: 0px;"><strong>Vedolizumab &amp; ustekinumab:</strong> No significant difference vs anti‑TNF (p&gt;0.3).  </li>
+<li style="margin-left: 0px;"><strong>Binary JAK vs non‑JAK:</strong> OR 10.0 for response (95% CI 1.85‑50.0, p=0.008); OR 5.0 for remission (95% CI 1.64‑14.3, p=0.005).  </li>
+<li style="margin-left: 0px;"><strong>Multivariable model:</strong> No clinical covariates (sex, age, smoking, histology) independently predicted short‑term response; drug class was sole predictor.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Long‑Term Drug Persistence &amp; Durability  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Overall discontinuation:</strong> 56 % of cycles stopped after induction; main reasons PNR 45.9%, secondary LOR 28.7%, AE/intolerance 18.0%.  </li>
+<li style="margin-left: 0px;"><strong>Discontinuation by histology:</strong> CC 56.1% vs LC 53.8% (p=0.79) – no significant difference.  </li>
+</ul>
+<details><summary><strong>5.1 Agent‑Specific Discontinuation Patterns  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1.1 Anti‑TNF agents  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Infliximab:</strong> 62.5% discontinued (median 0.8 y); reasons: intolerance 33.3%, secondary LOR 31.1%, PNR 28.9%.  </li>
+<li style="margin-left: 0px;"><strong>Monotherapy immunogenicity:</strong> 43.1% received infliximab alone → higher antibody formation risk.  </li>
+<li style="margin-left: 0px;"><strong>Adalimumab:</strong> 54.9% discontinued (median 0.6 y); reasons: PNR 57.1%, secondary LOR 35.7%; intolerance rare (3.6%).  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.1.2 Vedolizumab  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Discontinuation 56.1% (median exposure 0.5 y).  </li>
+<li style="margin-left: 0px;">Predominant causes: PNR 62.2%, secondary LOR 27.0%.  </li>
+<li style="margin-left: 0px;">No AE‑related stops reported.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.1.3 Ustekinumab  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Discontinued in 57.1% of cycles (median 0.3 y).  </li>
+<li style="margin-left: 0px;">Reasons: PNR 57.1%, secondary LOR 14.3%, intolerance 14.3%.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.1.4 JAK inhibitors (tofacitinib, filgotinib, upadacitinib)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Durability advantage:</strong> OR 4.76 for persistence vs non‑JAK (95% CI 1.64‑14.3, p=0.004).  </li>
+<li style="margin-left: 0px;"><strong>Discontinuation cause:</strong> intolerance only (median 0.4 y).  </li>
+<li style="margin-left: 0px;"><strong>Cox proportional hazards:</strong> HR 0.41 (95% CI 0.21‑0.82, p=0.01) vs pooled biologics; marginal model HR 0.39 (p=0.008).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5.2 Multivariate Predictors of Persistence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GEE analysis (clustered on patient ID):</strong> drug class sole independent predictor (OR 5.07 for JAK vs others, 95% CI 1.52‑16.9, p=0.008).  </li>
+<li style="margin-left: 0px;"><strong>Other covariates:</strong> age, sex, smoking status, histologic subtype → non‑significant.  </li>
+</ul>
+<details><summary><strong>5.2.1 Individual Drug Comparison (reference infliximab)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">JAK inhibitors: OR 6.35 for continuation (95% CI 1.79‑22.5, p=0.004).  </li>
+<li style="margin-left: 0px;">Anti‑TNF agents, vedolizumab, ustekinumab → no significant difference vs infliximab.  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>6. Safety Profile &amp; Surgical Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>New safety signals:</strong> none observed across entire cohort.  </li>
+<li style="margin-left: 0px;"><strong>Venous thromboembolism (VTE) concern:</strong> MC patients have baseline ↑ VTE risk; JAK inhibitors carry EMA warnings for elderly, but no excess VTE events recorded in this real‑world series.  </li>
+</ul>
+<details><summary><strong>6.1 Adverse Events Leading to Discontinuation  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Agent</th>
+<th>AE‑related discontinuations (%)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Infliximab</td>
+<td>33.3% (intolerance)</td>
+</tr>
+<tr>
+<td>Adalimumab</td>
+<td>3.6% (intolerance)</td>
+</tr>
+<tr>
+<td>Vedolizumab</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>Ustekinumab</td>
+<td>14.3% (intolerance)</td>
+</tr>
+<tr>
+<td>JAK inhibitors</td>
+<td>100% of discontinuations were intolerance (no specific AE detailed)</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>6.2 Surgical Interventions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Overall:</strong> 4.2% (n=6) required colorectal surgery despite advanced therapy.  </li>
+<li style="margin-left: 0px;"><strong>Breakdown:</strong> 5 proctocolectomies, 1 diverting ileostomy; 83.3% of surgical cases had collagenous colitis.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Discussion, Limitations &amp; Future Directions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Key finding:</strong> JAK inhibitors provide superior short‑term response/remission and markedly better long‑term persistence compared with anti‑TNF agents, vedolizumab, and ustekinumab in budesonide‑refractory/dependent MC.  </li>
+<li style="margin-left: 0px;"><strong>Contextualisation:</strong> Results align with prior meta‑analyses showing modest efficacy of anti‑TNFs/vedolizumab; extend evidence by providing standardized outcome definitions and larger sample (229 cycles).  </li>
+</ul>
+<details><summary><strong>7.1 Strengths  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Largest multinational real‑world dataset for advanced therapies in MC.  </li>
+<li style="margin-left: 0px;">Uniform data capture via CONFER reporting form; outcomes assessed at both induction and maintenance phases.  </li>
+<li style="margin-left: 0px;">Robust statistical handling of intra‑patient clustering (GEE, mixed models, frailty Cox).  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Limitations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Retrospective design:</strong> inherent selection and reporting bias; centres are expert IBD sites → may overestimate effectiveness.  </li>
+<li style="margin-left: 0px;"><strong>Histologic reassessment absent:</strong> unable to correlate mucosal healing with clinical outcomes.  </li>
+<li style="margin-left: 0px;"><strong>Therapeutic drug monitoring (TDM) missing:</strong> especially for anti‑TNFs, limiting insight into immunogenicity mechanisms.  </li>
+<li style="margin-left: 0px;"><strong>Microscopic Colitis Score (MCS) not collected:</strong> precludes standardized disease activity quantification beyond stool frequency.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Research Imperatives  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Prospective registries</strong> integrating clinical, endoscopic, histologic, and biomarker endpoints (e.g., JAK/STAT activation signatures).</p>
+<p>2. <strong>Randomized controlled trials</strong> of JAK inhibitors vs standard care to confirm efficacy, safety, and optimal dosing in MC.</p>
+<p>3. Development of a <strong>standardized outcome framework</strong> endorsed by regulatory bodies to harmonize future trial reporting.</p>
+</div></details>
+<details><summary><strong>7.4 Clinical Implications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Consider JAK inhibitor therapy early for patients with budesonide‑refractory or -dependent MC, especially when rapid induction of remission is desired.  </li>
+<li style="margin-left: 0px;">Monitor closely for intolerance; assess VTE risk in elderly/comorbid populations per EMA guidance.  </li>
+<li style="margin-left: 0px;">Continue to use anti‑TNF agents and vedolizumab as viable options, recognizing higher discontinuation rates and modest durability.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Funding &amp; Disclosures (Condensed)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Funding sources:</strong> Clinical Research Fund (KU Leuven), NOVO Nordisk Foundation, Swedish Cancer Society, NHS Clinician Scheme, Italian Ministry of Education &amp; Research, etc.  </li>
+<li style="margin-left: 0px;"><strong>Conflict of interest summary:</strong> Majority of authors report research support, speaker fees, or consultancy with multiple pharma companies (AbbVie, Takeda, Pfizer, etc.). No conflicts declared for T Taelman; several authors declare no conflicts.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9. Figures &amp; Tables Summary  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Figure 1 – Advanced Therapy Utilization  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Panel A:</strong> First‑line distribution – anti‑TNF 55.9%, vedolizumab 28.8%, JAK 9.2% (minor agents &lt;5%).  </li>
+<li style="margin-left: 0px;"><strong>Panel B:</strong> Stacked bar of treatment lines 1–5; anti‑TNF remains dominant across all lines; JAK use rises in later lines.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Figure 2 – Induction Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>A:</strong> Clinical response rates per agent (overall &amp; by histology).  </li>
+<li style="margin-left: 0px;"><strong>B:</strong> Clinical remission rates per agent (overall &amp; by histology).  </li>
+<li style="margin-left: 0px;">JAK inhibitors show highest bars for both response and remission.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Figure 3 – Discontinuation Rates  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overall continuation vs discontinuation after induction; breakdown by CC vs LC.  </li>
+<li style="margin-left: 0px;">Highest discontinuation observed with anti‑TNF agents (~60%).  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Figure 4 – Drug Survival (Kaplan–Meier)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>A:</strong> Separate curves for infliximab, adalimumab, vedolizumab, ustekinumab, JAK inhibitors.  </li>
+<li style="margin-left: 0px;"><strong>B:</strong> Pooled biologics vs JAK inhibitors; JAK curve remains above throughout 2‑year horizon.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Figure 5 – Predictors of Persistence (Forest Plots)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>A:</strong> Multivariable ORs for all covariates; only “drug class (JAK)” reaches significance.  </li>
+<li style="margin-left: 0px;"><strong>B:</strong> Pairwise drug comparisons using infliximab as reference; JAK vs infliximab significant (OR 6.35).  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.6 Table 1 – Baseline Patient Characteristics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Demographics, age at diagnosis/therapy, histology proportion, concomitant meds, smoking status, family history, comorbid immune diseases.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.7 Supplementary Table 1 – Country Representation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Patient counts per participating nation (e.g., Belgium 50 (35.2%), UK 19 (13.4%), etc.).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Supplementary Information  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Additional Analyses  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Sensitivity GEE model:</strong> Adjusted for clustering; results unchanged.  </li>
+<li style="margin-left: 0px;"><strong>Marginal Cox model:</strong> Robust sandwich variance; HR for JAK vs others 0.39 (95% CI 0.19‑0.79, p=0.008).  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Data Availability Statement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Underlying de‑identified dataset available on reasonable request to corresponding author (B. Verstockt).  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Ethical Approvals  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary CONFER project: Chaim Sheba Medical Center Ethics Committee (approval 9545‑12‑SMC).  </li>
+<li style="margin-left: 0px;">Current analysis: UZ/KU Leuven Ethics Committee (S68207).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. References (selected, numbered as in manuscript)  </strong></summary><div style="padding-left: 20px;">
+<p>1. Peery AF et al. Clin Gastroenterol Hepatol 2025;23:490‑500.</p>
+<p>2. Rancz A et al. J Gastroenterol Hepatol 2025;40:2148‑2162.</p>
+<p>3. Burke KE et al. Nat Rev Dis Primers 2021;7:39.</p>
+<p>4. Bergman D et al. Aliment Pharmacol Ther 2019;49:1395‑1400.</p>
+<p>5. Tome J et al. Clin Gastroenterol Hepatol 2022;20:1085‑1094.</p>
+<p>6. Miehlke S et al. United Eur Gastroenterol J 2021;9:13‑37.</p>
+<p>7. Sebastian S et al. Eur J Gastroenterol Hepatol 2019;31:919‑927.</p>
+<p>8. Reilev M et al. Aliment Pharmacol Ther 2020;51:644‑651.</p>
+<p>9. Pardi DS et al. Gastroenterology 2001;120:1483‑1484.</p>
+<p>10. Munch A et al. Aliment Pharmacol Ther 2013;37:795‑798.</p>
+<p>11. Malik A et al. J Clin Gastroenterol 2024.</p>
+<p>12. Taneja V et al. Eur J Gastroenterol Hepatol 2022;34:1000‑1006.</p>
+<p>13. Rehde A et al. Drugs 2023;83:1027‑1038.</p>
+<p>14. Chehade EL et al. J Clin Gastroenterol 2024;58:789‑799.</p>
+<p>15. Katsanos KH et al. J Crohn’s Colitis 2017;11:256‑257.</p>
+<p>16. von Elm E et al. BMJ 2007;335:806‑808.</p>
+<p>17. Hjortswang H et al. Inflamm Bowel Dis 2009;15:1875‑1881.</p>
+<p>18–30. (Case series &amp; small cohort reports of anti‑TNF, vedolizumab, JAK inhibitors in MC – see manuscript for full list).</p>
+<p>31. Escudero‑Hernandez C et al. Cell Mol Gastroenterol Hepatol 2021;12:665‑687.</p>
+<p>32. Bhardwaj A et al. United Eur Gastroenterol J 2024;12:737‑748.</p>
+<p>33. Halvorsen S et al. Nat Commun 2025;16:4618.</p>
+<p>34. Forss A et al. Am J Gastroenterol 2025.</p>
+<p>35. EMA Janus Kinase Inhibitors safety update 2023.</p>
+<p>36. Bernstein CN et al. Am J Gastroenterol 2021;116:1476‑1484.</p>
+<p>37–39. Integrated safety analyses of filgotinib, upadacitinib, tofacitinib (2023‑2024).</p>
+<p>40. Kamboj AK et al. Dig Dis Sci 2022;67:3108‑3114.</p>
+<p>41. Pihl Lesnovska K et al. J Crohn’s Colitis 2025;19.</p>
+<p><em>All references correspond to citations within the original manuscript and are provided here for completeness.</em></p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
