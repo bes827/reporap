@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mentoring and Collaborative Relationships – Managing Success & Conflict  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Mentoring and Collaborative Relationships – Managing Success &amp; Conflict  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Writing the NIH Grant Proposal: A Step‑by‑Step Guide</em> (2018)  </li>
+</ul>
+<details><summary><strong>1. Role of Collaboration in Grant Development  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Integral to brainstorming, design, and writing phases.  </li>
+<li style="margin-left: 0px;">Partners provide <strong>complementary expertise</strong> → strengthens Preliminary Studies.  </li>
+<li style="margin-left: 0px;">Benefits: name recognition, workload sharing, higher proposal quality.  </li>
+<li style="margin-left: 0px;">Multiple reviewers improve manuscript before submission → ↑ funding odds.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Developing New Collaborative Relationships  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 Selecting Potential Collaborators  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Start with known colleagues whose skills match project needs.  </li>
+<li style="margin-left: 0px;">Assess gaps (e.g., data analysis, assay expertise) → target individuals filling them.  </li>
+<li style="margin-left: 0px;">Use departmental contacts, conference presenters, or journal authors.  </li>
+<li style="margin-left: 0px;">Approach via <strong>well‑crafted email</strong>; acknowledge recipient’s time constraints.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Due Diligence Before Commitment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Research web presence, publication record, funding history.  </li>
+<li style="margin-left: 0px;">Check for prior complaints discreetly.  </li>
+<li style="margin-left: 0px;">Seek informal feedback from current/past mentees or collaborators.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Formalizing Expectations Early  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Draft mutual agreement: roles, deliverables, timelines.  </li>
+<li style="margin-left: 0px;">Discuss authorship order and contribution expectations upfront.  </li>
+<li style="margin-left: 0px;">Establish conflict‑resolution mechanism before work begins.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Maintaining Ongoing Collaborative Relationships  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">View collaborations as <strong>long‑term assets</strong>; avoid short‑term gains that damage trust.  </li>
+<li style="margin-left: 0px;">Uphold ethics: keep promises, attend meetings punctually, act proactively for partner benefit.  </li>
+<li style="margin-left: 0px;">Reputation spreads quickly in tight scientific communities → maintain integrity.  </li>
+</ul>
+<details><summary><strong>3.1 Professional Conduct &amp; Interpersonal Discipline  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prioritize work quality over ego; welcome critical feedback.  </li>
+<li style="margin-left: 0px;">Deliver constructive criticism sensitively; expect the same from partners.  </li>
+<li style="margin-left: 0px;">Manage stress: no sarcasm, no mean remarks; apologize promptly if missteps occur.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Negotiation Principles  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Treat negotiations as <strong>non‑zero‑sum</strong>: aim for mutually satisfactory resource allocation.  </li>
+<li style="margin-left: 0px;">Use pre‑agreed conflict‑resolution plan when disputes arise.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Handling Interpersonal Problems &amp; Conflict  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Avoid “open warfare”; refrain from retaliatory behavior.  </li>
+<li style="margin-left: 0px;">Initiate sincere negotiation: factual discussion, not perfunctory dialogue.  </li>
+<li style="margin-left: 0px;">Leverage prior agreements to guide resolution steps.  </li>
+</ul>
+<details><summary><strong>4.1 Escalation Pathways  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">If direct talk fails, seek trusted senior colleague for advice.  </li>
+<li style="margin-left: 0px;">For severe issues (e.g., harassment, power abuse), consider department head or dean involvement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Ending a Collaboration Cleanly  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Communicate decision neutrally; emphasize “agree to disagree.”  </li>
+<li style="margin-left: 0px;">Preserve professional bridges: limit emotional language, avoid public criticism.  </li>
+<li style="margin-left: 0px;">Assess ongoing commitments (co‑PI roles, manuscript drafts) before disengagement.  </li>
+</ul>
+<p><em>This first segment captures the foundational concepts of collaboration, selection, maintenance, and conflict management as presented in the source material.</em></p>
+</div></details>
+</div></details>
+<details><summary><strong>5. Finding and Working With a Mentor  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Mentorship is a specialized form of collaboration focused on career development.  </li>
+</ul>
+<details><summary><strong>5.1 Identifying Potential Mentors  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Look first within own department, school, or hospital for experienced faculty.  </li>
+<li style="margin-left: 0px;">Evaluate: mentorship track record (graduate students, postdocs, fellows).  </li>
+<li style="margin-left: 0px;">Review publication list, grant history, and prior training‑grant involvement.  </li>
+<li style="margin-left: 0px;">Discreetly inquire with current/past mentees about mentor’s style and reliability.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Where to Search Beyond the Home Institution  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Attend conferences; seek senior scientists leading workshops or panels.  </li>
+<li style="margin-left: 0px;">Use professional societies’ mentorship programs or networking events.  </li>
+<li style="margin-left: 0px;">Contact authors of relevant papers via email, citing specific interest in their work.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 What to Expect From a Mentor (Ideal Standards)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Actively expose mentee to brainstorming sessions, grant design discussions, and budgeting.  </li>
+<li style="margin-left: 0px;">Invite mentee to co‑author manuscripts, present at meetings, and join collaborative networks.  </li>
+<li style="margin-left: 0px;">Guide mentee toward independence: encourage pursuit of separate projects and funding.  </li>
+<li style="margin-left: 0px;">Provide introductions to other experts; support diversification of the mentee’s mentor network.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Managing Mentor–Mentee Boundaries  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clarify expectations early: frequency of meetings, feedback turnaround, authorship norms.  </li>
+<li style="margin-left: 0px;">Recognize mentors have limited capacity; avoid over‑reliance on name‑recognition alone.  </li>
+<li style="margin-left: 0px;">Maintain professional courtesy; respect mentor’s time and competing responsibilities.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Positive Aspects of Collaborative Work  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Dialogic research yields higher creativity and problem‑solving efficiency.  </li>
+<li style="margin-left: 0px;">Shared expertise accelerates skill acquisition and methodological rigor.  </li>
+<li style="margin-left: 0px;">Emotional support reduces stress during lengthy grant cycles.  </li>
+<li style="margin-left: 0px;">Successful collaborations often lead to long‑term professional friendships and networks.  </li>
+</ul>
+<details><summary><strong>6.1 Enhancing Proposal Quality Through Collaboration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Multiple reviewers catch methodological flaws, improve clarity, and strengthen arguments.  </li>
+<li style="margin-left: 0px;">Collaborative drafts allow iterative refinement; each partner contributes unique perspective.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Career Advancement Benefits  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Co‑PI relationships expand visibility within funding agencies and study sections.  </li>
+<li style="margin-left: 0px;">Joint publications increase citation impact and broaden research portfolio.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Strategies for Preventing and Resolving Conflict (Advanced)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Anticipate potential friction points during the planning stage; embed resolution clauses in agreements.  </li>
+</ul>
+<details><summary><strong>7.1 Proactive Communication Practices  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Schedule regular check‑ins to discuss progress, workload balance, and emerging concerns.  </li>
+<li style="margin-left: 0px;">Use objective metrics (milestones, deliverable dates) rather than subjective expectations.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Handling Power Imbalances  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">When collaborator holds supervisory or funding authority, document all agreements in writing.  </li>
+<li style="margin-left: 0px;">Seek a neutral third party (senior colleague, department chair) for mediation if needed.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Escalation Protocols for Severe Misconduct  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">For harassment or unethical behavior: first confide in trusted senior mentor; then approach institutional ombudsperson or ethics office.  </li>
+<li style="margin-left: 0px;">Preserve evidence (emails, meeting notes) before reporting.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Graceful Termination of a Collaboration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Issue formal notice outlining reasons, outstanding obligations, and transition plan.  </li>
+<li style="margin-left: 0px;">Offer to assist with handover of data, manuscripts, and grant responsibilities.  </li>
+<li style="margin-left: 0px;">Maintain neutral tone; avoid public criticism that could damage future networking opportunities.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Practical Tips for Effective Grant Writing Collaboration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Implement concrete workflows to maximize efficiency and reduce misunderstandings.  </li>
+</ul>
+<details><summary><strong>8.1 Timeline Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Draft science narrative <strong>≥8 weeks</strong> before submission → allows multiple internal reviews.  </li>
+<li style="margin-left: 0px;">Set internal deadlines: concept outline, specific aims, preliminary data, budget draft, final polish.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Document Sharing &amp; Version Control  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use shared cloud folders (e.g., Google Drive, SharePoint) with read/write permissions.  </li>
+<li style="margin-left: 0px;">Employ version‑control naming convention: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">Proposal<em>V1</em>2025-10-01.docx</code>.  </li>
+<li style="margin-left: 0px;">Archive previous versions to track changes and resolve disputes over content ownership.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Feedback Loop Structure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Assign each collaborator a <strong>focused review domain</strong> (e.g., methods, statistical analysis, budget).  </li>
+<li style="margin-left: 0px;">Require annotated comments rather than blanket “looks good” notes; ask for concrete edits.  </li>
+<li style="margin-left: 0px;">Consolidate feedback in a master comment log to ensure no point is missed.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Authorship Planning  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Create an authorship matrix early: list contributors, contribution type (conceptual, data, writing), and proposed order.  </li>
+<li style="margin-left: 0px;">Revisit matrix after major milestones; adjust if contributions shift.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Ethical Considerations &amp; Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adhere to NIH policies on responsible conduct of research and conflict‑of‑interest disclosure.  </li>
+</ul>
+<details><summary><strong>9.1 Data Integrity &amp; Sharing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Agree on data storage standards (secure servers, de‑identified datasets).  </li>
+<li style="margin-left: 0px;">Define data‑sharing plan for reviewers and public repositories as required by the grant.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Conflict‑of‑Interest Transparency  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All collaborators must disclose financial ties, consulting roles, or equity interests related to the project.  </li>
+<li style="margin-left: 0px;">Document disclosures in a shared spreadsheet; update annually.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Human Subjects &amp; Animal Welfare  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Identify which collaborator will serve as IRB/Animal Care Committee liaison.  </li>
+<li style="margin-left: 0px;">Ensure all protocols are submitted and approved before proposal submission.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Post‑Submission Collaboration Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Continue partnership after award decision, regardless of outcome.  </li>
+</ul>
+<details><summary><strong>10.1 If Funding Is Secured  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Convene kickoff meeting to assign tasks per the pre‑established plan.  </li>
+<li style="margin-left: 0px;">Set up regular progress reports (monthly) aligned with NIH reporting requirements.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 If Funding Is Not Granted  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Conduct debrief: collect reviewer comments, identify weaknesses, and revise accordingly.  </li>
+<li style="margin-left: 0px;">Share revised draft with all collaborators; decide on resubmission strategy or alternative funding sources.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Maintaining Relationship Health  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Celebrate milestones (e.g., award notice, manuscript acceptance) together.  </li>
+<li style="margin-left: 0px;">Periodically reassess collaboration goals; allow for evolution of roles as careers progress.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Summary Checklist for Successful Mentoring &amp; Collaboration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Selection</strong>: skill complementarity, reputation check, mutual interest.  </li>
+<li style="margin-left: 0px;"><strong>Due Diligence</strong>: publication/funding review, informal references.  </li>
+<li style="margin-left: 0px;"><strong>Agreement</strong>: written expectations, authorship matrix, conflict‑resolution clause.  </li>
+<li style="margin-left: 0px;"><strong>Communication</strong>: scheduled check‑ins, clear feedback domains, respectful tone.  </li>
+<li style="margin-left: 0px;"><strong>Ethics</strong>: COI disclosures, data integrity plan, IRB/animal protocol compliance.  </li>
+<li style="margin-left: 0px;"><strong>Execution</strong>: timeline ≥8 weeks pre‑submission, version control, shared documents.  </li>
+<li style="margin-left: 0px;"><strong>Post‑Award</strong>: kickoff meeting, progress reporting, continuous relationship nurturing.  </li>
+</ul>
+<p><em>End of the three‑part structured extraction.</em></p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
