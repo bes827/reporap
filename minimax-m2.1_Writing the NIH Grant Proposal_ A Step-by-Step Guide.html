@@ -1,0 +1,1545 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the NIH Grant Proposal: A Step-by-Step Guide</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Writing the NIH Grant Proposal: A Step-by-Step Guide</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Chapter 5 - Writing the Application, Part I</strong></summary><div style="padding-left: 20px;">
+</div></details>
+<details><summary><strong>1. Scientific Content and Grant Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">R01 is most common grant mechanism; other mechanisms noted when differences arise.</li>
+<li style="margin-left: 0px;">Training grants covered separately with specific details.</li>
+<li style="margin-left: 0px;">Specific Aims: One-page limit; write first to tell entire story with major points.</li>
+<li style="margin-left: 0px;">Research Strategy: 12 pages of text expanding Specific Aims with details, significance, preliminary work.</li>
+<li style="margin-left: 0px;">Approach section typically longest; most common reviewer complaint is insufficient detail.</li>
+<li style="margin-left: 0px;">Page limit creates level playing field—all applicants have only 12 pages.</li>
+</ul>
+<details><summary><strong>1.1 Grant Structure Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Specific Aims page tells whole story; must include all major points.</li>
+<li style="margin-left: 0px;">12-page text expands on Specific Aims with problem significance and preliminary data.</li>
+<li style="margin-left: 0px;">Innovation section describes novel contributions; Approach provides detailed methodology.</li>
+<li style="margin-left: 0px;">Reviewers expect more detail than space allows; must write efficiently to meet expectations.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. General Principles of Scientific Writing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prose must be outstanding; many underestimate importance of good scientific writing.</li>
+<li style="margin-left: 0px;">Grade school taught facts memorization, not engaging writing techniques—must overcome this.</li>
+<li style="margin-left: 0px;">Writing should flow naturally with transitions; avoid short choppy sentences.</li>
+<li style="margin-left: 0px;">Revise repeatedly until coherent; read aloud to others for feedback.</li>
+<li style="margin-left: 0px;">Methods must be understandable by non-specialists.</li>
+</ul>
+<details><summary><strong>2.1 Writing Rules and Guidelines</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Rule 1: Write from Reader&#x27;s Perspective</strong> → Get into reader&#x27;s head; doubt from unclear words colors perception.</li>
+<li style="margin-left: 0px;"><strong>Rule 2: Be Linear</strong> → Each point follows logically; veer off only when necessary, then return to main line.</li>
+<li style="margin-left: 0px;"><strong>Rule 3: Keep It Simple</strong> → Resist adding peripheral measures; primary measures must link to hypothesis, power analysis, statistical analysis.</li>
+<li style="margin-left: 0px;"><strong>Rule 4: Tell a Story</strong> → Like screenplay; each scene moves story forward logically.</li>
+<li style="margin-left: 0px;"><strong>Rule 5: Communicate Excitement</strong> → Sell importance of topic, innovative methods, public health implications.</li>
+<li style="margin-left: 0px;"><strong>Rule 6: Words Matter</strong> → Every word evaluated; substitution changes interpretation.</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Practical Writing Strategies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Read work aloud to hear different rhythm; catch repetitions needing revision.</li>
+<li style="margin-left: 0px;">Get colleagues, non-field friends to read and provide impressions.</li>
+<li style="margin-left: 0px;">Cite work of anyone on study section who published in related field.</li>
+<li style="margin-left: 0px;">Use headings (worth the space); bold, italics, capitals for visual hierarchy.</li>
+<li style="margin-left: 0px;">Avoid jargon; use standard acronyms only to save space.</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Space Management Techniques</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">White space breaks up text, makes reading easier for overburdened reviewers.</li>
+<li style="margin-left: 0px;">Use half line space between paragraphs rather than full space.</li>
+<li style="margin-left: 0px;">Reduce font to 4 points in &quot;Format Paragraph&quot; window if desperate for lines.</li>
+<li style="margin-left: 0px;">Never sacrifice readability elements that help reviewers process content.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Core Components of a Fundable Proposal</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Three broad components required: great idea, feasibility demonstration, logical writing.</li>
+<li style="margin-left: 0px;"><strong>Great Idea</strong>: Must strike reviewers as potentially important with significant field impact.</li>
+<li style="margin-left: 0px;"><strong>Feasibility</strong>: Demonstrates ability to carry out proposed work; reviewers need confidence.</li>
+<li style="margin-left: 0px;"><strong>Logical Writing</strong>: Story emerges orderly—avoid peripheral ramifications that annoy reviewers.</li>
+</ul>
+<details><summary><strong>3.1 Three Critical Components Explained</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Great idea pushes science forward; must be immediately apparent to reviewers.</li>
+<li style="margin-left: 0px;">Feasibility is equally important as having great idea—can do what you promise.</li>
+<li style="margin-left: 0px;">Logical writing prevents boring reviewers with unnecessary material; saves space for essentials.</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Feedback and Timeline Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Begin proposal preparation minimum 8 weeks before deadline; 3 months better.</li>
+<li style="margin-left: 0px;">Ask colleagues and mentors for critical feedback—requires hours of their time.</li>
+<li style="margin-left: 0px;">Specific questions for readers: Were you persuaded? Did writing communicate excitement?</li>
+<li style="margin-left: 0px;">Story easy to follow? Assertions adequately supported? Project innovative? Methods appropriate?</li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Timeline and Preparation Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Many investigators intend to start early but write up to deadline—hurts funding chances.</li>
+<li style="margin-left: 0px;">Adequate time allows ideas to coalesce into coherent story.</li>
+<li style="margin-left: 0px;">Sufficient time enables asking colleagues for suggestions without unreasonable deadlines.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. NIH Review Criteria and Evaluation Framework</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">First-level review by Scientific Review Group (SRG): non-federal scientists with expertise.</li>
+<li style="margin-left: 0px;">Second-level review by I/C National Advisory Councils; both must recommend for funding.</li>
+</ul>
+<details><summary><strong>4.1 Scoring System</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Assigned reviewers score on five criteria using scale of 1 (best) to 9.</li>
+<li style="margin-left: 0px;">Five review criteria: Significance, Investigator(s), Innovation, Approach, Environment.</li>
+<li style="margin-left: 0px;">Preliminary overall impact score provided before meeting.</li>
+<li style="margin-left: 0px;">Streamlining: Only top half-scoring applications discussed; others &quot;streamlined.&quot;</li>
+<li style="margin-left: 0px;">Final scores range 10-90 (multiplied by 10, averaged to one decimal place).</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Five Core Review Criteria</strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Significance</strong>: Addresses important problem? Advances scientific knowledge or clinical practice?</p>
+<p>2. <strong>Investigators</strong>: PIs, collaborators well-suited? ESIs/NIs have appropriate experience/training?</p>
+<p>3. <strong>Innovation</strong>: Challenges current paradigms? Novel concepts, approaches, methodologies?</p>
+<p>4. <strong>Approach</strong>: Overall strategy well-reasoned? Robust and unbiased design? Problems addressed?</p>
+<p>5. <strong>Environment</strong>: Scientific environment contributes to success? Institutional support adequate?</p>
+</div></details>
+<details><summary><strong>4.3 Additional Review Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Protections for Human Subjects</strong>: Risk justification, protections, potential benefits evaluated.</li>
+<li style="margin-left: 0px;"><strong>Inclusion of Women, Minorities, Children</strong>: Plans for appropriate representation reviewed.</li>
+<li style="margin-left: 0px;"><strong>Vertebrate Animals</strong>: Procedures justified, species appropriate, discomfort minimized.</li>
+<li style="margin-left: 0px;"><strong>Biohazards</strong>: Materials/procedures assessed for personnel and environmental safety.</li>
+</ul>
+</div></details>
+<details><summary><strong>4.4 Application Type Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Resubmission Applications</strong>: Evaluated as now presented, with responses to previous comments.</li>
+<li style="margin-left: 0px;"><strong>Renewal Applications</strong>: Progress made in last funding period considered.</li>
+<li style="margin-left: 0px;"><strong>Revision Applications</strong>: Appropriateness of scope expansion evaluated.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. New NIH Procedures: Rigor and Transparency Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">New procedures implemented for due dates on or after May 25, 2016. </li>
+<li style="margin-left: 0px;">Most important change: additional substantive material required for Significance/Approach sections.</li>
+<li style="margin-left: 0px;">NIH committed to promoting rigorous and transparent research in all supported science areas.</li>
+</ul>
+<details><summary><strong>5.1 Scientific Rigor Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Scientific rigor: strict application of scientific method ensuring robust, unbiased experimental design.</li>
+<li style="margin-left: 0px;">Includes methodology, analysis, interpretation, reporting of results. </li>
+<li style="margin-left: 0px;">Full transparency in reporting experimental details enables reproduction and extension.</li>
+<li style="margin-left: 0px;">Investigators apply rigor elements appropriate for their science.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Four Key Areas of Updated Instructions</strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Scientific Premise</strong>: Research forming basis for proposed research question.</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 30px;">Applicants describe strengths/weaknesses of prior research cited as crucial support. </li>
+<li style="margin-left: 30px;">Consideration includes rigor of previous experimental designs, relevant biological variables, authentication.</li>
+</ul>
+<p>2. <strong>Rigorous Experimental Design</strong>: For robust and unbiased results.</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 30px;">Strict application of scientific method ensures robust, unbiased methodology. </li>
+<li style="margin-left: 30px;">Full transparency enables others to reproduce findings.</li>
+</ul>
+<p>3. <strong>Relevant Biological Variables</strong>: Sex, age, weight, underlying health conditions.</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 30px;">Sex frequently ignored in animal study designs—leads to incomplete understanding of sex-based differences. </li>
+<li style="margin-left: 30px;">NIH expects sex as biological variable (SABV) factored into research designs, analyses, reporting.</li>
+<li style="margin-left: 30px;">Strong justification required for applications proposing to study only one sex.</li>
+</ul>
+<p>4. <strong>Authentication of Key Biological/Chemical Resources</strong>: Cell lines, specialty chemicals, antibodies.</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 30px;">May differ laboratory to laboratory or over time. </li>
+<li style="margin-left: 30px;">Quality/qualifications could influence research data.</li>
+<li style="margin-left: 30px;">Standard reagents (buffers, common biologicals) not expected to vary—don&#x27;t need inclusion.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Addressing Scientific Rigor in Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Innovative research involves greater risk due to novelty but can still be rigorous.</li>
+<li style="margin-left: 0px;">Risk identified and managed by considering scientific premise, unknown factors, bias reduction strategies. </li>
+<li style="margin-left: 0px;">Strategies to mitigate risk increase commensurate with research type/stage.</li>
+<li style="margin-left: 0px;">Innovative projects expected to generate reproducible data for future studies.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Sample Size and Power Analysis Guidelines</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cannot present every detail but must succinctly state plans.</li>
+<li style="margin-left: 0px;">Example: &quot;10 males and 10 females will be randomized to blinded treatment and control groups, giving 80% power to detect a treatment effect size of 65% compared to baseline response of 5% at significance level of 0.05.&quot;</li>
+<li style="margin-left: 0px;">NIH institutes/centers issue detailed guidelines for specific funding opportunities.</li>
+<li style="margin-left: 0px;">Examples: NINDS Guidance, NOT-MH-14-004, NOT-DA-14-007; PAR-13-023 (R21), RFA-NR-15-001 (R01).</li>
+</ul>
+</div></details>
+<details><summary><strong>5.5 Power Analysis Review</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Updated review language directs peer reviewers to assess scientific rigor of experimental design.</li>
+<li style="margin-left: 0px;">Includes appropriateness of sample size justification under Approach criterion. </li>
+<li style="margin-left: 0px;">Formalizes NIH expectations that statistical power be addressed.</li>
+<li style="margin-left: 0px;">Program staff may recommend changes to experimental designs for conformity with best practices.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.6 Key Biological Variables</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Applicants consider biological variables relevant to experimental design.</li>
+<li style="margin-left: 0px;">Choice of animal model/human population varies with scientific topic. </li>
+<li style="margin-left: 0px;">Sex, age, weight, underlying health conditions may affect outcome—should be considered.</li>
+<li style="margin-left: 0px;">Strong justification from literature, preliminary data required for single-sex studies.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.7 Key Resources Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Established resources used in proposed research.</li>
+<li style="margin-left: 0px;">May or may not be generated with NIH funds. </li>
+<li style="margin-left: 0px;">Quality critical to ability to reproduce results.</li>
+<li style="margin-left: 0px;">Each investigator determines which resources fit criteria and are key.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.8 Institutional Training Grants Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required to include training program plan summary ensuring knowledge/skills for:</li>
+<li style="margin-left: 20px;">Rigorous, well-controlled experiments.</li>
+<li style="margin-left: 20px;">Consideration of relevant biological variables. </li>
+<li style="margin-left: 20px;">Use of authenticated biological/chemical resources.</li>
+<li style="margin-left: 20px;">Appropriate statistical tests for data analyses.</li>
+<li style="margin-left: 0px;">Separate attachment required describing instructional and curricular content in detail.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.9 Institutional Career Development Applications (K12/KL2)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required to include career development program plan summary ensuring scholars have:</li>
+<li style="margin-left: 20px;">Knowledge/skills for rigorous, well-controlled experiments.</li>
+<li style="margin-left: 20px;">Consideration of relevant biological variables.</li>
+<li style="margin-left: 20px;">Use of authenticated resources. </li>
+<li style="margin-left: 20px;">Appropriate statistical analyses.</li>
+<li style="margin-left: 0px;">Separate attachment required for detailed instructional content.</li>
+</ul>
+</div></details>
+<details><summary><strong>5.10 Individual Fellowship Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required to summarize in research strategy section plans ensuring:</li>
+<li style="margin-left: 20px;">Rigorous, well-controlled experiments.</li>
+<li style="margin-left: 20px;">Consideration of relevant biological variables. </li>
+<li style="margin-left: 20px;">Use of authenticated resources.</li>
+<li style="margin-left: 20px;">Appropriate statistical tests.</li>
+<li style="margin-left: 0px;">Detailed description of instruction in rigorous experimental design required in Institutional Environment section.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Resources for Grant Applicants</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Rigor and Transparency Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>SABV Decision Tree</strong>: Reviewer Guidance to Evaluate Sex as a Biological Variable (posted 07/20/2016).</li>
+<li style="margin-left: 0px;"><strong>Staff Training Module</strong>: General Policy Overview (compiled by NIH OER, 10/30/2015).</li>
+<li style="margin-left: 0px;"><strong>Reviewer Guidance on Rigor and Transparency</strong> (compiled by NIH OER, 03/21/2016).</li>
+<li style="margin-left: 0px;"><strong>Activity Codes for Rigor and Transparency</strong> (updated 12/06/2015). </li>
+<li style="margin-left: 0px;"><strong>Frequently Asked Questions</strong>: Available on NIH website.</li>
+<li style="margin-left: 0px;"><strong>Examples of Rigor in Applications</strong>: Excerpts from awarded applications under pilot FOA.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Example #1: Animal Study Design</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim 3: Male and female mice randomly allocated to experimental groups at age 3 months.</li>
+<li style="margin-left: 0px;">CUG repeat RNA, MBNL1 sequestration, splicing defects, myotonia fully developed at this age.</li>
+<li style="margin-left: 0px;">Compound administered at 3 doses (25%, 50%, 100% of MTD) for 4 weeks vs. vehicle controls.</li>
+<li style="margin-left: 0px;">IP administration unless biodistribution studies indicate preference for IV route.</li>
+<li style="margin-left: 0px;">Group size N=10 (5 males, 5 females) provides 90% power to detect 22% reduction of CUG repeat RNA by qRT-PCR (ANOVA, α=0.05).</li>
+<li style="margin-left: 0px;">Treatment assignment blinded to investigators participating in drug administration and endpoint analyses.</li>
+<li style="margin-left: 0px;">Laboratory has previous experience with randomized allocation and blinded analysis using this mouse model.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Example #2: High-Throughput Screening Assay</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim 1: Primary screen combines SMN promoter with exons 1-6 and exon 7 splicing cassette in single construct.</li>
+<li style="margin-left: 0px;">Responds to compounds increasing SMN transcription, exon 7 inclusion, or stabilizing SMN RNA/protein.</li>
+<li style="margin-left: 0px;">Each point run in triplicate; compounds tested on three separate occasions, results averaged for EC50 with standard deviation.</li>
+<li style="margin-left: 0px;">Secondary screen: SMN protein levels analyzed by dose response in quantitative immunoblots with one-way ANOVA, post-hoc Dunnett or Bonferroni.</li>
+<li style="margin-left: 0px;">Aim 2: Each compound set includes blinded negative control (inactive, same solubilization as test compounds).</li>
+<li style="margin-left: 0px;">Mice randomly assigned within litter; data collected and submitted to PI.</li>
+<li style="margin-left: 0px;">SSD sample size power analysis ensures appropriately minimal mice used per experimental context.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.4 Example #3: Longitudinal Study Design</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim 2: Intensity signal data transformed to log values, modeled by longitudinal methods.</li>
+<li style="margin-left: 0px;">Composite difference in mean intensity signals over time between bi-specific T cells vs. control groups assumed 2.8 logs with composite standard deviation of 2.2 logs.</li>
+<li style="margin-left: 0px;">At least five repeated measurements per mouse after T cell infusion; within-mouse intra-correlation coefficient = 0.50.</li>
+<li style="margin-left: 0px;">Sample size of 10 mice per group provides at least 80% power to detect difference between treated vs. control with 5% significance level.</li>
+<li style="margin-left: 0px;">Log-rank test used to compare survival distribution between groups.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.5 Example #4: Microbiome Study</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim 1: Preliminary studies with N=100 DFUs using 16S rRNA sequencing detected dimensions significantly associated with outcomes.</li>
+<li style="margin-left: 0px;">Sample size provides sufficient power for metagenomic sequencing (more sensitive, less-biased assay).</li>
+<li style="margin-left: 0px;">Aim 3: Random Forests machine learning approach determines which metagenome features differentiate groups.</li>
+<li style="margin-left: 0px;">Bootstrap method assesses test error—ideal for small sample size (N=18).</li>
+<li style="margin-left: 0px;">Wilcoxon rank-sum tests assess significance between groups for diversity and load measures.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.6 Scientific Premise Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Quality and strength of research forming basis for proposed research question.</li>
+<li style="margin-left: 0px;">NIH expects description of general strengths/weaknesses of prior research cited as crucial support. </li>
+<li style="margin-left: 0px;">Consideration includes rigor of previous experimental designs, relevant biological variables, authentication.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.7 Recent NIH Policy Changes (2015)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Section 2.3.7.10</strong>: Genomic Data Sharing requires applications proposing large-scale genomic data include sharing plan.</li>
+<li style="margin-left: 0px;"><strong>Section 2.3.9.5</strong>: Application Noncompliance—NIH may withdraw non-compliant applications.</li>
+<li style="margin-left: 0px;"><strong>Section 4.1.3</strong>: ClinicalTrials.gov Requirement clarifies results reporting required after performance period ends.</li>
+<li style="margin-left: 0px;"><strong>Section 4.1.15.9</strong>: Informed Consent for Research on Dried Blood Spots Obtained Through Newborn Screening.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.8 Additional NIH Policy Updates</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Section 4.1.14</strong>: Human Fetal Tissue Research language changed from &quot;guidance&quot; to &quot;regulatory requirements.&quot;</li>
+<li style="margin-left: 0px;"><strong>Section 8.1.1.3</strong>: Extension of Final Budget Period without Additional NIH Funds reduces administrative burden.</li>
+<li style="margin-left: 0px;"><strong>Section 8.1.2.5</strong>: Change in Scope expands description of changes involving human subjects requiring prior NIH approval.</li>
+<li style="margin-left: 0px;"><strong>Section 8.2.3.3</strong>: Genomic Data Sharing Policy allows investigators to request permission for cloud storage/analysis.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.9 Intellectual Property and Reporting</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Section 8.2.4</strong>: Inventions and Patents requires recipients to report inventions subject to Bayh-Dole regulation electronically via iEdison.</li>
+<li style="margin-left: 0px;">Implements NOT-OD-15-080 regarding requirement to submit invention disclosures, related reports via iEdison.</li>
+</ul>
+</div></details>
+<details><summary><strong>6.10 NIH Blog Posts and Guidance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">January 29, 2016: Dr. Mike Lauer published series on four focus areas of rigor/transparency policy.</li>
+<li style="margin-left: 0px;">December 17, 2015: NOT-OD-16-034 notifies community of upcoming requirements for formal instruction in rigorous design.</li>
+<li style="margin-left: 0px;">December 15, 2015: NOT-OD-16-031 updates RPPR instructions to address rigor.</li>
+<li style="margin-left: 0px;">October 13, 2015: Guide notices outline updates for 2016 applications including implementing rigor/transparency.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Writing Individual Sections of the Grant Text</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 The Title</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">See Chapter 7 for suggestions concerning project title.</li>
+<li style="margin-left: 0px;">Should be clear, concise, descriptive of research focus.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 The Abstract</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Write after completing 13 pages of main text—know exactly what you&#x27;re doing at that point.</li>
+<li style="margin-left: 0px;">Read by all reviewers, not just assigned few; usually first thing read. </li>
+<li style="margin-left: 0px;">Must grab reviewers&#x27; interest immediately.</li>
+<li style="margin-left: 0px;">Provides context for proposed work; becomes public information if funded.</li>
+<li style="margin-left: 0px;">Guides assignment of proposal to particular study section.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Abstract Content Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Describes nature of problem/research question.</li>
+<li style="margin-left: 0px;">States long-term objectives. </li>
+<li style="margin-left: 0px;">Explains innovative features of research.</li>
+<li style="margin-left: 0px;">Details specific aims and research design/methods.</li>
+<li style="margin-left: 0px;">Clarity crucial—write after fairly far along in writing process. </li>
+<li style="margin-left: 0px;">Ask colleagues/co-investigators to read and provide critical feedback.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Specific Aims Section</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Along with abstract, often first thing reviewers read—influences perceptions of research and abilities.</li>
+<li style="margin-left: 0px;">Must accomplish great deal in short space (one page maximum).</li>
+<li style="margin-left: 0px;">Extremely carefully written—must tell entire story or enough context for details to follow.</li>
+<li style="margin-left: 0px;">Do not propose overly ambitious aims—reviewers worry scope exceeds budget/effort allocation.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Specific Aims Required Elements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clear statement of problem/question to investigate.</li>
+<li style="margin-left: 0px;">Public health significance. </li>
+<li style="margin-left: 0px;">Background material providing context for proposal.</li>
+<li style="margin-left: 0px;">Why proposal is innovative and needs to be done.</li>
+<li style="margin-left: 0px;">What plan to do (basics of design, primary outcomes, study conditions).</li>
+<li style="margin-left: 0px;">Specific aims and, space permitting, hypotheses.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.6 Example: Clinical Trial Specific Aims</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Problem: Despite drug therapies, 50% of hypertensives on treatment have inadequately controlled BP.</li>
+<li style="margin-left: 0px;">Public health significance: Excess morbidity/mortality, huge economic burden. </li>
+<li style="margin-left: 0px;">Proposed solution: Guided breathing intervention as promising behavioral approach.</li>
+<li style="margin-left: 0px;">Small studies show positive short-term effects; long-term effects unknown.</li>
+<li style="margin-left: 0px;">High patient acceptability, no known side effects.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.7 Guided Breathing Rationale</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Slows breathing rate to 6-10 breaths/minute range.</li>
+<li style="margin-left: 0px;">Published studies show SBP/DBP reductions of 5.5/3.6–15.2/10.0 mmHg.</li>
+<li style="margin-left: 0px;">Effects surprisingly large from brief practice sessions (daily 15-minute for 8 weeks).</li>
+<li style="margin-left: 0px;">If persistent, represents effective, accessible, cost-efficient way to control BP.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.8 Limitations of Published Studies</strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Sustained effects unknown</strong>: Only one small study (N=13) examined ambulatory BP effects.</p>
+<p>2. <strong>Mechanism unclear</strong>: Is it special breathing rate or nonspecific relaxation effect?</p>
+<p>3. <strong>Duration unknown</strong>: Only one 6-month duration study examined effects beyond 8 weeks.</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Behavioral interventions need methods to sustain long-term effects including cost effectiveness.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.9 Study Design Example</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Blinded, randomized controlled trial (RCT) testing guided breathing in poorly controlled hypertensives.</li>
+<li style="margin-left: 0px;">Sample: N=400, 100 per arm. </li>
+<li style="margin-left: 0px;">Primary outcome: 24-hour ABP (superior predictor of target organ damage, cardiovascular events).</li>
+<li style="margin-left: 0px;">Control groups: Usual care and placebo (identical device not slowing breathing rate).</li>
+<li style="margin-left: 0px;">Two intervention arms: Standard Duration (8 weeks) and Extended Duration (12-month follow-up).</li>
+</ul>
+</div></details>
+<details><summary><strong>7.10 Specific Aims Listing</strong></summary><div style="padding-left: 20px;">
+<p>1. Recruit 440 hypertensive patients with goal of 100 in each of 4 arms.</p>
+<p>2. Test effect of guided breathing on Ambulatory BP at 8 weeks (Brief) and 12 months (Extended).</p>
+<p>3. Compare to usual care and placebo condition.</p>
+</div></details>
+<details><summary><strong>7.11 Primary Hypotheses</strong></summary><div style="padding-left: 20px;">
+<p>1. Participants in two intervention conditions will have lower ABP compared to UC and Placebo.</p>
+<p>2. Participants in Placebo control condition will have lower ABP compared to UC.</p>
+<p>3. Participants in both intervention conditions will have lower ABP at 12 months vs. Placebo and UC.</p>
+<p>4. Participants in extended duration intervention will have lower ABP at 12 months vs. standard duration.</p>
+</div></details>
+<details><summary><strong>7.12 Additional Research Questions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Evaluate potential mechanisms mediating intervention effects on BP:</li>
+<li style="margin-left: 20px;">Baroreflex sensitivity.</li>
+<li style="margin-left: 20px;">Heart rate variability (HRV). </li>
+<li style="margin-left: 20px;">Changes in ambulatory respiration.</li>
+<li style="margin-left: 20px;">Self-reported changes in physical activity and anxiety.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.13 Hypothesis Strategy Notes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Controversial whether to use aims, hypotheses, research questions—no clear guide.</li>
+<li style="margin-left: 0px;">Funded applications vary in approach—stick with focused Specific Aims, limit to 3-4.</li>
+<li style="margin-left: 0px;">Labeling as &quot;Research Question&quot; indicates not powered for analysis—strategic choice.</li>
+<li style="margin-left: 0px;">Primary hypotheses should be main points of study; secondary follow-up periods.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.14 Hypothesis Wording Guidelines</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clearly specify relationship between independent and dependent variable.</li>
+<li style="margin-left: 0px;">Relate to proposed research (empirical test of that relationship).</li>
+<li style="margin-left: 0px;">Keep hypotheses simple—break compound predictions into separate hypotheses.</li>
+<li style="margin-left: 0px;">Example: Rather than &quot;main effects and interaction,&quot; write separate Hypothesis 1, 2, 3.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.15 Public Health Emphasis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Hit public health implications hard very early—often in first sentence.</li>
+<li style="margin-left: 0px;">Emphasize how study will address them whether basic or clinical researcher. </li>
+<li style="margin-left: 0px;">NIH leaders must show Congress they solve problems reducing morbidity/mortality and economic burden.</li>
+<li style="margin-left: 0px;">Basic researchers: connect findings to ultimate clinical/public health applications.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Research Strategy Section Examples</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Research Strategy Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">12-page section with required headings:</li>
+<li style="margin-left: 20px;">A. Significance</li>
+<li style="margin-left: 20px;">B. Innovation </li>
+<li style="margin-left: 20px;">C. Approach</li>
+<li style="margin-left: 20px;">Preliminary Studies (new applications) or Progress Report (renewal/revision)</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Significance Section Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Explain importance of problem or critical barrier to progress in field.</li>
+<li style="margin-left: 0px;">Describe how proposed project improves scientific knowledge, technical capability, clinical practice.</li>
+<li style="margin-left: 0px;">Explain how concepts, methods, technologies driving field will change if aims achieved.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Significance Writing Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">If Specific Aims done well, much already included—avoid excessive redundancy.</li>
+<li style="margin-left: 0px;">Make sure reviewers never need to look elsewhere for clarification.</li>
+<li style="margin-left: 0px;">Keep Significance/Innovation sections to about 2-3 pages total—maximize methodology space.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Significance Example Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Drug treatment fallen short of getting most treated hypertensives to goal (BP &lt;140/90 mmHg).</li>
+<li style="margin-left: 0px;">Proposed RCT powered to detect intervention effects vs. placebo and UC at 8 weeks and 12 months.</li>
+<li style="margin-left: 0px;">Will evaluate potential mediator of guided breathing effect on BP.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.5 Pharmacologic Treatment Limitations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Only 53% of hypertensives on drug treatment, only 1/3 of all hypertensives have controlled BP.</li>
+<li style="margin-left: 0px;">Medications often expensive and may have side effects limiting adherence. </li>
+<li style="margin-left: 0px;">Treatment guidelines recommend adjunctive behavioral treatments.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.6 Non-Pharmacologic Interventions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Relaxation-based interventions reported beneficial effects on BP.</li>
+<li style="margin-left: 0px;">Effect sizes: 9.0-9.7 mmHg (SBP) and 6.1-7.2 mmHg (DBP).</li>
+<li style="margin-left: 0px;">Interventions include autogenic training, progressive muscle relaxation, meditation, biofeedback.</li>
+<li style="margin-left: 0px;">Difficult to demonstrate replicable differences between specific treatment modality and active control.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.7 Device-Guided Breathing Technology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Advances in technology, increased interest in HRV as cardiac health index.</li>
+<li style="margin-left: 0px;">Studies use HRV biofeedback coupled with devices guiding breathing to 6-10 breaths/minute (0.1 Hz) range.</li>
+<li style="margin-left: 0px;">Respiratory sinus arrhythmia (RSA) has greatest amplitude in this range.</li>
+<li style="margin-left: 0px;">Appears safe—people compensate by breathing more deeply; pulse oximetry, end-tidal CO2 show little effect on blood gases.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.8 Study Results Summary Table</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Author, Year</th>
+<th>N</th>
+<th>Design</th>
+<th>Control</th>
+<th>Outcome</th>
+<th>Follow-Up</th>
+<th>Result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Jones, 2004</td>
+<td>79</td>
+<td>Open label</td>
+<td>Matched Controls</td>
+<td>Home BP</td>
+<td>4 weeks</td>
+<td>5.4/3.2 vs 1.9/1.0 mmHg, p&lt;0.001</td>
+</tr>
+<tr>
+<td>Smith, 2007</td>
+<td>42</td>
+<td>RCT</td>
+<td>Relaxation (music)</td>
+<td>Office BP</td>
+<td>8 weeks</td>
+<td>8.2/5.0 vs 2.3/1.2 mmHg, p&lt;0.03</td>
+</tr>
+<tr>
+<td>Trace, 2004</td>
+<td>61</td>
+<td>RCT</td>
+<td>Wait list</td>
+<td>Office/home BP</td>
+<td>3 mos</td>
+<td>2.6 vs 1.2 mmHg, p&lt;0.05</td>
+</tr>
+<tr>
+<td>Watkins, 2008</td>
+<td>38</td>
+<td>Open label</td>
+<td>Attention control</td>
+<td>Office/home BP</td>
+<td>8 weeks</td>
+<td>8.5 vs 6.4 mmHg (NS)</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>8.9 Evidence Quality Assessment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Results overwhelmingly positive but limited by:</li>
+<li style="margin-left: 20px;">Small sample sizes in many studies.</li>
+<li style="margin-left: 20px;">Two studies lack control conditions. </li>
+<li style="margin-left: 20px;">Only one small trial (N=13) used ABP as outcome.</li>
+<li style="margin-left: 0px;">Consistency of effect sizes across studies suggests guided breathing useful intervention to test in adequately powered RCT.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.10 Ambulatory Blood Pressure Rationale</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ABP gold standard for intervention—not susceptible to white coat effect.</li>
+<li style="margin-left: 0px;">Superior predictor of target organ damage vs. office BP measurements.</li>
+<li style="margin-left: 0px;">Provides means to assess BP during sleep—critical for treatment evaluation.</li>
+<li style="margin-left: 0px;">Only one study used ABP with only 13 subjects—clearly requires additional work.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.11 Mechanism Discussion Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Main focus on clinical outcome (ABP)—measure for power estimates.</li>
+<li style="margin-left: 0px;">Sustained participant contact over 1 year at several visits enables mechanism data collection.</li>
+<li style="margin-left: 0px;">Low additional cost/burden to subjects.</li>
+<li style="margin-left: 0px;">Candidate mechanisms: alteration of baroreflex sensitivity, HRV, increased arterial compliance.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.12 Significance Section Writing Principles</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Narrative considers reader: terms defined, abbreviations explained, headers provided.</li>
+<li style="margin-left: 0px;">Large blocks broken up with white space. </li>
+<li style="margin-left: 0px;">New sections set up with preliminary statement explaining what comes next and why.</li>
+<li style="margin-left: 0px;">Issues that may be questionable/controversial explained immediately—not saved for end.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.13 Innovation Section Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Explain how application challenges and shifts current research/clinical practice paradigms.</li>
+<li style="margin-left: 0px;">Describe novel theoretical concepts, approaches, methodologies, instrumentation, interventions.</li>
+<li style="margin-left: 0px;">Explain refinements, improvements, new applications of existing concepts.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.14 Innovation Section Content</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">What plan does differently from previous studies—definitive account of rationale.</li>
+<li style="margin-left: 0px;">Why plan is novel, cutting-edge, should excite reader—what are seriously cool aspects?</li>
+<li style="margin-left: 20px;">New approach.</li>
+<li style="margin-left: 20px;">New underlying theoretical model. </li>
+<li style="margin-left: 20px;">Improvements in study variables (more reliable instruments, objective measures, longer follow-up).</li>
+<li style="margin-left: 20px;">New technology.</li>
+<li style="margin-left: 20px;">Comparison of competing theories.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.15 Innovation Example</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ABP as primary outcome</strong>: Only one small study previously used ABP.</li>
+<li style="margin-left: 20px;">Not susceptible to white coat effect—superior predictor of target organ damage.</li>
+<li style="margin-left: 0px;"><strong>Large sample size</strong>: N=400 based on power analysis—previous studies largest was 79.</li>
+<li style="margin-left: 0px;"><strong>Longer follow-up</strong>: 12 months vs. previous longest of 12 weeks.</li>
+</ul>
+</div></details>
+<details><summary><strong>8.16 Writing Principles Summary</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Story simple and clean, presented for easy following.</li>
+<li style="margin-left: 0px;">Logic explained—no part of story line allowed to sag. </li>
+<li style="margin-left: 0px;">When hypotheses strongly supported, made clear; when exploratory, evident.</li>
+<li style="margin-left: 0px;">Narrative makes reviewers aware of implications of having/omitting controversial hypotheses.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Approach Section</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must describe overall strategy, methodology, analyses to accomplish specific aims.</li>
+<li style="margin-left: 0px;">Include how data will be collected, analyzed, interpreted. </li>
+<li style="margin-left: 0px;">Resource-sharing plans as appropriate. </li>
+<li style="margin-left: 0px;">Discuss potential problems, alternative strategies, benchmarks for success.</li>
+<li style="margin-left: 0px;">If early stages of development, describe strategy to establish feasibility. </li>
+<li style="margin-left: 0px;">Address management of high-risk aspects.</li>
+<li style="margin-left: 0px;">Point out hazardous procedures, situations, materials with precautions. </li>
+<li style="margin-left: 0px;">Full discussion on use of select agents.</li>
+</ul>
+<details><summary><strong>9.1 Approach Section Writing Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most important section—typically longest of the three (Significance, Innovation, Approach). </li>
+<li style="margin-left: 0px;">Must be extremely detailed yet concise within 12-page limit. </li>
+<li style="margin-left: 0px;">Most common reviewer complaint is insufficient detail in Approach section.</li>
+<li style="margin-left: 0px;">Reviewers want confidence you can execute proposed work. </li>
+<li style="margin-left: 0px;">Balance between ambitious scope and realistic feasibility.</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Data Collection Methods</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Describe specific procedures for collecting data related to each aim.</li>
+<li style="margin-left: 0px;">Include measurement instruments, timing of assessments, personnel responsibilities. </li>
+<li style="margin-left: 0px;">Address how data quality will be ensured and monitored.</li>
+<li style="margin-left: 0px;">For human subjects: recruitment procedures, inclusion/exclusion criteria, retention strategies. </li>
+<li style="margin-left: 0px;">For animal studies: species, strains, ages, sex, total number to be used.</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Statistical Analysis Plan</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Describe analytical approach for each hypothesis/aim. </li>
+<li style="margin-left: 0px;">Include power analysis justifying sample size.</li>
+<li style="margin-left: 0px;">Address multiple comparison corrections if applicable. </li>
+<li style="margin-left: 0px;">Describe handling of missing data, dropouts.</li>
+<li style="margin-left: 0px;">For complex designs: specify multilevel modeling, longitudinal analysis approaches. </li>
+<li style="margin-left: 0px;">Justify appropriateness of statistical tests for research questions.</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Feasibility Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Demonstrate ability to recruit required sample size. </li>
+<li style="margin-left: 0px;">Show expertise of team in proposed methodology.</li>
+<li style="margin-left: 0px;">Address potential barriers and contingency plans. </li>
+<li style="margin-left: 0px;">Include timeline for key milestones and deliverables.</li>
+<li style="margin-left: 0px;">For novel methods: pilot data supporting feasibility.</li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Risk Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Identify high-risk aspects of proposed work. </li>
+<li style="margin-left: 0px;">Present alternative strategies if primary approach fails.</li>
+<li style="margin-left: 0px;">Define benchmarks for success in achieving aims. </li>
+<li style="margin-left: 0px;">Address potential problems before reviewers raise them.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Preliminary Studies and Progress Reports</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Preliminary Studies for New Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Include information as part of Approach section (suggested for all applications when possible). </li>
+<li style="margin-left: 0px;">Discuss PD/PI&#x27;s preliminary studies, data, experience pertinent to application.</li>
+<li style="margin-left: 0px;">Essential part of research grant application for most mechanisms. </li>
+<li style="margin-left: 0px;">Helps establish likelihood of success of proposed project.</li>
+<li style="margin-left: 0px;">Early Stage Investigators should include preliminary data. </li>
+<li style="margin-left: 0px;">For R01 applications, reviewers place less emphasis on ESI preliminary data vs. established investigators.</li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Preliminary Studies Content</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Present relevant pilot data supporting feasibility of proposed approach.</li>
+<li style="margin-left: 0px;">Show track record of research team in related work. </li>
+<li style="margin-left: 0px;">Demonstrate preliminary findings that justify proposed hypotheses.</li>
+<li style="margin-left: 0px;">Include publications, manuscripts supporting foundation of proposal. </li>
+<li style="margin-left: 0px;">For Exploratory/Development Grants (R21), Small Research Grants (R03), AREA (R15): preliminary data less critical.</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Progress Report for Renewal/Revision Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Provide as part of Approach section. </li>
+<li style="margin-left: 0px;">Include beginning and ending dates for period covered since last competitive review.</li>
+<li style="margin-left: 0px;">Summarize specific aims of previous project period. </li>
+<li style="margin-left: 0px;">Emphasize importance of findings and progress toward achievement.</li>
+<li style="margin-left: 0px;">Explain any significant changes to specific aims. </li>
+<li style="margin-left: 0px;">Describe new directions including changes from budget reductions.</li>
+</ul>
+</div></details>
+<details><summary><strong>10.4 Progress Report Required Elements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">List of publications, manuscripts accepted for publication. </li>
+<li style="margin-left: 0px;">Patents and other printed materials.</li>
+<li style="margin-left: 0px;">Demonstrate productivity and progress toward goals. </li>
+<li style="margin-left: 0px;">Show return on NIH investment.</li>
+<li style="margin-left: 0px;">Address any delays or deviations from original plan with justifications.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Practical Writing Tips and Strategies</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 Interactive Writing Process</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Not linear—regard as interactive process.</li>
+<li style="margin-left: 0px;">Some sections need to be written before others. </li>
+<li style="margin-left: 0px;">Modifying one section often influences previously written sections.</li>
+<li style="margin-left: 0px;">As research strategy develops, may find aims cannot be carried out. </li>
+<li style="margin-left: 20px;">Perhaps too expensive.</li>
+<li style="margin-left: 20px;">Power estimates require sample size without access.</li>
+<li style="margin-left: 0px;">May need to rewrite proposal parts relating to particular aim. </li>
+<li style="margin-left: 0px;">Budget must be written almost as you start writing proposal.</li>
+<li style="margin-left: 0px;">Research influences budget; budget influences research. </li>
+<li style="margin-left: 0px;">Can revise items later but don&#x27;t want to significantly modify specific aims late.</li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 Budget Integration Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Write budget almost as you start writing proposal (Chapter 7 describes process). </li>
+<li style="margin-left: 0px;">Research will influence budget but budget influences research.</li>
+<li style="margin-left: 0px;">Avoid significantly modifying specific aims late—requires rethinking/rewriting whole proposal. </li>
+<li style="margin-left: 0px;">Request funding for resources needed to ensure successful study completion.</li>
+<li style="margin-left: 0px;">Rule of thumb: work out budget, then double it. </li>
+<li style="margin-left: 0px;">Don&#x27;t try to be a bargain—request resources needed for success.</li>
+</ul>
+</div></details>
+<details><summary><strong>11.3 Study Section Analysis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Look on web to see precisely who will be on study section evaluating proposal. </li>
+<li style="margin-left: 20px;">http://www.csr.nih.gov/Roster_proto/sectionI.asp</li>
+<li style="margin-left: 0px;">Identify potential conflicts of interest (inform NIH). </li>
+<li style="margin-left: 0px;">Identify anyone who cannot provide unbiased assessment.</li>
+<li style="margin-left: 0px;">Cannot know exactly which panel members will review proposal but can make guesses. </li>
+<li style="margin-left: 0px;">Look at study panel early in writing process.</li>
+<li style="margin-left: 0px;">May find panel members not thought to cite—if reviewer, omission would sit poorly. </li>
+<li style="margin-left: 0px;">If panel members worked in proposal area, incorporate their particular points of view.</li>
+<li style="margin-left: 20px;">Don&#x27;t have to agree but should address them.</li>
+</ul>
+</div></details>
+<details><summary><strong>11.4 Writing Timeline Recommendations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Begin minimum 8 weeks before deadline; 3 months better.</li>
+<li style="margin-left: 0px;">Adequate time allows ideas to coalesce into coherent story. </li>
+<li style="margin-left: 0px;">Sufficient time for colleague feedback without unreasonable deadlines.</li>
+<li style="margin-left: 0px;">Many investigators intend early start but write up to deadline—hurts funding chances. </li>
+<li style="margin-left: 0px;">Start now even if deadline seems far away.</li>
+</ul>
+</div></details>
+<details><summary><strong>11.5 Feedback Collection Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ask colleagues and mentors for critical feedback—requires hours of their time.</li>
+<li style="margin-left: 0px;">Co-investigators can be asked more than unofficial helpers. </li>
+<li style="margin-left: 0px;">Specific questions for readers:</li>
+<li style="margin-left: 20px;">Were you persuaded proposed study should be done?</li>
+<li style="margin-left: 20px;">Did writing communicate excitement about project? </li>
+<li style="margin-left: 20px;">Was story easy to follow? Any parts that sidetracked?</li>
+<li style="margin-left: 20px;">Were assertions adequately supported by literature/data?</li>
+<li style="margin-left: 20px;">Do you consider project innovative? </li>
+<li style="margin-left: 20px;">Were methods appropriate to study questions?</li>
+<li style="margin-left: 20px;">Was power analysis convincing?</li>
+<li style="margin-left: 20px;">What limitations should be addressed? </li>
+<li style="margin-left: 20px;">Was manuscript adequately proofread?</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Additional Hints and Considerations</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Ambition vs. Realism Balance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Proposal must be ambitious in scope but never appear unrealistic.</li>
+<li style="margin-left: 0px;">Must not exceed what proposed study can accomplish or ability to carry out. </li>
+<li style="margin-left: 0px;">Unlike paper, grant proposal must do more than replicate previous work.</li>
+<li style="margin-left: 0px;">Must move field forward—that&#x27;s what reviewers want to fund. </li>
+<li style="margin-left: 0px;">Don&#x27;t want reviewers labeling proposal &quot;ambitious&quot;—feeds concern about delivery.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Focus Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Many inexperienced investigators show research bargain by collecting extra measures.</li>
+<li style="margin-left: 0px;">Resist temptation—appear inexperienced, not understanding work involved. </li>
+<li style="margin-left: 0px;">Just because measure not mentioned doesn&#x27;t mean can&#x27;t collect it during study.</li>
+<li style="margin-left: 0px;">Fight temptation to mention extra measures in proposal. </li>
+<li style="margin-left: 0px;">Ensure can find money if additional costs incurred.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Primary Measure Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Every primary measure should be directly linked to:</li>
+<li style="margin-left: 20px;">Hypothesis.</li>
+<li style="margin-left: 20px;">Power analysis. </li>
+<li style="margin-left: 20px;">Statistical analysis.</li>
+<li style="margin-left: 0px;">Can mention other measures of interest because:</li>
+<li style="margin-left: 20px;">Want reviewers to know importance. </li>
+<li style="margin-left: 20px;">Might cost money requiring budget allocation.</li>
+<li style="margin-left: 0px;">Not necessarily want to power sample size to all measures. </li>
+<li style="margin-left: 0px;">Can list measures as &quot;exploratory&quot; but very limited extent.</li>
+<li style="margin-left: 0px;">Resisting outcome loading keeps proposal highly focused.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.4 Reader-Centered Writing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Single most important point: write from audience perspective (assigned reviewers). </li>
+<li style="margin-left: 0px;">Must hear writing as though you were reviewer.</li>
+<li style="margin-left: 0px;">Larger audience: NIH organization and its agenda. </li>
+<li style="margin-left: 0px;">NIH leaders must convince Congress to allocate taxpayer money for research.</li>
+<li style="margin-left: 0px;">Must show solving problems for representatives and senators. </li>
+<li style="margin-left: 0px;">Address public health implications of funded research.</li>
+<li style="margin-left: 0px;">Basic researchers: connect work to reducing morbidity/mortality, economic burden. </li>
+<li style="margin-left: 0px;">Hit public health implications hard early—often in first sentence.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.5 Jargon Avoidance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim for proposal understandable without asking/looking up expressions or acronyms.</li>
+<li style="margin-left: 0px;">Annoying to go back reminding what particular acronym means. </li>
+<li style="margin-left: 0px;">Use standard ones only, or long names costing serious space.</li>
+<li style="margin-left: 0px;">Reviewers from different fields won&#x27;t understand field-specific jargon. </li>
+<li style="margin-left: 0px;">Jargon doesn&#x27;t strengthen case with non-expert reviewers.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.6 Visual Presentation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use headings (sacrifice space—worth it). </li>
+<li style="margin-left: 0px;">Be creative making them stand out: bold-faced type, italics, all capitals.</li>
+<li style="margin-left: 0px;">Consistent hierarchy for headings. </li>
+<li style="margin-left: 20px;">Major headings: bold capitals.</li>
+<li style="margin-left: 20px;">Secondary headings: bold lowercase letters.</li>
+<li style="margin-left: 0px;">White space breaks up text, makes reading easier for overburdened reviewers. </li>
+<li style="margin-left: 0px;">Eyes tired, temper short by time reaching application.</li>
+<li style="margin-left: 0px;">Pictures and charts help break up page, give eyes rest. </li>
+<li style="margin-left: 0px;">Save space with half line space between paragraphs rather than full.</li>
+<li style="margin-left: 0px;">If desperate, use 4 points rather than 6 in &quot;Format Paragraph&quot; window.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.7 Redundancy Balance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Story requires redundancy—reader not necessarily expert needs reminders.</li>
+<li style="margin-left: 0px;">Find balance between necessary prompts and over-redundancy. </li>
+<li style="margin-left: 0px;">Difficult for writer to judge—ask external readers for feedback.</li>
+<li style="margin-left: 0px;">Don&#x27;t make reviewers look elsewhere in proposal for clarification. </li>
+<li style="margin-left: 0px;">Redundant enough concerning abstruse/difficult-to-remember points.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.8 Technical Explanation Approach</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Don&#x27;t assume readers know technical matters considered commonplace. </li>
+<li style="margin-left: 0px;">Be diplomatic explaining—don&#x27;t sound condescending.</li>
+<li style="margin-left: 0px;">Set up new sections with preliminary statement explaining what comes next and why. </li>
+<li style="margin-left: 0px;">When issues arise that may be questionable/controversial, explain decisions immediately.</li>
+<li style="margin-left: 0px;">Don&#x27;t wait until end—damage may already done by then. </li>
+<li style="margin-left: 0px;">Anticipate reviewer questions and deal with them on the spot.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.9 Table Usage Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Tables take substantial room but may be necessary for clarity.</li>
+<li style="margin-left: 0px;">Example: Study results summary table provides evidence of intervention effectiveness. </li>
+<li style="margin-left: 0px;">Authors felt necessary—agreed with assessment.</li>
+<li style="margin-left: 0px;">Balance between space usage and information density.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.10 Manuscript Proofreading</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must be adequately proofread before submission.</li>
+<li style="margin-left: 0px;">Errors create negative impression affecting overall perception. </li>
+<li style="margin-left: 0px;">Read aloud to catch awkward phrasing, grammatical errors.</li>
+<li style="margin-left: 0px;">Have multiple people proofread—fresh eyes catch different issues. </li>
+<li style="margin-left: 0px;">Consider professional editing services for critical proposals.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.11 Citation Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cite work of anyone on study section who published in related field.</li>
+<li style="margin-left: 0px;">Senior investigators annoyed when groundbreaking work not cited. </li>
+<li style="margin-left: 0px;">Shows awareness of relevant literature and respect for field experts.</li>
+<li style="margin-left: 0px;">Don&#x27;t overcite—focus on most relevant supporting work.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.12 Acronym Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use standard acronyms only or for really long names costing serious space.</li>
+<li style="margin-left: 0px;">Define acronym on first use—subsequent uses can be abbreviated. </li>
+<li style="margin-left: 0px;">Avoid creating too many new acronyms.</li>
+<li style="margin-left: 0px;">Consider whether each acronym adds value or creates confusion.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.13 Paragraph Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Every paragraph should make a point.</li>
+<li style="margin-left: 0px;">After writing, ask: What point am I trying to make? </li>
+<li style="margin-left: 0px;">Did I succeed in making the point?</li>
+<li style="margin-left: 0px;">Is language leading to reader&#x27;s comprehension as intended? </li>
+<li style="margin-left: 0px;">Each paragraph should advance story toward goals.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.14 Sentence-Level Clarity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Substitution of one word for another can color entire statement interpretation.</li>
+<li style="margin-left: 0px;">Think critically about every word choice. </li>
+<li style="margin-left: 0px;">Use precise, specific language rather than vague terms.</li>
+<li style="margin-left: 0px;">Avoid passive voice when active better communicates action. </li>
+<li style="margin-left: 0px;">Keep sentences focused but not choppy—maintain flow.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.15 Transition Techniques</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Transitions between sentences and paragraphs essential for flow.</li>
+<li style="margin-left: 0px;">Use transitional words/phrases: however, therefore, furthermore, in addition. </li>
+<li style="margin-left: 0px;">Ensure logical connection between ideas.</li>
+<li style="margin-left: 0px;">When veering off main line, carefully bring back to central argument.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.16 Revision Process</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Revise and revise until sick of it—that&#x27;s the job.</li>
+<li style="margin-left: 0px;">Read work out loud to hear writing differently. </li>
+<li style="margin-left: 0px;">Find places requiring minor or extensive revision.</li>
+<li style="margin-left: 0px;">Even better: read to someone else and get impressions. </li>
+<li style="margin-left: 0px;">Get colleagues, friends not in field to provide feedback.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.17 Story Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Think of writing a screenplay—each scene designed to move story forward.</li>
+<li style="margin-left: 0px;">Story must unfold so reader can follow and be engaged. </li>
+<li style="margin-left: 0px;">Should never violate reader&#x27;s sense of logic.</li>
+<li style="margin-left: 0px;">Must make reader want to know what happens next. </li>
+<li style="margin-left: 0px;">Good science is interesting—interesting reading improves funding chances.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.18 Excitement Communication</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Grant proposal is selling something to specific customers.</li>
+<li style="margin-left: 0px;">Must communicate excitement about important research. </li>
+<li style="margin-left: 0px;">Want to excite readers about:</li>
+<li style="margin-left: 20px;">Importance of topic.</li>
+<li style="margin-left: 20px;">Innovative new methods devised for studying topic. </li>
+<li style="margin-left: 20px;">Broad implications and public health implications.</li>
+<li style="margin-left: 20px;">How it will move field forward.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.19 Linear Writing Approach</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Each point should follow logically from previous one.</li>
+<li style="margin-left: 0px;">Proceed along straight line as much as possible. </li>
+<li style="margin-left: 0px;">When must veer off, be careful to bring back.</li>
+<li style="margin-left: 0px;">Think proceeding up tree trunk—if go off on branch, return to main line. </li>
+<li style="margin-left: 0px;">Not place for ADD free rein—keep writing tight.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.20 Simplicity Principle</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">As write idea, begin seeing other lines of thought to add.</li>
+<li style="margin-left: 0px;">May not pertain to main focus—resist temptation. </li>
+<li style="margin-left: 0px;">Particularly true for measures proposed:</li>
+<li style="margin-left: 20px;">May add peripheral measures easy/inexpensive to collect.</li>
+<li style="margin-left: 20px;">Might contribute depth but veers off main point.</li>
+<li style="margin-left: 0px;">Legitimate rationales for including them exist but may mean veering off. </li>
+<li style="margin-left: 0px;">Already doing study so easy to tack on extra measures.</li>
+<li style="margin-left: 0px;">Can show reviewers bargain—two or three studies for price of one. </li>
+<li style="margin-left: 0px;">Resist temptation.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.21 Budget Justification</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Don&#x27;t underbudget—may be seen as sign of inexperience.</li>
+<li style="margin-left: 0px;">Reviewers may worry scope greater than budget/effort allocation. </li>
+<li style="margin-left: 0px;">Request funding for resources needed to ensure successful completion.</li>
+<li style="margin-left: 0px;">Work out budget, then double it. </li>
+<li style="margin-left: 0px;">Make sure requesting enough for success.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.22 Public Health Framing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Basic researchers: connect findings to ultimate clinical applications.</li>
+<li style="margin-left: 0px;">Even pig artery inflammatory factor research connects to morbidity/mortality reduction. </li>
+<li style="margin-left: 0px;">Congress members excited about progress reducing economic burden.</li>
+<li style="margin-left: 0px;">Hit public health implications hard very early—often in first sentence. </li>
+<li style="margin-left: 0px;">Emphasize how study will address them regardless of research type.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.23 Hypothesis Labeling Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary hypotheses should be main points of study.</li>
+<li style="margin-left: 0px;">Question: What are implications of labeling one or other? </li>
+<li style="margin-left: 0px;">Reviewers look at power analyses—toward which outcome measures geared?</li>
+<li style="margin-left: 0px;">If hypothesis laid out, expect testing—have statistical power? </li>
+<li style="margin-left: 0px;">Primary vs. secondary distinction often follows follow-up period.</li>
+<li style="margin-left: 20px;">8 weeks well-supported by previous studies.</li>
+<li style="margin-left: 20px;">12 months no data on which to base prediction.</li>
+<li style="margin-left: 0px;">Don&#x27;t power to analyses without basis.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.24 Research Question Labeling</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">When to label aim as &quot;Research Question&quot;—controversial, no clear guide.</li>
+<li style="margin-left: 0px;">If goal relevant but not directly involved, label as Additional Research Question. </li>
+<li style="margin-left: 0px;">Subtext: probably not aiming to power this analysis—not strength of proposal.</li>
+<li style="margin-left: 0px;">May have sufficient sample size for testing if powered for main variables. </li>
+<li style="margin-left: 0px;">Wary of using &quot;additional research questions.&quot;</li>
+<li style="margin-left: 0px;">Strategic reason: study meant to focus on clinical outcomes, not mechanisms.</li>
+<li style="margin-left: 0px;">Testing putative mechanisms important—absence raises reviewer questions. </li>
+<li style="margin-left: 0px;">Includes them even though story more complicated.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.25 Mechanism Discussion Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Discussing mechanisms risks distracting from main point.</li>
+<li style="margin-left: 0px;">Needs details in relatively short space—may lose points rather than gain. </li>
+<li style="margin-left: 0px;">Judgment call, strategy decision.</li>
+<li style="margin-left: 0px;">Authors risked it and got funded—worth gamble but be careful.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.26 Subtle Argument Techniques</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Anticipate reviewer skepticism and address proactively.</li>
+<li style="margin-left: 0px;">For surprising effect sizes: &quot;You are probably somewhat skeptical, but so were we.&quot; </li>
+<li style="margin-left: 0px;">Show awareness of larger picture—don&#x27;t let reviewers think naive.</li>
+<li style="margin-left: 0px;">Talk to reviewers through language when issues need explaining. </li>
+<li style="margin-left: 0px;">Make excellent points that stimulate &quot;hmmm, never thought of it&quot; reaction.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.27 Figure Usage</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Figures not absolutely necessary but good to include if room allows.</li>
+<li style="margin-left: 0px;">Break up page, give eyes rest. </li>
+<li style="margin-left: 0px;">Authors added figure showing 2x2 study design and sample sizes per arm.</li>
+<li style="margin-left: 0px;">Good job explaining in text—anything to make easier for reviewers helps.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.28 Controversial Point Handling</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">No clear guide on aims vs. hypotheses vs. research questions.</li>
+<li style="margin-left: 0px;">Talk to 10 experienced grant writers, get 10 opinions. </li>
+<li style="margin-left: 0px;">True even with several NIH program officers.</li>
+<li style="margin-left: 0px;">Look at 10 funded applications—done in 10 different ways. </li>
+<li style="margin-left: 0px;">Can do both if possible; otherwise stick with Specific Aims.</li>
+<li style="margin-left: 0px;">Keep focused, limit number (3 or 4).</li>
+</ul>
+</div></details>
+<details><summary><strong>12.29 Writing Rules Summary</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Write from reader&#x27;s perspective—get into their head.</li>
+<li style="margin-left: 0px;">Be linear—each point follows logically. </li>
+<li style="margin-left: 0px;">Keep it simple—don&#x27;t veer off main point.</li>
+<li style="margin-left: 0px;">Tell a story—engage reader like screenplay. </li>
+<li style="margin-left: 0px;">Communicate excitement—sell the importance.</li>
+<li style="margin-left: 0px;">Words matter—evaluate every choice critically.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.30 Final Submission Checklist</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Address all five NIH review criteria explicitly.</li>
+<li style="margin-left: 0px;">Ensure story logical and easy to follow. </li>
+<li style="margin-left: 0px;">Check for jargon, undefined acronyms.</li>
+<li style="margin-left: 0px;">Verify all headings properly formatted. </li>
+<li style="margin-left: 0px;">Proofread multiple times by multiple people.</li>
+<li style="margin-left: 0px;">Confirm page limits met with proper formatting. </li>
+<li style="margin-left: 0px;">Check budget aligns with proposed work.</li>
+<li style="margin-left: 0px;">Ensure preliminary data supports feasibility if required. </li>
+<li style="margin-left: 0px;">Verify all required sections present and complete.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.31 Success Factors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Great idea that excites reviewers immediately.</li>
+<li style="margin-left: 0px;">Demonstrated feasibility of proposed work. </li>
+<li style="margin-left: 0px;">Clear, logical writing that tells compelling story.</li>
+<li style="margin-left: 0px;">Appropriate scope—ambitious but realistic. </li>
+<li style="margin-left: 0px;">Strong preliminary data supporting approach.</li>
+<li style="margin-left: 0px;">Well-justified budget with adequate resources. </li>
+<li style="margin-left: 0px;">Addressed reviewer concerns proactively.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.32 Common Pitfalls to Avoid</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Insufficient detail in Approach section.</li>
+<li style="margin-left: 0px;">Overly ambitious aims exceeding budget/capability. </li>
+<li style="margin-left: 0px;">Jargon not defined for general audience.</li>
+<li style="margin-left: 0px;">Poor organization making story hard to follow. </li>
+<li style="margin-left: 0px;">Missing preliminary data when expected.</li>
+<li style="margin-left: 0px;">Underpowered sample size without justification. </li>
+<li style="margin-left: 0px;">Ignoring potential problems without mitigation plans.</li>
+</ul>
+</div></details>
+<details><summary><strong>12.33 Key Takeaways</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Writing quality directly impacts funding success.</li>
+<li style="margin-left: 0px;">Reader perspective essential—reviewers are customers. </li>
+<li style="margin-left: 0px;">Story structure matters as much as content.</li>
+<li style="margin-left: 0px;">Prose must be clear, engaging, logically organized. </li>
+<li style="margin-left: 0px;">Every section should reinforce central narrative.</li>
+<li style="margin-left: 0px;">Revision is critical—don&#x27;t submit first draft. </li>
+<li style="margin-left: 0px;">External feedback improves quality significantly.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
