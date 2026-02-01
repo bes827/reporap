@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Types of Award Mechanisms – NIH Grant Proposal Guide  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Types of Award Mechanisms – NIH Grant Proposal Guide  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Writing the NIH Grant Proposal: A Step‑by‑Step Guide</em> (2024)  </li>
+<li style="margin-left: 0px;">Topic: Selecting &amp; understanding NIH grant award mechanisms  </li>
+</ul>
+<details><summary><strong>1. Foundations of a Strong Grant Idea  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Public health relevance</strong> – must address an important health problem.  </li>
+<li style="margin-left: 0px;"><strong>Innovation requirement</strong> – novel hypothesis, method, or statistical approach <em>not previously done</em>.  </li>
+<li style="margin-left: 0px;"><strong>Balance risk</strong> – avoid “too innovative” (insufficient support) while still showing novelty.  </li>
+<li style="margin-left: 0px;"><strong>Field advancement</strong> – demonstrate how results will change thinking, fill gaps, or use understudied populations.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Practical Tips Before Submission  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Early submission</strong> – upload days before deadline to resolve technical issues.  </li>
+<li style="margin-left: 0px;"><strong>Senior mentor consultation</strong> – seek advice from funded investigators &amp; program officers.  </li>
+<li style="margin-left: 0px;"><strong>Understand NIH website</strong> – grants.nih.gov → About Grants → Get Started → Learn the Basics for mechanism tables.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. Overview of Grant Mechanism Classes  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Research Project vs. Career Development Grants  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Research project (R series)</strong> – supports discrete research; PI typically devotes <em>partial</em> effort.  </li>
+<li style="margin-left: 0px;"><strong>Career development (K series)</strong> – provides <em>most or all</em> salary support; research budget smaller.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Major Mechanism Types (selected)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Class</th>
+<th>Typical Use</th>
+<th>Budget/Period Highlights</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>R01</strong> (Research Project)</td>
+<td>Established investigator, full‑scale study</td>
+<td>≤ $499,999/yr for ≤5 yrs</td>
+</tr>
+<tr>
+<td><strong>R03</strong> (Small Grant)</td>
+<td>Pilot, feasibility, methodology development</td>
+<td>≤ $50,000/yr, ≤2 yrs; <em>no renewal</em></td>
+</tr>
+<tr>
+<td><strong>R21</strong> (Exploratory/Developmental)</td>
+<td>High‑risk, high‑reward early work</td>
+<td>≤ $275,000 total (≤ $200k/yr), ≤2 yrs; <em>no renewal</em></td>
+</tr>
+<tr>
+<td><strong>K01/K99</strong> (Career Development)</td>
+<td>Transition to independence, mentored research</td>
+<td>Salary + modest research funds</td>
+</tr>
+<tr>
+<td><strong>T/F series</strong> (Training &amp; Fellowships)</td>
+<td>Predoctoral/postdoctoral training</td>
+<td>Individual support for trainees</td>
+</tr>
+<tr>
+<td><strong>P series</strong> (Program/Center Grants)</td>
+<td>Multidisciplinary, long‑term programs; senior investigators only</td>
+<td>Multi‑project budgets, often &gt; $1M</td>
+</tr>
+<tr>
+<td><strong>U series</strong> (Cooperative Agreements)</td>
+<td>Substantial NIH staff involvement</td>
+<td>Similar to R series but with agency collaboration</td>
+</tr>
+<tr>
+<td><strong>SBIR/STTR</strong> (Small Business)</td>
+<td>Commercialization of health technologies</td>
+<td>Phase I ≤ $150k/yr; Phase II up to $1M+</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>3.3 Mechanism‑Specific Details  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>R03</strong> – <em>Project period</em>: up to 2 yrs; <em>Direct costs</em>: ≤ $50k/yr; <em>No preliminary data required</em> (optional).  </li>
+<li style="margin-left: 0px;"><strong>R21</strong> – <em>Project period</em>: up to 2 yrs; <em>Total direct cost</em>: ≤ $275k (≤ $200k in any single year); <em>No renewal</em>.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Factors Guiding Mechanism Choice  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Career stage</strong> – early investigators often target R03, R21, or K awards; senior investigators may pursue R01 or P grants.  </li>
+<li style="margin-left: 0px;"><strong>Preliminary data availability</strong> – lack of pilot data pushes toward R03/R21 (lower data demand).  </li>
+<li style="margin-left: 0px;"><strong>Project development level</strong> – well‑defined hypothesis → R01; exploratory concept → R21.  </li>
+<li style="margin-left: 0px;"><strong>Funding purpose</strong> – pure research → R series; training/mentoring → T/F/K series; commercial product → SBIR/STTR.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5. Funding Opportunity Announcements (FOAs) &amp; Application Logistics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Every application must respond to a specific FOA (parent announcement, RFA, or RFP).  </li>
+<li style="margin-left: 0px;">Locate FOAs on <strong>Grants.gov</strong> and the <strong>NIH Guide for Grants and Contracts</strong>.  </li>
+<li style="margin-left: 0px;">Use <strong>RePORTER</strong> (https://projectreporter.nih.gov) to view funded awards, success rates, and institute‑specific trends.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6. Success Rate Considerations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Success rates vary by Institute/Center (I/C) and mechanism (e.g., FY2015 R01 ~13–23 %; R03 ~10–60 % depending on I/C).  </li>
+<li style="margin-left: 0px;">Rates are calculated as <em>funded competing applications ÷ (competing + funded carryovers)</em>; withdrawn or administratively rejected apps excluded.  </li>
+</ul>
+<p><em>End of Part 1 (first 3‑4 Level‑2 headings).</em></p>
+</div></details>
+<details><summary><strong>7. Detailed Decision‑Making Factors  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Project Development Stage  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Pilot data present</strong> → consider R01 if PI has sufficient publication record.  </li>
+<li style="margin-left: 0px;"><strong>Limited/no pilot data</strong> → favor R03 or R21 (lower data requirement).  </li>
+<li style="margin-left: 0px;"><strong>Exploratory concept</strong> → R21 emphasizes novelty, high‑risk/high‑reward.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Intended Funding Purpose  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Single research project</strong> → R series (R01, R03, R21).  </li>
+<li style="margin-left: 0px;"><strong>Programmatic core / multiple projects</strong> → P series (P30, P50, P60).  </li>
+<li style="margin-left: 0px;"><strong>Commercialization</strong> → SBIR/STTR phases (R41/R42, R43/R44; R41/R42 for Phase I, R42/R44 for Phase II).  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Investigator Career Level  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>New Investigator / Early Stage Investigator</strong> – eligible for special review criteria; may target R03, R21, K99.  </li>
+<li style="margin-left: 0px;"><strong>Mid‑career</strong> – K series (K01, K08) to gain protected time; R01 feasible if strong preliminary data.  </li>
+<li style="margin-left: 0px;"><strong>Senior</strong> – P or U mechanisms; large collaborative centers.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Institutional &amp; Departmental Policies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Some schools restrict K awards until a set number of post‑doctoral years.  </li>
+<li style="margin-left: 0px;">Verify departmental “career award eligibility” before drafting application.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Research Supplements  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Purpose &amp; Eligibility  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Goal</strong> – augment existing NIH grants to support underrepresented researchers or add specific aims.  </li>
+<li style="margin-left: 0px;"><strong>Eligibility</strong> – PI must have ≥ 2 years remaining on a parent grant; candidates range from high‑school students to senior faculty with documented disadvantage (racial/ethnic minority, disability, career hiatus).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Parent Grants Accepting Supplements  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Grant Type</th>
+<th>Examples</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Research Project Grants</td>
+<td>R01, R00, R10, R18, R22, R24, R35, R37</td>
+</tr>
+<tr>
+<td>Multi‑Project Grants</td>
+<td>P01, P20, P30, P40, P41, P50, P51, P60</td>
+</tr>
+<tr>
+<td>Small Business Awards</td>
+<td>R41, R42, R43, R44</td>
+</tr>
+<tr>
+<td>Cooperative Agreements</td>
+<td>U01, U10, U19, U41, U42, U54</td>
+</tr>
+<tr>
+<td>Director’s Awards</td>
+<td>DP1, DP2</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>8.3 Budget &amp; Duration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Direct costs <strong>$5 k–$100 k+</strong> depending on candidate career level and scope.  </li>
+<li style="margin-left: 0px;">Must not exceed remaining budget of parent award; total supplement ≤ parent award amount.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Application Requirements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Include <em>mentorship plan</em> linking candidate to existing project activities.  </li>
+<li style="margin-left: 0px;">Demonstrate how the experience will <strong>enhance research capability</strong> of the underrepresented individual.  </li>
+<li style="margin-left: 0px;">Provide evidence of institutional commitment to diversity and mentorship.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Diversity Supplements (Minority Supplements)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Target Populations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Racial/ethnic minorities</strong>: African American, Caribbean American, Hispanic/Latino, American Indian, Alaska Native, Native Hawaiian, Pacific Islander.  </li>
+<li style="margin-left: 0px;"><strong>Individuals with disabilities</strong> – physical or mental impairments limiting major life activities.  </li>
+<li style="margin-left: 0px;"><strong>Economically/socially disadvantaged</strong> – low‑income families (per U.S. Census thresholds) or residents of underserved rural/inner‑city environments.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Eligibility Criteria  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Candidate must be <strong>U.S. citizen, non‑citizen national, or lawful permanent resident</strong>.  </li>
+<li style="margin-left: 0px;">Parent grant must have <strong>≥ 2 years</strong> of funded time remaining.  </li>
+<li style="margin-left: 0px;">Proposed research experience must be <strong>integral to the parent project</strong> and aim to develop the candidate’s independent research career.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Funding Limits &amp; Administration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Direct costs <strong>&lt;$5 k–&gt;$100 k</strong>; varies by career stage (undergraduate, graduate, postdoc, faculty).  </li>
+<li style="margin-left: 0px;">Budget cannot exceed the <strong>current balance of the parent award</strong>.  </li>
+<li style="margin-left: 0px;">Supplements terminate with the competitive cycle of the parent grant.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Application Highlights (FOA PA‑15‑322)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Emphasize <strong>institutional diversity goals</strong> and how candidate recruitment advances them.  </li>
+<li style="margin-left: 0px;">Provide a <strong>clear mentorship &amp; training plan</strong>, including regular meetings, skill development, and integration into lab activities.  </li>
+<li style="margin-left: 0px;">Include <strong>budget justification</strong> showing salary, fringe, and research support aligned with actual needs.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Success Rates by Mechanism &amp; Institute (FY2015–FY2016 Snapshot)  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Research Grants (R series)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>R01</strong>: NCI 13.8 %, NHLBI 22.5 %, NINDS 20.2 %, NIMH 23.3 % (FY2015).  </li>
+<li style="margin-left: 0px;"><strong>R03</strong>: NCI 9.9 %, NHLBI 60.0 %, NINDS 12.3 %, NIMH 24.8 %.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Exploratory Grants (R21)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NCI 8.7 %, NHLBI 17.6 %, NINDS 18.9 %, NIMH 19.7 % (FY2015).  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Career Development Awards (K series)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>K99</strong>: NCI 32.1 %, NHLBI 25.8 %, NINDS 9.2 %, NIMH 23.3 % (FY2015).  </li>
+<li style="margin-left: 0px;"><strong>K01</strong>: NCI 19.2 %, NHLBI 48.0 % (FY2015).  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.4 Small Business Awards (SBIR/STTR) – FY2016 Selected I/Cs  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Mechanism</th>
+<th>Institute</th>
+<th>Apps Reviewed</th>
+<th>Apps Funded</th>
+<th>% Funded</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>R01</td>
+<td>NCI</td>
+<td>5,019</td>
+<td>695</td>
+<td>13.8</td>
+</tr>
+<tr>
+<td>R03</td>
+<td>NHLBI</td>
+<td>35</td>
+<td>21</td>
+<td>60.0</td>
+</tr>
+<tr>
+<td>R21</td>
+<td>NHLBI</td>
+<td>307</td>
+<td>54</td>
+<td>17.6</td>
+</tr>
+<tr>
+<td>K99</td>
+<td>NCI</td>
+<td>159</td>
+<td>51</td>
+<td>32.1</td>
+</tr>
+<tr>
+<td>K01</td>
+<td>NHLBI</td>
+<td>75</td>
+<td>36</td>
+<td>48.0</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>10.5 Interpretation Guidance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Higher success</strong> in certain I/Cs (e.g., NHLBI R03) may reflect targeted initiatives; do not let rates alone dictate mechanism choice.  </li>
+<li style="margin-left: 0px;">Align <em>scientific fit</em> with institute mission first; then consider historical funding patterns as secondary information.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. SBIR &amp; STTR Award Mechanisms  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 Distinguishing Features  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>SBIR</strong> – for small businesses that <strong>own</strong> the research; primary focus on product development.  </li>
+<li style="margin-left: 0px;"><strong>STTR</strong> – requires <strong>collaboration</strong> between a small business and a U.S. research institution (e.g., university).  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 Mechanism Codes &amp; Phases  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Phase</th>
+<th>SBIR Code</th>
+<th>STTR Code</th>
+<th>Typical Funding</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>I</td>
+<td>R41</td>
+<td>R41</td>
+<td>≤ $150k total, ≤ 6 months</td>
+</tr>
+<tr>
+<td>II</td>
+<td>R42</td>
+<td>R42</td>
+<td>Up to <strong>$1M</strong> over 2 years (may vary)</td>
+</tr>
+<tr>
+<td>III (commercialization)</td>
+<td>R43/R44</td>
+<td>R43/R44</td>
+<td>Competitive, larger contracts</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>11.3 Application Considerations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must demonstrate <strong>technological feasibility</strong> and <strong>commercial potential</strong>.  </li>
+<li style="margin-left: 0px;">Include <strong>market analysis</strong>, <strong>intellectual property strategy</strong>, and <strong>regulatory pathway</strong> if applicable.  </li>
+<li style="margin-left: 0px;">Small business must be <strong>U.S.-based</strong>, ≤ 500 employees, and meet ownership criteria (≥ 51 % U.S. individuals).  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.4 Resources &amp; Support  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH SBIR/STTR portal (<strong>https://sbir.nih.gov</strong>) provides step‑by‑step guides, webinars, and contact lists for agency program officers.  </li>
+<li style="margin-left: 0px;">Numerous specialized handbooks exist; consider consulting them for detailed budgeting and commercialization planning.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Application Preparation Workflow  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Timeline &amp; Milestones  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>≥ 12 weeks before deadline</strong> – form writing team; assign roles (PI, co‑I, admin).  </li>
+<li style="margin-left: 0px;"><strong>10 weeks</strong> – gather preliminary data, finalize Specific Aims (≤ 1 page).  </li>
+<li style="margin-left: 0px;"><strong>8 weeks</strong> – draft Research Strategy (Significance, Innovation, Approach) → ≤ 6 pages for R03/R21.  </li>
+<li style="margin-left: 0px;"><strong>6 weeks</strong> – obtain letters of support, biosketches, and institutional approvals.  </li>
+<li style="margin-left: 0px;"><strong>4 weeks</strong> – submit internal review (senior mentor, program officer).  </li>
+<li style="margin-left: 0px;"><strong>2 weeks</strong> – incorporate feedback; finalize budget &amp; justification.  </li>
+<li style="margin-left: 0px;"><strong>1 week</strong> – upload to Grants.gov; verify all files (PDFs, forms) open correctly.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Key Document Components  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Cover Letter</strong> – brief statement of fit with institute mission; optional but recommended.  </li>
+<li style="margin-left: 0px;"><strong>Project Summary/Abstract</strong> – ≤ 30 lines; highlight public health relevance &amp; innovation.  </li>
+<li style="margin-left: 0px;"><strong>Specific Aims</strong> – 1–2 pages; bullet each aim, include hypothesis and expected outcome.  </li>
+<li style="margin-left: 0px;"><strong>Research Strategy</strong> – <em>Significance</em> (public health problem), <em>Innovation</em> (novelty), <em>Approach</em> (design, methods, power analysis).  </li>
+<li style="margin-left: 0px;"><strong>Budget &amp; Justification</strong> – align direct costs with FOA limits; justify personnel effort (% of salary).  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Common Pitfalls to Avoid  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Missing FOA number</strong> – leads to automatic rejection.  </li>
+<li style="margin-left: 0px;"><strong>Over‑budgeting</strong> – exceed ceiling → non‑responsive.  </li>
+<li style="margin-left: 0px;"><strong>Insufficient pilot data for R01</strong> – reviewers may deem risk too high.  </li>
+<li style="margin-left: 0px;"><strong>Inconsistent biosketches</strong> – ensure all entries use NIH format (e.g., “Positions &amp; Honors”).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. Program Officer Interaction  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.1 When to Contact  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Pre‑submission</strong> – clarify mechanism suitability, institute priorities, and any special requirements.  </li>
+<li style="margin-left: 0px;"><strong>During review</strong> – if clarification needed on reviewer comments (post‑review).  </li>
+</ul>
+</div></details>
+<details><summary><strong>13️⃣ Tips for Effective Communication  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prepare a <strong>concise 2‑paragraph email</strong>: introduce yourself, state grant mechanism, ask specific question(s).  </li>
+<li style="margin-left: 0px;">Attach <strong>draft Specific Aims</strong> or abstract for quick reference.  </li>
+<li style="margin-left: 0px;">Follow up politely after 1 week if no response; keep records of all correspondence.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. Post‑Submission &amp; Review Process  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>14.1 Review Stages  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Administrative Check</strong> – completeness, FOA compliance.</p>
+<p>2. <strong>Scientific Peer Review (Study Section)</strong> – scores 1–9 (lower = better).</p>
+<p>3. <strong>Council Review</strong> – institute-level relevance; may adjust priority score.</p>
+<p>4. <strong>Funding Decision</strong> – based on score, institute budget, and programmatic fit.</p>
+</div></details>
+<details><summary><strong>14.2 Scoring Components (R series)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Overall Impact Score</strong> – weighted synthesis of significance, investigator, innovation, approach, environment.  </li>
+<li style="margin-left: 0px;"><strong>Individual Criterion Scores</strong> – each rated 1–9; used for feedback but not directly in funding decision.  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.3 Common Reviewer Comments &amp; Responses  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Issue</th>
+<th>Typical Comment</th>
+<th>Suggested Response</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Lack of pilot data</td>
+<td>“Insufficient preliminary results to support feasibility.”</td>
+<td>Provide additional existing datasets, cite analogous studies, or propose a short pilot within the grant (if allowed).</td>
+</tr>
+<tr>
+<td>Over‑ambitious aims</td>
+<td>“Aims 2 and 3 are not achievable within budget/period.”</td>
+<td>Refine aims; split into separate applications or reduce scope.</td>
+</tr>
+<tr>
+<td>Investigator expertise</td>
+<td>“PI lacks experience in method X.”</td>
+<td>Add collaborator with relevant expertise; include letters of support.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div></details>
+<details><summary><strong>15. Resubmission (A0) Strategies  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>15.1 Analyzing Summary Statement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Highlight <strong>“Major”</strong> vs <strong>“Minor”</strong> concerns; prioritize addressing major points.  </li>
+<li style="margin-left: 0px;">Use reviewer <strong>“Score Range”</strong> to gauge competitiveness; aim for ≥ 2‑point improvement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>15.2 Revision Checklist  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Revise <strong>Specific Aims</strong> to directly address significance and feasibility concerns.  </li>
+<li style="margin-left: 0px;">Strengthen <strong>Approach</strong>: add power calculations, alternative analyses, contingency plans.  </li>
+<li style="margin-left: 0px;">Update <strong>Biosketches</strong> with any new publications or training completed since original submission.  </li>
+</ul>
+</div></details>
+<details><summary><strong>15.3 Timeline for Resubmission  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Minimum <strong>30 days</strong> after receipt of summary statement to incorporate changes (NIH policy).  </li>
+<li style="margin-left: 0px;">Submit as <strong>A0</strong> (new application) but reference prior <strong>application ID</strong> in cover letter.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>16. Special Considerations for International &amp; Multi‑Institutional Applications  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>16.1 Foreign Institution Participation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must be <strong>eligible</strong> under NIH policy; foreign sites can receive up to <strong>30 %</strong> of total direct costs (unless otherwise specified).  </li>
+<li style="margin-left: 0px;">Include <strong>Foreign Institutional Review Board (IRB)</strong> approvals and compliance statements.  </li>
+</ul>
+</div></details>
+<details><summary><strong>16.2 Multi‑PI &amp; Consortium Grants  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use <strong>Multiple Principal Investigator (MPI) format</strong> for collaborative projects (allowed on R01, P series).  </li>
+<li style="margin-left: 0px;">Clearly delineate <strong>responsibilities</strong>, <strong>budget allocations</strong>, and <strong>lead PI</strong> for each sub‑project.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>17. Ethical &amp; Compliance Requirements  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>17.1 Human Subjects / Animal Welfare  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Submit <strong>IRB/IBC approval letters</strong> or indicate pending with anticipated date.  </li>
+<li style="margin-left: 0px;">Include <strong>Data Safety Monitoring Plan</strong> for clinical trials (≥ Phase II).  </li>
+</ul>
+</div></details>
+<details><summary><strong>17.2 Conflict of Interest (COI) Disclosures  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All investigators must complete <strong>COI forms</strong> in eRA Commons; disclose financial interests &gt; $5,000.  </li>
+</ul>
+</div></details>
+<details><summary><strong>17.3 Data Sharing &amp; Public Access  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH expects a <strong>Data Management Plan</strong> for R01 and larger awards; specify repository, timeline, and access restrictions (if any).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>18. Final Checklist Before Submission  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">[ ] FOA number correctly entered on application cover page.  </li>
+<li style="margin-left: 0px;">[ ] All required forms uploaded (e.g., PHS 398 Cover Sheet, Budget, Biosketches).  </li>
+<li style="margin-left: 0px;">[ ] Project Summary ≤ 30 lines; Specific Aims ≤ 1 page.  </li>
+<li style="margin-left: 0px;">[ ] Research Strategy ≤ 6 pages for R03/R21; ≤ 12 pages for R01.  </li>
+<li style="margin-left: 0px;">[ ] Budget within mechanism ceiling; effort percentages sum to ≤ 100 % for each PI.  </li>
+<li style="margin-left: 0px;">[ ] Letters of support signed and uploaded (institutional, collaborator).  </li>
+<li style="margin-left: 0px;">[ ] Program Officer consulted &amp; notes incorporated.  </li>
+<li style="margin-left: 0px;">[ ] Internal review completed; all reviewer comments addressed.  </li>
+<li style="margin-left: 0px;">[ ] Final PDF preview passes Grants.gov validation checks.  </li>
+</ul>
+<p><em>End of Part 3 – complete hierarchical extraction of the source material.</em></p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

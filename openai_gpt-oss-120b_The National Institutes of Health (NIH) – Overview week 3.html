@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The National Institutes of Health (NIH) – Overview  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>The National Institutes of Health (NIH) – Overview  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: NIH Grant Proposal Guide (2026)  </li>
+<li style="margin-left: 0px;">Topic: Institutional mission, structure, funding, and proposal process  </li>
+</ul>
+<details><summary><strong>1. Mission &amp; Goals  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Mission</strong>: science → fundamental knowledge of living systems → extend healthy life, reduce illness/disability.  </li>
+<li style="margin-left: 0px;"><strong>Goal 1</strong>: Foster creative discoveries, innovative strategies → boost national health capacity.  </li>
+<li style="margin-left: 0px;"><strong>Goal 2</strong>: Develop/renew human &amp; physical resources → ensure disease‑prevention capability.  </li>
+<li style="margin-left: 0px;"><strong>Goal 3</strong>: Expand medical knowledge base → enhance economic well‑being, maximize public ROI.  </li>
+<li style="margin-left: 0px;"><strong>Goal 4</strong>: Exemplify scientific integrity, accountability, social responsibility.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Core Functions &amp; Research Areas  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Leads programs on <strong>causes, diagnosis, prevention, cure</strong> of human diseases.  </li>
+<li style="margin-left: 0px;">Supports research in <strong>human growth &amp; development</strong>, <strong>environmental toxicology</strong>, <strong>mental/addictive/physical disorders</strong>.  </li>
+<li style="margin-left: 0px;">Directs information‑exchange initiatives: medical libraries, health‑information specialists training.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. Organizational Structure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Location</strong>: Headquarters – Bethesda, MD; some institutes (e.g., Aging) in Baltimore, MD.  </li>
+<li style="margin-left: 0px;"><strong>Components</strong>: Office of the Director (OD) + 27 Institutes &amp; Centers (I/Cs).  </li>
+<li style="margin-left: 0px;"><strong>Leadership</strong>: NIH Director = Francis Collins, MD, PhD (geneticist, Human Genome Project lead).  </li>
+<li style="margin-left: 0px;"><strong>Funding</strong>: FY‑2016 proposed budget <strong>$31.3 B</strong>; primary funder of U.S. biomedical research and many international projects.  </li>
+</ul>
+<details><summary><strong>3.1 Major Institutes &amp; Centers (selected)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">National Cancer Institute (NCI) – cancer biology, treatment.  </li>
+<li style="margin-left: 0px;">National Heart, Lung, &amp; Blood Institute (NHLBI) – cardiovascular &amp; pulmonary health.  </li>
+<li style="margin-left: 0px;">National Institute of Mental Health (NIMH) – psychiatric disorders.  </li>
+<li style="margin-left: 0px;">National Institute on Aging (NIA) – gerontology.  </li>
+<li style="margin-left: 0px;">Center for Scientific Review (CSR) – application triage &amp; reviewer assignment.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Supporting Offices (selected)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Office of the Director (OD) – policy, coordination.  </li>
+<li style="margin-left: 0px;">Center for Information Technology (CIT) – IT infrastructure.  </li>
+<li style="margin-left: 0px;">Clinical Center (CC) – patient‑based research facility.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Funding Landscape &amp; Proposal Targeting  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Identify <strong>most relevant I/C</strong> based on primary scientific focus (e.g., depression → NIMH; CHF → NHLBI).  </li>
+<li style="margin-left: 0px;">Review each institute’s <strong>website &amp; funding opportunities</strong> for budget disparities and specific interest areas.  </li>
+<li style="margin-left: 0px;">When multiple institutes fit, weigh alignment with project title and stated aims to select optimal sponsor.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5. NIH Grant Submission Workflow (high‑level)  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Planning</strong> (Months 1–3): collect preliminary data, set internal deadlines.</p>
+<p>2. <strong>Writing</strong> (recommended start months before due date).</p>
+<p>3. <strong>Submitting</strong> via <strong>grants.gov</strong>.</p>
+<p>4. <strong>Receipt &amp; Referral</strong> – CSR checks compliance, assigns to Institute/Center and Scientific Review Group (SRG).</p>
+<p>5. <strong>Initial Peer Review</strong> – SRG scores scientific merit; priority scores posted in eRA Commons.</p>
+<p>6. <strong>Second‑Level Review</strong> – Advisory council/board evaluates applications.</p>
+<p>7. <strong>Award Decision</strong> – IC director issues Notice of Award (NoA); pre‑award administrative review completed.</p>
+<p>8. <strong>Post‑Award Management</strong> – fiscal monitoring, reporting, compliance.</p>
+<p><em>All steps include approximate timing (e.g., Peer Review ≈ Months 4–8, Award ≈ Months 9–10).</em></p>
+</div></details>
+<details><summary><strong>6. Institutes, Centers, &amp; Offices – Directory  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Alphabetical list</strong> with acronyms &amp; URLs (selected entries shown; full table in source).  </li>
+</ul>
+<details><summary><strong>6.1 Research Institutes &amp; Centers  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>National Cancer Institute (NCI)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nci.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Eye Institute (NEI)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nei.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Heart, Lung, &amp; Blood Institute (NHLBI)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nhlbi.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Human Genome Research Institute (NHGRI)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.genome.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Allergy &amp; Infectious Diseases (NIAID)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.niaid.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Arthritis &amp; Musculoskeletal &amp; Skin Diseases (NIAMS)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.niams.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Biomedical Imaging &amp; Bioengineering (NIBIB)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nibib.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Dental &amp; Craniofacial Research (NIDCR)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nidcr.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Diabetes &amp; Digestive &amp; Kidney Diseases (NIDDK)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.niddk.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Environmental Health Sciences (NIEHS)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.niehs.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of General Medical Sciences (NIGMS)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nigms.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Mental Health (NIMH)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nimh.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Neurological Disorders &amp; Stroke (NINDS)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.ninds.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Nursing Research (NINR)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://ninr.nih.gov/ninr</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute on Aging (NIA)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nia.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute on Alcohol Abuse &amp; Alcoholism (NIAAA)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.niaaa.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute on Deafness &amp; Other Communication Disorders (NIDCD)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nidcd.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute on Drug Abuse (NIDA)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nida.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Child Health &amp; Human Development (NICHD)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nichd.nih.gov</code>  </li>
+<li style="margin-left: 0px;"><strong>National Institute of Minority Health &amp; Health Disparities (NCMHD)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.ncmhd.nih.gov</code>  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Support Offices &amp; Centers  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Center for Scientific Review (CSR)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.csr.nih.gov</code> (application triage, reviewer assignment).  </li>
+<li style="margin-left: 0px;"><strong>Center for Information Technology (CIT)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.cit.nih.gov</code> (IT services).  </li>
+<li style="margin-left: 0px;"><strong>Clinical Center (CC)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://clinicalcenter.nih.gov</code> (patient‑based research facility).  </li>
+<li style="margin-left: 0px;"><strong>Fogarty International Center (FIC)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.fic.nih.gov</code> (global health collaborations).  </li>
+<li style="margin-left: 0px;"><strong>Office of AIDS Research (OAR)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.oar.nih.gov</code>.  </li>
+<li style="margin-left: 0px;"><strong>Office of Behavioral &amp; Social Sciences Research (OBSSR)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://obssr.od.nih.gov</code>.  </li>
+<li style="margin-left: 0px;"><strong>Office of Disease Prevention (ODP)</strong> – <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://odp.od.nih.gov</code>.  </li>
+<li style="margin-left: 0px;"><strong>Office of the Director (OD)</strong> – policy, planning, coordination.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Accessing Disease Domains &amp; Program Details  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Comprehensive disease domain listings per institute/center: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">https://www.nih.gov/institutes-nih/list-nih-institutes-centers-offices</code>.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Other Federal Funding Agencies (HHS Portfolio)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH is <strong>not</strong> the sole source of health‑research funding; several HHS entities also award grants.  </li>
+</ul>
+<details><summary><strong>7.1 Major HHS Research‑Funding Bodies  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Agency</th>
+<th>Acronym</th>
+<th>URL</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Administration for Children &amp; Families</td>
+<td>ACF</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.acf.hhs.gov</code></td>
+</tr>
+<tr>
+<td>Administration on Aging</td>
+<td>AOA</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.aoa.gov</code></td>
+</tr>
+<tr>
+<td>Agency for Healthcare Research &amp; Quality</td>
+<td>AHRQ</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.ahrq.gov</code></td>
+</tr>
+<tr>
+<td>Agency for Toxic Substances &amp; Disease Registry</td>
+<td>ATSDR</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.atsdr.cdc.gov</code></td>
+</tr>
+<tr>
+<td>Centers for Disease Control &amp; Prevention</td>
+<td>CDC</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.cdc.gov</code></td>
+</tr>
+<tr>
+<td>Centers for Medicaid &amp; Medicare Services*</td>
+<td>CMS</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.cms.hhs.gov</code></td>
+</tr>
+<tr>
+<td>Food and Drug Administration</td>
+<td>FDA</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.fda.gov</code></td>
+</tr>
+<tr>
+<td>Health Resources &amp; Services Administration</td>
+<td>HRSA</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.hrsa.gov</code></td>
+</tr>
+<tr>
+<td>Indian Health Service</td>
+<td>IHS</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.ihs.gov</code></td>
+</tr>
+<tr>
+<td>National Institute for Occupational Safety &amp; Health</td>
+<td>NIOSH</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.cdc.gov/niosh/homepage.html</code></td>
+</tr>
+<tr>
+<td>Office of Minority Health &amp; Health Disparities</td>
+<td>OMHD</td>
+<td><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.cdc.gov/omhd</code></td>
+</tr>
+</tbody>
+</table>
+<p>\*formerly Health Care Financing Administration (HCFA).</p>
+</div></details>
+<details><summary><strong>7.2 Relevance to Grant Seekers  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Familiarity with these programs helps <strong>identify complementary or alternative funding streams</strong>.  </li>
+<li style="margin-left: 0px;">Not all listed entities award research grants; some provide <strong>implementation, regulatory, or service‑delivery funds</strong> that may align with translational projects.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Detailed NIH Grant Submission &amp; Review Timeline  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Visual flow chart (Figure 1.2) broken into phases with month ranges; reproduced here as nested bullets for machine ingestibility.  </li>
+</ul>
+<details><summary><strong>8.1 Pre‑Submission Phase (Months 1–3)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Planning</strong>: early internal deadlines, collect pilot data, define aims.  </li>
+<li style="margin-left: 0px;"><strong>Writing</strong>: draft application components (Specific Aims, Research Strategy, etc.).  </li>
+<li style="margin-left: 0px;"><strong>Receipt &amp; Referral</strong>: submit via <strong>grants.gov</strong>; CSR checks compliance, assigns to Institute/Center and Scientific Review Group (SRG).  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Peer‑Review Phase (Months 4–8)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Initial Review (SRG)</strong>: reviewers score scientific merit → generate <strong>Priority Score</strong> in eRA Commons.  </li>
+<li style="margin-left: 0px;"><strong>Summary Statement</strong>: feedback posted for PI in eRA Commons.  </li>
+<li style="margin-left: 0px;"><strong>Second Level Review</strong>: advisory council/board evaluates applications, considers scores &amp; relevance to institute mission.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Award Phase (Months 9–10)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Funding Decision</strong>: Institute/Center director approves; issues <strong>Notice of Award (NoA)</strong> to applicant institution.  </li>
+<li style="margin-left: 0px;"><strong>Pre‑Award Management</strong>: grants‑management staff conducts final administrative review, negotiates terms &amp; conditions.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Post‑Award Management (Ongoing)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Administrative &amp; Fiscal Monitoring</strong>: periodic progress reports, financial audits, compliance checks.  </li>
+<li style="margin-left: 0px;"><strong>Scientific Reporting</strong>: updates to NIH via eRA Commons; adherence to public‑access policies.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Key Reference Materials &amp; URLs  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NIH Office of the Director (OD) site</strong> – policy documents, strategic plans: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">http://www.nih.gov/od</code>  </li>
+<li style="margin-left: 0px;"><strong>Institute &amp; Center directory (alphabetical)</strong> – full list with URLs: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">https://www.nih.gov/institutes-nih/list-nih-institutes-centers-offices</code>.  </li>
+<li style="margin-left: 0px;"><strong>Grant application portal</strong> – federal submission system: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">https://www.grants.gov</code>.  </li>
+<li style="margin-left: 0px;"><strong>eRA Commons</strong> – PI account for scores, summary statements, award notices.  </li>
+</ul>
+<details><summary><strong>9.1 Frequently Used NIH Web Resources  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NIH Grants Policy Statement</strong> – compliance guidelines.  </li>
+<li style="margin-left: 0px;"><strong>NIH RePORTER</strong> – searchable database of funded projects.  </li>
+<li style="margin-left: 0px;"><strong>NIH Guide for Grants and Contracts</strong> – official announcements &amp; FOAs.  </li>
+<li style="margin-left: 0px;"><strong>NIH Data Sharing Policies</strong> – requirements for data management plans.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Common Pitfalls &amp; Tips for Applicants  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Mis‑identifying the target I/C</strong> → low funding probability; always verify primary scientific focus against institute mission statements.  </li>
+<li style="margin-left: 0px;"><strong>Overlooking budget limits</strong> – each institute publishes maximum award caps; exceedances trigger administrative rejection.  </li>
+<li style="margin-left: 0px;"><strong>Ignoring public‑access requirements</strong> – NIH mandates PubMed Central deposition of peer‑reviewed articles.  </li>
+<li style="margin-left: 0px;"><strong>Late internal deadlines</strong> – NIH reviewers expect complete, polished submissions; start writing ≥3 months before due date.  </li>
+</ul>
+<details><summary><strong>10.1 Checklist Before Submission  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Confirm <strong>FOA eligibility</strong> (citizenship, institution type).  </li>
+<li style="margin-left: 0px;">Align <strong>Specific Aims</strong> with institute’s strategic priorities.  </li>
+<li style="margin-left: 0px;">Attach <strong>human subjects/animal use certifications</strong> if applicable.  </li>
+<li style="margin-left: 0px;">Include <strong>data‑sharing plan</strong> and <strong>budget justification</strong>.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Post‑Award Compliance &amp; Reporting  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Annual Progress Report (PHS 398)</strong> – due 1 year after award start, then annually.  </li>
+<li style="margin-left: 0px;"><strong>Financial Status Report (FSR)</strong> – quarterly for most grants; includes expenditures vs. budget.  </li>
+<li style="margin-left: 0px;"><strong>Closeout Process</strong> – final report, equipment disposition, and data archiving required within 90 days of project end.  </li>
+</ul>
+<details><summary><strong>11.1 Monitoring Mechanisms  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NIH Office of Extramural Research (OER)</strong> conducts site visits for high‑risk awards.  </li>
+<li style="margin-left: 0px;"><strong>Audit Trails</strong> in eRA Commons track all submissions, revisions, and communications.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Glossary of Common Acronyms (selected)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>I/C</strong> – Institute/Center  </li>
+<li style="margin-left: 0px;"><strong>OD</strong> – Office of the Director  </li>
+<li style="margin-left: 0px;"><strong>CSR</strong> – Center for Scientific Review  </li>
+<li style="margin-left: 0px;"><strong>CIT</strong> – Center for Information Technology  </li>
+<li style="margin-left: 0px;"><strong>CC</strong> – Clinical Center  </li>
+<li style="margin-left: 0px;"><strong>FOA</strong> – Funding Opportunity Announcement  </li>
+<li style="margin-left: 0px;"><strong>eRA</strong> – Electronic Research Administration (Commons)  </li>
+<li style="margin-left: 0px;"><strong>NoA</strong> – Notice of Award  </li>
+<li style="margin-left: 0px;"><strong>PI</strong> – Principal Investigator  </li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
