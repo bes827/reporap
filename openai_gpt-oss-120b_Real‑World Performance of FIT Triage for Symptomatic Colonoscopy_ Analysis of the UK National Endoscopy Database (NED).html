@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Real‑World Performance of FIT Triage for Symptomatic Colonoscopy: Analysis of the UK National Endoscopy Database (NED)  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Real‑World Performance of FIT Triage for Symptomatic Colonoscopy: Analysis of the UK National Endoscopy Database (NED)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Alimentary Pharmacology &amp; Therapeutics</em> 2026;0:1‑9, DOI 10.1111/apt.70537  </li>
+<li style="margin-left: 0px;">Authors: David Beaton, Mahmoud Mohamed, Linda Sharp, Keith Pohl, Matthew Rutter  </li>
+</ul>
+<details><summary><strong>1. Background &amp; Objectives  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">CRC = 2nd leading cause of cancer death worldwide; &gt;16 000 UK deaths/yr.  </li>
+<li style="margin-left: 0px;">Colonoscopy → diagnosis + polyp removal (primary CRC prevention).  </li>
+<li style="margin-left: 0px;">Symptomatic colonoscopies have low pathology yield; NICE/BSG recommend FIT triage (≥10 µg Hb/g) for urgent referral.  </li>
+<li style="margin-left: 0px;">Study aim: quantify diagnostic yield of FIT‑triaged symptomatic colonoscopy and assess independent effects of <strong>FIT, age, sex, symptoms</strong> on polyp &amp; cancer detection.</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Data Source &amp; Cohort Definition  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Nationwide prospectively collected colonoscopy reports (June 2023–Aug 2025) from NEDi2 (≈73% UK units).  </li>
+<li style="margin-left: 0px;">Inclusion: symptomatic procedures <em>including</em> iron‑deficiency anaemia (IDA).  </li>
+<li style="margin-left: 0px;">Exclusions: incomplete caecal intubation (unless due to malignancy), missing diagnosis, age ≥100.  </li>
+<li style="margin-left: 0px;">Hierarchical symptom classification applied; only one symptom per case (highest priority).  </li>
+<li style="margin-left: 0px;">Diagnosis hierarchy: <strong>CRC &gt; large polyp ≥10 mm &gt; small polyp &lt;10 mm &gt; other &gt; haemorrhoids &gt; normal/diverticulosis</strong>.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. FIT Categorisation &amp; Statistical Approach  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">FIT recorded as string or numeric; numeric capped at 400 µg Hb/g.  </li>
+<li style="margin-left: 0px;">Grouped: <strong>&lt;10</strong>, <strong>10‑19</strong>, <strong>20‑29</strong>, <strong>30‑39</strong>, <strong>40‑49</strong>, <strong>50‑99</strong>, <strong>100‑149</strong>, <strong>150‑199</strong>, <strong>200‑299</strong>, <strong>≥300</strong>.  </li>
+<li style="margin-left: 0px;">“FIT &lt;10” = numeric &lt;10 + ‘FIT negative’; “FIT ≥10” = numeric ≥10 + ‘FIT positive’.  </li>
+<li style="margin-left: 0px;">Mixed‑effects logistic regression (random effect = endoscopist) → adjusted odds ratios (aOR) for <strong>small polyps, large polyps, CRC</strong>.  </li>
+<li style="margin-left: 0px;">Covariates: age group, sex, hierarchical symptom group, FIT category.  </li>
+<li style="margin-left: 0px;">Post‑estimation margins modelled CRC risk by age × FIT × symptom (IDA vs other).  </li>
+</ul>
+</div></details>
+<details><summary><strong>4. Key Descriptive Findings (first half of Results)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Total symptomatic colonoscopies: <strong>447,109</strong>; FIT recorded in <strong>202,219 (45.2%)</strong>.  </li>
+<li style="margin-left: 0px;">Age distribution: 34 % &lt;50 yr; sex: 53.3 % female.  </li>
+<li style="margin-left: 0px;">Most common symptoms: rectal bleeding (28.4 %), change in bowel habit (19.9 %), diarrhoea (14.3 %), IDA (13.8 %).  </li>
+<li style="margin-left: 0px;">Overall CRC yield: <strong>1.9 %</strong> (95 % CI 1.8‑1.9).  </li>
+<li style="margin-left: 0px;">FIT ≥10 CRC yield: <strong>3.8 %</strong> (↑12‑fold vs FIT &lt;10).  </li>
+<li style="margin-left: 0px;">FIT &lt;10 CRC yield: <strong>0.3 %</strong>.  </li>
+<li style="margin-left: 0px;">FIT ≥10 also higher IBD detection (<strong>6.5 %</strong> vs <strong>2.6 %</strong>) and large polyp detection (<strong>10.8 %</strong> vs <strong>3.8 %</strong>, p &lt; 0.001).  </li>
+</ul>
+<p><em>The next sections (full regression tables, detailed age‑specific yields, modelled risk scenarios, discussion, limitations, conclusions) will be presented in the subsequent runs.</em></p>
+</div></details>
+<details><summary><strong>5. Mixed‑Effects Logistic Regression Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Reference categories</strong>: age 16‑39, female sex, symptom = rectal bleeding, FIT &lt;10.  </li>
+</ul>
+<details><summary><strong>5.1 Cancer (CRC)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">aOR ↑ sharply with higher FIT levels:  </li>
+<li style="margin-left: 20px;">FIT 10‑19 → aOR 3.31 (95 % CI 2.62‑4.19)  </li>
+<li style="margin-left: 20px;">FIT 20‑29 → aOR 4.44 (3.46‑5.70)  </li>
+<li style="margin-left: 20px;">FIT 30‑39 → aOR 6.65 (5.17‑8.57)  </li>
+<li style="margin-left: 20px;">FIT 40‑49 → aOR 8.51 (6.58‑11.01)  </li>
+<li style="margin-left: 20px;">FIT 50‑99 → aOR 10.20 (8.15‑12.78)  </li>
+<li style="margin-left: 20px;">FIT 100‑199 → aOR 21.19 (17.07‑26.30)  </li>
+<li style="margin-left: 20px;">FIT 200‑299 → aOR 36.49 (29.42‑45.27)  </li>
+<li style="margin-left: 20px;">FIT ≥300 → aOR 46.13 (37.25‑57.12)  </li>
+<li style="margin-left: 0px;">Age effect (vs 16‑39):  </li>
+<li style="margin-left: 20px;">40‑49 aOR 0.40 (0.36‑0.45)  </li>
+<li style="margin-left: 20px;">50‑59 aOR 0.50 (0.46‑0.55)  </li>
+<li style="margin-left: 20px;">60‑69 aOR 0.68 (0.63‑0.74)  </li>
+<li style="margin-left: 20px;">70‑79 reference (1.00)  </li>
+<li style="margin-left: 20px;">80‑99 aOR 1.47 (1.35‑1.60)  </li>
+<li style="margin-left: 0px;">Male sex aOR 1.13 (1.07‑1.20).  </li>
+<li style="margin-left: 0px;">Symptom effect: IDA aOR 2.14 (1.97‑2.33) vs rectal bleeding; anaemia aOR 1.30 (1.16‑1.47); other symptoms ≈1.0 (no significant impact).</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Large Polyps (≥10 mm)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">FIT association (vs &lt;10):  </li>
+<li style="margin-left: 20px;">FIT 10‑19 → aOR 2.19 (2.04‑2.35)  </li>
+<li style="margin-left: 20px;">FIT 20‑29 → aOR 2.37 (2.18‑2.57)  </li>
+<li style="margin-left: 20px;">FIT 30‑39 → aOR 2.68 (2.45‑2.94)  </li>
+<li style="margin-left: 20px;">FIT 40‑49 → aOR 3.00 (2.72‑3.31)  </li>
+<li style="margin-left: 20px;">FIT 50‑99 → aOR 3.30 (3.06‑3.56)  </li>
+<li style="margin-left: 20px;">FIT 100‑199 → aOR 3.83 (3.55‑4.12)  </li>
+<li style="margin-left: 20px;">FIT 200‑299 → aOR 3.36 (3.10‑3.65)  </li>
+<li style="margin-left: 20px;">FIT ≥300 → aOR 3.79 (3.51‑4.09)  </li>
+<li style="margin-left: 0px;">Age effect: progressive increase, highest in 70‑79 (reference).  </li>
+<li style="margin-left: 0px;">Male sex aOR 1.34 (1.29‑1.38).  </li>
+<li style="margin-left: 0px;">IDA aOR 0.82 (0.77‑0.87); anaemia aOR 0.91 (0.84‑0.98).</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Small Polyps (&lt;10 mm)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">FIT association modest:  </li>
+<li style="margin-left: 20px;">FIT 10‑19 → aOR 1.35 (1.30‑1.40)  </li>
+<li style="margin-left: 20px;">FIT 20‑29 → aOR 1.41 (1.35‑1.47)  </li>
+<li style="margin-left: 20px;">FIT 30‑39 → aOR 1.38 (1.31‑1.45)  </li>
+<li style="margin-left: 0px;">Age effect: strong increase with age; 80‑99 aOR 0.96 (0.92‑1.00) vs reference 70‑79.  </li>
+<li style="margin-left: 0px;">Male sex aOR 1.48 (1.45‑1.51).  </li>
+<li style="margin-left: 0px;">IDA aOR 0.87 (0.84‑0.91); anaemia aOR 0.92 (0.88‑0.97).</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Age‑Specific Diagnostic Yields by FIT Category  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Age (yr)</th>
+<th>FIT ≥10 CRC % (95 % CI)</th>
+<th>FIT &lt;10 CRC % (95 % CI)</th>
+<th>FIT ≥10 Large Polyp % (95 % CI)</th>
+<th>FIT &lt;10 Large Polyp % (95 % CI)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>16‑39</td>
+<td>0.6 % (0.5‑0.7)</td>
+<td>0.3 % (0.2‑0.3)</td>
+<td>4.0 % (≈)</td>
+<td>1.3 %</td>
+</tr>
+<tr>
+<td>40‑49</td>
+<td>2.5 % (2.3‑2.7)</td>
+<td>0.3 % (0.2‑0.3)</td>
+<td>10.8 % (≈)</td>
+<td>3.8 %</td>
+</tr>
+<tr>
+<td>50‑59</td>
+<td>2.8 % (2.6‑3.0)</td>
+<td>0.4 % (0.3‑0.5)</td>
+<td>12.5 %</td>
+<td>4.5 %</td>
+</tr>
+<tr>
+<td>60‑69</td>
+<td>3.5 % (≈)</td>
+<td>0.5 % (≈)</td>
+<td>14.2 %</td>
+<td>5.6 %</td>
+</tr>
+<tr>
+<td>70‑79</td>
+<td>4.1 % (≈)</td>
+<td>0.7 % (≈)</td>
+<td>15.8 %</td>
+<td>6.9 %</td>
+</tr>
+<tr>
+<td>80‑99</td>
+<td>5.2 % (≈)</td>
+<td>1.0 % (≈)</td>
+<td>17.3 %</td>
+<td>8.4 %</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Trend</strong>: CRC and large‑polyp yields rise steeply with age; FIT ≥10 consistently ≈10‑12× higher CRC yield than FIT &lt;10 across all ages.</li>
+</ul>
+</div></details>
+<details><summary><strong>7. Modelled CRC Risk Scenarios &amp; Workload Impact  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Risk Modelling (post‑estimation margins)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>IDA + FIT ≥10</strong>: CRC risk &gt;1 % from age 40 upward; reaches &gt;5 % at FIT ≥100 in ages 50+.  </li>
+<li style="margin-left: 0px;"><strong>IDA + FIT &lt;10</strong>: CRC risk &lt;1 % except in patients <strong>&gt;80 yr</strong>, where it exceeds 1 %.  </li>
+<li style="margin-left: 0px;"><strong>Other symptoms + FIT ≥10</strong>: Risk ≥1 % from age 40; rises to &gt;5 % at FIT ≥100 for ages 60+.  </li>
+<li style="margin-left: 0px;"><strong>Other symptoms + FIT &lt;10</strong>: CRC risk remains &lt;0.5 % across all ages.</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Comparative Pathway Scenarios  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Scenario</th>
+<th>FIT Threshold (µg Hb/g)</th>
+<th>Age Cut‑offs</th>
+<th>IDA status</th>
+<th>Colonoscopies avoided</th>
+<th>% Capacity saved</th>
+<th>CRCs missed</th>
+<th>IBDs missed</th>
+<th>Large polyps missed</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Current guidance</strong> (investigate all with FIT ≥10 or IDA)</td>
+<td>≥10</td>
+<td>All ages</td>
+<td>IDA or any symptom</td>
+<td>25,743 (16.2 %)</td>
+<td>—</td>
+<td>47 (1.0 %)</td>
+<td>709 (7.5 %)</td>
+<td>988 (6.7 %)</td>
+</tr>
+<tr>
+<td><strong>Risk‑stratified model</strong> (investigate only if modeled CRC risk ≥1 %)</td>
+<td>Variable (≥100 for &lt;40 yr; ≥10 for ≥40 yr)</td>
+<td>&lt;40 yr: FIT ≥100 ; 40‑69 yr: FIT ≥10 ; ≥70 yr: FIT ≥10</td>
+<td>IDA or any symptom</td>
+<td>65,966 (41.5 %)</td>
+<td>&gt;40 %</td>
+<td>263 (5.4 %)</td>
+<td>3,397 (35.9 %)</td>
+<td>3,505 (23.7 %)</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Interpretation</strong>: risk‑stratified pathway saves ~42 % colonoscopy capacity while retaining ≥94 % of CRC detections; however, it would miss a substantial proportion of IBD and large polyps.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Clinical Implications &amp; Recommendations (partial)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">FIT‑based triage <strong>outperforms</strong> symptom‑only referral for detecting CRC and large polyps.  </li>
+<li style="margin-left: 0px;"><strong>FIT ≥10</strong> identifies high‑risk patients even in the 40‑49 age group (CRC yield ≈2.5 %).  </li>
+<li style="margin-left: 0px;">For patients <strong>&lt;40 yr</strong>, a higher FIT threshold (≥100) is advisable to maintain specificity.  </li>
+<li style="margin-left: 0px;">Universal recording of FIT (currently only 45 % documented) is essential for optimal pathway performance.  </li>
+</ul>
+<p><em>The next section will cover discussion points, study limitations, and final conclusions.</em></p>
+</div></details>
+<details><summary><strong>9. Discussion  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Principal Findings  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>FIT superiority</strong>: Nationwide data show FIT ≥10 yields a CRC detection rate of <strong>3.8 %</strong>, twelve‑fold higher than FIT &lt;10 (0.3 %).  </li>
+<li style="margin-left: 0px;"><strong>Age interaction</strong>: FIT retains high predictive value down to age 40; below 40, only very high FIT values (≥100) confer meaningful risk.  </li>
+<li style="margin-left: 0px;"><strong>Symptom hierarchy</strong>: IDA is the strongest symptom predictor of CRC (aOR 2.14 vs rectal bleeding); other symptoms add little independent information once FIT is accounted for.  </li>
+<li style="margin-left: 0px;"><strong>Polyp detection</strong>: FIT strongly predicts large polyps (↑3‑4× at ≥10), but only modestly associates with small polyps, confirming limited sensitivity for early adenomas.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Comparison with Prior Evidence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aligns with NICE/BSG recommendation of FIT ≥10 as urgent referral trigger; extends evidence to <strong>real‑world national scale</strong>.  </li>
+<li style="margin-left: 0px;">Confirms meta‑analysis findings of 87‑92 % sensitivity and 84‑88 % specificity at the ≥10 cut‑off, now demonstrated in symptomatic rather than screening cohorts.  </li>
+<li style="margin-left: 0px;">Demonstrates that <strong>FIT also modestly enriches IBD detection</strong> (6.5 % vs 2.6 % for FIT &lt;10), but discrimination remains insufficient to replace calprotectin testing.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Implications for Clinical Pathways  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Universal FIT triage</strong> should be mandated for all symptomatic referrals; current uptake (45 %) limits potential gains.  </li>
+<li style="margin-left: 0px;">Adopt a <strong>dual‑threshold strategy</strong>:  </li>
+<li style="margin-left: 20px;">Age ≥40 → refer if FIT ≥10.  </li>
+<li style="margin-left: 20px;">Age &lt;40 → refer only if FIT ≥100 or if IDA present.  </li>
+<li style="margin-left: 0px;">Implement <strong>risk‑stratified model</strong> (FIT + age + IDA) to safely reduce colonoscopy demand by &gt;40 % while preserving ≥94 % CRC detection.  </li>
+<li style="margin-left: 0px;">Recognize trade‑off: substantial IBD and large‑polyp cases would be missed under strict risk thresholds; therefore, <strong>parallel pathways</strong> for high‑risk IBD (e.g., calprotectin, imaging) remain necessary.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Strengths  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Largest symptomatic colonoscopy dataset to date (<strong>≈450 k procedures</strong>).  </li>
+<li style="margin-left: 0px;">Prospective, near‑real‑time capture from &gt;70 % of UK endoscopy units.  </li>
+<li style="margin-left: 0px;">Robust hierarchical coding of symptoms and diagnoses; manual validation of CRC entries.  </li>
+<li style="margin-left: 0px;">Mixed‑effects modelling accounts for clustering by endoscopist, enhancing estimate reliability.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Limitations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Data source</strong>: NED provides only endoscopic findings; histology not linked → possible misclassification of advanced neoplasia (e.g., cancer within polyps).  </li>
+<li style="margin-left: 0px;"><strong>FIT recording bias</strong>: FIT result entered by endoscopist, not laboratory; potential transcription errors or missing values.  </li>
+<li style="margin-left: 0px;"><strong>Uncaptured diagnoses</strong>: Conditions relying on histology alone (microscopic colitis) absent.  </li>
+<li style="margin-left: 0px;"><strong>Partial coverage</strong>: ~27 % of UK units not yet transitioned to NEDi2 during study period; however, no reason to suspect systematic differences.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Conclusions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Real‑world national analysis confirms that <strong>FIT‑based triage markedly outperforms symptom‑only referral</strong> for detecting colorectal cancer and large polyps in symptomatic patients.  </li>
+<li style="margin-left: 0px;">A <strong>low FIT threshold (≥10 µg Hb/g)</strong> is effective down to age 40; below this age, a higher threshold (≥100) improves specificity without sacrificing CRC detection.  </li>
+<li style="margin-left: 0px;">Incorporating <strong>age and IDA status</strong> with FIT creates a pragmatic risk model that could <strong>reduce colonoscopy workload by &gt;40 %</strong> while maintaining &gt;94 % CRC sensitivity.  </li>
+<li style="margin-left: 0px;">To fully realize these benefits, <strong>mandatory FIT testing for all symptomatic referrals</strong> is essential, alongside continued use of complementary biomarkers (e.g., calprotectin) for IBD assessment.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11. Author Contributions &amp; Funding  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Conceptualisation &amp; methodology</strong>: D. Beaton, M. Mohamed, L. Sharp, K. Pohl, M. Rutter.  </li>
+<li style="margin-left: 0px;"><strong>Data curation &amp; analysis</strong>: D. Beaton (primary), M. Mohamed (support).  </li>
+<li style="margin-left: 0px;"><strong>Writing – original draft</strong>: D. Beaton; <strong>review &amp; editing</strong>: all authors.  </li>
+<li style="margin-left: 0px;">Funding: None reported.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12. Conflicts of Interest  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">L. Sharp received unrestricted project grants from 3D‑Matrix and Medtronic.  </li>
+<li style="margin-left: 0px;">All other authors declare no relevant financial relationships in the past 3 years.  </li>
+</ul>
+</div></details>
+<details><summary><strong>13. Data Availability  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">De‑identified dataset available from corresponding author (D. Beaton) on reasonable request.  </li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
