@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>الفصل الرابع – اتخاذ القرارات  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>الفصل الرابع – اتخاذ القرارات  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">المصدر: كتاب/مادة غير محددة، الجزء المتعلق بعلم النفس والاقتصاد السلوكي  </li>
+</ul>
+<details><summary><strong>1. مفهوم القرار اليومي  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">كل فعل يُنتج خيارًا بديلًا → آلاف قرارات يوميًا.  </li>
+<li style="margin-left: 0px;">معظمها عادات تلقائية لا تتطلب تفكيرًا متعمقًا.  </li>
+<li style="margin-left: 0px;">قرار يُستدعى عندما نخرج عن الروتين (مثال: تأخر عن العمل → عدم الاستحمام).  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. المعالجة المزدوجة للقرارات  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>نظام 1</strong> = عمليات آلية، سريعة، تعتمد على العادة.  </li>
+<li style="margin-left: 0px;"><strong>نظام 2</strong> = تفكير متأنٍ، يُستدعى عند اختيارات جديدة أو غير مألوفة.  </li>
+<li style="margin-left: 0px;">الأخطاء غالبًا تُعزى إلى نظام 1 (مناقشة في الفصل السابع).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. التفكير الافتراضي وتخيل العواقب  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">تخيل النتائج ضروري للقرارات المتأنية.  </li>
+<li style="margin-left: 0px;">مثال الطالب: مقارنة علم النفس vs الهندسة → يضيف معلومات سوق العمل، فرص التوظيف، الرواتب.  </li>
+<li style="margin-left: 0px;">تقييم المخاطر يُدمج مع توقع الفوائد لتحديد الخيار الأفضل.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4. نظرية الاقتصاد في اتخاذ القرار العقلاني  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">تفترض توقع النتائج وتقييم <strong>الاحتمال × القيمة</strong> لكل نتيجة.  </li>
+<li style="margin-left: 0px;">مثال شجرة قرار استثمار:  </li>
+<li style="margin-left: 20px;">رأس مال 100 ألف دولار، مدة 5 سنوات.  </li>
+<li style="margin-left: 20px;">خيار أ = مشروع ناشئ → نجاح 70% (قيمة 200 ألف) / فشل 30% (قيمة 0).  </li>
+<li style="margin-left: 20px;">قيمة متوقعة = 0.7 × 200 k = <strong>140 k</strong>.  </li>
+<li style="margin-left: 20px;">خيار ب = حساب توفير ثابت → عائد مضمون 10 ك → قيمة نهائية <strong>110 k</strong>.  </li>
+<li style="margin-left: 0px;">الاختيار يعتمد على سياق المتخذ (مستثمر كبير vs مدخر حياة).  </li>
+</ul>
+</div></details>
+<details><summary><strong>5. حدود قاعدة القيمة المتوقعة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">لا تُطبق ببساطة في حالات ذات مخاطرة عالية مع موارد محدودة.  </li>
+<li style="margin-left: 0px;">مثال التأمين: رغم خسارة متوقعة سلبية، يُختار لتقليل الخطر → <strong>قاعدة “أعلى أمان”</strong>.  </li>
+<li style="margin-left: 0px;">شركات التأمين تستفيد من تجميع عدد كبير من الحالات (توزيع المخاطر).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6. مقارنات بين القمار والقرارات الاقتصادية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">تجربة عملة معدنية: خيار أ = رمية واحدة (مكسب متوقع 50 دولار) → يُرفض بسبب التركيز على الخسارة المحتملة (100 د).  </li>
+<li style="margin-left: 0px;">خيار ب = 100 رمية، نفس القيمة المتوقعة → يُقبل لأن احتمال خسارة كلية صغير.  </li>
+<li style="margin-left: 0px;">توضح الفجوة بين <strong>القيمة المتوقعة</strong> و<strong>تفضيل المخاطرة</strong> في سلوك البشر.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7. الانحيازات المعرفية وتأثير الصياغة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>انحياز الصياغة</strong>: نفس المشكلة تُقدَّم إيجابيًا أو سلبيًا → قرارات مختلفة.  </li>
+<li style="margin-left: 0px;">مثال مرض آسيوي: صيغ “إنقاذ 200 شخص” vs “موت 400 شخص”.  </li>
+<li style="margin-left: 20px;">72 % يفضِّلون إنقاذ 200 (الصياغة الإيجابية).  </li>
+<li style="margin-left: 20px;">78 % يفضِّلون موت 400 (الصياغة السلبية).  </li>
+<li style="margin-left: 0px;">توضح أن التركيز على <strong>النتائج الإيجابية</strong> أو <strong>السلبية</strong> يغيّر التفضيل.  </li>
+</ul>
+<details><summary><strong>7.1 تأثير اليقين في الخسارة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">عندما تُظهر النتيجة كخسارة، يُفضل المتخذون المخاطرة لتجنب الخسارة المؤكدة.  </li>
+<li style="margin-left: 0px;">مثال: اختيار مخاطرة بخسارة 4 k vs خسارة مؤكدة 3 k → يختارون المخاطرة.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 تأثير اليقين في الربح  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">عند تُظهر النتيجة كربح، يُفضِّل المتخذون الخيار الآمن.  </li>
+<li style="margin-left: 0px;">مثال: ربح مؤكد 3 k vs مخاطرة بـ 4 k (احتمال 0.8) → يختارون الـ3 k.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. الانحيازات المرتبطة بالمخاطر النادرة واللعب  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>مبالغة تقدير الاحتمالات النادرة</strong>: الناس يُبالغون فرص الفوز في اليانصيب أو القمار.  </li>
+<li style="margin-left: 0px;">رغم احتمال ضئيل (0.001) للفوز بـ6 k، يشتري البعض التذاكر.  </li>
+<li style="margin-left: 0px;"><strong>متعة القمار</strong> تُضاف كقيمة غير مالية → تبرّر المخاطرة.  </li>
+</ul>
+<details><summary><strong>8.1 مثال المقامرة مع عملة معدنية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">خيار أ: رمية واحدة (مكسب متوقع 50 د) → يُرفض بسبب الخسارة المحتملة 100 د.  </li>
+<li style="margin-left: 0px;">خيار ب: 100 رمية، نفس القيمة المتوقعة → يُقبل لأن احتمال خسارة كلية صغير.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 تأثير العوائد غير المالية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">المتسابقون يذكرون “متعة الحصاد” أو “إثارة اللعبة” كمنفعة ذاتية.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. الانحيازات في تقييم الاحتمالات (استراتيجيات التوفر والتمثيل)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>استراتيجية التوفر</strong>: الحكم على احتمال حدث بناءً على سهولة استحضاره من الذاكرة.  </li>
+<li style="margin-left: 20px;">مثال: تقدير عدد أهداف أرسنال → يذكر المباريات الأخيرة أو الأفضل فقط.  </li>
+</ul>
+<details><summary><strong>9.1 انحياز التمثيل (مشكلة ليندا)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">وصف ليندا يُظهر صورة نمطية نسوية → يُعطي احتمالًا أعلى لخيارات تتماشى مع الصورة.  </li>
+<li style="margin-left: 0px;">نتيجة غير منطقية: احتمالية “ليندا موظفة في بنك وتؤيد النسوية” تُقارن بأحتمال كل خيار منفرد.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 مغالطة التزامن  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">يظن المتعاملون أن احتمال حدوث حدثين معًا لا يمكن أن يتجاوز احتمال أي منهما منفردًا.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. الانحيازات المرتبطة بالثقة المفرطة وتخطيط الوقت  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>الثقة المفرطة</strong>: تقدير الأشخاص لدرجة صحتهم أعلى من الواقع.  </li>
+<li style="margin-left: 20px;">مثال: يعلنون ثقتهم 80 % لكن دقة الإجابة 70 %.  </li>
+</ul>
+<details><summary><strong>10.1 مغالطة التخطيط  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">الناس يقللون من مدة إنجاز مهمة بناءً على تجارب سابقة دون احتساب العقبات غير المتوقعة.  </li>
+<li style="margin-left: 0px;">يستخدمون <strong>محاكاة ذهنية مثالية</strong> بدلاً من استرجاع الأخطاء السابقة.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 تأثير الانفصال (تأجيل القرار)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">عندما يُعطى خيار “نجاح/رسوب” مع عدم معرفة النتيجة، يفضل البعض دفع رسوم لتأخير القرار.  </li>
+<li style="margin-left: 0px;">تفسير: بناء نماذج سببية متعددة (نجاح → احتفال؛ رسوب → رفع معنويات).  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 مبدأ التفرد (التركيز على عنصر واحد)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">المتخذون يميلون إلى التركيز على جانب واحد من الخيارات (مثلاً، الراتب) متجاهلين جوانب أخرى (العائلة، الموقع).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. استراتيجيات تجريبية إضافية وتأثيراتها السلبية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>استراتيجية التوفر</strong> و<strong>التمثيل</strong> تُظهران كيف يمكن للذاكرة أن تشوّه تقدير الاحتمالات.  </li>
+<li style="margin-left: 0px;">مثال: سؤال عن موضع حرف في كلمة → يفضِّل الموضع الأول لأن الكلمات تبدأ به بسهولة أكبر.  </li>
+</ul>
+<details><summary><strong>11.1 استراتيجيات بديلة (التفكير الإحصائي)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">توجيه المتعاملين لاستخدام بيانات إحصائية فعلية يقلل من الاعتماد على الانحيازات الذاكرية.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. الانحيازات في اتخاذ القرار الجماعي والانتخابات  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">صياغة سؤال الاستفتاء تؤثر على النتائج (مثال: “هل توافق على استقلال اسكتلندا؟” vs “هل تريد اسكتلندا دولة مستقلة؟”).  </li>
+<li style="margin-left: 0px;">تعديل الصياغة لتقليل التحيز يُستَخدم في استفتاءات حساسة.  </li>
+</ul>
+<details><summary><strong>12.1 تأثير المسؤولية المتصورة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">الناس يشعرون بمسؤولية أكبر عند اتخاذ فعل إيجابي (التطعيم) مقارنةً بعدم الفعل (عدم التطعيم).  </li>
+<li style="margin-left: 0px;"><strong>انحياز الإغفال</strong>: يفضِّلون تجنب المخاطر المرتبطة بالفعل الإيجابي حتى لو كانت النتيجة نفسها.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 نموذج السبب‑النتيجة في اتخاذ القرار الصحي  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ربط فعل (التطعيم) بنتيجة (إنقاذ حياة) يزيد من احتمال الاختيار الإيجابي.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. الانحيازات المتعلقة بالتحفيز العاطفي والرفاهية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>متعة القمار</strong> تُعَدّ منفعة ذاتية تُضاف إلى القيمة المتوقعة.  </li>
+<li style="margin-left: 0px;">مثال: تخصيص مئات جنيهات سنويًا للمراهنات على سباقات الخيل بسبب “الإثارة”.  </li>
+</ul>
+<details><summary><strong>13.1 مقارنة الإنفاق الترفيهي (قمار vs جولف)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">المتسابق يبرر إنفاق أكبر على القمار لأن المتعة المادية أعلى من نشاط آخر (جولف).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. الانحيازات في تقييم المخاطر المهنية والمالية  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>نموذج كانمان‑تفيرسكي</strong>: يُظهر أن الناس يفضلون “تأثير اليقين” عند الخسارة ويُفضِّلون المخاطرة عند الربح.  </li>
+<li style="margin-left: 0px;">مثال اختيار وظيفة جديدة مع ترقية → التركيز على الراتب الجديد دون وزن تكلفة الانتقال العائلية.  </li>
+</ul>
+<details><summary><strong>14.1 تأثير الانحياز في قرارات التقاعد  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">مدخرات حياة (100 k) تُظهر تفضيل الاستثمار الآمن بسبب عدم القدرة على تحمل خسارة 30 % محتملة.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>15. استراتيجيات تحسين اتخاذ القرار وتقليل الانحياز  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>التفكير المتعدد النماذج</strong>: إنشاء نماذج سببية بديلة (مثال: نجاح → احتفال؛ رسوب → رفع معنويات).  </li>
+<li style="margin-left: 0px;"><strong>استخدام بيانات كمية</strong> بدلًا من الاعتماد على الذاكرة التوفرية.  </li>
+</ul>
+<details><summary><strong>15.1 تدريب على إعادة صياغة الأسئلة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">تعليم المتعاملين كيفية تحويل صيغ سلبية إلى إيجابية لتقليل تأثير الانحياز.  </li>
+</ul>
+</div></details>
+<details><summary><strong>15.2 إدخال تغذية راجعة دقيقة  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">توفير ملاحظات مستمرة حول دقة التقديرات (مثال: مقارنة الثقة المعلنة مع الأداء الفعلي).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>16. خلاصة الفصل  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">اتخاذ القرار يتداخل بين <strong>النظام 1</strong> (آلي) و<strong>النظام 2</strong> (متأمل).  </li>
+<li style="margin-left: 0px;">نظرية القيمة المتوقعة توفر إطارًا رياضيًا، لكن الانحيازات المعرفية تُحدِّث انحرافًا كبيرًا عن الاختيار “العقلاني”.  </li>
+<li style="margin-left: 0px;">فهم الصياغة، التوفر، التمثيل، الثقة المفرطة، ومغلوطيات المخاطرة يُمكِّن من تحسين جودة القرارات في المجالات اليومية والاقتصادية والطبية.  </li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
