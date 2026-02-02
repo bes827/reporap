@@ -1,0 +1,812 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Preparation and Preliminary Steps – NIH Grant Proposal Guide  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Preparation and Preliminary Steps – NIH Grant Proposal Guide  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Writing the NIH Grant Proposal: A Step‑by‑Step Guide</em> (2026)  </li>
+</ul>
+<details><summary><strong>1. Candidate &amp; Institutional Readiness  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Credential required: PhD, MD, or comparable degree.  </li>
+<li style="margin-left: 0px;">Master core substantive material; ability to learn new content as needed.  </li>
+<li style="margin-left: 0px;">Secure mentors/sponsors; hold extensive preliminary talks if training grant needed.  </li>
+<li style="margin-left: 0px;">Obtain departmental chair or division chief permission before investing time.  </li>
+<li style="margin-left: 0px;">Verify relevant NIH Institute/Center (I/C) offers the intended grant mechanism.  </li>
+<li style="margin-left: 0px;">Set up eRA Commons account prior to application preparation.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Eligibility Overview  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 General Eligibility Statement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Any individual with necessary skills, knowledge, resources invited to apply with institution.  </li>
+<li style="margin-left: 0px;">Under‑represented minorities &amp; persons with disabilities encouraged to apply.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Investigator Status Categories  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>New Investigators (NI):</strong> No prior substantial NIH independent award.  </li>
+<li style="margin-left: 0px;"><strong>Early Stage Investigators (ESI):</strong> NI within 10 years of terminal degree or residency.  </li>
+<li style="margin-left: 0px;">Reviewers give special consideration to NIs/ESIs; lower percentile scores may suffice.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Citizenship &amp; Immigration Requirements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most NIH grants do not require U.S. citizenship; some mechanisms do.  </li>
+<li style="margin-left: 0px;">Training awards (T, F, K) require U.S. citizen, non‑citizen national, or permanent resident with documentation (I‑551).  </li>
+<li style="margin-left: 0px;">Temporary/student visa holders <strong>ineligible</strong> for these training awards.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Pre‑Application Self‑Assessment Checklist  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>“So what?” relevance:</strong> Can you articulate significant impact on theory, knowledge, or methodology?</p>
+<p>2. <strong>Public health significance:</strong> Does the question address a priority listed by the target I/C?</p>
+<p>3. <strong>PI qualification:</strong> Sufficient publication record in the specific research area for the chosen mechanism (e.g., R01).</p>
+<p>4. <strong>Resource inventory:</strong> List needed resources; rate availability (e.g., statistical support, lab space, animal facilities).</p>
+<p>5. <strong>Pilot data presence:</strong> Demonstrates methodological competence &amp; feasibility; required for most R01s, optional for exploratory grants (R21) or K awards.</p>
+</div></details>
+<details><summary><strong>4. Institutional Eligibility &amp; Responsibilities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Institution (university, college, small business, foreign org, etc.) must be the official applicant and awardee.  </li>
+<li style="margin-left: 0px;">Must have a registered eRA Commons account; will receive and manage award funds.  </li>
+<li style="margin-left: 0px;">Institutional support includes signing authority, compliance with NIH policies, and provision of necessary infrastructure.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5. Initial Team Formation &amp; Negotiations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Identify <strong>key personnel</strong> (PI, co‑PIs, collaborators) with definable scientific contributions.  </li>
+<li style="margin-left: 0px;">Include statisticians, methodologists, or specialized consultants early in design phase.  </li>
+<li style="margin-left: 0px;">Clarify each member’s role for inclusion in Research Strategy and Budget Justification sections.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6. Resources &amp; Tools for Preparation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NIH website (nih.gov):</strong> Tutorials, institute‑specific guidance, grant mechanisms list.  </li>
+<li style="margin-left: 0px;"><strong>Guide for Grants and Contracts:</strong> Official policy source; subscribe to weekly e‑mail updates (listserv@list.nih.gov).  </li>
+<li style="margin-left: 0px;"><strong>RePORTER database:</strong> Search funded projects, investigators, methodologies; avoid duplication and gauge feasibility.  </li>
+<li style="margin-left: 0px;"><strong>Program Officers:</strong> Contact early via email with concise project outline; seek feedback on fit and suggestions.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7. Understanding Grant Mechanisms &amp; Funding Opportunities  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Types of Funding Announcements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Program Announcement (PA):</strong> Signals NIH priority; no set‑aside funds, open receipt.  </li>
+<li style="margin-left: 0px;"><strong>Program Announcement with Set‑Aside Funds (PAS):</strong> Dedicated budget for specific research area.  </li>
+<li style="margin-left: 0px;"><strong>Request for Applications (RFA):</strong> Narrow focus, single receipt date, defined fund pool; higher hit‑rate but competitive.  </li>
+<li style="margin-left: 0px;"><strong>Request for Proposals (RFP):</strong> Solicits contracts rather than grants; tighter NIH control over deliverables.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Common Grant Mechanisms &amp; Typical Budgets  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Mechanism</th>
+<th>Typical Budget Ceiling</th>
+<th>Typical Award Length</th>
+<th>Pilot Data Required?</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>R01</strong></td>
+<td>Up to <em>$500,000</em>/yr (incl. indirect)</td>
+<td>3–5 years</td>
+<td>Yes (strongly preferred)</td>
+</tr>
+<tr>
+<td><strong>R21</strong></td>
+<td>$275,000 total ($200k direct)</td>
+<td>2 years</td>
+<td>No (exploratory)</td>
+</tr>
+<tr>
+<td><strong>R03</strong></td>
+<td>$50,000 total</td>
+<td>1 year</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>K01/K08/K23</strong></td>
+<td>Varies by institute</td>
+<td>3–5 years</td>
+<td>No (career development)</td>
+</tr>
+<tr>
+<td><strong>DP2 (New Innovator)</strong></td>
+<td>Up to $1.5 M over 5 years</td>
+<td>5 years</td>
+<td>No (innovation focus)</td>
+</tr>
+<tr>
+<td><strong>DP5 (Early Independence)</strong></td>
+<td>Up to $1 M over 4 years</td>
+<td>4 years</td>
+<td>No (early career)</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>7.3 Selecting the Appropriate Mechanism  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Match <strong>research scope</strong> (basic vs. translational) to mechanism’s allowed aims.  </li>
+<li style="margin-left: 0px;">Align <strong>budget needs</strong> with ceiling; R01 for large, multi‑year projects; R21 for proof‑of‑concept.  </li>
+<li style="margin-left: 0px;">Consider <strong>career stage</strong>: New investigators often start with K awards or smaller R grants before R01.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Navigating the NIH Electronic Systems  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 eRA Commons Registration &amp; Profile  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Register <strong>individual</strong> and <strong>institutional</strong> accounts; obtain login credentials.  </li>
+<li style="margin-left: 0px;">Complete <strong>profile</strong>: citizenship status, ESI designation, prior award numbers, biosketch upload.  </li>
+<li style="margin-left: 0px;">Verify <strong>institution’s “Entity”</strong> is active; otherwise application will be rejected at submission.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Grants.gov Submission Workflow  </strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Select FOA number</strong> (e.g., PA‑16‑160 for R01).</p>
+<p>2. Upload <strong>application package</strong> (SF424 (R&amp;R) forms, research plan PDFs, budget, certifications).</p>
+<p>3. Validate via <strong>Grants.gov “Validate” tool</strong>; resolve all errors before final submission.</p>
+<p>4. Submit <strong>before deadline</strong>; note that NIH accepts only the final validated version.</p>
+</div></details>
+<details><summary><strong>8.3 Post‑Submission Tracking &amp; Communications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use eRA Commons <strong>Application Status</strong> page to monitor receipt, review, and award notices.  </li>
+<li style="margin-left: 0px;">Respond promptly to <strong>Administrative Supplements</strong> or <strong>Clarification Requests</strong> from NIH staff.  </li>
+<li style="margin-left: 0px;">Update <strong>biosketches</strong> and <strong>budget justifications</strong> if resubmitting after a “A0” (not discussed) decision.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Engaging with NIH Program Officers &amp; Reviewers  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Identifying the Correct Program Officer  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Locate institute’s <strong>Contact/Program Staff</strong> page; filter by research area keywords.  </li>
+<li style="margin-left: 0px;">Ask senior colleagues for recommended contacts; verify via email response.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Crafting an Effective Outreach Email  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Subject line: <em>“Inquiry – Potential R01 on [Brief Topic] (NIH Institute X)”</em>  </li>
+<li style="margin-left: 0px;">Body (≤150 words):  </li>
+<li style="margin-left: 20px;">Introduce yourself, ESI status, and institution.  </li>
+<li style="margin-left: 20px;">Summarize <strong>specific aims</strong> (one sentence each).  </li>
+<li style="margin-left: 20px;">State <strong>public health relevance</strong> &amp; alignment with institute’s priorities.  </li>
+<li style="margin-left: 20px;">Request brief feedback on fit and any suggested modifications.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Interpreting Program Officer Feedback  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Positive signal → proceed; incorporate suggested <strong>scope adjustments</strong> or <strong>additional citations</strong>.  </li>
+<li style="margin-left: 0px;">Negative/neutral → consider alternative <strong>FOA</strong>, revise aims, or gather more pilot data before resubmission.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Reviewer Expectations &amp; Scoring Criteria (Overall Impact)  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Criterion</th>
+<th>What Reviewers Look For</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Significance</strong></td>
+<td>Does the project address an important problem?</td>
+</tr>
+<tr>
+<td><strong>Investigator(s)</strong></td>
+<td>Are PI and team qualified, with relevant expertise?</td>
+</tr>
+<tr>
+<td><strong>Innovation</strong></td>
+<td>Is the approach novel or does it challenge existing paradigms?</td>
+</tr>
+<tr>
+<td><strong>Approach</strong></td>
+<td>Are methods sound, feasible, and appropriately powered?</td>
+</tr>
+<tr>
+<td><strong>Environment</strong></td>
+<td>Does the institution provide necessary resources &amp; support?</td>
+</tr>
+</tbody>
+</table>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reviewers receive <strong>biosketches</strong>, <strong>preliminary data</strong>, and <strong>budget justification</strong>; ensure consistency across all documents.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Building a Competitive Research Strategy  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Structuring the Research Plan (SF424 (R&amp;R) Sections)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Specific Aims:</strong> ≤1 page, bullet each aim with hypothesis &amp; expected outcome.  </li>
+<li style="margin-left: 0px;"><strong>Research Strategy:</strong>  </li>
+<li style="margin-left: 20px;"><em>Significance</em> – public health impact, gap in knowledge.  </li>
+<li style="margin-left: 20px;"><em>Innovation</em> – novel methodology, technology, or conceptual framework.  </li>
+<li style="margin-left: 20px;"><em>Approach</em> – detailed experimental design, statistical power analysis, potential pitfalls &amp; alternatives.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Incorporating Pilot Data Effectively  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Present <strong>preliminary results</strong> as figures/tables within the Approach section.  </li>
+<li style="margin-left: 0px;">Highlight <strong>feasibility</strong> (e.g., recruitment rates, assay reliability).  </li>
+<li style="margin-left: 0px;">Use pilot data to justify <strong>sample size calculations</strong> and <strong>effect size estimates</strong>.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Budget Justification &amp; Cost‑Effectiveness  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Align each budget line with a specific aim or task.  </li>
+<li style="margin-left: 0px;">Provide <strong>rationale</strong> for high‑cost items (e.g., core facility fees, animal models).  </li>
+<li style="margin-left: 0px;">Include <strong>indirect cost rate</strong> as stipulated by institution’s negotiated agreement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.4 Preparing the Biosketch &amp; Personal Statement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Follow NIH <strong>Biosketch format</strong>: education, positions, contributions to science, and selected peer‑reviewed publications.  </li>
+<li style="margin-left: 0px;">Emphasize <strong>publications directly related</strong> to proposed aims; list up to 5 most relevant.  </li>
+<li style="margin-left: 0px;">For ESI/NI status, include a brief statement on <strong>career development plan</strong> and how the grant will accelerate independence.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Finalizing &amp; Submitting the Application  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 Pre‑Submission Checklist  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All <strong>SF424 (R&amp;R) forms</strong> completed; no blank required fields.  </li>
+<li style="margin-left: 0px;"><strong>Research Plan PDF</strong> ≤12 MB, includes all figures/tables with legends.  </li>
+<li style="margin-left: 0px;"><strong>Budget &amp; Budget Justification</strong> match each other line‑by‑line.  </li>
+<li style="margin-left: 0px;"><strong>Human Subjects/Animal Use</strong> sections (if applicable) contain IRB/IACUC approvals or status.  </li>
+<li style="margin-left: 0px;"><strong>Data Sharing Plan</strong> drafted per NIH policy; include repository details.  </li>
+<li style="margin-left: 0px;"><strong>Conflict of Interest</strong> disclosures completed for all key personnel.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 Internal Institutional Review  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Submit draft to <strong>Office of Sponsored Research</strong> for compliance check.  </li>
+<li style="margin-left: 0px;">Obtain <strong>signature of authorized institutional official (AO)</strong> on the application package.  </li>
+<li style="margin-left: 0px;">Verify that the institution’s <strong>eRA Commons entity profile</strong> is active and linked to the AO.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.3 Grants.gov Validation &amp; Submission Steps  </strong></summary><div style="padding-left: 20px;">
+<p>1. Log into <strong>Grants.gov</strong>, select FOA, upload all required files.</p>
+<p>2. Run <strong>“Validate”</strong>; resolve any error codes (e.g., mismatched budget totals).</p>
+<p>3. Click <strong>“Submit Application”</strong>; record the <strong>Application ID</strong> and <strong>submission timestamp</strong>.</p>
+<p>4. Confirm receipt via eRA Commons “Application Status – Received”.</p>
+</div></details>
+<details><summary><strong>11.4 Post‑Submission Monitoring  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Track <strong>Scientific Review Committee (SRC) assignment</strong> in eRA Commons.  </li>
+<li style="margin-left: 0px;">Watch for <strong>Administrative Review</strong> notices (e.g., missing documents).  </li>
+<li style="margin-left: 0px;">Respond to any <strong>NIH queries</strong> within the stipulated 5‑day window to avoid delay.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Peer Review Process &amp; Decision Timeline  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Review Stages  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Initial Administrative Review:</strong> completeness, eligibility, formatting.  </li>
+<li style="margin-left: 0px;"><strong>Scientific Review (Study Section):</strong> scored on Significance, Investigator, Innovation, Approach, Environment.  </li>
+<li style="margin-left: 0px;"><strong>Council Review:</strong> institute‑level advisory council assesses relevance and funding priority.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Scoring &amp; Percentile Ranks  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Each criterion receives a <strong>1–9 score</strong>; overall impact score is the average of reviewers’ overall scores.  </li>
+<li style="margin-left: 0px;">NIH converts scores to <strong>percentiles</strong> within the specific grant mechanism and institute.  </li>
+<li style="margin-left: 0px;">ESIs/NIs may receive <strong>special consideration</strong>, potentially lowering required percentile for funding.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Funding Decision &amp; Notice Types  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Award Letter (Notice of Award – NOA):</strong> official grant terms, budget, start date.  </li>
+<li style="margin-left: 0px;"><strong>Not Funded (N/A) or “A0” (not discussed):</strong> includes summary statements; use feedback to revise.  </li>
+<li style="margin-left: 0px;"><strong>Resubmission Window:</strong> typically 1 year for R01s; can submit after one cycle if addressing reviewer concerns.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. Post‑Award Management &amp; Compliance  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.1 Award Setup in Institutional Systems  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Register the award in the <strong>institution’s financial system</strong> (e.g., Banner, PeopleSoft).  </li>
+<li style="margin-left: 0px;">Set up <strong>grant account number</strong>, link to eRA Commons <strong>award ID</strong>.  </li>
+<li style="margin-left: 0px;">Ensure <strong>indirect cost rate</strong> is applied per institutional negotiated agreement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.2 Ongoing Reporting Requirements  </strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Report</th>
+<th>Frequency</th>
+<th>Content</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Progress Report (RPPR)</strong></td>
+<td>Every 12 months (or as specified)</td>
+<td>Accomplishments, challenges, updated milestones, budget expenditures.</td>
+</tr>
+<tr>
+<td><strong>Financial Status Report</strong></td>
+<td>Quarterly</td>
+<td>Expenditures vs. budget, unobligated funds, cost‑share documentation.</td>
+</tr>
+<tr>
+<td><strong>Final Progress Report</strong></td>
+<td>At project end</td>
+<td>Complete results, publications, data sharing compliance, final financial accounting.</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>13.3 Human Subjects &amp; Animal Welfare Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Maintain <strong>IRB/ICF approvals</strong>; submit annual continuing review updates.  </li>
+<li style="margin-left: 0px;">Update <strong>IACUC</strong> protocols for any procedural changes.  </li>
+<li style="margin-left: 0px;">Report <strong>adverse events</strong> to NIH within 72 hours (clinical trials) or as required by the specific FOA.  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.4 Data Sharing &amp; Publication Policies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Deposit <strong>datasets</strong> in designated public repository (e.g., dbGaP, GEO) within 12 months of publication.  </li>
+<li style="margin-left: 0px;">Include <strong>NIH grant number</strong> in all manuscripts and presentations.  </li>
+<li style="margin-left: 0px;">Submit <strong>final manuscript PDFs</strong> to NIH for archiving if required by the FOA.  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.5 Audit &amp; Monitoring  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Institutional <strong>Office of Research Integrity</strong> may conduct random audits; retain all supporting documentation (receipts, contracts, meeting minutes).  </li>
+<li style="margin-left: 0px;">NIH may request a <strong>site visit</strong> for high‑budget or high‑risk projects; prepare to provide access to data and personnel.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. Strategies for Future Funding &amp; Career Advancement  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>14.1 Leveraging the Current Award  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use <strong>preliminary results</strong> to strengthen subsequent R01 or larger program project proposals.  </li>
+<li style="margin-left: 0px;">Highlight <strong>successful milestones</strong> in biosketch updates for future K‑award renewals or promotion dossiers.  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.2 Building a Sustainable Research Team  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Retain key personnel (statisticians, core facility staff) through <strong>sub‑awards</strong> or <strong>institutional support</strong>.  </li>
+<li style="margin-left: 0px;">Mentor junior investigators; involve them as co‑investigators to develop future NIs/ESIs.  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.3 Continuous Professional Development  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Attend NIH <strong>“Meet the Experts”</strong> sessions at annual conferences for networking with program officers and reviewers.  </li>
+<li style="margin-left: 0px;">Participate in <strong>grant writing workshops</strong> and <strong>peer review panels</strong> to stay current on reviewer expectations.  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.4 Monitoring Funding Landscape  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Regularly check <strong>RePORTER</strong>, institute FOA listings, and NIH <strong>Funding Opportunity Announcements (FOAs)</strong> for emerging priorities.  </li>
+<li style="margin-left: 0px;">Adjust research focus proactively to align with <strong>new public health challenges</strong> or <strong>technological advances</strong> identified by the NIH roadmap.  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
