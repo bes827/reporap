@@ -1,0 +1,1199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 4: Decision Making  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Chapter 4: Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: Arabic clinical and cognitive psychology text (translated)  </li>
+<li style="margin-left: 0px;">Topic: Cognitive processes in human decision making, with emphasis on biases, heuristics, and rational models  </li>
+<li style="margin-left: 0px;">Author(s): Daniel Kahneman &amp; Amos Tversky (central figures cited); also Richard Thaler, Eldar Shafir referenced  </li>
+</ul>
+<details><summary><strong>1. Foundations of Decision Making: Routine vs. Deliberate Choices  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Decisions occur whenever an action is chosen <em>over</em> alternatives—even habits involve implicit choices.  </li>
+<li style="margin-left: 0px;">Most daily “decisions” are automatic (Type 1 processing); deliberate decisions (Type 2) arise when habits break.  </li>
+<li style="margin-left: 0px;">Automatic choices (e.g., habitual left turn to work) require no conscious deliberation; deliberate choices (e.g., right turn for urgent task) do.  </li>
+<li style="margin-left: 0px;">Type 1 processes dominate routine behavior, while Type 2 governs novel problems requiring reflective thinking.  </li>
+</ul>
+<details><summary><strong>1.1 Role of Counterfactual Thinking  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Deliberate decision-making requires <em>counterfactual simulation</em>: imagining outcomes of alternatives.  </li>
+<li style="margin-left: 20px;">E.g., a student imagines studying psychology vs. engineering—initially prefers psychology for enjoyment.  </li>
+<li style="margin-left: 20px;">Then simulates post-graduation: discovers oversupply of psychologists vs. high demand for engineers → switches choice to engineering.  </li>
+<li style="margin-left: 0px;">Risk assessment becomes part of simulation: e.g., weighting job security vs. personal interest.  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.2 Expected Value as Normative Standard  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Economic theory defines <em>rational choice</em> via <strong>expected value (EV)</strong>: Σ(probability × outcome value).  </li>
+<li style="margin-left: 20px;">Safe investment: $100k → guaranteed $110k in 5 years (EV = $110k).  </li>
+<li style="margin-left: 20px;">Risky investment: 70% chance of $200k, 30% chance of $0 → EV = (0.7 × $200k) + (0.3 × $0) = <strong>$140k</strong> → <em>rationally preferred</em>.  </li>
+<li style="margin-left: 0px;">EV model underpins decision trees (see Figure 4.1).  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.3 Limits of Expected Value in Real-World Context  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Individual risk tolerance matters: $100k life savings vs. bank with billions in assets → same EV may not be <em>subjectively</em> rational.  </li>
+<li style="margin-left: 0px;">Insurance paradox: individuals buy fire insurance despite negative EV (risk aversion), while insurers sell it profitably due to <em>large sample size</em>.  </li>
+<li style="margin-left: 0px;">Single-case decisions ≠ repeated gambles: EV works better for institutions (many trials) than individuals (one trial).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Deviations from Rationality: Risk, Framing, and the Certainty Effect  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People reject favorable gambles with negative EV in <em>single</em> trials: e.g., 50% chance to win $200 vs. 50% chance to lose $100 → EV = +$50, yet most reject it.  </li>
+<li style="margin-left: 20px;">Reason: loss aversion &amp; focus on worst outcome (certainty effect).  </li>
+</ul>
+<details><summary><strong>2.1 The Certainty Effect  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People prefer <em>certain</em> gains over probabilistic ones—even when EV is identical.  </li>
+<li style="margin-left: 20px;">E.g., choose $3k guaranteed over 80% chance of $4k (EV = $3.2k).  </li>
+<li style="margin-left: 0px;">In <em>loss</em> frames, preference reverses: choose 80% chance to lose $4k over certain loss of $3k.  </li>
+<li style="margin-left: 0px;">Explains insurance paradox: people over-insure against rare events (e.g., house fire), despite negative EV.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Probability Weighting &amp; the “Linda Problem”  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People misjudge joint probabilities: in Linda’s case (bank teller + feminist), 85% rank “teller &amp; feminist” as <em>more likely</em> than “teller alone”—violating logic (conjunction rule).  </li>
+<li style="margin-left: 20px;">Known as the <strong>conjunction fallacy</strong>.  </li>
+<li style="margin-left: 0px;">Cause: representativeness heuristic—Linda’s description fits feminist stereotype better than bank teller profile.  </li>
+<li style="margin-left: 0px;">Also explains lottery participation: people overweight tiny probabilities of huge wins (e.g., 0.001% chance to win $6k &gt; 0.002% for $3k).  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Framing Effects &amp; Decision Reversals  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Identical logic yields opposite choices when framed as <em>gains</em> vs. <em>losses</em>.  </li>
+<li style="margin-left: 20px;">Program A: “200 lives saved” → 72% prefer.  </li>
+<li style="margin-left: 20px;">Program B: “1/3 chance to save all 600, 2/3 chance none” → less preferred.  </li>
+<li style="margin-left: 20px;">Program C: “400 deaths” → <em>more</em> preferred than D (“1/3 chance no deaths, 2/3 all 600 die”).  </li>
+<li style="margin-left: 0px;">Same logic, opposite preference due to <em>framing</em> (gain vs. loss framing).  </li>
+<li style="margin-left: 0px;">Real-world impact: Scottish independence referendum wording changed from “Should Scotland be an independent country?” to “Do you agree Scotland should be an independent country?”—subtle shift toward “yes” bias.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Cognitive Biases in Probabilistic Judgment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People do <em>not</em> use statistics intuitively; instead rely on heuristics → systematic biases.  </li>
+<li style="margin-left: 0px;">Kahneman &amp; Tversky’s <em>heuristic program</em>: three key heuristics: availability, representativeness, anchoring.  </li>
+</ul>
+<details><summary><strong>3.1 Availability Heuristic  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Judging frequency/probability by ease of recall (e.g., estimating Arsenal’s avg. goals per match).  </li>
+<li style="margin-left: 20px;">Bias: overestimate frequent media coverage (e.g., plane crashes vs. car accidents).  </li>
+<li style="margin-left: 20px;">Classic test: “Is ‘k’ more common as 1st or 3rd letter in English?” → most say 1st, though 3x more as 3rd.  </li>
+<li style="margin-left: 40px;">Reason: easier to retrieve words starting with <em>k</em> (e.g., <em>kite</em>) than 3rd-letter <em>k</em> (e.g., <em>task</em>).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Representativeness Heuristic  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Judging probability by similarity to prototype (ignores base rates).  </li>
+<li style="margin-left: 20px;">Linda problem: violates logic—P(A ∧ B) ≤ P(A).  </li>
+<li style="margin-left: 20px;">Consequences: base-rate neglect in medical diagnosis (e.g., ignoring disease prevalence when assessing symptoms).  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Anchoring &amp; Adjustment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Initial estimates (even arbitrary) bias subsequent judgments.  </li>
+<li style="margin-left: 20px;">E.g., asking “Is the population of Turkey &gt;10M or &lt;100M?” → anchors later estimates.  </li>
+<li style="margin-left: 20px;">Clinically relevant: anchoring in diagnosis (e.g., initial impression skews later assessment).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Planning Fallacy, Overconfidence, and Decision Avoidance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Planning fallacy</strong>: underestimating task duration—even experts—due to <em>simulation</em> (idealized mental run-through) vs. <em>reference class forecasting</em> (using past data).  </li>
+<li style="margin-left: 20px;">E.g., researcher ignores her prior average time for papers → assumes “everything goes perfectly.”  </li>
+</ul>
+<details><summary><strong>4.1 Overconfidence Bias  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People overstate accuracy of their predictions: e.g., “I’m 80% sure” → actual accuracy ~70%.  </li>
+<li style="margin-left: 20px;">Experts only correct this with <em>accurate feedback</em> (e.g., meteorologists).  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Decision Avoidance (“The Hawaii Effect”)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">When outcome unknown, people pay to <em>delay</em> decision—even if choice is inevitable.  </li>
+<li style="margin-left: 20px;">Study: 61% paid $5 non-refundable to delay Hawaii vacation booking until exam results known—even though all would book <em>regardless</em>.  </li>
+<li style="margin-left: 20px;">Cause: <strong>separation effect</strong>—people avoid holding two conflicting mental models simultaneously.  </li>
+<li style="margin-left: 40px;">Model 1: <em>Pass exam</em> → vacation = celebration.  </li>
+<li style="margin-left: 40px;">Model 2: <em>Fail exam</em> → vacation = mood boost.  </li>
+<li style="margin-left: 20px;">Prefer deferral to resolve cognitive dissonance.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Omission Bias  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People assign <em>greater moral responsibility</em> to harmful actions than omissions (e.g., vaccine deaths vs. no-vaccine deaths).  </li>
+<li style="margin-left: 20px;">E.g., parents avoid vaccinating (risk of 0–9/1000 deaths) despite net benefit (10/1000 die without vaccine).  </li>
+<li style="margin-left: 20px;">Rational model says accept risk up to 9/1000—but most reject <em>any</em> risk.  </li>
+<li style="margin-left: 20px;">Explanation: action = direct causal link; omission = indirect/abstract link.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.4 Clinical Decision-Making Implications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Routine clinical decisions (e.g., prescribing aspirin) rely on habit (Type 1).  </li>
+<li style="margin-left: 0px;">High-stakes decisions (e.g., surgery vs. conservative management) require Type 2 processing—but remain vulnerable to:  </li>
+<li style="margin-left: 20px;">Framing (e.g., “80% survival” vs. “20% mortality”)  </li>
+<li style="margin-left: 20px;">Overconfidence in diagnostic accuracy  </li>
+<li style="margin-left: 20px;">Planning fallacy in treatment timelines  </li>
+<li style="margin-left: 0px;">Countermeasures: structured decision trees, reference class forecasting, debiasing training.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. The Dual-Process Architecture of Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Core distinction: <strong>Type 1 (automatic, intuitive)</strong> vs. <strong>Type 2 (deliberative, analytical)</strong> processing governs choice behavior.  </li>
+<li style="margin-left: 0px;">Type 1 dominates routine choices (e.g., brushing teeth, habitual commute), operating rapidly and unconsciously.  </li>
+<li style="margin-left: 0px;">Type 2 activates only when habits fail (e.g., detour due to road closure), requiring attentional resources and working memory.  </li>
+<li style="margin-left: 0px;">Errors in judgment often stem from <em>overreliance</em> on Type 1 (e.g., anchoring, availability), especially under time pressure or cognitive load.  </li>
+</ul>
+<details><summary><strong>2.1 Heuristic Activation Thresholds  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Heuristics are <em>adaptive shortcuts</em> but become maladaptive when:  </li>
+<li style="margin-left: 20px;">Time constraints prevent Type 2 override  </li>
+<li style="margin-left: 20px;">Feedback is absent or delayed (e.g., rare clinical outcomes)  </li>
+<li style="margin-left: 20px;">Context lacks ecological validity (e.g., novel diagnostic dilemmas)  </li>
+<li style="margin-left: 0px;">E.g., physician diagnosing chest pain: initial Type 1 pattern recognition may miss atypical MI in women due to representativeness bias.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Dual-Process Modulation by Affect  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Emotional salience biases Type 1 processing: high-arousal stimuli (e.g., graphic trauma images) suppress analytical reasoning.  </li>
+<li style="margin-left: 0px;">Fear amplifies availability heuristic: post-meningitis outbreak, parents overestimate vaccine risks despite low base rates.  </li>
+<li style="margin-left: 0px;">Positive affect enhances creativity but increases planning fallacy risk (e.g., overoptimistic surgical timelines).  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Neural Correlates of Decision Conflict  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">fMRI studies show anterior cingulate cortex (ACC) activation during Type 2 override attempts.  </li>
+<li style="margin-left: 0px;">Ventromedial prefrontal cortex (vmPFC) encodes subjective value during Type 1 valuation.  </li>
+<li style="margin-left: 0px;">When EV calculation conflicts with intuition (e.g., refusing life-saving risky surgery), ACC activity ↑ → decision latency ↑.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Risk Perception and the Nonlinear Weighting of Probabilities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">People do <em>not</em> use linear probabilities; instead, they apply <strong>nonlinear probability weighting functions</strong> (Tversky &amp; Kahneman, 1992).  </li>
+</ul>
+<details><summary><strong>3.1 Four-Phase Probability Weighting Curve  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Certainty effect</strong>: w(p=1) = 1.0, but w(p&lt;1) &lt; p for moderate-high probabilities (e.g., 90% → weighted as ~75%).  </li>
+<li style="margin-left: 0px;"><strong>Possibility effect</strong>: w(p≈0) &gt; p for very low probabilities (e.g., 0.1% → weighted as ~5–10%).  </li>
+<li style="margin-left: 0px;"><strong>Region of underweighting</strong>: mid-range probabilities (e.g., 30–70%) weighted <em>less</em> than objective value.  </li>
+<li style="margin-left: 0px;"><strong>Region of overweighting</strong>: extremes (0–10% and 90–100%) weighted <em>more</em> than objective value.  </li>
+<li style="margin-left: 0px;">Graphically: inverted-S curve crossing y=x at two points (0 and 1), peaking near p=0.1–0.2.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Empirical Validation via Choice Tasks  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Allais Paradox replication</strong>:  </li>
+<li style="margin-left: 20px;">Option A: $1M guaranteed  </li>
+<li style="margin-left: 20px;">Option B: 10% chance $5M, 89% chance $1M, 1% chance $0  </li>
+<li style="margin-left: 20px;">Most choose A despite EV(B) &gt; EV(A).  </li>
+<li style="margin-left: 0px;"><strong>Common consequence violation</strong>:  </li>
+<li style="margin-left: 20px;">Option C: 11% chance $1M, 89% chance $0  </li>
+<li style="margin-left: 20px;">Option D: 10% chance $5M, 90% chance $0  </li>
+<li style="margin-left: 20px;">Most choose D over C—but if A &gt; B, then C must &gt; D (mathematically).  </li>
+<li style="margin-left: 0px;">Implication: violates <em>independence axiom</em> of expected utility theory.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Clinical Risk Communication Failures  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Physicians misinterpret risk statements due to weighting distortions:  </li>
+<li style="margin-left: 20px;">“10% mortality” → perceived as <em>much higher</em> than objective risk (certainty effect).  </li>
+<li style="margin-left: 20px;">“1 in 10,000 adverse event” → perceived as <em>negligible</em>, leading to underreporting.  </li>
+<li style="margin-left: 0px;">Solution: use <strong>natural frequencies</strong> (e.g., “10 out of 1,000”) instead of percentages → reduces over/under-weighting.  </li>
+<li style="margin-left: 0px;">E.g., mammogram risk: “10 out of 1,000 women” → 50% recall accuracy vs. 25% with “1% risk.”  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.4 Prospect Theory Value Function  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Value is assigned to <em>changes</em> in wealth, not absolute states (reference dependence).  </li>
+<li style="margin-left: 20px;"><strong>Loss aversion</strong>: |v(loss)| ≈ 2×|v(gain)| for equal magnitudes (e.g., losing $100 feels worse than gaining $100 feels good).  </li>
+<li style="margin-left: 20px;"><strong>Diminishing sensitivity</strong>: Value curve concave for gains (e.g., $100→$200 feels larger than $900→$1,000), convex for losses.  </li>
+<li style="margin-left: 0px;">Implication: framing outcomes as <em>gains</em> (e.g., “surgery prevents 80% of strokes”) vs. <em>losses</em> (“30% stroke risk without surgery”) alters acceptance rates by 20–40%.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Cognitive Biases in Medical Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinical decisions are especially vulnerable to heuristics due to complexity, time pressure, and incomplete data.  </li>
+</ul>
+<details><summary><strong>4.1 Confirmation Bias in Diagnosis  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians seek evidence confirming initial hypothesis while ignoring disconfirming data.  </li>
+<li style="margin-left: 20px;">E.g., assuming pulmonary embolism in post-op patient → ordering CT angiogram while dismissing normal D-dimer.  </li>
+<li style="margin-left: 0px;">Mitigation: <em>premortem analysis</em>—“If this patient dies tomorrow, what would we have missed?”  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Availability Heuristic in Emergency Medicine  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recent cases dominate judgment: after seeing one meningitis case, overdiagnose headache patients.  </li>
+<li style="margin-left: 0px;">E.g., ER physician misattributes viral meningitis symptoms to migraine in 30% of cases post-outbreak.  </li>
+<li style="margin-left: 0px;">Countermeasure: <em>cognitive forcing functions</em>—mandatory differential diagnosis checklists.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Anchoring in Laboratory Interpretation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Initial lab value anchors subsequent reassessment:  </li>
+<li style="margin-left: 20px;">E.g., initial potassium 5.2 mEq/L → later value 5.4 mEq/L interpreted as “stable” despite clinical deterioration.  </li>
+<li style="margin-left: 0px;">Study: residents re-evaluating serial troponins anchored to first value missed 22% of NSTEMIs.  </li>
+<li style="margin-left: 0px;">Fix: <em>time-delayed reanalysis</em>—reassess labs after 10-minute delay without seeing prior values.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.4 Overconfidence in Prognostic Judgment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Physicians overestimate survival time by 53–109% in terminal illness (e.g., median observed survival: 6 weeks vs. predicted: 14 weeks).  </li>
+<li style="margin-left: 0px;">Consequences: premature aggressive interventions, delayed hospice referral.  </li>
+<li style="margin-left: 0px;">Correction strategy: <em>calibration training</em>—comparing predicted vs. actual outcomes in case conferences.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.5 Omission Bias in Treatment Decisions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians prefer <em>not acting</em> when action carries risk—even if omission has higher expected harm.  </li>
+<li style="margin-left: 20px;">E.g., withholding anticoagulation in AFib due to bleeding risk (1–2%) despite stroke prevention benefit (60% relative risk reduction).  </li>
+<li style="margin-left: 0px;">Quantified: NNT to prevent one stroke = 50; NNH for major bleed = 200 → net benefit, yet underprescribing persists.  </li>
+<li style="margin-left: 0px;">Root cause: <em>causal asymmetry</em>—action-linked harm feels more attributable than omission-linked harm.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.6 Framing Effects in Shared Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Same data yields opposite patient preferences based on framing:  </li>
+<li style="margin-left: 20px;"><em>Lives-saved frame</em>: “Surgery saves 90% of patients at 5 years” → 78% choose surgery.  </li>
+<li style="margin-left: 20px;"><em>Mortality frame</em>: “Surgery has 10% 5-year mortality” → 56% choose surgery.  </li>
+<li style="margin-left: 0px;">Critical for informed consent: legal standards require <em>neutral framing</em> to avoid coercion.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.7 Planning Fallacy in Care Pathways  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians underestimate duration of recovery:  </li>
+<li style="margin-left: 20px;">E.g., predicting full functional recovery from stroke in 6 weeks when median is 14 weeks.  </li>
+<li style="margin-left: 0px;">Consequence: premature discharge, readmission due to unmet rehab needs.  </li>
+<li style="margin-left: 0px;">Solution: <em>reference class forecasting</em>—use institutional registry data on similar cases.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. The Role of Emotion and Intuition in Expert Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Experts do <em>not</em> bypass heuristics—they <em>refine</em> them through pattern recognition.  </li>
+</ul>
+<details><summary><strong>5.1 Naturalistic Decision Making (NDM) Model  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Experts use <em>recognition-primed decision making</em>:  </li>
+<li style="margin-left: 20px;">Stage 1: Pattern match to mental schema (Type 1)  </li>
+<li style="margin-left: 20px;">Stage 2: Mental simulation of course of action  </li>
+<li style="margin-left: 20px;">Stage 3: Adjust if simulation fails (Type 2 override)  </li>
+<li style="margin-left: 0px;">E.g., trauma surgeon deciding on laparotomy: instantly recognizes “blunt abdominal trauma + hypotension” → simulates bleeding sources → acts.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Intuition vs. Analysis in Critical Care  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">In time-critical scenarios (e.g., code blue), intuition dominates:  </li>
+<li style="margin-left: 20px;">Attending physician initiates pericardiocentesis before echo confirmation.  </li>
+<li style="margin-left: 0px;">In ambiguous cases (e.g., nonspecific abdominal pain), overreliance on intuition ↑ misdiagnosis by 37%.  </li>
+<li style="margin-left: 0px;">Optimal balance: <em>dual-track processing</em>—intuition for action, analysis for verification.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Affect Heuristic in Triage Decisions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Emotional reactions override objective triage scores:  </li>
+<li style="margin-left: 20px;">Pediatric patient with fever + rash → higher acuity if parent is visibly distressed (even after controlling vital signs).  </li>
+<li style="margin-left: 0px;">Study: nurses assigned same vitals + “crying parent” vs. “calm parent” → acuity score ↑ 1.8 levels (p&lt;0.01).  </li>
+<li style="margin-left: 0px;">Risk: resource misallocation, delayed care for “quiet” deteriorating patients.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Expertise-Induced Blindness  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Experts miss novel solutions due to over-reliance on familiar schemas.  </li>
+<li style="margin-left: 20px;">E.g., seasoned ICU team fails to consider extracorporeal life support (ECLS) for refractory cardiac arrest because “standard ACLS failed.”  </li>
+<li style="margin-left: 0px;">Mitigation: <em>red teaming</em>—assign someone to argue against dominant plan.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.5 Calibration and Feedback Loops  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Expertise improves only with <em>accurate, timely feedback</em>:  </li>
+<li style="margin-left: 20px;">Radiologists: immediate image correlation with pathology → accuracy ↑ from 78% to 94%.  </li>
+<li style="margin-left: 20px;">Surgeons: delayed complication reports → no improvement over 5 years.  </li>
+<li style="margin-left: 0px;">Key metric: <em>calibration slope</em>—slope of predicted vs. actual accuracy plot (ideal = 1.0).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Structural Flaws in Decision Trees and Risk Assessment Tools  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinical decision aids often fail due to improper probability weighting or omitted variables.  </li>
+</ul>
+<details><summary><strong>6.1 Flawed Expected Utility Calculations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Tools like Wells’ Criteria for PE ignore <em>state dependency</em>:  </li>
+<li style="margin-left: 20px;">High pretest probability → same D-dimer result interpreted differently than low pretest.  </li>
+<li style="margin-left: 0px;">Most tools assume linear probability weighting—violates prospect theory.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Missing Counterfactual Scenarios  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Decision trees rarely include <em>omission arms</em>:  </li>
+<li style="margin-left: 20px;">E.g., “Anticoagulate vs. no anticoagulate” but omits “delay anticoagulation until genetic testing.”  </li>
+<li style="margin-left: 0px;">Consequence: suboptimal choices when third alternatives exist.  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Over-Simplification of Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Tools assign single-value outcomes (e.g., “stroke risk = 5%”) ignoring:  </li>
+<li style="margin-left: 20px;">Severity spectrum (mild vs. disabling stroke)  </li>
+<li style="margin-left: 20px;">Time discounting (early vs. late stroke)  </li>
+<li style="margin-left: 20px;">Patient preferences (e.g., quality-adjusted life years not incorporated).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.4 Dynamic Risk Recalibration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Static tools ignore <em>time-varying risk</em>:  </li>
+<li style="margin-left: 20px;">E.g., CHA₂DS₂-VASc score fixed at diagnosis, but risk ↑ with new comorbidities.  </li>
+<li style="margin-left: 0px;">Solution: <em>dynamic decision models</em> updating daily (e.g., sepsis mortality risk calculators).  </li>
+</ul>
+</div></details>
+<details><summary><strong>6.5 The “Third-Option” Neglect  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians default to binary choices:  </li>
+<li style="margin-left: 20px;">Study: 78% of ICU decisions framed as “treat aggressively vs. comfort care” despite third options (e.g., time-limited trial).  </li>
+<li style="margin-left: 0px;">Consequence: loss aversion → aggressive treatment even when futile.  </li>
+<li style="margin-left: 0px;">Fix: <em>preference elicitation tools</em>—explicitly list 3–5 alternatives before decision.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Cultural and Contextual Modulators of Decision Biases  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Biases manifest differently across cultures, specialties, and institutional settings.  </li>
+</ul>
+<details><summary><strong>7.1 Individual Differences in Heuristic Use  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cognitive style predicts bias susceptibility:  </li>
+<li style="margin-left: 20px;"><em>Field-dependent</em> clinicians more prone to framing effects (rely on context cues).  </li>
+<li style="margin-left: 20px;"><em>Field-independent</em> clinicians better at base-rate neglect correction.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Specialty-Specific Bias Profiles  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Surgeons: higher overconfidence in technical skills, lower in diagnostic accuracy.  </li>
+<li style="margin-left: 0px;">Internists: stronger base-rate use but more planning fallacy in chronic disease management.  </li>
+<li style="margin-left: 0px;">Emergency medicine: highest availability heuristic (due to high case volume).  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Organizational Bias Amplifiers  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High workload → Type 1 dominance ↑ → anchoring ↑ by 40%.  </li>
+<li style="margin-left: 0px;">Hierarchical cultures suppress dissent → confirmation bias persists unchallenged.  </li>
+<li style="margin-left: 0px;">E.g., junior resident fails to question attending’s incorrect diagnosis due to power distance.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Cross-Cultural Framing Effects  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Individualistic cultures (US/UK): gain-framing preferred for preventive care.  </li>
+<li style="margin-left: 0px;">Collectivistic cultures (Japan/Korea): loss-framing more effective (e.g., “Your family’s health depends on screening”).  </li>
+<li style="margin-left: 0px;">Study: mammography adherence ↑ 23% when frame matched cultural values.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Temporal Discounting Variability  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Younger clinicians discount future outcomes more steeply:  </li>
+<li style="margin-left: 20px;">E.g., prefer immediate antibiotic prescription over delayed (watchful waiting) for otitis media.  </li>
+<li style="margin-left: 0px;">Older clinicians show steeper discounting in <em>nonclinical</em> domains (e.g., preventive lifestyle advice).  </li>
+<li style="margin-left: 0px;">Clinical implication: mismatch in shared decision making when age groups interact.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Interventions to Debias Clinical Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Evidence-based strategies to correct systematic errors in judgment.  </li>
+</ul>
+<details><summary><strong>8.1 Precommitment Devices  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Pre-registration</em> of diagnostic hypotheses before test ordering ↓ confirmation bias by 31%.  </li>
+<li style="margin-left: 0px;">E.g., ER physician documents top 3 diagnoses <em>before</em> CT scan.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Decision Aids with Calibrated Feedback  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Interactive tools showing real-time bias metrics:  </li>
+<li style="margin-left: 20px;">E.g., “Your predicted stroke risk = 4%; actual cohort risk = 2.1% → overestimation.”  </li>
+<li style="margin-left: 0px;">Study: ICU teams using bias-feedback dashboard ↓ unnecessary intubations by 27%.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Cognitive Forcing Strategies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Red teaming</em>: Assign devil’s advocate to challenge plan.  </li>
+<li style="margin-left: 0px;"><em>Pre-mortem</em>: “Assume this decision failed—what caused it?” ↓ overconfidence by 52%.  </li>
+<li style="margin-left: 0px;"><em>Time delay</em>: Mandatory 10-minute pause before high-stakes decisions ↑ Type 2 processing.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Training Protocols  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Debiasing curriculum</em> for residents:  </li>
+<li style="margin-left: 20px;">Module 1: Probability weighting curves (visualized)  </li>
+<li style="margin-left: 20px;">Module 2: Framing manipulation exercises  </li>
+<li style="margin-left: 20px;">Module 3: Calibration drills with immediate feedback  </li>
+<li style="margin-left: 0px;">Outcome: 18% ↑ in diagnostic accuracy after 6-month training.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.5 System-Level Nudges  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Default options: “opt-out” organ donation ↑ donor rates from 17% to 85%.  </li>
+<li style="margin-left: 0px;">EHR prompts: “Consider alternative diagnosis” when ordering imaging ↓ unnecessary scans by 34%.  </li>
+<li style="margin-left: 0px;">Team-based debriefing: Structured post-call review ↓ diagnostic errors by 29%.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.6 Quantifying Debiasing Efficacy  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Meta-analysis of 47 RCTs:  </li>
+<li style="margin-left: 20px;">Most effective: <em>calibration training</em> (OR = 2.3, 95% CI 1.8–2.9)  </li>
+<li style="margin-left: 20px;">Least effective: <em>general reasoning instruction</em> (OR = 1.1, 95% CI 0.9–1.3)  </li>
+<li style="margin-left: 0px;">Key mediator: <em>metacognitive awareness</em>—clinicians who recognize their own bias show 3.1× higher improvement.  </li>
+</ul>
+</div></details>
+<details><summary><strong>8.7 Implementation Barriers  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinician resistance due to:  </li>
+<li style="margin-left: 20px;">Perceived threat to expertise (“I don’t need bias training”)  </li>
+<li style="margin-left: 20px;">Time constraints (average decision aid use: 47 seconds)  </li>
+<li style="margin-left: 0px;">Successful adoption requires:  </li>
+<li style="margin-left: 20px;">Leadership endorsement  </li>
+<li style="margin-left: 20px;">Integration into workflow (e.g., EHR-embedded prompts)  </li>
+<li style="margin-left: 20px;">Non-punitive feedback culture</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. The Role of Mental Models and Schema Activation in Diagnostic Reasoning  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians construct <em>causal mental models</em> of illness—structured representations linking symptoms, mechanisms, and interventions.  </li>
+<li style="margin-left: 0px;">These models are activated via pattern recognition (Type 1) but refined through analytical reasoning (Type 2).  </li>
+<li style="margin-left: 0px;">Errors arise when models are <em>incomplete</em>, <em>overfitted</em>, or <em>rigidly held</em>.  </li>
+</ul>
+<details><summary><strong>9.1 Schema Structure and Activation Thresholds  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Each disease schema contains:  </li>
+<li style="margin-left: 20px;">Core features (necessary for diagnosis)  </li>
+<li style="margin-left: 20px;">Variable features (common but not required)  </li>
+<li style="margin-left: 20px;">Red flags (features that <em>rule in</em> diagnosis if present)  </li>
+<li style="margin-left: 0px;">E.g., MI schema:  </li>
+<li style="margin-left: 20px;">Core: substernal chest pressure + radiation  </li>
+<li style="margin-left: 20px;">Variable: diaphoresis, nausea  </li>
+<li style="margin-left: 20px;">Red flag: ST elevation in contiguous leads  </li>
+<li style="margin-left: 0px;">Low activation threshold → overdiagnosis (e.g., labeling all chest pain as MI); high threshold → underdiagnosis.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Schema Inhibition Failure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">When competing schemas co-activate, <em>inhibition failure</em> causes diagnostic overshadowing:  </li>
+<li style="margin-left: 20px;">E.g., patient with COPD exacerbation + pulmonary embolism → PE symptoms ignored due to dominant COPD schema.  </li>
+<li style="margin-left: 0px;">fMRI evidence: dorsolateral prefrontal cortex (dlPFC) hypoactivity during schema conflict resolution.  </li>
+<li style="margin-left: 0px;">Mitigation: <em>schema scanning</em>—systematically ask “What else could explain this?” before settling.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Schema Updating and Cognitive Rigidity  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Experts update schemas via <em>anomaly-driven revision</em>: unexpected findings trigger model recalibration.  </li>
+<li style="margin-left: 20px;">E.g., “This pneumonia patient deteriorates on antibiotics” → prompts search for mimics (e.g., PE, heart failure).  </li>
+<li style="margin-left: 0px;">Inexperienced clinicians resist updating due to <em>confirmation bias</em>—reinterpreting anomalies as measurement error.  </li>
+<li style="margin-left: 0px;">Study: residents who received explicit anomaly training diagnosed rare conditions 2.3× more often (p&lt;0.001).  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Diagnostic Overlap and Misclassification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High schema similarity → misclassification:  </li>
+<li style="margin-left: 20px;">Migraine vs. cluster headache (both present with unilateral headache)  </li>
+<li style="margin-left: 20px;">Sepsis vs. systemic inflammatory response syndrome (SIRS)  </li>
+<li style="margin-left: 0px;">Solution: <em>discriminant analysis training</em>—highlighting <em>differences</em>, not similarities.  </li>
+<li style="margin-left: 20px;">E.g., “If fever + leukocytosis + hypotension → sepsis; if bradycardia + photophobia → meningitis.”  </li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Schema Fragmentation in Multimorbidity  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">In elderly patients, multiple schemas compete → <em>schema fragmentation</em>: inability to form unified model.  </li>
+<li style="margin-left: 20px;">E.g., heart failure, CKD, and AFib all cause dyspnea → clinician defaults to most familiar schema (e.g., asthma).  </li>
+<li style="margin-left: 0px;">Countermeasure: <em>temporal sequencing</em>—ask “Which symptom appeared first?” to prioritize causal hierarchy.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. The Psychology of Uncertainty and Ambiguity Tolerance in Clinical Practice  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians constantly navigate <em>risk</em> (known probabilities) vs. <em>uncertainty</em> (unknown probabilities).  </li>
+<li style="margin-left: 0px;">Low ambiguity tolerance → premature closure, overtesting, and anxiety-driven decision making.  </li>
+</ul>
+<details><summary><strong>10.1 Ambiguity Tolerance (AT) Measurement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Validated scale: <em>AT Scale</em> (Macpherson &amp; Chater, 2015)  </li>
+<li style="margin-left: 20px;">High AT: “I can function without clear answers”  </li>
+<li style="margin-left: 20px;">Low AT: “Uncertainty makes me anxious and impulsive”  </li>
+<li style="margin-left: 0px;">Correlates:  </li>
+<li style="margin-left: 20px;">Low AT ↔ ↑ unnecessary imaging (r = 0.41, p&lt;0.01)  </li>
+<li style="margin-left: 20px;">Low AT ↔ ↓ shared decision making (OR = 0.38, p&lt;0.05)  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Uncertainty-Induced Cognitive Narrowing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Under ambiguity, clinicians narrow differential diagnosis:  </li>
+<li style="margin-left: 20px;">Study: when presented with ambiguous abdominal pain + normal labs, 68% narrowed to <em>one</em> diagnosis vs. 27% in high-uncertainty control group.  </li>
+<li style="margin-left: 0px;">Consequence: missed diagnoses of rare conditions (e.g., vasculitis masquerading as IBS).  </li>
+<li style="margin-left: 0px;">Intervention: <em>uncertainty rehearsal</em>—simulate ambiguous cases in simulation labs.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 The “Diagnostic Momentum” Effect  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Once a diagnosis is tentively accepted, evidence accumulates <em>for</em> it—even if weak:  </li>
+<li style="margin-left: 20px;">E.g., “Suspected MI” → all chest pain attributed to cardiac cause, ignoring GERD, musculoskeletal, anxiety.  </li>
+<li style="margin-left: 0px;">Quantified: diagnostic momentum increases misdiagnosis risk by 3.2× (95% CI 2.1–4.9).  </li>
+<li style="margin-left: 0px;">Mitigation: <em>diagnostic pause</em>—mandate reconsideration after 24 hours or new data.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.4 Bayesian Updating Under Ambiguity  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians often ignore base rates when likelihood ratios are dramatic:  </li>
+<li style="margin-left: 20px;">E.g., positive D-dimer in low-prevalence population → overdiagnosis of PE.  </li>
+<li style="margin-left: 0px;">Correct Bayesian reasoning:  </li>
+<li style="margin-left: 20px;">Pretest probability × likelihood ratio = posttest probability  </li>
+<li style="margin-left: 20px;">E.g., low pretest (2%) × LR+ 10 = posttest probability 17% → <em>not</em> diagnostic.  </li>
+<li style="margin-left: 0px;">Training: <em>Bayesian calculators embedded in EHRs</em> ↓ PE overdiagnosis by 28%.  </li>
+</ul>
+</div></details>
+<details><summary><strong>10.5 The Role of Metacognition in Uncertainty Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Expert clinicians explicitly <em>monitor uncertainty</em>:  </li>
+<li style="margin-left: 20px;">“I’m uncertain—this patient needs monitoring, not immediate action.”  </li>
+<li style="margin-left: 0px;">Novices lack this metacognitive tag → act prematurely.  </li>
+<li style="margin-left: 0px;">Tool: <em>uncertainty documentation</em> in notes (“Dx uncertain; plan = repeat exam in 4h”) ↓ readmission by 19%.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Temporal Dynamics in Decision Making: Real-Time Cognitive Load and Fatigue  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Decision quality declines across shifts due to <em>cognitive fatigue</em>—especially in high-stakes domains.  </li>
+</ul>
+<details><summary><strong>11.1 Shift-Related Performance Decay  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Emergency medicine study (n=2,340 shifts):  </li>
+<li style="margin-left: 20px;">Diagnostic accuracy: 91% at start → 76% by end of 12-hour shift  </li>
+<li style="margin-left: 20px;">Decision latency: ↑ 43 seconds per case (p&lt;0.001)  </li>
+<li style="margin-left: 0px;">Primary driver: <em>ego depletion</em>—reduced prefrontal cortex activation after prolonged Type 2 processing.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 The “Afternoon Slump” in Surgical Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Surgeons operating after 3 PM:  </li>
+<li style="margin-left: 20px;">↑ Intraoperative complications (OR = 1.7, p=0.02)  </li>
+<li style="margin-left: 20px;">↓ appropriate antibiotic prophylaxis (68% vs. 89%, p&lt;0.01)  </li>
+<li style="margin-left: 0px;">Confounder: circadian dip in alertness (core body temperature minimum at 4–5 AM).  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.3 Decision Fatigue in High-Volume Settings  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Triage nurses making &gt;20 decisions/hour:  </li>
+<li style="margin-left: 20px;">Omission errors ↑ from 4% to 18% (p&lt;0.001)  </li>
+<li style="margin-left: 20px;">Anchoring on first vital sign ↑ by 2.1×  </li>
+<li style="margin-left: 0px;">Countermeasure: <em>cognitive microbreaks</em> (3-minute pauses every 20 decisions) restore accuracy to baseline.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.4 Sleep Deprivation and Risk Perception  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">After 24 hours awake:  </li>
+<li style="margin-left: 20px;">Risk aversion ↓ for gains (↑ willingness to gamble)  </li>
+<li style="margin-left: 20px;">Risk aversion ↑ for losses (↑ avoidance of ambiguous choices)  </li>
+<li style="margin-left: 0px;">E.g., sleep-deprived residents delay palliative care consults (fear of “giving up”) but order unnecessary CTs (false reassurance).  </li>
+<li style="margin-left: 0px;">fMRI: amygdala hyperactivity + vmPFC hypoactivity during risk tasks.  </li>
+</ul>
+</div></details>
+<details><summary><strong>11.5 Strategic Timing of Critical Decisions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Optimal decision windows:  </li>
+<li style="margin-left: 20px;">Morning (8–10 AM): highest analytical capacity  </li>
+<li style="margin-left: 20px;">Post-lunch dip (1–2 PM): avoid high-stakes decisions  </li>
+<li style="margin-left: 0px;">Protocol: <em>high-risk procedure scheduling</em>—elective surgeries scheduled before 11 AM ↓ complications by 24%.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Social and Group Decision Processes in Clinical Teams  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Team-based care introduces <em>collective biases</em>—sometimes amplifying, sometimes mitigating individual errors.  </li>
+</ul>
+<details><summary><strong>12.1 Group Polarization in Multidisciplinary Rounds  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Teams shift toward <em>extreme</em> positions after discussion:  </li>
+<li style="margin-left: 20px;">Conservative team → overcautious (e.g., admit all chest pain for observation)  </li>
+<li style="margin-left: 20px;">Aggressive team → overintervention (e.g., early intubation in COPD)  </li>
+<li style="margin-left: 0px;">Quantified: polarization effect size d = 0.82 (large).  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Abilene Paradox in Shared Decision Making  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Teams adopt suboptimal plans to avoid conflict:  </li>
+<li style="margin-left: 20px;">E.g., team agrees to tracheostomy despite individual reservations about futility.  </li>
+<li style="margin-left: 0px;">Root cause: <em>pluralistic ignorance</em>—each member assumes others support plan.  </li>
+<li style="margin-left: 0px;">Fix: <em>anonymous pre-round voting</em> → reveals true consensus.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Hierarchical Suppression of Dissent  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Junior staff withhold concerns due to power distance:  </li>
+<li style="margin-left: 20px;">Study: 61% of near-misses attributed to unvoiced concerns by nurses.  </li>
+<li style="margin-left: 0px;">Mitigation: <em>SBAR + “Two-Challenge Rule”</em>—requires second opinion if concern unaddressed.  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.4 Cognitive Offloading to Team Members  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Experts distribute mental workload:  </li>
+<li style="margin-left: 20px;">Surgeon focuses on technical execution; anesthesiologist monitors hemodynamics.  </li>
+<li style="margin-left: 0px;">Risk: <em>attributional asymmetry</em>—team blames surgeon for error while ignoring anesthesiologist’s missed warning signs.  </li>
+<li style="margin-left: 0px;">Solution: <em>structured debriefings</em> using <em>nonblaming language</em>: “What did the system miss?”  </li>
+</ul>
+</div></details>
+<details><summary><strong>12.5 Team-Based Calibration Training  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Teams trained together show faster bias correction:  </li>
+<li style="margin-left: 20px;">ICU teams using <em>calibration dashboards</em> ↓ diagnostic errors by 34% vs. individuals (21%).  </li>
+<li style="margin-left: 0px;">Key mechanism: <em>cross-checking</em>—explicitly inviting team to challenge assumptions.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. Digital Tools, AI, and the Future of Debiasing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Technology can both exacerbate and mitigate cognitive biases—depending on design.  </li>
+</ul>
+<details><summary><strong>13.1 AI-Induced Automation Bias  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clinicians overtrust AI outputs:  </li>
+<li style="margin-left: 20px;">Radiologist reads CT with AI flag → misses false positive in 38% of cases  </li>
+<li style="margin-left: 20px;">EHR alert fatigue ↓ adherence to high-priority alerts by 52%  </li>
+<li style="margin-left: 0px;">Countermeasure: <em>explanation-aware AI</em>—AI must justify output (e.g., “Flagged due to ST elevation in V1–V4”)  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.2 Algorithmic Framing Effects  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Same data presented differently alters action:  </li>
+<li style="margin-left: 20px;">“70% probability of sepsis” → 41% start antibiotics  </li>
+<li style="margin-left: 20px;">“30% chance of <em>not</em> having sepsis” → 68% start antibiotics  </li>
+<li style="margin-left: 0px;">Fix: present both <em>absolute</em> and <em>relative</em> risk (e.g., “RR 2.1 [95% CI 1.3–3.4]”)  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.3 Predictive Analytics and Overconfidence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Risk scores (e.g., CHA₂DS₂-VASc) create <em>false precision</em>:  </li>
+<li style="margin-left: 20px;">Clinicians treat score as <em>truth</em> rather than estimate  </li>
+<li style="margin-left: 20px;">Study: 44% ignore clinical context when score contradicts judgment  </li>
+<li style="margin-left: 0px;">Best practice: <em>confidence intervals around scores</em> (e.g., “Stroke risk = 4% [2–7%]”)  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.4 Decision Support Systems (DSS)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Passive DSS</em> (alerts): ↑ inappropriate interventions by 19%  </li>
+<li style="margin-left: 0px;"><em>Active DSS</em> (structured prompts): ↓ misdiagnosis by 27%  </li>
+<li style="margin-left: 0px;">Optimal: <em>hybrid DSS</em>—alerts only when high-risk + low clinician confidence  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.5 Virtual Reality Simulation for Bias Training  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">VR scenarios expose clinicians to bias triggers in safe environment:  </li>
+<li style="margin-left: 20px;">E.g., “Ambiguous chest pain” case with time pressure + distractors  </li>
+<li style="margin-left: 0px;">Outcome: 32% ↓ anchoring, 28% ↓ confirmation bias post-training (p&lt;0.01)  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.6 Digital Nudges in EHR Workflow  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Behavioral “nudges” embedded in EHR:  </li>
+<li style="margin-left: 20px;"><em>Default options</em>: “Antibiotics not indicated” pre-selected for viral URI  </li>
+<li style="margin-left: 20px;"><em>Social comparison</em>: “70% of peers avoided CT in low-risk headache”  </li>
+<li style="margin-left: 0px;">RCT: NNT = 8 to prevent one unnecessary CT (95% CI 6–12).  </li>
+</ul>
+</div></details>
+<details><summary><strong>13.7 AI-Enhanced Calibration  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Real-time bias feedback:  </li>
+<li style="margin-left: 20px;">EHR flags “overconfidence” when confidence &gt;80% but accuracy &lt;70%  </li>
+<li style="margin-left: 20px;">Study: clinicians receiving feedback ↓ overconfidence by 41% in 3 months  </li>
+<li style="margin-left: 0px;">Future: <em>predictive bias alerts</em>—AI forecasts likely error based on case features.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. Ethical and Systemic Implications of Cognitive Biases in Medicine  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Biases are not individual failings—they reflect <em>systemic design flaws</em>.  </li>
+</ul>
+<details><summary><strong>14.1 Bias as a System Failure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High error rates correlate with:  </li>
+<li style="margin-left: 20px;">Workload &gt;20 patients/clinician  </li>
+<li style="margin-left: 20px;">Interruption rate &gt;15/hour  </li>
+<li style="margin-left: 20px;">Lack of debriefing infrastructure  </li>
+<li style="margin-left: 0px;">Not clinician deficiency—<em>cognitive ergonomics failure</em>.  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.2 Justice and Bias Disparities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Marginalized patients face higher bias exposure:  </li>
+<li style="margin-left: 20px;">Black patients: 2.3× more likely to receive delayed pain management  </li>
+<li style="margin-left: 20px;">Women: 1.8× more likely misdiagnosed with MI  </li>
+<li style="margin-left: 0px;">Root cause: <em>stereotype-based schema activation</em> (e.g., “drug-seeking” label).  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.3 Informed Consent and Bias Transparency  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Patients deserve to know <em>how</em> decisions are made:  </li>
+<li style="margin-left: 20px;">“I considered three possibilities; here’s how I weighed them.”  </li>
+<li style="margin-left: 0px;">Study: disclosure of diagnostic uncertainty ↑ trust by 37% (p&lt;0.01).  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.4 Legal Liability and Cognitive Standards  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Malpractice suits increasingly cite <em>cognitive errors</em>:  </li>
+<li style="margin-left: 20px;">“Failure to consider alternative diagnosis”  </li>
+<li style="margin-left: 20px;">“Overreliance on initial impression”  </li>
+<li style="margin-left: 0px;">New standard: <em>reasonable clinician would have debiased</em>—not just “reasonable clinician.”  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.5 Policy Recommendations for Systemic Debiasing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Mandate:  </li>
+<li style="margin-left: 20px;">Cognitive load monitoring in high-risk units  </li>
+<li style="margin-left: 20px;">Bias training in residency accreditation standards  </li>
+<li style="margin-left: 20px;">EHR design guidelines (e.g., no more than 3 alerts/hour)  </li>
+<li style="margin-left: 0px;">Incentivize:  </li>
+<li style="margin-left: 20px;">Payment for <em>diagnostic accuracy</em>, not volume  </li>
+<li style="margin-left: 20px;">Team-based quality bonuses (reduces individual blame culture)  </li>
+</ul>
+</div></details>
+<details><summary><strong>14.6 The Future of Clinical Cognition  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Emerging frameworks:  </li>
+<li style="margin-left: 20px;"><em>Dual-process theory 2.0</em>: includes <em>intuition</em>, <em>embodied cognition</em>, and <em>social schema activation</em>  </li>
+<li style="margin-left: 20px;"><em>Bayesian brain hypothesis</em>: clinicians as “prediction machines” constantly updating internal models  </li>
+<li style="margin-left: 0px;">Vision: <em>bias-aware clinical decision support</em>—AI that <em>models clinician bias</em> and adjusts recommendations accordingly.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
