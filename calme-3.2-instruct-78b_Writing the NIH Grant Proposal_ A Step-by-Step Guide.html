@@ -1,0 +1,570 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the NIH Grant Proposal: A Step-by-Step Guide</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Writing the NIH Grant Proposal: A Step-by-Step Guide</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. Significance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Problem Addressed</strong>: Hypertension, critical barrier in field.</li>
+<li style="margin-left: 0px;"><strong>Improvement Impact</strong>: Scientific knowledge, technical capability, clinical practice.</li>
+<li style="margin-left: 0px;"><strong>Change Drive</strong>: Concepts, methods, technologies, treatments, services, preventative interventions.</li>
+</ul>
+<details><summary><strong>1.1 Significance Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Drug treatment inefficiency: BP below 140/90 mmHg.</li>
+<li style="margin-left: 0px;">Guided breathing intervention: 6–10 breaths/min, used 15 min/day for 8 weeks.</li>
+<li style="margin-left: 0px;">Efficacy not established due to small samples, short follow-up.</li>
+</ul>
+<details><summary><strong>1.1.1 Pharmacologic Treatment Limitations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Only 53% of hypertensives on drug treatment have controlled BP.</li>
+<li style="margin-left: 0px;">Medications expensive, side effects limit adherence.</li>
+</ul>
+</div></details>
+<details><summary><strong>1.1.2 Non-pharmacologic Treatment Adjuncts</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Relaxation, biofeedback, guided breathing.</li>
+<li style="margin-left: 0px;">Effect sizes: 9.0–9.7 mmHg (SBP), 6.1–7.2 mmHg (DBP).</li>
+</ul>
+</div></details>
+<details><summary><strong>1.1.3 Device-Guided Breathing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">HRV biofeedback, breathing rate 6–10 breaths/min.</li>
+<li style="margin-left: 0px;">Safe in laboratory studies, compensates by deeper breathing.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>1.2 Guided Breathing Efficacy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Studies overwhelmingly positive, small sample sizes.</li>
+<li style="margin-left: 0px;">SBP reductions: 5.4/3.2 mm Hg (home BP), 8.2/5.0 mm Hg, 2.6 mm Hg (p &lt; 0.05), 8.5 vs. 6.4 mm Hg (NS).</li>
+<li style="margin-left: 0px;">ABP as gold standard, only one small study used.</li>
+</ul>
+<details><summary><strong>1.2.1 Mechanisms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Baroreflex sensitivity alteration, HRV, increased arterial compliance.</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>2. Innovation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ambulatory Blood Pressure (ABP) as primary outcome.</li>
+<li style="margin-left: 0px;">Large sample size: N = 400, power analysis.</li>
+<li style="margin-left: 0px;">Longer follow-up duration: 12 months.</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Review Criteria</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Significance</strong>: Problem importance, scientific knowledge advancement.</li>
+<li style="margin-left: 0px;"><strong>Investigators</strong>: Training, experience level, integrated expertise.</li>
+<li style="margin-left: 0px;"><strong>Innovation</strong>: Originality, paradigm challenges, novel concepts, methodologies, technologies.</li>
+<li style="margin-left: 0px;"><strong>Approach</strong>: Adequate development, integration, reasoning, alternative tactics.</li>
+<li style="margin-left: 0px;"><strong>Environment</strong>: Contribution to success, unique features, collaborative arrangements, institutional support.</li>
+</ul>
+</div></details>
+<details><summary><strong>4. Additional Review Criteria</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Human Subjects Protection</strong>: Research risk assessment.</li>
+<li style="margin-left: 0px;"><strong>Inclusion of Women, Minorities, Children</strong>: Adequate plans, recruitment, retention.</li>
+<li style="margin-left: 0px;"><strong>Vet Animals Use</strong>: Five PHS form 398 items assessment.</li>
+<li style="margin-left: 0px;"><strong>Biohazards Protection</strong>: Adequate protection proposed.</li>
+</ul>
+</div></details>
+<details><summary><strong>5. Additional Review Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Budget and Period Support</strong>: Reasonableness, requested period.</li>
+<li style="margin-left: 0px;"><strong>Select Agent Research</strong>: Use, monitoring, safety plans.</li>
+<li style="margin-left: 0px;"><strong>Foreign Applications</strong>: Talent or resources not available in the US.</li>
+</ul>
+</div></details>
+<details><summary><strong>6. Protection of Human Subjects From Research Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Involvement and protections relating to human subjects participation assessed.</li>
+</ul>
+</div></details>
+<details><summary><strong>7. Inclusion of Women, Minorities, and Children in Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adequacy of plans to include subjects from genders, racial/ethnic groups, children assessed.</li>
+<li style="margin-left: 0px;">Plans for recruitment and retention evaluated.</li>
+</ul>
+</div></details>
+<details><summary><strong>8. Care and Use of Vertebrate Animals in Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Five items described in PHS form 398 research grant application instructions assessed.</li>
+</ul>
+</div></details>
+<details><summary><strong>9. Biohazards</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adequate protection proposed for materials or procedures potentially hazardous to research personnel and/or environment assessed.</li>
+</ul>
+</div></details>
+<details><summary><strong>10. Budget and Period Support</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reasonableness of proposed budget, requested period support in relation to research evaluated.</li>
+<li style="margin-left: 0px;">Budget evaluation should not affect priority score.</li>
+</ul>
+</div></details>
+<details><summary><strong>11. Select Agent Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Information regarding use, monitoring, safety plans for select agent(s) assessed.</li>
+</ul>
+</div></details>
+<details><summary><strong>12. Foreign Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ability to bring in talent or resources not available in the US, augmentation of U.S. resources rated.</li>
+<li style="margin-left: 0px;">Foreign applications&#x27; research similarity to that by U.S. investigators, need for the research checked.</li>
+</ul>
+<p>As the provided text doesn&#x27;t offer content to divide into a third part following the structure and instructions given, this response is in continuation of the last provided content, focusing on clarifying and detailing the existing points under additional review considerations.</p>
+</div></details>
+<details><summary><strong>10. Budget and Period Support</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Reasonableness Evaluation</strong>: Budget and requested period support in relation to proposed research.</li>
+<li style="margin-left: 0px;"><strong>Impact on Score</strong>: Priority score unaffected by budget evaluation, but reviewers may penalize for perceived high or low budgets.</li>
+</ul>
+</div></details>
+<details><summary><strong>11. Select Agent Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Assessment</strong>: Information provided regarding use, monitoring, safety plans for select agent(s) in proposed research.</li>
+</ul>
+</div></details>
+<details><summary><strong>12. Foreign Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Talent and Resources</strong>: Rating for ability to bring in talent or resources not available in the US.</li>
+<li style="margin-left: 0px;"><strong>Resource Augmentation</strong>: Contribution to augmentation of U.S. resources.</li>
+<li style="margin-left: 0px;"><strong>Research Similarity Check</strong>: Whether foreign application proposes research similar to that being done by U.S. investigators.</li>
+<li style="margin-left: 0px;"><strong>Necessity Evaluation</strong>: Whether there is a need for the research, suffering in review if similar research is being done. </li>
+</ul>
+<p>It&#x27;s noted that the content provided doesn&#x27;t offer new headings or subheadings to further divide into a third part. The last section &#x27;Foreign Applications&#x27; is the end of provided text, and no additional content or new headings are available to structure under a third part. The detailed thinking process for the continuation is thus limited by the provided text&#x27;s end, and no further deeply nested hierarchical structure can be created without additional content.</p>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
