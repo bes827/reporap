@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the NIH Grant Proposal: A Step-by-Step Guide  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Writing the NIH Grant Proposal: A Step-by-Step Guide  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: EBSCOhost (2018, SAGE Publications), pp. 73–78, 185–186  </li>
+<li style="margin-left: 0px;">Topic: NIH grant application structure and review criteria  </li>
+<li style="margin-left: 0px;">Author(s): William Gerin, Christine Kapelewski Kinkade, Niki L. Page  </li>
+</ul>
+<details><summary><strong>1. Significance Section: Structure and Content  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Core requirement: Explain importance of problem, impact on scientific/clinical progress, and field-level paradigm shifts.  </li>
+<li style="margin-left: 0px;">Must address: public health relevance to NIH, problem definition, and projected impact on clinical practice.  </li>
+<li style="margin-left: 0px;">Space constraint: Keep Significance to ~2–3 pages total to prioritize Approach section within 12-page limit.  </li>
+<li style="margin-left: 0px;">Strategic redundancy: Repeat key points from Specific Aims <em>only</em> where essential to prevent reviewer confusion; avoid over-redundancy.  </li>
+</ul>
+<details><summary><strong>1.1 Required Narrative Elements  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overview of current gaps: Drug therapy fails to achieve BP &lt;140/90 mmHg in most hypertensives (only 53% on meds, only 1/3 overall achieve control).  </li>
+<li style="margin-left: 0px;">Behavioral intervention context: Guided breathing (6–10 breaths/min for 15 min/day × 8 weeks) shows BP-lowering potential but lacks rigorous evidence.  </li>
+<li style="margin-left: 0px;">Methodological limitations of prior work: Small samples, short follow-up (≤12 weeks), lack of control conditions in some studies.  </li>
+<li style="margin-left: 0px;">Proposed solution: Large-scale RCT (N=400) with ambulatory BP monitoring (ABP), 12-month follow-up, and mechanistic exploration.  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.2 Evidence Synthesis from Prior Studies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Table A: Summary of 4 published guided breathing RCTs (Jones 2004, Smith 2007, Trace 2004, Watkins 2008).  </li>
+<li style="margin-left: 0px;">Jones (N=79): SBP/DBP ↓5.4/3.2 mmHg vs. 1.9/1.0 mmHg (home BP), <em>p</em>&lt;0.001.  </li>
+<li style="margin-left: 0px;">Smith (N=42, RCT): SBP ↓8.2/5.0 mmHg vs. 2.3/1.2 mmHg (music control), <em>p</em>&lt;0.03.  </li>
+<li style="margin-left: 0px;">Trace (N=61, RCT): SBP ↓2.6 mmHg vs. 1.2 mmHg (waitlist), <em>p</em>&lt;0.05.  </li>
+<li style="margin-left: 0px;">Watkins (N=38, open-label): SBP ↓8.5 vs. 6.4 mmHg (attention control; NS).  </li>
+<li style="margin-left: 0px;">Effect size consistency: Four of eight studies report SBP ↓≥12 mmHg—unusually large for mild behavioral intervention.  </li>
+</ul>
+</div></details>
+<details><summary><strong>1.3 Safety and Technical Justification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Breathing rate rationale: 6–10 breaths/min aligns with peak respiratory sinus arrhythmia (RSA) amplitude.  </li>
+<li style="margin-left: 0px;">Safety data: Pulse oximetry and end-tidal CO₂ confirm no adverse gas exchange changes; deep breathing compensates for reduced rate.  </li>
+<li style="margin-left: 0px;">Device: Respirco monitor (~$200), no known side effects, high acceptability and accessibility across at-risk populations.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Innovation Section: Strategic Differentiation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Core mandate: Explain how the proposal shifts paradigms, introduces novel methods/interventions, and improves upon prior work.  </li>
+<li style="margin-left: 0px;">Must emphasize: novelty of design (ABP as primary outcome), scale (N=400 vs. max prior N=79), and duration (12 months vs. max 12 weeks).  </li>
+<li style="margin-left: 0px;">Avoid overstatement: Balance innovation with feasibility; anticipate reviewer skepticism about effect size plausibility.  </li>
+</ul>
+<details><summary><strong>2.1 Key Innovations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ABP as gold-standard outcome: Eliminates white coat effect, superior predictor of target organ damage vs. office BP, enables assessment of nocturnal/active-phase BP.  </li>
+<li style="margin-left: 0px;">Methodological leap: Only one prior study used ABP (N=13); this proposal scales it to 400 subjects with rigorous design.  </li>
+<li style="margin-left: 0px;">Mechanistic depth: First to integrate ABP with baroreflex sensitivity, HRV, and arterial compliance assessments in guided breathing RCT.  </li>
+<li style="margin-left: 0px;">Intervention optimization: 15-min/day × 8-week protocol is low-burden, cost-effective, and scalable for real-world implementation.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Addressing Reviewer Concerns Proactively  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Anticipate skepticism about large effect sizes: Explicitly note that four studies report SBP ↓≥12 mmHg—authors position this as evidence of <em>underappreciated efficacy</em>, not overstatement.  </li>
+<li style="margin-left: 0px;">Preempt safety doubts: Cite physiological data (pulse oximetry, end-tidal CO₂) confirming safety of slow breathing at 6 breaths/min.  </li>
+<li style="margin-left: 0px;">Clarify mechanistic rationale: Foreshadow Approach section by introducing baroreflex sensitivity, HRV, and arterial compliance as candidate mediators.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. NIH Review Criteria Framework  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Five core criteria: Significance, Investigators, Innovation, Approach, Environment—used to determine overall impact score.  </li>
+<li style="margin-left: 0px;">Additional considerations: Human subjects protection, inclusion diversity, vertebrate animals, biohazards—assessed but <em>not scored separately</em>.  </li>
+<li style="margin-left: 0px;">Budget and Select Agent research: Reviewed but must <em>not</em> influence priority score (though reviewers may subjectively penalize).  </li>
+</ul>
+<details><summary><strong>3.1 Significance Criterion Details  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Assessment focus: Likelihood of sustained, powerful influence on field(s).  </li>
+<li style="margin-left: 0px;">Must address: How aims advance scientific knowledge/clinical practice; impact on driving concepts/methods/interventions.  </li>
+<li style="margin-left: 0px;">Critical link: Significance section must stand alone—reviewers should <em>never</em> need to refer back to Specific Aims for clarification.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Innovation Criterion Nuances  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Fine line between innovative and risky: Use gold-standard techniques; justify novelty with evidence.  </li>
+<li style="margin-left: 0px;">Excitement triggers: New theoretical models, objective measures (ABP), longer follow-up, comparison of competing theories.  </li>
+</ul>
+<p>-Reviewer psychology: Address concerns <em>in situ</em> (e.g., safety, effect size plausibility) rather than deferring to Limitations section.</p>
+</div></details>
+</div></details>
+<details><summary><strong>4. Writing Strategy and Structural Best Practices  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Narrative discipline: Tell a “simple, clean story” with logical flow; avoid tangents that dilute core message.  </li>
+<li style="margin-left: 0px;">Terminology management: Use synonyms to avoid repetition; define abbreviations (e.g., ABP, HRV, RSA) on first use.  </li>
+<li style="margin-left: 0px;">White space and formatting: Break dense text; bold key claims with bulleted summaries for skimmability.  </li>
+</ul>
+<details><summary><strong>4.1 Structural Optimization Tips  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overview paragraphs: Introduce concepts needed <em>before</em> explaining later details (e.g., HRV → RSA amplitude).  </li>
+<li style="margin-left: 0px;">Table A justification: Despite space cost, include because reviewers need concrete evidence of prior efficacy.  </li>
+<li style="margin-left: 0px;">Page limit discipline: Ruthlessly cut non-critical content; if over limit, prioritize critical points over “very important” ones.  </li>
+<li style="margin-left: 0px;">External feedback loop: Use colleagues to judge redundancy balance—writers often misjudge reviewer knowledge gaps.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Mechanistic Integration Strategy  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rationale for mechanism studies: Collect data on baroreflex sensitivity, HRV, arterial compliance <em>during</em> ABP follow-up (1 year) at minimal added burden.  </li>
+<li style="margin-left: 0px;">Biological plausibility: Link slow breathing → ↑ RSA → ↑ baroreflex sensitivity → ↓ BP; cite prior lab studies confirming safety and physiological compensation.  </li>
+<li style="margin-left: 0px;">Risk mitigation: Acknowledge that mechanistic depth may distract from clinical focus but justify as high-reward for mechanistic grant reviewers.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Preliminary Studies and Progress Reports  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required for new applications (Preliminary Studies) vs. renewal/revision (Progress Report).  </li>
+<li style="margin-left: 0px;">Purpose: Demonstrate feasibility, build credibility, and justify proposed methodology through prior work.  </li>
+<li style="margin-left: 0px;">Content must align with Significance and Innovation sections—avoid duplication but reinforce key claims.  </li>
+</ul>
+<details><summary><strong>5.1 Preliminary Studies: Structure and Evidence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must show proof-of-concept for <em>proposed</em> intervention (guided breathing), not just general hypertension research.  </li>
+<li style="margin-left: 0px;">Include: Pilot data, feasibility metrics (recruitment, retention), protocol refinement outcomes, and preliminary efficacy signals.  </li>
+<li style="margin-left: 0px;">Critical to address: Sample size justification (power calculation), outcome measure validity (ABP vs. office/home BP).  </li>
+</ul>
+<details><summary><strong>5.1.1 Feasibility Evidence  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recruitment strategy: Demonstrate ability to enroll diverse hypertensive cohort (N=400) across multiple sites.  </li>
+<li style="margin-left: 0px;">Retention plan: Cite prior studies showing &gt;85% adherence to 8-week breathing protocols.  </li>
+<li style="margin-left: 0px;">Protocol adaptation: Describe modifications made based on earlier small-scale trials (e.g., device interface improvements, session timing adjustments).  </li>
+<li style="margin-left: 0px;">Site readiness: Institutional support for ABP monitoring (equipment availability, trained technicians, data management infrastructure).  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.1.2 Preliminary Efficacy Data  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Effect size calibration: Use prior small studies (e.g., Jones 2004, Smith 2007) to inform power calculation for primary ABP outcome.  </li>
+<li style="margin-left: 0px;">Dose-response alignment: Confirm 15 min/day × 8 weeks is sufficient—cite Watkins 2008 (NS result) to justify inclusion of active control.  </li>
+<li style="margin-left: 0px;">ABP validation: Reference prior small ABP-guided breathing study (N=13) to support feasibility of large-scale ABP implementation.  </li>
+<li style="margin-left: 0px;">Safety monitoring: Detail adverse event tracking from prior trials—no serious events reported, supporting low-risk profile.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5.2 Progress Reports for Renewal/Revision Applications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required elements: Summarize Year 1–N achievements, deviations from original plan, and revised aims for next funding cycle.  </li>
+<li style="margin-left: 0px;">Must include: Publication list, conference presentations, protocol amendments, and preliminary results (even if unpublished).  </li>
+<li style="margin-left: 0px;">Critical narrative: Explain how Year 1 data <em>directly informs</em> Year 2+ aims—e.g., “ABP variability observed in pilot informed stratification by sleep architecture.”  </li>
+</ul>
+<details><summary><strong>5.2.1 Reporting Standards  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Quantitative metrics: Report enrollment rate, attrition, protocol adherence (% sessions completed), missing data % per measure.  </li>
+<li style="margin-left: 0px;">Statistical updates: Re-run power analysis using Year 1 observed variance—adjust N if needed; explain if aims remain unchanged.  </li>
+<li style="margin-left: 0px;">Unplanned analyses: Disclose exploratory findings (e.g., HRV mediational trends) and justify inclusion in renewal aims.  </li>
+<li style="margin-left: 0px;">Institutional milestones: List IRB approvals, data use agreements, site activation dates, and equipment certifications.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5.2.2 Revision Strategy  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Address reviewer concerns: If prior review raised issues (e.g., lack of diversity), detail recruitment enhancements.  </li>
+<li style="margin-left: 0px;">Scope adjustment: If Year 1 revealed feasibility constraints, propose <em>revised</em> aims (e.g., reduce follow-up to 9 months but increase ABP sampling frequency).  </li>
+<li style="margin-left: 0px;">New collaborations: Highlight added expertise (e.g., biostatistician co-I for complex HRV modeling).  </li>
+<li style="margin-left: 0px;">Risk mitigation: Outline contingency plans (e.g., if ABP equipment fails, switch to validated home BP protocol with backup calibration).  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>6. Methodological Rigor and Statistical Design  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH prioritizes methodological soundness—especially for behavioral interventions where placebo effects and measurement error are high.  </li>
+<li style="margin-left: 0px;">Must justify: Primary outcome choice (ABP), control condition selection, statistical analysis plan (SAP), and handling of missing data.  </li>
+</ul>
+<details><summary><strong>6.1 Outcome Measure Selection  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ABP superiority: Not just “gold standard”—explicitly cite evidence that ABP predicts cardiovascular events better than office BP (e.g., Ohasama Study, Mancia et al. 2003).  </li>
+<li style="margin-left: 0px;">White coat effect quantification: Cite meta-analyses showing office BP overestimates true pressure by 10–20 mmHg in 30% of patients.  </li>
+<li style="margin-left: 0px;">Nocturnal BP assessment: Only ABP captures sleep-time BP—critical for hypertension phenotyping (non-dipper vs. dipper patterns).  </li>
+<li style="margin-left: 0px;">Active-phase BP: Home readings miss activity-induced spikes; ABP provides 24-hr profile essential for treatment efficacy assessment.  </li>
+</ul>
+<details><summary><strong>6.1.1 ABP Protocol Specifications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Device: Specify brand/model (e.g., Movisens Effitensor), sampling frequency (≥15 min intervals daytime, ≥60 min nighttime).  </li>
+<li style="margin-left: 0px;">Calibration: Mandate quarterly calibration against mercury sphygmomanometer per AHA guidelines.  </li>
+<li style="margin-left: 0px;">Exclusion criteria: Exclude arrhythmias (e.g., atrial fibrillation) that invalidate ABP readings—cite prior studies showing exclusion rate ~5–8%.  </li>
+<li style="margin-left: 0px;">Data validation: Require ≥24-hr recording with ≥90% valid readings; define “valid” as ≤15% missing or flagged artifacts.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.2 Control Condition Design  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Placebo vs. active control debate: Address reviewer concern that “relaxation” (e.g., recorded music) may confound breathing-specific effects.  </li>
+<li style="margin-left: 0px;">Proposed solution: Active control (e.g., attention control with sham device) to isolate <em>breathing guidance</em> component.  </li>
+<li style="margin-left: 0px;">Sham device design: Visual/auditory cues identical to active device but without respiratory timing feedback—pilot-tested for blinding efficacy.  </li>
+<li style="margin-left: 0px;">Blinding protocol: Assess participant猜 (e.g., “Did you think device affected your breathing?” 7-point scale); report success rate in SAP.  </li>
+</ul>
+<details><summary><strong>6.2.1 Statistical Analysis Plan  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary analysis: Mixed-effects model repeated measures (MMRM) for ABP change from baseline to 8 weeks, adjusting for baseline BP, age, sex, medication changes.  </li>
+<li style="margin-left: 0px;">Secondary analyses:  </li>
+<li style="margin-left: 20px;">Time-to-response (ABP ↓≥5 mmHg SBP) via Cox regression.  </li>
+<li style="margin-left: 20px;">Mediation: Baroreflex sensitivity as mediator of ABP change—use bootstrapped causal mediation (5000 iterations).  </li>
+<li style="margin-left: 20px;">Moderation: Stratify by diabetes status (common comorbidity affecting vascular tone).  </li>
+<li style="margin-left: 0px;">Missing data handling: Multiple imputation (MICE) with predictive mean matching—justify number of imputations based on missing % (e.g., <em>m</em> = 20% missing → <em>m</em>=10).  </li>
+<li style="margin-left: 0px;">Sensitivity analyses: Per-protocol vs. intent-to-treat; include ABP adherence as covariate in sensitivity model.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.3 Power and Sample Size Justification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary outcome: ABP SBP change at 8 weeks.  </li>
+<li style="margin-left: 0px;">Assumed effect size: Based on Smith 2007 (Δ=8.2–2.3=5.9 mmHg), SD≈12 mmHg (pooled from Table A).  </li>
+<li style="margin-left: 0px;">Power calculation:  </li>
+<li style="margin-left: 20px;">α=0.05 (two-tailed), power=80% → <em>N</em>=128/group for ABP main effect.  </li>
+<li style="margin-left: 20px;">Adjust for 20% attrition → <em>N</em>=160/group × 3 arms = 480; final <em>N</em>=400 (133/group) due to budget constraints.  </li>
+<li style="margin-left: 0px;">Secondary outcome: ABP at 12 months—assume effect size ↓30% (Δ=4.1 mmHg), SD≈12 → <em>N</em>=260/group; total <em>N</em>=400 still adequate (power=78%).  </li>
+<li style="margin-left: 0px;">Subgroup power: For mediation analysis, <em>N</em>=400 provides 90% power to detect indirect effect <em>ab</em>=0.15 (medium effect, Hayes 2009).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Ethical and Inclusion Considerations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH mandates explicit coverage of human subjects protection, diversity inclusion, and vertebrate animals/biohazards (if applicable).  </li>
+<li style="margin-left: 0px;">Must demonstrate compliance with NIH Policy on Inclusion (NOT-OD-20-061) and IRB/ethics approval timeline.  </li>
+</ul>
+<details><summary><strong>7.1 Human Subjects Protection  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Risk mitigation:  </li>
+<li style="margin-left: 20px;">Minimal risk classification: Guided breathing is non-invasive; no known adverse events in literature.  </li>
+<li style="margin-left: 20px;">Data safety monitoring plan: DSMB review of SAEs (e.g., syncope during breathing), protocol deviations, and enrollment rates.  </li>
+<li style="margin-left: 20px;">Informed consent: Use tiered consent for ABP data sharing (e.g., de-identified dataset vs. full waveform archive).  </li>
+<li style="margin-left: 0px;">Vulnerable populations: If including elderly (e.g., &gt;75 years), add cognitive screening (MMSE ≥24) and caregiver assent.  </li>
+</ul>
+<details><summary><strong>7.1.1 IRB and Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Central vs. local IRB: Specify reliance on WIRB or local IRB; include timeline for initial approval (&lt;30 days).  </li>
+<li style="margin-left: 0px;">Consent process: Video-based consent option for low-literacy participants; translated versions in top 3 languages at site.  </li>
+<li style="margin-left: 0px;">Privacy safeguards: ABP data encrypted at rest/in transit (AES-256); storage on HIPAA-compliant server (e.g., REDCap).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7.2 Inclusion of Women, Minorities, and Children  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recruitment targets: Align with NIH diversity goals—e.g., ≥40% racial/ethnic minorities, ≥50% women, age range 30–80 (no children).  </li>
+<li style="margin-left: 0px;">Subgroup power: Ensure sufficient N for key subgroups (e.g., Black participants = 40% of sample → <em>N</em>=160; power=85% to detect 2× effect size vs. White).  </li>
+<li style="margin-left: 0px;">Barriers and solutions:  </li>
+<li style="margin-left: 20px;">Transportation: Provide bus passes or ride-share credits for ABP clinic visits.  </li>
+<li style="margin-left: 20px;">Trust deficits: Partner with community health centers; include community advisory board in protocol design.  </li>
+<li style="margin-left: 0px;">Data collection: Record race/ethnicity per OMB standards (5 categories + write-in); collect Hispanic origin separately.  </li>
+</ul>
+<details><summary><strong>7.2.1 Children Exclusion Justification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rationale: Hypertension in children has distinct pathophysiology (e.g., secondary causes &gt;70%); adult-focused protocol would compromise validity.  </li>
+<li style="margin-left: 0px;">Alternative pathway: Cite ongoing pediatric ABP studies (e.g., NHLBI’s CHAP trial) to justify adult-only focus.  </li>
+<li style="margin-left: 0px;">Future work: Note plan to publish pediatric protocol adaptation in Year 3 (if renewal approved).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7.3 Vertebrate Animals and Biohazards  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Animal use: None proposed—explicitly state “No vertebrate animals will be used.”  </li>
+<li style="margin-left: 0px;">Biohazard assessment:  </li>
+<li style="margin-left: 20px;">No hazardous materials (Respirco device is Class I FDA device).  </li>
+<li style="margin-left: 20px;">ABP cuffs: Single-use disposable cuffs to eliminate cross-contamination risk.  </li>
+<li style="margin-left: 0px;">If biohazards present (e.g., blood draw for biomarker substudy): Detail BSL-2 procedures, sharps disposal, and spill protocol.</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Grant Submission Logistics and Timeline  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Critical path: Pre-submission checks, institutional approvals, eRA Commons registration, and final formatting compliance.  </li>
+<li style="margin-left: 0px;">NIH deadlines are absolute—missed dates trigger administrative rejection (no exceptions).  </li>
+</ul>
+<details><summary><strong>8.1 Pre-Submission Checklist  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Required documents: SF424 (R&amp;L), Research Strategy (Significance, Innovation, Approach), Budget, Justification, Biographical Sketches, Resource Sharing Plan.  </li>
+<li style="margin-left: 0px;">Page limits: Research Strategy strictly 12 pages (excluding Specific Aims); use 11-point Arial or Calibri, 1-inch margins.  </li>
+<li style="margin-left: 0px;">Formatting traps:  </li>
+<li style="margin-left: 20px;">Do <em>not</em> reduce font size below 11 pt to fit content—reviewers penalize illegibility.  </li>
+<li style="margin-left: 20px;">Tables must be embedded in text (not appendices); Table A here counts toward 12-page limit.  </li>
+<li style="margin-left: 20px;">Page numbers must appear on <em>every</em> page (including封面).  </li>
+</ul>
+<details><summary><strong>8.1.1 Institutional Approvals  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">SRA/IRB: Submit IRB application <em>concurrently</em> with grant submission; approval must be secured before award.  </li>
+<li style="margin-left: 0px;">IACUC: If animal work proposed (none here), submit 60 days pre-application.  </li>
+<li style="margin-left: 0px;">Budget certification: PI and business official must sign Financial Statement (SF-424A); mismatched signatures cause delay.  </li>
+<li style="margin-left: 0px;">F&amp;A rate verification: Confirm current negotiated rate (e.g., 58% MTDC) with Sponsored Programs Office.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8.2 eRA Commons and Submission Workflow  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Account setup: PI must have active Commons account <em>30 days</em> pre-deadline; test login 72 hours prior.  </li>
+<li style="margin-left: 0px;">Application assembly: Use Grants.gov Application Generator (not NIHASSIST) to avoid XML validation errors.  </li>
+<li style="margin-left: 0px;">Submission timeline:  </li>
+<li style="margin-left: 20px;">Day −7: Internal review sign-off (required by institution).  </li>
+<li style="margin-left: 20px;">Day −3: Final PDF upload to Commons; verify no “Pending” status.  </li>
+<li style="margin-left: 20px;">Day −1: Email confirmation receipt (e.g., “Application received at [Time] EST”).  </li>
+<li style="margin-left: 0px;">Common failure modes:  </li>
+<li style="margin-left: 20px;">Missing Biographical Sketch format (Vita must be NIH biosketch v2.0).  </li>
+<li style="margin-left: 20px;">Budget not linked to Research Strategy (e.g., ABP monitors budget line missing justification).  </li>
+<li style="margin-left: 20px;">Resubmission not marked “Amended” with prior application number.  </li>
+</ul>
+<details><summary><strong>8.2.1 Post-Submission Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Error correction window: 30 days post-submission for minor errors (e.g., typos, broken links).  </li>
+<li style="margin-left: 0px;">Major revisions: Require prior written approval from NIH Program Officer—submit via eRA Commons “Just-In-Time” request.  </li>
+<li style="margin-left: 0px;">Withdrawal protocol: If withdrawing, notify PO <em>and</em> submit withdrawal letter via Commons; otherwise application remains active.  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>9. NIH Review Process and Score Interpretation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Core review criteria drive overall impact score (0–9; ≥30 percentile = fundable).  </li>
+<li style="margin-left: 0px;">Reviewers receive scoring templates with embedded criteria—application must <em>visibly</em> address each point.  </li>
+</ul>
+<details><summary><strong>9.1 Review Panel Structure  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Study sections: e.g., CNHA (Cardiovascular and Hematologic Developmental Biology) for hypertension proposals.  </li>
+<li style="margin-left: 0px;">Panel size: 20–30 reviewers; at least 5 must have hypertension expertise (per NIH diversity mandate).  </li>
+<li style="margin-left: 0px;">Chair selection: Rotates annually; current chair (2024) is Dr. X, known for favoring mechanistic depth in behavioral interventions.  </li>
+</ul>
+<details><summary><strong>9.1.1 Review Timeline  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Month −2: Application assigned to study section; PO notified.  </li>
+<li style="margin-left: 0px;">Month 0: Panel meeting (3-day event); reviewers score all criteria on 1–9 scale.  </li>
+<li style="margin-left: 0px;">Month +1: Summary statement released (includes individual scores, critiques, and percentile).  </li>
+<li style="margin-left: 0px;">Month +2–3: Council review for borderline applications (percentile 20–35).  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9.2 Score Calculation Mechanics  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overall impact score: Weighted average of five core criteria (Significance=20%, Innovation=15%, Investigators=15%, Approach=30%, Environment=20%).  </li>
+<li style="margin-left: 0px;">Example scoring breakdown:  </li>
+<li style="margin-left: 20px;">Significance: 7 → 7.0 × 0.20 = 1.4  </li>
+<li style="margin-left: 20px;">Innovation: 6 → 6.0 × 0.15 = 0.9  </li>
+<li style="margin-left: 20px;">Investigators: 8 → 8.0 × 0.15 = 1.2  </li>
+<li style="margin-left: 20px;">Approach: 6 → 6.0 × 0.30 = 1.8  </li>
+<li style="margin-left: 20px;">Environment: 7 → 7.0 × 0.20 = 1.4  </li>
+<li style="margin-left: 20px;">Weighted score = 6.7 → converts to numeric score of 27 (10−score × 10/3 scale).  </li>
+<li style="margin-left: 0px;">Percentile calculation: Based on <em>all</em> applications reviewed in cycle; e.g., 27 score = 25th percentile if top 25% scored ≤24.  </li>
+</ul>
+<details><summary><strong>9.2.1 Impact Score Thresholds  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Fundable range: Typically ≤30th percentile (score ≤27 for most R01s).  </li>
+<li style="margin-left: 0px;">Priority score adjustments:  </li>
+<li style="margin-left: 20px;">Exceptional merit (e.g., high-impact journal acceptance): +1 to −2 points.  </li>
+<li style="margin-left: 20px;">Major flaws (e.g., flawed ABP analysis plan): +5 to +10 points penalty.  </li>
+<li style="margin-left: 0px;">Council override: Rare (&lt;5% of applications); requires strong PO advocacy and revised budget alignment.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9.3 Addressing Reviewer Concerns in Resubmissions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must respond point-by-point to summary statement critiques.  </li>
+<li style="margin-left: 0px;">Use “Response to Reviews” document (max 12 pages) with:  </li>
+<li style="margin-left: 20px;">Reviewer #1, Comment 1 → Response (page X of revised application).  </li>
+<li style="margin-left: 20px;">Major concerns: Address in first paragraph; minor in appendix.  </li>
+<li style="margin-left: 0px;">Critical resubmission tactics:  </li>
+<li style="margin-left: 20px;">If ABP methodology criticized: Add preclinical validation data (e.g., device calibration curve).  </li>
+<li style="margin-left: 20px;">If diversity concerns raised: Include new community partnership MOU with Black church health network.  </li>
+<li style="margin-left: 20px;">If innovation score low: Reframe ABP as <em>first</em> RCT to test baroreflex mediation—cite 2023 AHA scientific statement calling for mechanistic trials.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Post-Award Management and Reporting  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Award notification: Email from NIH Commons; includes budget, terms, and start date.  </li>
+<li style="margin-left: 0px;">Required reports: Progress Reports (non-competing continuation), Financial Reports, Final Report.  </li>
+</ul>
+<details><summary><strong>10.1 Progress Report (Yearly)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Due 60 days before anniversary date; includes:  </li>
+<li style="margin-left: 20px;">A. Accomplishments: Publications, presentations, patents, data releases.  </li>
+<li style="margin-left: 20px;">B. Changes in Aims: Justify deviations with evidence (e.g., “Aim 2 expanded to include HRV subcohort due to unexpected ABP variability”).  </li>
+<li style="margin-left: 20px;">C. Future Plans: Next year’s milestones, enrollment targets, analysis timeline.  </li>
+<li style="margin-left: 0px;">Format: Use PHS 2590 form; attach IRB approvals, budget continuation justification.  </li>
+</ul>
+<details><summary><strong>10.1.1 Data Management and Sharing  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH Data Management and Sharing Plan (mandatory for all grants ≥$500k):  </li>
+<li style="margin-left: 20px;">ABP data: Stored in NHLBI BioData Catalyst platform; de-identified per HIPAA Safe Harbor.  </li>
+<li style="margin-left: 20px;">Analysis code: GitHub repository with DOI (e.g., Zenodo); licensed under MIT.  </li>
+<li style="margin-left: 20px;">Timeline: Raw ABP data released within 6 months of collection; processed datasets at 12-month mark.  </li>
+<li style="margin-left: 0px;">Exemptions: None—this is a non-negotiable requirement per NIH NOT-OD-21-013.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10.2 Final Report and Closeout  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Due 90 days after award end date; includes:  </li>
+<li style="margin-left: 20px;">A. Summary of Findings: Primary ABP outcome effect size, mediation results, subgroup interactions.  </li>
+<li style="margin-left: 20px;">B. Dissemination Plan: Target journals (e.g., <em>Hypertension</em>, <em>JAMA Internal Medicine</em>), conference plans (e.g., AHA Scientific Sessions).  </li>
+<li style="margin-left: 20px;">C. Future Funding Strategy: Plan for R01 continuation or K award transition.  </li>
+<li style="margin-left: 0px;">Closeout checklist:  </li>
+<li style="margin-left: 20px;">Final expenditure report (SF-425).  </li>
+<li style="margin-left: 20px;">Invention Statement (Form 882).  </li>
+<li style="margin-left: 20px;">Property report (if equipment purchased).  </li>
+</ul>
+<details><summary><strong>10.2.1 Public Access Compliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All peer-reviewed papers must be submitted to PubMed Central (PMC) upon acceptance.  </li>
+<li style="margin-left: 0px;">NIH PMCID requirement: Manuscript must have PMC ID before final publication; use NIHMS system.  </li>
+<li style="margin-left: 0px;">Penalties for non-compliance: Withhold next no-cost extension; delay future awards.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10.3 Budget Revisions and No-Cost Extensions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Budget reallocation: Up to 10% deviation allowed without prior approval (e.g., shift $5k from personnel to equipment).  </li>
+<li style="margin-left: 0px;">No-cost extension: Automatic 12-month extension available; second extension requires PO approval and justification.  </li>
+<li style="margin-left: 0px;">Cost-sharing: If required (e.g., institutional match), document in-kind contributions (e.g., PI 20% effort = $XX,XXX).</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
