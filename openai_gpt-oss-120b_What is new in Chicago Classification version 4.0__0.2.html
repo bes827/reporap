@@ -1,0 +1,564 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>What is new in Chicago Classification version 4.0?  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>What is new in Chicago Classification version 4.0?  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Neurogastroenterology &amp; Motility</em> 2020;00:e14053  </li>
+<li style="margin-left: 0px;">Authors: Rena Yadlapati, John E. Pandolfino, Mark R. Fox, Albert J. Bredenoord, Peter J. Kahrilas  </li>
+</ul>
+<details><summary><strong>1. Historical Evolution of the Chicago Classification  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Originated in Paris 2007 (idea by JEP, AJB, MF) → international HRM Working Group.  </li>
+<li style="margin-left: 0px;">First “Chicago Classification” description: Fox &amp; Bredenoord 2007 (CCv0.5).  </li>
+<li style="margin-left: 0px;">Inaugural International HRM Working Group meeting: San Diego 2008 → CCv1.0 published 2009.  </li>
+<li style="margin-left: 0px;">Ray E. Clouse (1951‑2007) pioneered esophageal pressure topography color plots.  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Rationale &amp; Objectives of the Classification Updates  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim: <strong>standardized interpretation</strong> of clinical HRM worldwide.  </li>
+<li style="margin-left: 0px;">Goal: “speak the same language,” eliminate competing nomenclatures (“Tower of Babylon”).  </li>
+<li style="margin-left: 0px;">Adopt metrics validated against independent functional tests (e.g., radiology).  </li>
+<li style="margin-left: 0px;">Hierarchical diagnostic system: prioritize EGJ outflow disorders &gt; major peristalsis disorders &gt; minor peristalsis abnormalities.  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. Overview of Chicago Classification v4.0 Development Process  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">International HRM Working Group: <strong>52 experts</strong> from 20 countries, 5 continents, 6 societies.  </li>
+<li style="margin-left: 0px;">Divided into <strong>7 sub‑groups</strong> (standardized protocol, achalasia, EGJOO, DES, hypercontractile esophagus, IEM, EGJ barrier metrics).  </li>
+<li style="margin-left: 0px;">Consensus method: <strong>RAND Appropriateness Method</strong> + online surveys → equal contribution.  </li>
+<li style="margin-left: 0px;">Evidence grading: <strong>GRADE</strong> assessment by external reviewers; most literature low/very‑low quality but unbiased review ensured.  </li>
+</ul>
+</div></details>
+<details><summary><strong>4. Key Modifications Introduced in CCv4.0 (compared with v3.0)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>EGJ outflow obstruction (EGJOO)</strong>: requires additional manometric &amp; non‑manometric data for actionable diagnosis.  </li>
+<li style="margin-left: 0px;"><strong>Clinical relevance requirement</strong>: EGJOO, distal esophageal spasm (DES), hypercontractile esophagus must be accompanied by dysphagia and/or non‑cardiac chest pain to be considered clinically relevant.  </li>
+<li style="margin-left: 0px;"><strong>Standardized HRM protocol</strong>: include supine + upright wet swallows; add multiple rapid swallows (supine) &amp; rapid drink challenge (upright); optional solid swallows, post‑prandial testing, pharmacologic provocation for select conditions.  </li>
+<li style="margin-left: 0px;"><strong>Ineffective esophageal motility (IEM)</strong> definition tightened: &gt;70% ineffective swallows OR ≥50% failed swallows; now includes fragmented peristalsis.  </li>
+<li style="margin-left: 0px;"><strong>Classification simplification</strong>: no longer distinguishes major vs. minor motility disorders; separates only <strong>disorders of EGJ outflow</strong> and <strong>disorders of peristalsis</strong>.  </li>
+</ul>
+</div></details>
+<details><summary><strong>5. Standardized HRM Protocol (v4.0)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recommended core: <strong>10 supine wet swallows</strong> + <strong>10 upright wet swallows</strong>.  </li>
+<li style="margin-left: 0px;">Add <strong>supine multiple rapid swallow (MRS)</strong> and <strong>upright rapid drink challenge (RDC)</strong>.  </li>
+<li style="margin-left: 0px;">Optional extensions: solid test swallows, post‑prandial studies, pharmacologic provocation.  </li>
+<li style="margin-left: 0px;">Limited protocol (only supine or only upright) acceptable for clear‑cut achalasia or aspiration risk.  </li>
+</ul>
+<details><summary><strong>5.1 Rationale &amp; Benefits  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Improves diagnostic accuracy for EGJOO &amp; hypercontractile patterns.  </li>
+<li style="margin-left: 0px;">Enhances inter‑lab collaboration via uniform maneuvers.  </li>
+<li style="margin-left: 0px;">Allows supportive data (intrabolus pressure, response to RDC) to raise confidence.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Clinical Relevance of Manometric Patterns  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>EGJOO</strong>, <strong>DES</strong>, <strong>hypercontractile esophagus</strong>: <em>must</em> have obstructive symptoms (dysphagia ± non‑cardiac chest pain).  </li>
+<li style="margin-left: 0px;">Patterns without symptom correlation are marked with asterisks (*) → “unclear clinical relevance.”  </li>
+<li style="margin-left: 0px;">Supports hierarchical approach: EGJ dysfunction prioritized over peristaltic abnormalities.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7. Updates to Specific Esophageal Motor Disorders  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Achalasia (unchanged core criteria)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Elevated median IRP (supine / upright) + 100% failed peristalsis.  </li>
+<li style="margin-left: 0px;">Type II: panesophageal pressurization ≥20% swallows (distinction from type I arbitrary).  </li>
+<li style="margin-left: 0px;">Type III: spasm (DL &lt;4.5 s, DCI &gt;450 mmHg·s·cm) in ≥20% swallows; 100% absent peristalsis now defined as failed or spastic swallows.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 EGJ Outflow Obstruction (EGJOO) – New Definition  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Elevated median IRP <strong>both</strong> supine &amp; upright.  </li>
+<li style="margin-left: 0px;">≥20% swallows with intrabolus pressurization, but intact peristalsis (no achalasia).  </li>
+<li style="margin-left: 0px;">Diagnosis <strong>inconclusive</strong> → must have dysphagia and/or non‑cardiac chest pain <strong>and</strong> confirmatory non‑HRM test (TBE or FLIP).  </li>
+<li style="margin-left: 0px;">Ancillary maneuvers (rapid drink challenge, solid swallows, pharmacologic provocation) may strengthen confidence.  </li>
+</ul>
+<details><summary><strong>7.2.1 Phenotypes of EGJOO  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>EGJOO with spastic features</em>: ≥20% swallows show premature contractions; may approach type III achalasia.  </li>
+<li style="margin-left: 0px;"><em>EGJOO with hypercontractile features</em>: reactive hyper‑contraction to obstruction or primary hypercontractility involving LES.  </li>
+<li style="margin-left: 0px;"><em>EGJOO with ineffective motility</em> or <em>normal peristalsis</em>: likely physiologic/reflux; cautious treatment, confirm with adjunctive testing.  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7.3 Disorders of Peristalsis (IRP normal or EGJOO criteria not met)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Includes absent contractility, DES, hypercontractile esophagus, IEM.  </li>
+</ul>
+<details><summary><strong>7.3.1 Absent Contractility  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Normal median IRP + 100% failed peristalsis.  </li>
+<li style="margin-left: 0px;">If IRP at upper limit of normal → exclude achalasia with rapid drink challenge, solid test meal, TBE/FLIP.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3.2 Distal Esophageal Spasm (DES)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Normal median IRP + ≥20% premature contractions <strong>and</strong> dysphagia/non‑cardiac chest pain required for relevance.  </li>
+<li style="margin-left: 0px;">Often overlaps type III achalasia; may represent reflux‑induced secondary spasm → treat reflux first.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3.3 Hypercontractile Esophagus (Jackhammer subtype)  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Normal median IRP + ≥20% hypercontractile swallows <strong>and</strong> obstructive symptoms required.  </li>
+<li style="margin-left: 0px;">Subtypes: repetitive prolonged contractions, single‑peak hypercontractile, vigorous LES after‑contraction; jackhammer pattern most symptomatic.  </li>
+</ul>
+</div></details>
+<details><summary><strong>7.3.4 Ineffective Esophageal Motility (IEM) – Revised Definition  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&gt;70% ineffective swallows <strong>or</strong> ≥50% failed swallows.  </li>
+<li style="margin-left: 0px;">Ineffective swallow now includes fragmented peristalsis; fragmented peristalsis no longer a separate motor disorder.  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>8. Therapeutic Guidance &amp; Future Directions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">EGJOO phenotypes guide POEM extension proximally; confirm obstruction physiology before myotomy.  </li>
+<li style="margin-left: 0px;">Opioid‑induced dysmotility excluded from primary CC definitions – cease opioid first.  </li>
+<li style="margin-left: 0px;">Antireflux therapy preferred when DES secondary to GERD.  </li>
+</ul>
+</div></details>
+<details><summary><strong>9. Summary of Chicago Classification v4.0  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">EGJOO actionable only after HRM + non‑HRM confirmation.  </li>
+<li style="margin-left: 0px;">EGJOO, DES, hypercontractile esophagus require dysphagia/non‑cardiac chest pain for relevance.  </li>
+<li style="margin-left: 0px;">Protocol: supine + upright swallows; add MRS &amp; rapid drink challenge; optional solids/post‑prandial/provocation.  </li>
+<li style="margin-left: 0px;">IEM stricter: &gt;70% ineffective or ≥50% failed swallows; includes fragmented peristalsis.  </li>
+<li style="margin-left: 0px;">Classification now <strong>disorders of EGJ outflow</strong> vs <strong>disorders of peristalsis</strong> only.  </li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
