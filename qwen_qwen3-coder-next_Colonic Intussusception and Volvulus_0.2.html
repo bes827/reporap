@@ -1,0 +1,727 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Colonic Intussusception and Volvulus  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Colonic Intussusception and Volvulus  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>Chapter 155, Section IV – Colon, Rectum, and Anus</em>  </li>
+<li style="margin-left: 0px;">Topic: Adult colonic intussusception and volvulus – pathophysiology, diagnosis, and management  </li>
+<li style="margin-left: 0px;">Author(s): Katerina Wells (chapter author); references include multiple studies from 1967–2015  </li>
+</ul>
+<details><summary><strong>1. Colonic Intussusception: Pathophysiology and Etiology  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Defined as invagination of proximal bowel segment (<strong>intussusceptum</strong>) into distal segment (<strong>intussuscipiens</strong>)  </li>
+<li style="margin-left: 0px;">Accounts for <strong>1% of bowel obstructions</strong>; <strong>86–90% associated with a pathologic lead point</strong>  </li>
+<li style="margin-left: 0px;"><strong>56% of colonic intussusceptions</strong> due to malignancy; <strong>~19% of enteric cases</strong> linked to malignancy  </li>
+<li style="margin-left: 0px;">Benign causes: benign GI neoplasms, adhesive disease, Meckel diverticulum, sprue, HIV, idiopathic  </li>
+<li style="margin-left: 0px;">Proposed mechanism: luminal stimulus → proximal constriction + distal relaxation → invagination  </li>
+</ul>
+</div></details>
+<details><summary><strong>2. Clinical Presentation and Diagnostic Challenges  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adults rarely present with classic pediatric triad (pain, mass, hematochezia); instead:  </li>
+<li style="margin-left: 20px;">Crampy abdominal pain (<strong>71%</strong>), nausea/emesis (<strong>68%</strong>), distention (<strong>45%</strong>), tenderness (<strong>60%</strong>)  </li>
+<li style="margin-left: 20px;">Often subacute/intermittent obstruction over days to years → high misdiagnosis rate  </li>
+<li style="margin-left: 0px;"><strong>&gt;50% diagnosed intraoperatively</strong> due to nonspecific symptoms and delayed presentation  </li>
+</ul>
+</div></details>
+<details><summary><strong>3. Imaging Modalities for Diagnosis  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>CT scan</strong>: most accurate modality; pathognomonic “bowel-within-bowel” sign with compressed mesenteric vessels  </li>
+<li style="margin-left: 20px;">Also shows <strong>“target sign”</strong> in axial view  </li>
+<li style="margin-left: 0px;"><strong>Ultrasound</strong>: used mainly in pediatrics; adult accuracy limited by operator experience, body habitus, bowel gas  </li>
+<li style="margin-left: 20px;">Transverse: “target” or “donut” sign  </li>
+<li style="margin-left: 20px;">Longitudinal: <strong>“pseudo-kidney” sign</strong>  </li>
+<li style="margin-left: 0px;"><strong>Plain radiography</strong>: helpful for enteric (not colonic) intussusception; “stacked coin” or “coiled spring” appearance  </li>
+<li style="margin-left: 0px;"><strong>Barium enema</strong>: contraindicated if perforation/ischemia suspected; shows cup-shaped filling defect in colonic obstruction  </li>
+</ul>
+</div></details>
+<details><summary><strong>4. Treatment Principles and Surgical Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Surgery is primary treatment</strong> for adult colonic intussusception; reduction discouraged due to high malignancy risk  </li>
+<li style="margin-left: 0px;"><strong>Formal oncologic resection with lymphadenectomy</strong> required; avoid reduction to prevent perforation/seeding  </li>
+<li style="margin-left: 0px;"><strong>Enteric intussusception</strong>: may allow reduction if benign etiology confirmed or resection risks short gut  </li>
+<li style="margin-left: 0px;"><strong>Postoperative/adhesion-related cases</strong>: reduction acceptable (benign assumption)  </li>
+<li style="margin-left: 0px;"><strong>Barium studies and hydrostatic reduction contraindicated</strong> in adults due to perforation risk</li>
+</ul>
+</div></details>
+<details><summary><strong>5. Colonic Volvulus: Overview and Epidemiology  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Represents <strong>1.9% of large bowel obstructions in the U.S.</strong>, but up to <strong>10–50% in Africa, Middle East, South America</strong>  </li>
+<li style="margin-left: 0px;">Defined as torsion of colon segment along its own mesentery (<strong>mesenterioaxial</strong>)  </li>
+<li style="margin-left: 0px;"><strong>180° torsion</strong> → clinical obstruction; <strong>360°</strong> → strangulation, venous gangrene, ischemia, perforation  </li>
+<li style="margin-left: 0px;">Common sites: sigmoid colon (most common), cecum, transverse colon — due to redundant loops + elongated mesentery  </li>
+<li style="margin-left: 0px;">Perforation occurs at point of torsion, within closed loop, or in thin-walled proximal cecum  </li>
+</ul>
+</div></details>
+<details><summary><strong>6. Sigmoid Volvulus: Pathophysiology, Subtypes, and Predisposing Factors  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Accounts for <strong>50–90% of colonic volvulus cases</strong>; two distinct subtypes:  </li>
+<li style="margin-left: 20px;"><strong>Western (sporadic) subtype</strong>: elderly, diabetic, institutionalized, psychoactive medication users; chronic fecal loading from constipation → sigmoid elongation  </li>
+<li style="margin-left: 20px;"><strong>Endemic subtype</strong>: Africa, India, Middle East, Latin America; young males (<strong>80%</strong>), high-fiber diet → chronic distention and elongation  </li>
+<li style="margin-left: 0px;">Incidence peaks in <strong>mid-70s</strong> for both genders; increasing incidence linked to westernization/dietary shifts  </li>
+<li style="margin-left: 0px;"><strong>“Dolichomesocolic colon”</strong>: vertically longer than wide sigmoid mesocolon; more common in males &gt;30  </li>
+<li style="margin-left: 0px;">Congenital theories: incomplete embryologic fixation of cecum during counterclockwise rotation  </li>
+<li style="margin-left: 0px;">Other risk factors: postoperative adhesions, megacolon (especially <strong>Hirschsprung disease</strong>), pregnancy  </li>
+<li style="margin-left: 20px;">Pregnancy accounts for <strong>45% of intestinal obstructions in pregnant women</strong>; maternal mortality <strong>~5%</strong>, up to <strong>50% if perforated</strong>  </li>
+<li style="margin-left: 20px;">Fetal demise <strong>~30%</strong>, due to reduced placental flow from massively dilated sigmoid  </li>
+</ul>
+</div></details>
+<details><summary><strong>7. Sigmoid Volvulus: Clinical Presentation and Diagnostic Imaging  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Western subtype</strong>: delayed presentation (<strong>mean 3–4 days</strong>), obstipation, paradoxical diarrhea, abdominal distention  </li>
+<li style="margin-left: 20px;">Abdominal pain less severe due to subacute dilation  </li>
+<li style="margin-left: 0px;"><strong>Endemic subtype</strong>: acute obstruction with severe pain, distention, obstipation; often preceded by milder episodes  </li>
+<li style="margin-left: 0px;"><strong>Plain radiography findings</strong>:  </li>
+<li style="margin-left: 20px;">Absence of bowel gas in left iliac fossa (sigmoid rotated away)  </li>
+<li style="margin-left: 20px;"><strong>“Coffee bean” sign</strong> or <strong>“omega loop”</strong> (apex pointing to right upper quadrant) in <strong>60% of cases</strong>  </li>
+<li style="margin-left: 0px;"><strong>Barium enema</strong>:  </li>
+<li style="margin-left: 20px;"><strong>“Bird’s beak” sign</strong> at point of torsion/obstruction  </li>
+<li style="margin-left: 20px;">Diagnostic accuracy <strong>100%</strong> when combined with plain film findings  </li>
+<li style="margin-left: 20px;">May be therapeutic (temporary reduction)  </li>
+<li style="margin-left: 0px;"><strong>CT findings</strong>:  </li>
+<li style="margin-left: 20px;"><strong>Mesenteric twist</strong> = highly specific for diagnosis  </li>
+<li style="margin-left: 20px;"><strong>Sigmoid transition point</strong> = most sensitive finding  </li>
+<li style="margin-left: 20px;"><strong>“X-marks-the-spot” sign</strong>: complete twist of adjacent sigmoid loops in “twist-tie” configuration  </li>
+<li style="margin-left: 20px;"><strong>“Split wall” sign</strong>: thickened wall with fat stranding/hypoenhancement  </li>
+<li style="margin-left: 20px;">Radiographic ischemia signs <strong>poorly correlate</strong> with clinical ischemia → clinical suspicion &gt; imaging  </li>
+</ul>
+</div></details>
+<details><summary><strong>8. Sigmoid Volvulus: Nonoperative and Operative Management  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Endoscopic decompression</strong> (nonoperative therapy):  </li>
+<li style="margin-left: 20px;">Contraindicated if ischemia/perforation suspected  </li>
+<li style="margin-left: 20px;"><strong>Success rate: 60–90%</strong> in stable patients without ischemia  </li>
+<li style="margin-left: 20px;"><strong>Rigid sigmoidoscopy</strong>: bedside decompression with minimal insufflation; passage through torsion allows rectal tube placement (<strong>36-French</strong>)  </li>
+<li style="margin-left: 40px;">Post-procedure plain film confirms detorsion  </li>
+<li style="margin-left: 20px;"><strong>Flexible endoscopy</strong>: guidewire across torsion point, then rectal tube over wire  </li>
+<li style="margin-left: 20px;">Allows time for colon prep, screening colonoscopy, and surgical optimization  </li>
+<li style="margin-left: 0px;"><strong>Recurrence</strong>: up to <strong>71%</strong> after decompression; mortality in recurrent cases <strong>up to 36%</strong>  </li>
+<li style="margin-left: 20px;">Recurrence interval: <strong>2–35 months</strong> → supports urgent operative planning  </li>
+<li style="margin-left: 0px;"><strong>Operative therapy</strong>:  </li>
+<li style="margin-left: 20px;"><strong>Resection preferred in 89% of cases</strong>; subtotal/total colectomy needed in <strong>16%</strong> (cecal necrosis, megacolon, colonic atony)  </li>
+<li style="margin-left: 20px;"><strong>Stomas still used in ~50%</strong>; primary anastomosis safe with good judgment  </li>
+<li style="margin-left: 20px;"><strong>Diverting loop ileostomy preferred</strong> over colostomy (easier care, closure feasible)  </li>
+<li style="margin-left: 0px;"><strong>Nonresective options</strong> (less common):  </li>
+<li style="margin-left: 20px;">Detorsion ± fixation: recurrence <strong>9–44%</strong>, mortality <strong>7.8%</strong>  </li>
+<li style="margin-left: 20px;">Sigmoidopexy: lower mortality than detorsion alone  </li>
+<li style="margin-left: 20px;">Sigmoidostomy: discouraged (high recurrence/morbidity; <strong>13% mortality</strong> in nonfunctional patients)  </li>
+<li style="margin-left: 0px;"><strong>Overall mortality</strong>: <strong>9.4%</strong>; highest with diffuse feculent peritonitis or gangrene  </li>
+<li style="margin-left: 20px;">Hartmann procedure (end sigmoid colostomy + rectal stump) safest in severe cases  </li>
+<li style="margin-left: 0px;"><strong>Laparoscopy</strong>: increasing use; ideal after endoscopic decompression reduces sigmoid size  </li>
+<li style="margin-left: 20px;">Not predictor of mortality, but requires adequate working space  </li>
+</ul>
+</div></details>
+<details><summary><strong>9. Cecal Volvulus: Pathophysiology and Subtypes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Accounts for <strong>25–40% of volvulus cases in U.S.</strong>, <strong>1–1.5% of all intestinal obstructions</strong>  </li>
+<li style="margin-left: 0px;">Two entities:  </li>
+<li style="margin-left: 20px;"><strong>Cecal volvulus</strong>: incomplete congenital fixation → cecum mobile; torsion along mesentery  </li>
+<li style="margin-left: 20px;"><strong>Cecal bascule</strong>: cecum folds cephalad → “flap-valve” obstruction (no mesenteric torsion)  </li>
+<li style="margin-left: 0px;">Congenital hypermobility common at autopsy (<strong>11%</strong>), but not independently causative  </li>
+<li style="margin-left: 0px;"><strong>Biphasic incidence</strong>: mid-40s and late 70s; female predilection  </li>
+<li style="margin-left: 0px;"><strong>5.53% annual increase</strong> in U.S. cases (NIS data)  </li>
+<li style="margin-left: 0px;">Predisposing factors: chronic constipation/cathartic use, distal obstruction, psychiatric illness, prior abdominal surgery (<strong>30–70%</strong>)  </li>
+<li style="margin-left: 20px;">Postoperative adhesions act as lead point  </li>
+<li style="margin-left: 0px;"><strong>Pregnancy association</strong>: gravid uterus displaces cecum, stretches ileocolic mesentery → torsion risk  </li>
+<li style="margin-left: 0px;"><strong>Most proximal obstruction point</strong>: terminal ileum → symptoms mimic small bowel obstruction  </li>
+</ul>
+</div></details>
+<details><summary><strong>10. Cecal Volvulus: Clinical Features and Imaging Diagnosis  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Acute onset</strong>: abdominal pain, emesis, distention → may progress to peritonitis if ischemic  </li>
+<li style="margin-left: 0px;"><strong>“Mobile cecum syndrome”</strong>: chronic intermittent pain relieved by flatus passage (<strong>50% of acute cases</strong>)  </li>
+<li style="margin-left: 0px;"><strong>Plain radiography</strong>:  </li>
+<li style="margin-left: 20px;">Massively dilated cecum resembling <strong>“kidney-bean” under left diaphragm</strong>  </li>
+<li style="margin-left: 20px;">Paucity of bowel gas in right lower quadrant (cecum deviated medially)  </li>
+<li style="margin-left: 20px;">Proximal small bowel dilation with air-fluid levels  </li>
+<li style="margin-left: 20px;"><strong>Cecal bascule</strong>: dilated cecum in midabdomen/pelvis (no “whirl sign”)  </li>
+<li style="margin-left: 0px;"><strong>Barium enema</strong>:  </li>
+<li style="margin-left: 20px;">Beaking of ascending colon  </li>
+<li style="margin-left: 20px;">Useful to exclude distal obstructing lesions  </li>
+<li style="margin-left: 20px;">Hydrostatic reduction contraindicated (rarely successful, high perforation risk)  </li>
+<li style="margin-left: 0px;"><strong>CT findings</strong>:  </li>
+<li style="margin-left: 20px;"><strong>“Whirl sign”</strong> = torsion of engorged mesenteric vessels (absent in bascule)  </li>
+<li style="margin-left: 20px;">Beaking of cecal margins with upstream ileal obstruction  </li>
+<li style="margin-left: 20px;">Vascular insufficiency: wall thickening, fat stranding, hypoenhancement  </li>
+</ul>
+</div></details>
+<details><summary><strong>11. Cecal Volvulus: Treatment and Outcomes  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Endoscopic decompression not recommended</strong>: &lt;30% success; high perforation risk in thin-walled cecum  </li>
+<li style="margin-left: 0px;"><strong>Operative therapy is mainstay</strong>:  </li>
+<li style="margin-left: 20px;"><strong>Resection with primary anastomosis</strong> = accepted standard; recurrence negligible post-resection  </li>
+<li style="margin-left: 20px;"><strong>Cecostomy</strong>: nonresective option with high recurrence (<strong>12–13%</strong>) and complications (<strong>50% abdominal wall issues/fistula</strong>)  </li>
+<li style="margin-left: 20px;">Detorsion ± cecopexy: recurrence <strong>12–13%</strong>  </li>
+<li style="margin-left: 0px;"><strong>Indications for urgent resection</strong>: ischemia, perforation, necrosis  </li>
+<li style="margin-left: 0px;"><strong>Overall mortality: ~6.7%</strong>  </li>
+<li style="margin-left: 20px;">Strongest predictor of death: <strong>coagulopathy</strong> (reflects severe sepsis/metabolic derangement)  </li>
+<li style="margin-left: 20px;">Emphasizes need for timely diagnosis and intervention  </li>
+</ul>
+</div></details>
+<details><summary><strong>12. Rare Volvulus Variants: Transverse Colon and Ileosigmoid Knotting  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Transverse colon volvulus</strong>:  </li>
+</ul>
+</div></details>
+<details><summary><strong>12. Rare Volvulus Variants: Transverse Colon and Ileosigmoid Knotting  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Transverse colon volvulus</strong>:  </li>
+<li style="margin-left: 20px;">Accounts for <strong>3% of all colonic volvulus cases</strong>  </li>
+<li style="margin-left: 20px;">Normal anatomic attachments (gastrocolic, lienocolic, phrenocolic ligaments) prevent torsion  </li>
+<li style="margin-left: 20px;">Occurs in setting of:  </li>
+<li style="margin-left: 40px;">Congenital absence of colonic attachments  </li>
+<li style="margin-left: 40px;">Acquired conditions causing colonic distention + mesenteric lengthening (e.g., chronic constipation, megacolon)  </li>
+<li style="margin-left: 20px;"><strong>Presenting symptoms</strong>: similar to sigmoid/cecal volvulus; vomiting earlier due to duodenojejunal junction compression by dilated transverse colon  </li>
+<li style="margin-left: 20px;"><strong>Plain radiography</strong>: <strong>“inverted coffee-bean” sign</strong> — dilated transverse colon with apex pointing to pelvis  </li>
+<li style="margin-left: 20px;"><strong>Diagnosis challenges</strong>: CT or contrast enema diagnostic, but atypical findings cause delays  </li>
+<li style="margin-left: 40px;">Misdiagnosed as sigmoid volvulus; failed endoscopic decompression should prompt suspicion of proximal obstruction  </li>
+<li style="margin-left: 20px;"><strong>Treatment</strong>: operative intervention required  </li>
+<li style="margin-left: 40px;">Resection often necessary due to redundancy/ischemia  </li>
+<li style="margin-left: 40px;">Options: extended right hemicolectomy, segmental transverse colectomy, left hemicolectomy  </li>
+<li style="margin-left: 40px;">Nonresective alternatives:  </li>
+<li style="margin-left: 60px;">Detorsion alone  </li>
+<li style="margin-left: 60px;">Detorsion + anterior abdominal wall colopexy  </li>
+<li style="margin-left: 60px;">Parallel colopexy: suturing redundant proximal/distal transverse colon to ascending/descending colon  </li>
+<li style="margin-left: 40px;">Recurrence likely high with nonresective approaches (assumed from cecopexy data)  </li>
+<li style="margin-left: 0px;"><strong>Ileosigmoid knotting</strong>:  </li>
+<li style="margin-left: 20px;">Variant of midgut volvulus; rare in West, common in endemic areas (Asia, Africa, Middle East)  </li>
+<li style="margin-left: 20px;">Pathophysiology: length of ileum wraps around base of redundant sigmoid mesentery → “compound volvulus”  </li>
+<li style="margin-left: 40px;">Peristalsis tightens knot → combined small bowel + distal large bowel obstruction  </li>
+<li style="margin-left: 20px;">Etiology unclear; higher incidence in:  </li>
+<li style="margin-left: 40px;">Males in <strong>fourth decade</strong>  </li>
+<li style="margin-left: 40px;">Cultures with single daily meal (bulkier stool → distended sigmoid)  </li>
+<li style="margin-left: 20px;">Predisposing factors: Meckel diverticulum, pregnancy  </li>
+<li style="margin-left: 0px;"><strong>Presentation</strong>:  </li>
+<li style="margin-left: 20px;">Acute small bowel obstruction symptoms  </li>
+<li style="margin-left: 20px;"><strong>&gt;50% present with late sequelae</strong>: hypovolemic shock, peritonitis  </li>
+<li style="margin-left: 0px;"><strong>Diagnosis</strong>:  </li>
+<li style="margin-left: 20px;"><strong>Plain radiography</strong>: dilated sigmoid with air-fluid levels in small bowel; descending colon medially deviated (tethering of sigmoid mesentery to ileal mesentery)  </li>
+<li style="margin-left: 20px;"><strong>CT findings</strong>:  </li>
+<li style="margin-left: 40px;">Dilated sigmoid colon  </li>
+<li style="margin-left: 40px;">Dilated ileal loops  </li>
+<li style="margin-left: 40px;"><strong>Whirling of mesosigmoid and small bowel mesentery</strong>  </li>
+<li style="margin-left: 0px;"><strong>Treatment</strong>:  </li>
+<li style="margin-left: 20px;">Endoscopic decompression contraindicated  </li>
+<li style="margin-left: 40px;">Necrosis at laparotomy in <strong>50–100%</strong> of cases  </li>
+<li style="margin-left: 20px;">Should be considered if sigmoid volvulus fails endoscopic reduction  </li>
+<li style="margin-left: 20px;"><strong>Mortality starkly stratified by viability</strong>:  </li>
+<li style="margin-left: 40px;">Bowel necrosis at surgery: <strong>20–100%</strong> mortality  </li>
+<li style="margin-left: 40px;">Intestinal viability maintained: <strong>6–8%</strong> mortality  </li>
+<li style="margin-left: 20px;">Operative therapy = mainstay; resection dictated by extent of necrosis  </li>
+</ul>
+</div></details>
+<details><summary><strong>13. Comparative Summary: Intussusception vs. Volvulus in Adults  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Intussusception</strong>:  </li>
+<li style="margin-left: 20px;">Primary driver: pathologic lead point (<strong>malignancy in 56% colonic cases</strong>)  </li>
+<li style="margin-left: 20px;">Imaging hallmark: <strong>“bowel-within-bowel”</strong> on CT, “target/donut/pseudo-kidney” on US  </li>
+<li style="margin-left: 20px;">Treatment: <strong>resection without reduction</strong> (avoid perforation/seeding)  </li>
+<li style="margin-left: 20px;">Endoscopic/reduction attempts high-risk in adults; reserved for select enteric cases with benign etiology  </li>
+<li style="margin-left: 0px;"><strong>Volvulus</strong>:  </li>
+<li style="margin-left: 20px;">Primary driver: anatomical redundancy + mesenteric elongation → torsion  </li>
+<li style="margin-left: 20px;">Imaging hallmark: <strong>“whirl sign” (cecal)</strong>, <strong>“X-marks-the-spot”/“split wall” (sigmoid)</strong>, <strong>“bird’s beak” (barium enema)</strong>  </li>
+<li style="margin-left: 20px;">Treatment:  </li>
+<li style="margin-left: 40px;">Sigmoid volvulus: endoscopic decompression first-line in stable patients → urgent semielective resection  </li>
+<li style="margin-left: 40px;">Cecal volvulus: immediate surgery (endoscopy ineffective, high perforation risk)  </li>
+<li style="margin-left: 40px;">Rare variants: surgical exploration + resection based on viability  </li>
+<li style="margin-left: 0px;"><strong>Key contrasts in management</strong>:  </li>
+<li style="margin-left: 20px;">Intussusception: avoid reduction → oncologic resection  </li>
+<li style="margin-left: 20px;">Sigmoid volvulus: decompress endoscopically first → plan resection during index admission  </li>
+<li style="margin-left: 20px;">Cecal volvulus: skip decompression → proceed directly to surgery  </li>
+<li style="margin-left: 0px;"><strong>Recurrence risk stratification</strong>:  </li>
+<li style="margin-left: 20px;">Intussusception: low post-resection (if complete oncologic resection)  </li>
+<li style="margin-left: 20px;">Sigmoid volvulus: <strong>71% recurrence</strong> after decompression alone  </li>
+<li style="margin-left: 20px;">Cecal volvulus: <strong>12–13% recurrence</strong> after detorsion ± cecopexy  </li>
+<li style="margin-left: 20px;">Transverse volvulus: assumed high recurrence with nonresective procedures  </li>
+</ul>
+</div></details>
+<details><summary><strong>14. Special Populations and High-Risk Scenarios  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Pregnancy</strong>:  </li>
+<li style="margin-left: 20px;">Sigmoid volvulus = most common non-obstetric cause of intestinal obstruction (<strong>45%</strong>)  </li>
+<li style="margin-left: 20px;">Maternal mortality: <strong>5% overall</strong>, up to <strong>50% with perforation</strong>  </li>
+<li style="margin-left: 20px;">Fetal demise: <strong>~30%</strong>, due to reduced placental perfusion from mass effect  </li>
+<li style="margin-left: 20px;">Management: prioritize maternal stabilization; endoscopic decompression possible in stable patients → urgent resection if ischemia  </li>
+<li style="margin-left: 0px;"><strong>Elderly/comorbid patients</strong>:  </li>
+<li style="margin-left: 20px;">Western-type sigmoid volvulus: often delayed diagnosis due to comorbid senility/psychiatric illness  </li>
+<li style="margin-left: 20px;">High postoperative complication rate: respiratory, renal, infectious, thromboembolic  </li>
+<li style="margin-left: 20px;">Mortality remains high (<strong>9.4% overall</strong>) despite modern techniques  </li>
+<li style="margin-left: 0px;"><strong>Postoperative/adhesion-related cases</strong>:  </li>
+<li style="margin-left: 20px;">Intussusception: often benign etiology → reduction acceptable  </li>
+<li style="margin-left: 20px;">Volvulus (especially cecal/transverse): high likelihood of structural abnormality → resection preferred  </li>
+<li style="margin-left: 0px;"><strong>Hirschsprung disease</strong>:  </li>
+<li style="margin-left: 20px;">Can present as sigmoid volvulus in adults (case reports cited)  </li>
+<li style="margin-left: 20px;">Requires careful preoperative evaluation for megacolon extent  </li>
+<li style="margin-left: 20px;">May necessitate total colectomy if colonic atony present  </li>
+</ul>
+</div></details>
+<details><summary><strong>15. Imaging Modalities: Comparative Diagnostic Accuracy and Limitations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>CT</strong>:  </li>
+<li style="margin-left: 20px;">Highest accuracy for both intussusception (<strong>gold standard</strong>) and volvulus (<strong>~100% accuracy</strong>)  </li>
+<li style="margin-left: 20px;">Advantages: rapid, widely available, assesses ischemia (wall thickening, fat stranding, hypoenhancement), identifies complications  </li>
+<li style="margin-left: 20px;">Limitations: radiation exposure; false-negative ischemia if clinical suspicion high despite normal imaging  </li>
+<li style="margin-left: 0px;"><strong>Ultrasound</strong>:  </li>
+<li style="margin-left: 20px;">Pediatric intussusception: sensitivity &gt;95% in expert hands  </li>
+<li style="margin-left: 20px;">Adult use limited by operator dependence, obesity, bowel gas  </li>
+<li style="margin-left: 20px;">Key signs: “target” (axial), “donut” (transverse), “pseudo-kidney” (longitudinal)  </li>
+<li style="margin-left: 0px;"><strong>Barium enema</strong>:  </li>
+<li style="margin-left: 20px;">Diagnostic for colonic obstruction: “cup-shaped” defect (intussusception), “bird’s beak” (volvulus)  </li>
+<li style="margin-left: 20px;">Contraindicated if perforation/ischemia suspected  </li>
+<li style="margin-left: 20px;">Therapeutic potential in sigmoid volvulus (temporary reduction), but not definitive  </li>
+<li style="margin-left: 0px;"><strong>Plain radiography</strong>:  </li>
+<li style="margin-left: 20px;">First-line for suspected obstruction:  </li>
+<li style="margin-left: 40px;">Intussusception: “coiled spring” (enteric only)  </li>
+<li style="margin-left: 40px;">Sigmoid volvulus: <strong>“omega loop”/“coffee bean”</strong> (60% sensitivity)  </li>
+<li style="margin-left: 40px;">Cecal volvulus: <strong>“kidney-bean” sign</strong>  </li>
+<li style="margin-left: 40px;">Transverse volvulus: <strong>“inverted coffee bean”</strong>  </li>
+<li style="margin-left: 20px;">Often insufficient alone; used to triage for CT/enema  </li>
+</ul>
+</div></details>
+<details><summary><strong>16. Surgical Techniques and Decision Algorithms  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Intussusception resection principles</strong>:  </li>
+<li style="margin-left: 20px;">Formal oncologic resection with lymphadenectomy for malignant lead points  </li>
+<li style="margin-left: 20px;">Segmental bowel resection based on location (right/colectomy, sigmoidectomy, etc.)  </li>
+<li style="margin-left: 20px;">Avoid manual reduction due to perforation risk from edematous/ischemic bowel  </li>
+<li style="margin-left: 0px;"><strong>Sigmoid volvulus surgical options</strong>:  </li>
+<li style="margin-left: 20px;"><strong>Resection first-line</strong> (89% of cases)  </li>
+<li style="margin-left: 40px;">Subtotal/total colectomy if cecal necrosis, megacolon, or colonic atony  </li>
+<li style="margin-left: 40px;">Primary anastomosis feasible with adequate prep and low tension  </li>
+<li style="margin-left: 40px;">Diverting loop ileostomy preferred over colostomy (easier care, higher closure rates)  </li>
+<li style="margin-left: 20px;"><strong>Nonresective alternatives</strong>:  </li>
+<li style="margin-left: 40px;">Sigmoidopexy (fixed to posterior abdominal wall): lower</li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
