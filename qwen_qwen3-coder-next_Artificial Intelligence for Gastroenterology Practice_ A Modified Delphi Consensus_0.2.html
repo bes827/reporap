@@ -1,0 +1,763 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Artificial Intelligence for Gastroenterology Practice: A Modified Delphi Consensus  </title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Artificial Intelligence for Gastroenterology Practice: A Modified Delphi Consensus  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: <em>American Journal of Gastroenterology</em>, 2026 (Published Ahead of Print; DOI: 10.14309/ajg.0000000000003944)  </li>
+<li style="margin-left: 0px;">Topic: AI Integration in Gastroenterology, Hepatology, and Endoscopy  </li>
+<li style="margin-left: 0px;">Author(s): Seth A. Gross, MD, FACG; Aasma Shaukat, MD, MPH, FACG (co-first authors); plus 23 additional experts from NYU Langone, Mayo Clinic, Cedars-Sinai, and 20+ institutions across the U.S. and Portugal  </li>
+</ul>
+<details><summary><strong>1. Endoscopy: CADe, CADx, and Gastric Neoplasia Applications  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>CADe improves adenoma detection rate (ADR)</strong> in controlled trials: <em>↓ AMR from 35% to 16%</em> when used first-line  </li>
+<li style="margin-left: 0px;"><strong>Real-world ADR benefit remains unproven</strong>: nonrandomized studies show <em>no significant improvement</em>  </li>
+<li style="margin-left: 0px;"><strong>CADx enables “leave-in-situ” strategy</strong> for diminutive non-neoplastic polyps → ↓ unnecessary polypectomies, ↓ cost  </li>
+<li style="margin-left: 0px;"><strong>Critical gaps</strong>: suboptimal proximal colon performance; need for ≥90% sensitivity/specificity per ESGE standards  </li>
+</ul>
+<details><summary><strong>Sub-requirements for CADe/CADx validation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must meet SPIRIT-AI and CONSORT-AI reporting standards  </li>
+<li style="margin-left: 0px;">Training/test datasets must reflect <em>diverse lesion types, populations, countries, and healthcare systems</em>  </li>
+<li style="margin-left: 0px;">Disclosure required: clinical population, disease prevalence, endoscopist experience, imaging tech, explainability, update protocols  </li>
+<li style="margin-left: 0px;">Sessile serrated lesion detection remains inadequate → urgent need for device improvement  </li>
+</ul>
+</div></details>
+<details><summary><strong>Gastric neoplasia surveillance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">High miss rates due to <em>limited training, subtle lesions, inadequate inspection time</em>  </li>
+<li style="margin-left: 0px;">AI must support accurate assessment of endoscopic resection eligibility → match experienced endoscopist judgment  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Clinical Applications: Ambient AI, NLP, and Workflow Optimization  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Ambient AI scribes</strong> reduce physician workload, ↑ patient engagement (Shah et al., <em>JAMA Netw Open</em> 2025)  </li>
+<li style="margin-left: 0px;"><strong>NLP enables automated coding</strong>: GPT-4 model matches ICD coding + human review, faster and more cost-effective  </li>
+<li style="margin-left: 0px;"><strong>AI-driven clinical decision support</strong>: big-data models outperform providers in predicting cancer therapy response (Huang et al., <em>Cancer Lett</em> 2020; Jiang et al., <em>Nat Commun</em> 2023)  </li>
+<li style="margin-left: 0px;"><strong>Interoperability is non-negotiable</strong>: AI workflows must integrate seamlessly with EHR and endoscopy systems  </li>
+</ul>
+<details><summary><strong>Practice integration priorities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Seamless EHR integration → ↓ provider burden, ↑ clinical adoption  </li>
+<li style="margin-left: 0px;">Workflow analysis for operational efficiency recommendations  </li>
+<li style="margin-left: 0px;">Prior authorization automation → ↓ clinician/administrative burden  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Training, Education, and Deskilling Mitigation  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Structured AI curriculum required</strong> for GI fellows: foundational competency in AI principles and limitations  </li>
+<li style="margin-left: 0px;"><strong>AI augmentation + feedback during endoscopy training</strong> → real-time learning enhancement  </li>
+<li style="margin-left: 0px;"><strong>Simulator integration with AI tools</strong> → ↑ procedural skill development  </li>
+<li style="margin-left: 0px;"><strong>Trainees must achieve core endoscopy competency <em>without</em> AI augmentation</strong> at graduation → avoid deskilling  </li>
+</ul>
+<details><summary><strong>Guardrails against overreliance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overreliance risks: ↓ independent polyp detection, false-positive-driven interventions, performance drop in AI-limited settings  </li>
+<li style="margin-left: 0px;">Training must clarify <em>what AI can and cannot do</em>; set clear expectations for trainee use  </li>
+<li style="margin-left: 0px;">Human oversight, accuracy, and quality must be preserved  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. IBD, Hepatology, Equity, Ethics, and Implementation Governance  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Multiomics AI tools for IBD</strong>: integrate genetic, microbiome, imaging, nutritional, clinical data → personalized care  </li>
+<li style="margin-left: 0px;"><strong>AI in hepatology</strong>: improves HCC risk prediction, diagnosis, treatment planning via EHR + imaging + histopathology integration  </li>
+<li style="margin-left: 0px;"><strong>Wearable + AI monitoring</strong> → decentralized IBD/liver disease care, real-time activity/QoL tracking  </li>
+<li style="margin-left: 0px;"><strong>Current prognostic models insufficient</strong> for standalone use → require refinement before replacing conventional methods  </li>
+</ul>
+<details><summary><strong>Equity and ethical imperatives  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Bias mitigation</strong>: systematic racial/ethnic bias documented in AI cardiovascular models (<em>Eur J Radiol</em> 2025)  </li>
+<li style="margin-left: 0px;"><strong>Chain-of-custody data governance</strong> required for consent, privacy, IP protection  </li>
+<li style="margin-left: 0px;"><strong>Patient-facing AI advice must be clinician-reviewed pre-deployment</strong>  </li>
+<li style="margin-left: 0px;"><strong>Language barriers must be proactively addressed</strong> in patient-facing tools  </li>
+<li style="margin-left: 0px;"><strong>Equitable access across all populations</strong> → avoid exacerbating disparities  </li>
+</ul>
+</div></details>
+<details><summary><strong>Governance and reimbursement  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Specialty societies (e.g., ACG, ASGE) must lead regulatory oversight of AI diagnostics  </li>
+<li style="margin-left: 0px;"><strong>Conflicts in AI recommendations resolved via multi-stakeholder process</strong> (clinicians, regulators, patients, payors)  </li>
+<li style="margin-left: 0px;"><strong>Reimbursement models must shift from fee-for-service to value-based</strong>: reward quality, outcomes, cost reduction  </li>
+<li style="margin-left: 0px;"><strong>RVU valuation of E&amp;M services must not decrease</strong> due to AI integration</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Implementation Barriers and Operational Challenges  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Reimbursement remains a major barrier</strong>: lack of specific CPT/HCPCS codes for CADe/CADx; current payment models disincentivize AI adoption  </li>
+<li style="margin-left: 0px;"><strong>Regulatory uncertainty</strong>: FDA clearance pathways unclear for adaptive AI tools; lack of harmonization across international markets  </li>
+<li style="margin-left: 0px;"><strong>Interoperability gaps</strong>: EHR system fragmentation impedes AI integration → need for FHIR-based standards (<em>Tabari et al., JMIR Med Inform 2024</em>)  </li>
+<li style="margin-left: 0px;"><strong>Cybersecurity and data sovereignty</strong>: AI model training requires large datasets → risk of breaches without chain-of-custody protocols  </li>
+</ul>
+<details><summary><strong>Infrastructure and technical readiness  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Legacy system incompatibility</strong>: many community practices lack API access or structured data pipelines needed for AI  </li>
+<li style="margin-left: 0px;"><strong>Edge-case handling</strong>: AI tools fail silently on rare pathologies (e.g., flat adenomas, early gastric cancer) → need for robust failure modes  </li>
+<li style="margin-left: 0px;"><strong>Real-time inference latency</strong>: &gt;200ms delay in CADe feedback disrupts endoscopic workflow → must meet procedural timing constraints  </li>
+<li style="margin-left: 0px;"><strong>Model drift without monitoring</strong>: performance degradation over time due to changing patient demographics or equipment upgrades  </li>
+</ul>
+</div></details>
+<details><summary><strong>Workflow disruption risks  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Cognitive offloading</strong>: overreliance on AI may ↓ endoscopist vigilance and pattern recognition  </li>
+<li style="margin-left: 0px;"><strong>Alert fatigue</strong>: excessive false positives → clinicians disable or ignore AI prompts  </li>
+<li style="margin-left: 0px;"><strong>Training burden on staff</strong>: onboarding requires dedicated time, ↓ immediate productivity  </li>
+<li style="margin-left: 0px;"><strong>Liability ambiguity</strong>: unclear accountability when AI misses a lesion → “black box” problem impedes incident review  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Evidence Gaps and Research Priorities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Longitudinal outcomes missing</strong>: no studies link CADe use to <em>interval colorectal cancer rates</em>  </li>
+<li style="margin-left: 0px;"><strong>Cost-effectiveness evidence limited</strong>: modeling studies suggest savings (<em>Areia et al., Lancet Digit Health 2022</em>), but real-world RCTs lacking  </li>
+<li style="margin-left: 0px;"><strong>Diverse population validation absent</strong>: most AI trained on single-center, high-resource data → poor generalizability  </li>
+<li style="margin-left: 0px;"><strong>Comparative effectiveness unknown</strong>: no head-to-head trials of CADe vs. high-definition white-light colonoscopy in community practice  </li>
+</ul>
+<details><summary><strong>Priority research questions  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prospective multicenter trials</strong> needed for all AI tools before routine adoption  </li>
+<li style="margin-left: 0px;"><strong>Health equity metrics</strong>: track outcomes by race, ethnicity, language, income, geography  </li>
+<li style="margin-left: 0px;"><strong>AI-specific endpoints</strong>: define clinical utility beyond sensitivity/specificity (e.g., time to diagnosis, patient satisfaction, downstream resource use)  </li>
+<li style="margin-left: 0px;"><strong>Human-AI team performance</strong>: quantify how AI changes <em>clinician</em> behavior, not just tool accuracy  </li>
+</ul>
+</div></details>
+<details><summary><strong>Data infrastructure imperatives  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Multi-institutional data-sharing consortia</strong> required for training and validation (<em>Spann et al., Gastroenterology 2025</em>)  </li>
+<li style="margin-left: 0px;"><strong>Standardized data dictionaries</strong> for GI-specific variables (e.g., Paris classification, Boston Bowel Prep Scale, Mayo score components)  </li>
+<li style="margin-left: 0px;"><strong>Longitudinal phenotyping</strong>: link endoscopy, pathology, genomics, EHR, and patient-reported outcomes  </li>
+<li style="margin-left: 0px;"><strong>Bias auditing frameworks</strong>: mandatory pre-deployment assessment of performance across subgroups  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Training, Competency, and Professional Development  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>AI literacy must be embedded in graduate medical education</strong> (GME) and maintenance of certification (MOC)  </li>
+<li style="margin-left: 0px;"><strong>GI fellowship curricula should include</strong>:  </li>
+<li style="margin-left: 20px;">Fundamentals of ML/DL, bias sources, validation metrics (AUC-ROC, PPV/NPV), explainability methods  </li>
+<li style="margin-left: 20px;">Hands-on simulation with CADe/CADx tools under supervision  </li>
+<li style="margin-left: 20px;">Case-based ethics modules on overreliance, accountability, and transparency  </li>
+<li style="margin-left: 0px;"><strong>Continuing education required</strong> for practicing clinicians: annual AI competency refreshers  </li>
+</ul>
+<details><summary><strong>Competency frameworks and assessment  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Trainee milestones</strong>: distinguish between <em>AI-assisted</em> vs. <em>AI-independent</em> procedural competence  </li>
+<li style="margin-left: 0px;"><strong>Objective structured assessment of AI proficiency (OSAIP)</strong>: simulate edge cases where AI fails  </li>
+<li style="margin-left: 0px;"><strong>Performance dashboards</strong>: track individual endoscopist ADR, AMR, and AI interaction frequency  </li>
+<li style="margin-left: 0px;"><strong>Certification pathways</strong>: optional subspecialty credential in AI-augmented endoscopy  </li>
+</ul>
+</div></details>
+<details><summary><strong>Faculty development needs  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Faculty training on AI pedagogy</strong>: how to teach critical appraisal of AI literature  </li>
+<li style="margin-left: 0px;"><strong>Interdisciplinary teaching teams</strong>: include data scientists, ethicists, and patient advocates  </li>
+<li style="margin-left: 0px;"><strong>Open-access training datasets</strong> with annotated failures to foster humility in AI use  </li>
+<li style="margin-left: 0px;"><strong>Simulation labs equipped with multiple AI platforms</strong> for comparative evaluation  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Ethical, Legal, and Policy Frameworks  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Informed consent must evolve</strong>: patients should be told when AI is used, its limitations, and who oversees it  </li>
+<li style="margin-left: 0px;"><strong>Algorithmic transparency mandates</strong>: developers must disclose training data composition, validation cohort, and known failure modes  </li>
+<li style="margin-left: 0px;"><strong>Regulatory oversight structure</strong>: specialty societies (ACG, ASGE) should co-develop standards with FDA/ CMS  </li>
+<li style="margin-left: 0px;"><strong>Conflict resolution protocols</strong>: multi-stakeholder committees to resolve AI-clinician disagreements  </li>
+</ul>
+<details><summary><strong>Governance and accountability  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>AI incident reporting system</strong>: mandatory near-misses and harms (analogous to FAERS for drugs)  </li>
+<li style="margin-left: 0px;"><strong>Vendor liability</strong>: clear delineation between clinician and developer responsibility in adverse events  </li>
+<li style="margin-left: 0px;"><strong>Patient access to AI decision trails</strong>: right to explanation under HIPAA §164.524  </li>
+<li style="margin-left: 0px;"><strong>Bias mitigation as quality metric</strong>: tie reimbursement to documented bias assessments  </li>
+</ul>
+</div></details>
+<details><summary><strong>Policy recommendations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>CMS reimbursement pilots</strong> for AI-assisted colonoscopy and NLP documentation  </li>
+<li style="margin-left: 0px;"><strong>Anti-kickback safe harbor</strong> for value-based AI tools that reduce total cost of care  </li>
+<li style="margin-left: 0px;"><strong>Tax incentives</strong> for small practices adopting interoperable AI with equity safeguards  </li>
+<li style="margin-left: 0px;"><strong>Federal grants</strong> for community health center AI implementation with safety net focus</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Stakeholder-Specific Implementation Pathways  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Clinicians</strong>: need AI tools that <em>augment</em>—not replace—clinical judgment; require clear scope-of-practice guidance  </li>
+<li style="margin-left: 0px;"><strong>Health systems</strong>: must invest in interoperable infrastructure, change management, and clinician engagement  </li>
+<li style="margin-left: 0px;"><strong>Payers (CMS, commercial insurers)</strong>: need evidence of <em>value</em>—not just technical accuracy—to justify reimbursement  </li>
+<li style="margin-left: 0px;"><strong>Patients</strong>: require education on AI’s role, rights to opt-out, and assurance of human oversight  </li>
+</ul>
+<details><summary><strong>Role-specific implementation requirements  </strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>For endoscopists  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>CADe as second-pass reader</strong>: reduce miss rate without disrupting workflow; avoid real-time “primary driver” use until validation complete  </li>
+<li style="margin-left: 0px;"><strong>CADx only for diminutive polyps</strong> (≤5 mm) meeting ≥90% sensitivity/specificity thresholds  </li>
+<li style="margin-left: 0px;"><strong>Mandatory training on overreliance risks</strong>: simulate AI failure scenarios during proctoring  </li>
+<li style="margin-left: 0px;"><strong>ADR benchmarking with/without AI</strong> to assess individual impact  </li>
+</ul>
+</div></details>
+<details><summary><strong>For gastroenterology fellows and trainees  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>AI augmentation prohibited during core competency assessments</strong>  </li>
+<li style="margin-left: 0px;"><strong>Simulation-based training</strong>: use AI-enhanced simulators only <em>after</em> basic colonoscopy proficiency  </li>
+<li style="margin-left: 0px;"><strong>Structured reflection on AI use</strong>: journal entries documenting decision changes due to AI prompts  </li>
+<li style="margin-left: 0px;"><strong>Mentorship requirements</strong>: fellows must discuss AI use with attending during case review  </li>
+</ul>
+</div></details>
+<details><summary><strong>For practice administrators  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>AI ROI framework</strong>: track ↓ documentation time, ↑ prior auth throughput, ↓ no-show rates via chatbot triage  </li>
+<li style="margin-left: 0px;"><strong>Workflow mapping</strong>: identify high-burden steps (e.g., chart prep, coding, prior auth) for AI targeting  </li>
+<li style="margin-left: 0px;"><strong>Vendor evaluation criteria</strong>: interoperability (FHIR), explainability, bias testing reports, incident response plan  </li>
+<li style="margin-left: 0px;"><strong>Pilot evaluation metrics</strong>: clinician satisfaction (Likert 1–5), time per patient, error rate pre/post  </li>
+</ul>
+</div></details>
+<details><summary><strong>For health system IT leadership  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>API-first procurement policy</strong>: require AI vendors to provide standardized FHIR-based interfaces  </li>
+<li style="margin-left: 0px;"><strong>Data governance council</strong>: include GI clinicians, ethicists, and patient advocates in AI oversight  </li>
+<li style="margin-left: 0px;"><strong>Model version control</strong>: track updates, retraining dates, performance drift alerts  </li>
+<li style="margin-left: 0px;"><strong>Cybersecurity addendum to vendor contracts</strong>: specify encryption-in-transit/at-rest, breach notification timelines  </li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>10. Equity-Focused AI Deployment Strategies  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Algorithmic bias must be quantified and mitigated</strong> before deployment—especially for race, ethnicity, language, SES  </li>
+<li style="margin-left: 0px;"><strong>Diverse training data non-negotiable</strong>: minimum 30% underrepresented minority patients per NIH UNITE Initiative  </li>
+<li style="margin-left: 0px;"><strong>Language-specific NLP models required</strong> for non-English-speaking patients to avoid misclassification  </li>
+<li style="margin-left: 0px;"><strong>Low-resource setting adaptations</strong>: lightweight AI tools (e.g., smartphone-based image analysis) for global equity  </li>
+</ul>
+<details><summary><strong>Disparity mitigation protocols  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Bias audits as pre-market requirement</strong>: report performance stratified by race, gender, age, insurance status  </li>
+<li style="margin-left: 0px;"><strong>Real-world equity monitoring dashboard</strong>: track AI performance by demographic strata post-deployment  </li>
+<li style="margin-left: 0px;"><strong>Community engagement in tool design</strong>: involve patient advocates from marginalized groups during development  </li>
+<li style="margin-left: 0px;"><strong>Equity impact statements</strong> for all AI grants and procurement decisions  </li>
+</ul>
+</div></details>
+<details><summary><strong>Access expansion initiatives  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Federally qualified health center (FQHC) AI grants</strong>: subsidize deployment in safety-net hospitals  </li>
+<li style="margin-left: 0px;"><strong>Tele-AI hubs</strong>: central AI inference servers serving rural clinics via secure cloud pipelines  </li>
+<li style="margin-left: 0px;"><strong>Low-bandwidth-compatible tools</strong>: offline-capable models for areas with poor connectivity  </li>
+<li style="margin-left: 0px;"><strong>Medicaid-specific validation</strong>: ensure models trained on Medicaid populations perform as well as Medicare/private  </li>
+</ul>
+</div></details>
+<details><summary><strong>Patient-facing equity safeguards  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Plain-language AI consent forms</strong>: translated into top 5 local languages per region  </li>
+<li style="margin-left: 0px;"><strong>Opt-out without penalty</strong>: patients may refuse AI use without affecting care access  </li>
+<li style="margin-left: 0px;"><strong>AI literacy materials for patients</strong>: explain benefits/risks in accessible formats (videos, infographics)  </li>
+<li style="margin-left: 0px;"><strong>Bias complaint mechanism</strong>: dedicated channel for patients to report perceived AI-related inequity  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Regulatory, Legal, and Reimbursement Landscape  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>FDA classification</strong>: most GI AI tools fall under Class II (special controls); some CADx may require Premarket Approval  </li>
+<li style="margin-left: 0px;"><strong>CMS reimbursement pathways</strong>:  </li>
+<li style="margin-left: 20px;"><em>Current</em>: no separate code for CADe; bundled into colonoscopy base code  </li>
+<li style="margin-left: 20px;"><em>Proposed</em>: new G-codes for AI-assisted colonoscopy (e.g., G0555–G0559)  </li>
+<li style="margin-left: 20px;"><em>Value-based</em>: bundled payment for IBD/liver disease AI care coordination (e.g., CPT 99487 extension)  </li>
+<li style="margin-left: 0px;"><strong>Malpractice risk modifiers</strong>: AI use may reduce liability if used appropriately, increase if overrelied upon  </li>
+</ul>
+<details><summary><strong>Legal accountability frameworks  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Three-tier liability model</strong>:  </li>
+<li style="margin-left: 20px;">Tier 1: Clinician negligence (e.g., ignoring AI warning)  </li>
+<li style="margin-left: 20px;">Tier 2: Vendor negligence (e.g., unvalidated algorithm, hidden bias)  </li>
+<li style="margin-left: 20px;">Tier 3: Systemic failure (e.g., poor integration, lack of training)  </li>
+<li style="margin-left: 0px;"><strong>AI incident taxonomy</strong>: define near-misses, false positives/negatives, workflow disruption, harm  </li>
+<li style="margin-left: 0px;"><strong>Expert witness standards</strong>: require dual expertise (GI + AI validation methodology)  </li>
+</ul>
+</div></details>
+<details><summary><strong>Policy recommendations  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ACG-led AI regulatory task force</strong>: develop consensus on:  </li>
+<li style="margin-left: 20px;">Minimum validation standards per application (e.g., CADx for diminutive polyps vs. gastric neoplasia)  </li>
+<li style="margin-left: 20px;">Required documentation elements (e.g., AI version, training data source, bias report)  </li>
+<li style="margin-left: 20px;">Mandatory disclosure language for informed consent  </li>
+<li style="margin-left: 0px;"><strong>CMS collaboration</strong>: develop AI-specific RVU adjustments to avoid E&amp;M devaluation  </li>
+<li style="margin-left: 0px;"><strong>Antitrust safe harbor</strong>: allow specialty societies to jointly define AI quality metrics without violating competition laws  </li>
+<li style="margin-left: 0px;"><strong>Federal AI liability shield</strong>: for clinicians using FDA-cleared tools in good faith  </li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Future Directions and Long-Term Vision  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Next-generation AI integration</strong>: move from <em>assisted</em> to <em>predictive</em> and <em>prescriptive</em> tools  </li>
+<li style="margin-left: 20px;"><strong>Predictive</strong>: AI forecasting IBD flares, HCC risk, post-op recurrence  </li>
+<li style="margin-left: 20px;"><strong>Prescriptive</strong>: AI suggesting personalized surveillance intervals, drug selection, lifestyle interventions  </li>
+<li style="margin-left: 0px;"><strong>Multimodal fusion models</strong>: combine endoscopic video, histopathology, genomics, EHR, wearables  </li>
+<li style="margin-left: 0px;"><strong>Digital twins for GI organs</strong>: simulate disease progression and treatment response per patient  </li>
+</ul>
+<details><summary><strong>Roadmap milestones  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Short-term (0–2 years)</strong>:  </li>
+<li style="margin-left: 20px;">CADe reimbursement pilots in 5 health systems  </li>
+<li style="margin-left: 20px;">National AI bias registry for GI tools  </li>
+<li style="margin-left: 20px;">ACG-endorsed AI curriculum for 100% of accredited GI fellowships  </li>
+<li style="margin-left: 0px;"><strong>Mid-term (3–5 years)</strong>:  </li>
+<li style="margin-left: 20px;">FDA-cleared CADx for “diagnose-and-leave” strategy  </li>
+<li style="margin-left: 20px;">Interoperable AI platform across 50% of academic GI divisions  </li>
+<li style="margin-left: 20px;">CMS coverage for AI-augmented IBD/liver disease management  </li>
+<li style="margin-left: 0px;"><strong>Long-term (5–10 years)</strong>:  </li>
+<li style="margin-left: 20px;">AI as standard-of-care in colonoscopy (like high-definition imaging)  </li>
+<li style="margin-left: 20px;">Real-time clinical decision support embedded in EHR workflow  </li>
+<li style="margin-left: 20px;">Global AI governance consortium with ACG leadership  </li>
+</ul>
+</div></details>
+<details><summary><strong>Unmet needs and emerging opportunities  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>AI for rare GI conditions</strong>: e.g., autoimmune enteropathy, complex fistulizing Crohn’s  </li>
+<li style="margin-left: 0px;"><strong>AI in mobile endoscopy units</strong>: portable devices with edge AI for low-resource settings  </li>
+<li style="margin-left: 0px;"><strong>Explainable AI (XAI) standards</strong>: clinician-facing visualizations of decision pathways  </li>
+<li style="margin-left: 0px;"><strong>AI ethics review boards</strong> at institutional and national levels  </li>
+</ul>
+</div></details>
+<details><summary><strong>Final implementation principles  </strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Augmentation over automation</strong>: AI should enhance—not replace—clinician judgment  </li>
+<li style="margin-left: 0px;"><strong>Transparency as non-negotiable</strong>: no black boxes in clinical decision support  </li>
+<li style="margin-left: 0px;"><strong>Equity by design</strong>: bias mitigation and access expansion embedded from inception  </li>
+<li style="margin-left: 0px;"><strong>Continuous validation</strong>: AI tools must be re-evaluated annually or after major system changes  </li>
+<li style="margin-left: 0px;"><strong>Clinician ownership</strong>: AI development and governance must include practicing gastroenterologists at every stage</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
