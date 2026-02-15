@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Enhancing Gastroenterology Education Through E-Learning</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Enhancing Gastroenterology Education Through E-Learning</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: Gastrointestinal Endoscopy (ASGE Article), Published online 3 February 2026</li>
+<li style="margin-left: 0px;">Topic: E-Learning in Gastroenterology Education</li>
+<li style="margin-left: 0px;">Author(s): Saurabh Chawla et al.</li>
+</ul>
+<details><summary><strong>1. Introduction and Background</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Evolution of E-Learning in Medical Education</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Traditional CME relies on publications and periodic in-person meetings with didactic lectures or hands-on training delivered to classrooms</li>
+<li style="margin-left: 0px;">Textbooks now largely used for acquiring core knowledge or comprehensive review due to rapid advancements</li>
+<li style="margin-left: 0px;">Internet enabled widespread, instantaneous dissemination of information → started e-learning era</li>
+<li style="margin-left: 0px;">First few decades: e-learning existed as websites housing electronic versions of published documents; web-based search engines made these easily searchable</li>
+<li style="margin-left: 0px;">Example: ASGE guidelines page on website → immensely popular with society members globally</li>
+</ul>
+</div></details>
+<details><summary><strong>E-Learning Acceleration During COVID-19</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Structured e-learning initially explored as secondary tool for distant learners lacking local expertise or ability to travel to traditional forums</li>
+<li style="margin-left: 0px;"><strong>In 2020, COVID-19 pandemic significantly accelerated e-learning in medicine</strong>, particularly in gastroenterology</li>
+<li style="margin-left: 0px;">Online educational instruments and platforms rapidly adopted to maintain continuity of medical education amidst social-distancing measures → e-learning now solidified into educational fabric</li>
+</ul>
+</div></details>
+<details><summary><strong>Role of E-Learning in Gastroenterology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Specialty rapidly evolving due to endoscopic and pharmacologic advances → gastroenterologists must keep pace with medical knowledge and technology</li>
+<li style="margin-left: 0px;">Traditional teaching methods lack flexibility and fail to engage adult learners effectively</li>
+<li style="margin-left: 0px;">E-learning advantages: flexible, self-paced, asynchronous access; potential to incorporate flipped classroom, microlearning, collaborative learning, interactive learning</li>
+<li style="margin-left: 0px;">Social media platforms can facilitate collaborative learning and knowledge-sharing among gastroenterologists</li>
+<li style="margin-left: 0px;">Studies show e-learning has high acceptability, improves knowledge retention, and is more effective than traditional education for medical students and residents</li>
+<li style="margin-left: 0px;">Simulation exercises (virtual/physical with partial task trainer integration) augment skills from e-learning modules</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Key Components of Effective E-Learning Programs</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Core Principles and Design Elements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Clear objectives</strong>: Activities require specific learning objectives and structured curricula informed by needs assessments and learner feedback</li>
+<li style="margin-left: 0px;"><strong>Interactive design</strong>: Engaging learners virtually can be challenging; elements like online polling, chat-based Q&amp;A, case-based discussions enhance engagement</li>
+<li style="margin-left: 0px;">Virtual simulations provide practical, hands-on experiences in controlled environments</li>
+<li style="margin-left: 0px;">Gamification and scheduled content delivery enhance user interaction with handheld devices (smartphones/tablets)</li>
+<li style="margin-left: 0px;"><strong>Faculty training</strong>: Educators must be proficient in digital tools and online pedagogical strategies to design effective e-learning experiences</li>
+</ul>
+</div></details>
+<details><summary><strong>Assessments, Feedback, and Content Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Assessments and feedback</strong>: Crucial because e-learning differs from traditional methods; platforms can create posttest assessments to identify knowledge gaps</li>
+<li style="margin-left: 0px;">Spaced repetition of focused teaching points through bite-sized content (microlearning) addresses gaps</li>
+<li style="margin-left: 0px;">Regular assessments support test-enhanced learning, track progress, identify improvement areas → improves knowledge acquisition and retention</li>
+<li style="margin-left: 0px;"><strong>Content revision and periodic updates</strong>: Medical knowledge expands exponentially; e-learning platforms can incorporate advances more rapidly than traditional learning</li>
+<li style="margin-left: 0px;">Regular updates based on evaluation data and latest advancements required; must include built-in technical support for software glitches</li>
+</ul>
+</div></details>
+<details><summary><strong>User Experience and Accessibility</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>User-friendly platforms</strong>: Should be easily accessible, intuitive to navigate, provide asynchronous learning opportunities</li>
+<li style="margin-left: 0px;">Learners can access content at own pace and convenience → particularly beneficial for medical professionals with varying schedules or different time zones</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Hybrid Learning Approaches</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Definition and Benefits</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Hybrid learning</strong> combines e-learning with traditional face-to-face classroom methods in gastroenterology education</li>
+<li style="margin-left: 0px;">Leverages strengths of both asynchronous and synchronous learning to enhance educational experience</li>
+<li style="margin-left: 0px;">Has been shown to increase engagement, support diverse learning styles, improve outcomes</li>
+</ul>
+</div></details>
+<details><summary><strong>Flipped Classroom Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Particularly effective in hybrid courses: traditional didactic education reversed → learners receive precourse study materials, class time used for active collaborative learning, group projects, discussions</li>
+<li style="margin-left: 0px;">Learners complete precourse self-paced study → then acquire/refine skills/techniques based on that knowledge</li>
+<li style="margin-left: 0px;">Postmodule assessments support test-enhanced learning → help learners identify knowledge gaps to focus on during in-person sessions</li>
+<li style="margin-left: 0px;">Makes hybrid courses more flexible, learner-centered, effective at consolidating cognitive and technical skills</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. ASGE&#x27;s E-Learning Platforms: GI Leap</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Platform Overview and Capabilities</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GI Leap</strong> (https://www.asge.org/home/education/advanced-education-training/online-learning-gi-leap/gi-leap-lp) is ASGE&#x27;s advanced e-learning platform designed for optimal learning experiences for gastroenterologists</li>
+<li style="margin-left: 0px;">Anchor to ASGE&#x27;s e-learning offerings; incorporates cutting-edge technology for high-quality educational content</li>
+<li style="margin-left: 0px;">Offers accessibility on various devices, including offline capabilities</li>
+<li style="margin-left: 0px;">Vast library of educational resources: videos of procedures, webinars, courses</li>
+<li style="margin-left: 0px;">ASGE members have easy access to broad range of educational materials with easy navigation and efficient search capabilities</li>
+<li style="margin-left: 0px;">Users can track CME and Maintenance of Certification (MOC) credits</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. GESAP and GESAP Mentor Program</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Program Description and Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GESAP</strong> (Gastrointestinal Endoscopy Self-Assessment Program; https://www.asge.org/quicklinks/gesap/gesap-mentor) is ASGE&#x27;s premier educational tool</li>
+<li style="margin-left: 0px;">Allows learners to stay current in ever-changing field of endoscopy, gastroenterology, hepatology with latest clinical developments and guidelines highlighted in multimedia, case-based scenarios</li>
+<li style="margin-left: 0px;">Currently has <strong>13 modules</strong> with several options for individuals to access</li>
+</ul>
+</div></details>
+<details><summary><strong>Methodology and Learning Approach</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Uses commercially available interval-reinforcement methodology scientifically proven to improve proficiency (process of increasing level of expertise in specific area as measure of knowledge improvement/retention and ability to apply knowledge to solve problems)</li>
+<li style="margin-left: 0px;">Durably changes behaviors with measurable impact on outcomes</li>
+<li style="margin-left: 0px;"><strong>Spaced-learning</strong>, immediate answer feedback, and repetition with knowledge reinforcement → improved engagement and performance</li>
+<li style="margin-left: 0px;">Online learning platform provides optimized, seamless experience accessible on any device/system at own pace → supports flexibility for busy learners</li>
+<li style="margin-left: 0px;">Uses scenarios in case-based format to make learning relevant to clinical practice</li>
+</ul>
+</div></details>
+<details><summary><strong>GESAP Mentor Outcomes and Data</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GESAP Mentor</strong> = version used in GI fellowship programs</li>
+<li style="margin-left: 0px;">Preliminary data from 16 GI fellowship programs with total of <strong>193 participants</strong>: overall proficiency gain for all modules was <strong>66%</strong> (Figure 1)</li>
+<li style="margin-left: 0px;">Identifies areas of knowledge deficit → programs can focus attention on specific lectures and case-based discussions to improve proficiency</li>
+<li style="margin-left: 0px;">Fellows using GESAP Mentor report increased engagement, knowledge retention, and proficiency</li>
+<li style="margin-left: 0px;">Ability to identify each fellow&#x27;s knowledge needs allows fellowship directors to personalize learning</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. STAR Certificate Programs and Hybrid Courses</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>STAR Program Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Skills, Training, Assessment, and Reinforcement (STAR)</strong> Certificate Programs (https://www.asge.org/home/education/advanced-education-training/star-certificate-programs)</li>
+<li style="margin-left: 0px;">Use simulation-based hands-on practice with reflective feedback</li>
+<li style="margin-left: 0px;">Foundational learning with e-learning including postmodule assessments to support test-enhanced learning</li>
+<li style="margin-left: 0px;">Contextual understanding through didactic and case discussions to teach performance of advanced endoscopic procedures</li>
+</ul>
+</div></details>
+<details><summary><strong>Curriculum Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Each STAR program includes <strong>2 sequential training components</strong>:</li>
+<li style="margin-left: 20px;"><strong>Phase 1 (E-learning)</strong>: Baseline test to gauge participant&#x27;s knowledge → read expert-curated literature on guidelines/technology → watch instructional videos from ASGE Endoscopic Learning Library (GI Leap) → postcourse test gauges</li>
+</ul>
+</div></details>
+<details><summary><strong>Phase 2 (Live Course and Assessment)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Second phase focuses on technical skill development with hands-on training led by leading subject matter experts at ASGE IT&amp;T Center</li>
+<li style="margin-left: 0px;">Includes case-based video panel discussions, video debriefing, concludes with one-on-one skills assessment</li>
+<li style="margin-left: 0px;">Upon successful completion of knowledge and skills-based assessment requirements → participants receive STAR Certificate of Completion and transcript</li>
+<li style="margin-left: 0px;">Transcript includes: program curriculum details, CME/MOC earned, feedback from hands-on skills assessment</li>
+<li style="margin-left: 0px;">Creates comprehensive, learner-centered approach prioritizing competence, self-reflection, clinical readiness → prepares learners for clinical integration into practice</li>
+</ul>
+</div></details>
+<details><summary><strong>STAR Lower GI EMR Course Effectiveness Data</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Example of ASGE hybrid, competency-based learning model effectiveness: STAR Lower GI EMR endoscopy course significantly enhanced both cognitive and technical skills in endoscopists training in endoscopic mucosal resection</li>
+<li style="margin-left: 0px;">Course directors developed <strong>12 technical milestones</strong> for lower GI EMR</li>
+<li style="margin-left: 0px;">Cognitive portion: combined online e-learning with in-person didactic sessions</li>
+<li style="margin-left: 0px;">Technical component: hands-on training on ex vivo models</li>
+<li style="margin-left: 0px;">Cognitive skills measured using 2 separate examinations administered pre- and postcourse completion</li>
+<li style="margin-left: 0px;">Technical skills assessed using standardized evaluation tools for lower GI EMR procedures on ex vivo models</li>
+</ul>
+</div></details>
+<details><summary><strong>Course Outcomes and Statistics</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>20 participants</strong> in 2025 lower GI EMR course</li>
+<li style="margin-left: 0px;">Postcourse cognitive skill scores improved significantly: from <strong>69.8% ± 8.5%</strong> to <strong>96.1% ± 6.2%</strong> (P &lt; .0001) (Figure 2)</li>
+<li style="margin-left: 0px;">Proportion of participants rating overall quality of course as &quot;excellent&quot; (highest rating): <strong>92.9%</strong></li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Comprehensive Overview of ASGE E-Learning Opportunities</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Repository and Reference Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ASGE guidelines</strong>: Repository of published content; available anytime; free to all users; no CME offered</li>
+<li style="margin-left: 0px;"><strong>ASGE tech assessments</strong>: Repository of published content; available on website; free to all users</li>
+<li style="margin-left: 0px;"><strong>Video tips</strong>: Video-based education offered monthly; on-demand repository available; free to members</li>
+</ul>
+</div></details>
+<details><summary><strong>Weekly and Periodic Content Offerings</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Journal scan</strong>: E-mail-based commentary delivered weekly; free to members</li>
+<li style="margin-left: 0px;"><strong>Digestibles</strong>: Case-based microlearning delivered every 2 days for 6 weeks; free to members</li>
+<li style="margin-left: 0px;"><strong>Endo Hangout</strong>: On-demand webinar offered multiple times annually; free to members</li>
+</ul>
+</div></details>
+<details><summary><strong>Certificate and Advanced Programs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ASGE STAR certificate programs</strong>: Hybrid format (e-learning, on-demand + live hands-on); offered annually; CME and MOC credits offered; additional cost</li>
+<li style="margin-left: 0px;"><strong>ASGE Masterclass</strong>: On-demand, virtual format; offered multiple times annually; CME and MOC credits offered; additional cost</li>
+<li style="margin-left: 0px;"><strong>ASGE Recognized Industry Associate (ARIA) program</strong>: Hybrid format (e-learning, on-demand + live hands-on); offered multiple times annually; no CME; additional cost</li>
+<li style="margin-left: 0px;"><strong>ASGE Annual GI advanced practice provider course</strong>: Hybrid format (e-learning, on-demand + live hands-on); offered annually; CME and MOC credits offered; additional cost</li>
+</ul>
+</div></details>
+<details><summary><strong>Trainee-Specific Programs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ASGE first year fellows course</strong>: Hybrid format (e-learning, on-demand + live hands-on); offered 4 times per year; CME and MOC credits offered; <strong>free to first year trainee members</strong></li>
+<li style="margin-left: 0px;"><strong>ASGE Golden Scopes</strong>: Hybrid on-demand + live component; offered annually; no CME; free to trainee members</li>
+<li style="margin-left: 0px;"><strong>ASGE senior fellows course</strong>: Hybrid format (e-learning, on-demand + live hands-on); offered annually; no CME; free to trainee members</li>
+</ul>
+</div></details>
+<details><summary><strong>Journal and Publication Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>GIE</strong> (Gastrointestinal Endoscopy): On-demand format; monthly; CME and MOC credits offered; free to members</li>
+<li style="margin-left: 0px;"><strong>Video GIE</strong>: On-demand format; monthly; CME and MOC credits offered; free to all users</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Challenges in Implementing E-Learning</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Technological Barriers and Infrastructure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Robust digital infrastructure required to handle high web-based traffic and provide seamless user experiences</li>
+<li style="margin-left: 0px;">Ability to provide secure content and regulate user interface in digitally friendly, learner-oriented manner important to avoid advertent/inadvertent abuse or misuse of online platform</li>
+<li style="margin-left: 0px;">Solutions: invest in secure, scalable platforms</li>
+</ul>
+</div></details>
+<details><summary><strong>Educator Preparedness and Training Gaps</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Educators and teaching faculty traditionally not trained in e-learning methodologies → can lead to ineffective content mirroring traditional didactic teaching</li>
+<li style="margin-left: 0px;">Training educators in technical skills and digital tools essential for more effective teaching</li>
+</ul>
+</div></details>
+<details><summary><strong>Learner Resistance and Engagement</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adult learners not used to e-learning may have resistance or apprehension to these platforms</li>
+<li style="margin-left: 0px;">Overcome through continued engagement and streamlining of end-user interface</li>
+</ul>
+</div></details>
+<details><summary><strong>Content Update Challenges</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Traditional learning resources have publication date; e-learning resources expected to be current or near-current</li>
+<li style="margin-left: 0px;">Pace of medical research rapidly accelerating driven by technological advancements and growing understanding of disease</li>
+<li style="margin-left: 0px;">Regular content review and updates add to financial/logistical burden → must be tracked and accounted for in e-learning platform budget</li>
+</ul>
+</div></details>
+<details><summary><strong>Standardization and Quality Control Issues</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Variability in learning outcomes may lead to learner disengagement in distance learning</li>
+<li style="margin-left: 0px;">Regulations associated with e-learning less robust than traditional teaching (typically done through accredited institutions/organizations)</li>
+<li style="margin-left: 0px;">Caution required when evaluating e-learning programs → lack of standardization may unintentionally yield quality control concerns for disseminated material</li>
+<li style="margin-left: 0px;">Accreditation standards should be maintained to ensure quality and consistency across programs</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Future Trends in E-Learning for Gastroenterology</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Virtual Reality, Augmented, and Mixed Reality Technologies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>VR, augmented reality, and mixed reality</strong> can enhance learning experience by providing immersive, interactive environment</li>
+<li style="margin-left: 0px;">Simulate clinical scenarios → allow learners to practice new endoscopic skills in safe, controlled setting</li>
+</ul>
+</div></details>
+<details><summary><strong>Artificial Intelligence Integration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rise in AI use in learning can be harnessed to adapt and personalize learning to individual&#x27;s:</li>
+<li style="margin-left: 20px;">Learning style</li>
+<li style="margin-left: 20px;">Geographic location</li>
+<li style="margin-left: 20px;">Practice environment</li>
+<li style="margin-left: 20px;">Knowledge gaps</li>
+</ul>
+</div></details>
+<details><summary><strong>Global Collaboration and Knowledge Sharing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Trend in collaborative learning through online peer interactions and global knowledge sharing</li>
+<li style="margin-left: 0px;"><strong>ASGE Digestibles program</strong>: presented via microlearning platform; designed to increase knowledge and retention in convenient, engaging interaction</li>
+<li style="margin-left: 0px;">Participants receive 3 rounds of 12-15 questions spaced a few questions at a time over <strong>6 weeks</strong> → engage at time that works for their schedule</li>
+<li style="margin-left: 0px;">Increased proficiency ratings keep learners coming back for more</li>
+<li style="margin-left: 0px;">Has engaged learners from fellows in training to those with <strong>more than 10 years of experience</strong>, across <strong>60 countries globally</strong></li>
+<li style="margin-left: 0px;">Global engagement helps accelerate learning and advancement in science, collaboration → may eventually help improve patient care</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Conclusions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Transformative Impact of E-Learning</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">E-learning has significantly transformed gastroenterology education by providing flexible, accessible, interactive learning opportunities</li>
+</ul>
+</div></details>
+<details><summary><strong>ASGE&#x27;s Leadership and Platform Portfolio</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ASGE has been at forefront of this transformation with platforms including:</li>
+<li style="margin-left: 20px;"><strong>GI Leap</strong>: advanced e-learning platform</li>
+<li style="margin-left: 20px;"><strong>GESAP</strong>: self-assessment program</li>
+<li style="margin-left: 20px;"><strong>Hybrid offerings</strong>: STAR programs, ASGE Recognized Industry Associate programs</li>
+</ul>
+</div></details>
+<details><summary><strong>Technology Integration and Learning Outcomes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Platforms incorporate advanced technologies including virtual simulations and spaced learning → enhance knowledge retention and proficiency</li>
+</ul>
+</div></details>
+<details><summary><strong>Challenges and Future Outlook</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Challenges</strong>: technological barriers, standardization issues</li>
+<li style="margin-left: 0px;"><strong>Future promising</strong> with potential of emerging technologies like VR and AI for personalization of education on global scale</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Future Trends in E-Learning for Gastroenterology</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Virtual Reality, Augmented, and Mixed Reality Technologies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>VR, augmented reality, and mixed reality</strong> can enhance learning experience by providing immersive, interactive environment</li>
+<li style="margin-left: 0px;">Simulate clinical scenarios → allow learners to practice new endoscopic skills in safe, controlled setting</li>
+</ul>
+</div></details>
+<details><summary><strong>Artificial Intelligence Integration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rise in AI use in learning can be harnessed to adapt and personalize learning to individual&#x27;s:</li>
+<li style="margin-left: 20px;">Learning style</li>
+<li style="margin-left: 20px;">Geographic location</li>
+<li style="margin-left: 20px;">Practice environment</li>
+<li style="margin-left: 20px;">Knowledge gaps</li>
+</ul>
+</div></details>
+<details><summary><strong>Global Collaboration and Knowledge Sharing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Trend in collaborative learning through online peer interactions and global knowledge sharing</li>
+<li style="margin-left: 0px;"><strong>ASGE Digestibles program</strong>: presented via microlearning platform; designed to increase knowledge and retention in convenient, engaging interaction</li>
+<li style="margin-left: 0px;">Participants receive 3 rounds of 12-15 questions spaced a few questions at a time over <strong>6 weeks</strong> → engage at time that works for their schedule</li>
+<li style="margin-left: 0px;">Increased proficiency ratings keep learners coming back for more</li>
+<li style="margin-left: 0px;">Has engaged learners from fellows in training to those with <strong>more than 10 years of experience</strong>, across <strong>60 countries globally</strong></li>
+<li style="margin-left: 0px;">Global engagement helps accelerate learning and advancement in science, collaboration → may eventually help improve patient care</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Conclusions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Transformative Impact of E-Learning</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">E-learning has significantly transformed gastroenterology education by providing flexible, accessible, interactive learning opportunities</li>
+</ul>
+</div></details>
+<details><summary><strong>ASGE&#x27;s Leadership and Platform Portfolio</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">ASGE has been at forefront of this transformation with platforms including:</li>
+<li style="margin-left: 20px;"><strong>GI Leap</strong>: advanced e-learning platform</li>
+<li style="margin-left: 20px;"><strong>GESAP</strong>: self-assessment program</li>
+<li style="margin-left: 20px;"><strong>Hybrid offerings</strong>: STAR programs, ASGE Recognized Industry Associate programs</li>
+</ul>
+</div></details>
+<details><summary><strong>Technology Integration and Learning Outcomes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Platforms incorporate advanced technologies including virtual simulations and spaced learning → enhance knowledge retention and proficiency</li>
+</ul>
+</div></details>
+<details><summary><strong>Challenges and Future Outlook</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Challenges</strong>: technological barriers, standardization issues</li>
+<li style="margin-left: 0px;"><strong>Future promising</strong> with potential of emerging technologies like VR and AI for personalization of education on global scale</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
