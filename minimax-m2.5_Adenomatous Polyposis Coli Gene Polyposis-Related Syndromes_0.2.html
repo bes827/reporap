@@ -1,0 +1,852 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adenomatous Polyposis Coli Gene Polyposis-Related Syndromes</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Adenomatous Polyposis Coli Gene Polyposis-Related Syndromes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: American Journal of Gastroenterology (AJG), 2026</li>
+<li style="margin-left: 0px;">Topic: APC Gene-Related Polyposis Syndromes (FAP, AFAP, GAPPS)</li>
+<li style="margin-left: 0px;">Author(s): Jennifer K. Maratt, MD, MS; Anneleise Frie, MD; Jennifer M. Weiss, MD, MS</li>
+</ul>
+<details><summary><strong>1. Introduction &amp; APC Gene Overview</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">APC (adenomatous polyposis coli) gene --&gt; located on chromosome 5q21-22, functions as tumor suppressor</li>
+<li style="margin-left: 0px;">P/LP (pathogenic/likely pathogenic) germline variants --&gt; loss of tumor suppressor function via B-catenin regulation impairment in Wnt signaling</li>
+<li style="margin-left: 0px;">Impairs cell migration, proliferation, and adhesion --&gt; leads to GI polyposis syndromes (FAP/AFAP, GAPPS)</li>
+<li style="margin-left: 0px;">~10-16% of colorectal cancers (CRC) and 1-3% of gastric cancers attributed to genetic predisposition</li>
+<li style="margin-left: 0px;">Up to 30% of APC variants arise de novo (during embryogenesis)</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Diagnosis &amp; Genetic Testing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Multigene panel testing recommended for individuals with ≥10 cumulative colorectal adenomas</li>
+<li style="margin-left: 0px;">Yield increases with polyp burden:</li>
+<li style="margin-left: 20px;">10-19 adenomas: <strong>5%</strong> APC variant prevalence (95% CI 3-5)</li>
+<li style="margin-left: 20px;">20-99 adenomas: <strong>10%</strong> (95% CI 9-11)</li>
+<li style="margin-left: 20px;">100-999 adenomas: <strong>56%</strong> (95% CI 54-59)</li>
+<li style="margin-left: 20px;">&gt;1000 adenomas: <strong>80%</strong> (95% CI 71-87)</li>
+<li style="margin-left: 0px;">Odds of APC variant increase with younger age at adenoma diagnosis:</li>
+<li style="margin-left: 20px;">Age 40-49: OR 2.7 (95% CI 2.2-3.4)</li>
+<li style="margin-left: 20px;">Age 30-39: OR 6.1 (95% CI 4.8-7.8)</li>
+<li style="margin-left: 20px;">Age &lt;30: OR 15.4 (95% CI 12.2-19.5)</li>
+<li style="margin-left: 0px;">Positive family history warrants testing for first-degree relatives (FDR)</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Familial Adenomatous Polyposis (FAP): Epidemiology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Autosomal dominant inheritance pattern</li>
+<li style="margin-left: 0px;">Equal prevalence in men and women</li>
+<li style="margin-left: 0px;">Manifestations appear in adolescent/young adult years</li>
+<li style="margin-left: 0px;">Scandinavian birth prevalence: <strong>1:10,000 to 1:31,260</strong></li>
+<li style="margin-left: 0px;">Incidence rate: <strong>0.62 to 2.38 per million</strong></li>
+<li style="margin-left: 0px;">Phenotype variability due to germline variant differences, mosaicism, modifier genes, environmental factors</li>
+</ul>
+</div></details>
+<details><summary><strong>4. FAP: Diagnostic Criteria &amp; Clinical Features</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Diagnostic Thresholds</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Classic FAP</strong>: ≥100 cumulative colorectal adenomas</li>
+<li style="margin-left: 0px;"><strong>AFAP (Attenuated FAP)</strong>: &lt;100 cumulative colorectal adenomas</li>
+<li style="margin-left: 0px;">Additional triggers: CRC at age &lt;50 years, FDR with polyposis/CRC</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Upper GI Manifestations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Fundic gland polyps (FGP)</strong>: Most common gastric neoplasia, prevalence 20-88%</li>
+<li style="margin-left: 0px;">~25% of FAP individuals have FGP with low-grade dysplasia</li>
+<li style="margin-left: 0px;">Duodenal adenomas: ~50% arise at or surrounding ampulla</li>
+<li style="margin-left: 0px;">Spigelman staging system guides management (number, size, histology, dysplasia)</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Colorectal Cancer Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Classic FAP: <strong>~100% lifetime CRC risk</strong> without intervention</li>
+<li style="margin-left: 0px;">AFAP: <strong>70% lifetime CRC risk</strong></li>
+<li style="margin-left: 0px;">Colonoscopy starting age 10-15 years, repeated every 1-2 years based on polyp burden</li>
+</ul>
+</div></details>
+<details><summary><strong>4.4 Genotype-Phenotype Correlations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Codons 157-1595</strong>: Classic FAP phenotype</li>
+<li style="margin-left: 0px;"><strong>5&#x27; end (codons 1-233), exon 9 alternative spliced region, distal 3&#x27; end</strong>: AFAP phenotype</li>
+<li style="margin-left: 0px;"><strong>Codon 1309 variants</strong>: Higher polyp burden, early cancer development</li>
+<li style="margin-left: 0px;"><strong>5&#x27; region of codon 160 and 3&#x27; region of codon 1450</strong>: Later onset, fewer polyps</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. FAP: Management of Upper GI Tract Polyposis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Goal: Early cancer detection and prevention via downstaging duodenal/papillary disease</li>
+</ul>
+<details><summary><strong>5.1 Spigelman Staging System</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Classifies duodenal polyps based on: number, size, histology, dysplasia</li>
+<li style="margin-left: 0px;">Translates to surveillance/management recommendations</li>
+<li style="margin-left: 0px;">Recent meta-analysis provides pooled duodenal cancer risk estimates per stage</li>
+<li style="margin-left: 0px;">Limitations: components don&#x27;t uniformly predict risk, lacks papilla-specific variables</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Duodenal Adenoma Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Endoscopic surveillance intervals based on Spigelman stage</li>
+<li style="margin-left: 0px;">If endoscopic downstaging achieved --&gt; continue monitoring based on highest previous stage</li>
+<li style="margin-left: 0px;">Surgical management indications:</li>
+<li style="margin-left: 20px;">Spigelman Stage III with high-grade dysplasia (unmanageable endoscopically)</li>
+<li style="margin-left: 20px;">Spigelman Stage IV</li>
+<li style="margin-left: 20px;">Duodenal or ampullary cancer</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Gastric Polyposis Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common: proximal polyposis with fundic gland polyps ± low-grade dysplasia</li>
+<li style="margin-left: 0px;">Rising gastric adenocarcinoma incidence in Western countries: <strong>1.3-5%</strong> of FAP/AFAP</li>
+<li style="margin-left: 0px;">Precursor lesions: gastric adenomas, FGP with high-grade dysplasia</li>
+<li style="margin-left: 0px;">Endoscopic features associated with ↑ proximal gastric cancer risk:</li>
+<li style="margin-left: 20px;">&quot;Carpeting&quot; of gastric polyps</li>
+<li style="margin-left: 20px;">Solitary polyps &gt;20mm</li>
+<li style="margin-left: 20px;">Well-circumscribed large white mucosal patch overlying polyposis</li>
+<li style="margin-left: 20px;">Polypoid mounds ≥2cm in width and depth</li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Gastrectomy Indications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Intramucosal or invasive cancer</li>
+<li style="margin-left: 0px;">Polypoid mounds with high-grade dysplasia</li>
+<li style="margin-left: 0px;">Endoscopically unresectable lesions with high-grade dysplasia</li>
+<li style="margin-left: 0px;">Multi-focal high-grade dysplasia</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. FAP: Management of Lower GI Tract Polyposis</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Colonoscopic Surveillance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Start between ages <strong>10-15 years</strong></li>
+<li style="margin-left: 0px;">Continue every 1-2 years based on polyp burden (classic FAP vs AFAP)</li>
+<li style="margin-left: 0px;">Document estimated number of polyps (remaining and removed) and rectal polyp burden</li>
+<li style="margin-left: 0px;">Informs timing and type of surgery over time</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Surgical Indications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Polyps no longer endoscopically manageable (dense polyposis or advanced features)</li>
+<li style="margin-left: 0px;">Advanced polyp features: size &gt;10mm, villous components, high-grade dysplasia</li>
+<li style="margin-left: 0px;">Symptoms related to polyp burden (e.g., rectal bleeding)</li>
+<li style="margin-left: 0px;">Presence of CRC</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Surgical Approaches</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Total colectomy with ileal pouch anal anastomosis (IPAA)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Advantages</strong>: Bowel continuity maintained, reduced rectal cancer risk</li>
+<li style="margin-left: 0px;"><strong>Disadvantages</strong>: May require 2 stages with temporary ostomy, ↑ risk of bowel/bladder incontinence, sexual dysfunction, intraabdominal desmoid tumors, reduced fecundity/fertility</li>
+</ul>
+</div></details>
+<details><summary><strong>Total colectomy with ileorectal anastomosis (IRA)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Advantages</strong>: Bowel continuity maintained, reduced need for pelvic dissection, more predictable bowel function, less impact on fecundity/fertility</li>
+<li style="margin-left: 0px;"><strong>Disadvantages</strong>: Risk of rectal polyposis progression and rectal cancer, potential need for future proctectomy</li>
+</ul>
+</div></details>
+<details><summary><strong>Total proctocolectomy with end ileostomy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Advantages</strong>: Eliminates colon and rectal neoplasia risk, preferred for those with difficulty adhering to surveillance</li>
+<li style="margin-left: 0px;"><strong>Disadvantages</strong>: Lack of bowel continuity/stoma impacts QoL, risk of bowel/bladder dysfunction and sexual dysfunction, risk of infecundity/infertility</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.4 Post-Operative Surveillance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Anal transition zone/rectal cuff (IRA or IPAA): <strong>annual</strong> colonoscopy</li>
+<li style="margin-left: 0px;">Stoma/ileum (end ileostomy): every 3 years with visual inspection, or sooner based on polyp burden/features</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Extraintestinal Manifestations</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Congenital Hypertrophy of Retinal Pigment Epithelium (CHRPE)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 90% in FAP</li>
+<li style="margin-left: 0px;">Most common and earliest extraintestinal manifestation, may be present at birth</li>
+<li style="margin-left: 0px;">Benign, discrete flat pigmented or hypopigmented lesions on retina</li>
+<li style="margin-left: 0px;">Multifocal/bilateral more common in FAP</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Desmoid Tumors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 10-20%</li>
+<li style="margin-left: 0px;">Histologically benign tumors from fibroblasts, potentially locally invasive</li>
+<li style="margin-left: 0px;">Third most common cause of mortality in FAP (after CRC and duodenal cancer)</li>
+<li style="margin-left: 0px;">Most commonly arise in abdominal wall, can occur in head, neck, extremities</li>
+<li style="margin-left: 0px;">High recurrence rate</li>
+<li style="margin-left: 0px;">Risk factors: APC P/LP variants in 3&#x27; region, family history of desmoid disease, abdominal surgery</li>
+<li style="margin-left: 0px;">Median time to development after surgery: <strong>28.8-36 months</strong></li>
+<li style="margin-left: 0px;">Higher risk after IPAA than IRA</li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Thyroid Cancer</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 2-16%</li>
+<li style="margin-left: 0px;">Papillary thyroid cancer, cribriform-morular variant more common in FAP</li>
+<li style="margin-left: 0px;">NCCN recommendation: baseline thyroid ultrasound in late teenage years, repeat every 2-5 years if normal</li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Central Nervous System Tumors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: &lt;1%</li>
+<li style="margin-left: 0px;">Medulloblastoma most common, highest incidence before age 20</li>
+<li style="margin-left: 0px;">Rare: astrocytomas, ependymomas, pituitary adenomas</li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Dental Features</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 30-75%</li>
+<li style="margin-left: 0px;">Supernumerary teeth, congenital absence, unerupted/impacted teeth, dentigerous cysts, odontomas</li>
+<li style="margin-left: 0px;">Present ~10 years prior to onset of colorectal polyposis</li>
+</ul>
+</div></details>
+<details><summary><strong>7.6 Osteomas</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 60-85%</li>
+<li style="margin-left: 0px;">Benign bony growths, most commonly on frontal bones or mandible</li>
+<li style="margin-left: 0px;">Can affect maxilla or long bones</li>
+<li style="margin-left: 0px;">Present prior to onset of colorectal polyposis</li>
+</ul>
+</div></details>
+<details><summary><strong>7.7 Dermatologic Manifestations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 50-65%</li>
+<li style="margin-left: 0px;">Epidermoid cysts, fibromas, lipomas, pilomatricomas</li>
+<li style="margin-left: 0px;">Benign, can occur on any body part including face</li>
+</ul>
+</div></details>
+<details><summary><strong>7.8 Hepatoblastoma</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: 0.42-2.5%</li>
+<li style="margin-left: 0px;">Risk highest in first 5 years of life</li>
+<li style="margin-left: 0px;">Some guidelines recommend abdominal ultrasound with serum AFP every 3-6 months until age 5</li>
+</ul>
+</div></details>
+<details><summary><strong>7.9 Adrenal Neoplasms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prevalence</strong>: ~15%</li>
+<li style="margin-left: 0px;">Adrenal adenoma most common, usually benign and incidental</li>
+</ul>
+</div></details>
+<details><summary><strong>7.10 Pancreatic Cancer Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Recent Danish Polyposis Register study: FAP individuals had significantly ↑ risk vs controls (HR 6.45; 95% CI 2.02-20.64)</li>
+<li style="margin-left: 0px;">AFAP vs controls: No significantly increased risk (HR 3.19; 95% CI 0.61-16.42)</li>
+<li style="margin-left: 0px;">Classic FAP: HR 7.66 (95% CI 1.67-35.26)</li>
+<li style="margin-left: 0px;">Most pancreatic cancers were adenocarcinomas</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Chemoprevention</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 NSAIDs - Sulindac</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Sulindac 150mg twice daily</strong>: Most convincing data for colorectal polyp regression, may allow delay in surgery</li>
+<li style="margin-left: 0px;">4-month study: 6/10 patients had complete regression, 3 had almost complete regression</li>
+<li style="margin-left: 0px;">9-month study: 44% decrease in polyp number from baseline (p=0.014), size decreased to 35% of baseline (p&lt;0.001)</li>
+<li style="margin-left: 0px;">Does not replace surgical management</li>
+<li style="margin-left: 0px;">NCCN: &quot;not known if decrease in colorectal polyp burden decreases cancer risk&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 NSAIDs - Celecoxib</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Celecoxib 400mg twice daily</strong>: 28% reduction in mean polyp number vs 4.5% placebo (p=0.003), 30.7% reduction in polyp burden vs 4.9% placebo (p=0.001)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Family Planning &amp; Fertility Considerations</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Impact on Fertility and Fecundity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Following colectomy, fertility (ability to get pregnant) and fecundity (time to achieving pregnancy) significantly affected</li>
+<li style="margin-left: 0px;">Three nationwide studies: fertility rate of <strong>8%</strong> after IPAA or IRA vs 18.3% Japan national average</li>
+<li style="margin-left: 0px;">Infertility rate: <strong>10-17%</strong> vs Netherlands estimated 10%</li>
+<li style="margin-left: 0px;">Meta-analyses: baseline infertility rates of 13-20% prior to IPAA rose to <strong>48-63%</strong> after surgery</li>
+<li style="margin-left: 0px;">2003 Scandinavian survey (230 women with FAP): fecundability ratios dropped from 1.05 before surgery to <strong>0.46</strong> after IPAA</li>
+<li style="margin-left: 0px;">Causes: anatomic changes from pelvic surgery → uterine retroflexion, pelvic adhesions, hydrosalpinx, fimbrial damage, tubal obstruction</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Pregnancy Complications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">30% increased rate of C-section delivery</li>
+<li style="margin-left: 0px;">Indications: surgical scarring of perineum, prematurity, placenta previa, fear of destruction of anastomosis</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Additional Considerations for CRC Diagnosis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Surgical planes below peritoneal reflection, chemotherapy (alkylating agents, platinum compounds like oxaliplatin, 5-FU with leucovorin), pelvic radiation --&gt; deleterious effects on fertility</li>
+<li style="margin-left: 0px;">Family planning and infertility education should be considered early, whether for CRC treatment or risk-reducing surgery</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Fertility Preservation Options</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prior to risk-reducing surgery: delay surgery (less favorable given cancer risk), oophoropexy, anti-adhesion products during surgery</li>
+<li style="margin-left: 0px;">In setting of CRC: GnRH analogs during chemotherapy to preserve primordial follicles, ovarian transposition away from radiation field</li>
+<li style="margin-left: 0px;">Assistive reproductive services: in vitro fertilization</li>
+<li style="margin-left: 0px;">Recommendations: fertility counseling prior to risk-reducing surgery or at time of CRC diagnosis, prior to treatment</li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Pre-implantation Genetic Testing (PGT)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">10-82% of couples cite fear of transmitting variant as reason to avoid having children</li>
+<li style="margin-left: 0px;">Prenatal testing options: chorionic villous sampling (10-12 weeks), amniocentesis (16-20 weeks)</li>
+<li style="margin-left: 0px;">Cell-free DNA testing from maternal serum (8-9 weeks) effective for hereditary colon cancer diagnosis</li>
+<li style="margin-left: 0px;">Ethical debates persist regarding pregnancy termination if fetus carries pathogenic variant</li>
+</ul>
+<details><summary><strong>PGT for FAP</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">First attempt in 1998, multiple successful pregnancies reported since</li>
+<li style="margin-left: 0px;">European best practice guidelines exist; ACOG and ASRM outline use for monogenic disorders</li>
+<li style="margin-left: 0px;">Adverse outcomes: low birth weight (&lt;5lbs 8oz), preterm delivery, hypertensive disorders of pregnancy</li>
+<li style="margin-left: 0px;">Congenital malformations, severely low birth weight (&lt;2lbs 3oz), pre-preterm delivery occurred at low rates</li>
+<li style="margin-left: 0px;">Outcomes unclear if associated with PGT or confounding factors (underlying fertility status, patient characteristics)</li>
+<li style="margin-left: 0px;">Psychosocial outcomes: feelings of regret, difficulty making reproductive decisions observed</li>
+<li style="margin-left: 0px;">Survey studies: 43-90% would consider using PGT, 30% expressed positive attitudes regardless of family planning stage</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>10. GAPPS: Gastric Adenocarcinoma and Proximal Polyposis of the Stomach</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Epidemiology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rare autosomal dominant syndrome, first described by Worthley et al in 2012</li>
+<li style="margin-left: 0px;">True prevalence yet to be determined</li>
+<li style="margin-left: 0px;">Germline single nucleotide pathogenic variants affect APC promoter 1B region (distinct from large deletions in FAP)</li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Clinical Manifestations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Gastric, rather than duodenal or colorectal polyposis</li>
+<li style="margin-left: 0px;">No extraintestinal manifestations (unlike FAP)</li>
+<li style="margin-left: 0px;">Polyp distribution: gastric body and fundus, antrum spared</li>
+<li style="margin-left: 0px;">Within families: variable gastric polyp burden</li>
+<li style="margin-left: 0px;">Lifetime gastric adenocarcinoma risk: up to <strong>25%</strong> (variable presentation)</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Diagnostic Criteria (Worthley et al)</strong></summary><div style="padding-left: 20px;">
+<p>1. Gastric polyps restricted to body and fundus</p>
+<p>2. No evidence of duodenal or colorectal polyposis</p>
+<p>3. &gt;100 polyps carpeting proximal stomach on index exam OR &gt;30 polyps in FDR</p>
+<p>4. Predominantly FGPs with some dysplasia (or family member with dysplastic FGPs or gastric adenocarcinoma)</p>
+</div></details>
+<details><summary><strong>10.4 Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Evidence for precise timing/interval for gastric cancer screening unclear</li>
+<li style="margin-left: 0px;">Recent systematic review (12 studies, 113 patients): gastric cancer in <strong>31 patients</strong>, median age <strong>48 years</strong> (range 19-75)</li>
+<li style="margin-left: 0px;">Considerable phenotypic variation within and between families</li>
+<li style="margin-left: 0px;">Current guidance: annual upper endoscopies starting at age <strong>15 years</strong> (limited evidence strength)</li>
+<li style="margin-left: 0px;">Colonoscopy starting at 25 years or earlier based on family history of colorectal neoplasia</li>
+<li style="margin-left: 0px;">Risk-reducing gastrectomy consideration: ~third decade, depends on high-risk features (dense polyposis limiting surveillance, dysplasia), patient health status, preferences, family history of gastric cancer</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Additional Variations in APC Genotype and Phenotype</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 APC Mosaicism</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Up to 80-90% of FAP cases arise from identifiable P/LP germline APC variant</li>
+<li style="margin-left: 0px;">Negative multigene panel testing should not exclude FAP possibility</li>
+<li style="margin-left: 0px;">Phenotype suggestive of FAP but negative molecular testing → may be due to mosaicism in up to <strong>25%</strong> of individuals</li>
+<li style="margin-left: 0px;">Somatic mosaicism: new mutations during postzygotic phase → mosaic of wild-type and mutated cells</li>
+<li style="margin-left: 0px;">Disease phenotype based on organ where mutated cells cluster</li>
+</ul>
+<details><summary><strong>Detection Methods</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Testing leukocyte DNA from relatives of probands for same de novo APC variant</li>
+<li style="margin-left: 0px;">Protein truncation test</li>
+<li style="margin-left: 0px;">Denaturing high-performance liquid chromatography for variants with small allele frequencies</li>
+<li style="margin-left: 0px;">Next-generation and whole-exome sequencing increased detection likelihood, but also ↑ false positives</li>
+</ul>
+</div></details>
+<details><summary><strong>Testing Strategy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">If no variants found at allele frequency threshold &lt;5% in germline testing (suggesting variants not in hematopoietic cells), test tissue from affected organ (normal colorectal epithelium and/or adenomas)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11.2 APC I1307K Variant</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Located in β-catenin binding domain</li>
+<li style="margin-left: 0px;">Unlike other APC PGVs: does not disrupt Wnt signaling, classified as <strong>low-penetrance</strong> pathogenic variant</li>
+<li style="margin-left: 0px;">Single nucleotide exchange (c.3920T&gt;A): isoleucine substituted for lysine at codon 1307</li>
+<li style="margin-left: 0px;">Protein structure remains relatively intact but prone to DNA polymerase errors</li>
+</ul>
+<details><summary><strong>Epidemiology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Highest frequency among individuals of <strong>Ashkenazi Jewish (AJ) descent</strong></li>
+<li style="margin-left: 0px;">Prevalence: 6-10% in AJ population, 15-28% in AJ individuals with family history of CRC</li>
+</ul>
+</div></details>
+<details><summary><strong>Cancer Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Increased CRC risk, mean age of diagnosis ~60-70 years</li>
+<li style="margin-left: 0px;">Does not lead to polyposis classically seen with other APC PGVs</li>
+</ul>
+</div></details>
+<details><summary><strong>Screening Recommendations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Individuals with APC I1307K variant and AJ origin: start colonoscopy at age 40 or 10 years prior to FDR&#x27;s CRC diagnosis (whichever earlier), repeat every <strong>5 years</strong></li>
+<li style="margin-left: 0px;">No evidence for increased CRC risk among non-AJ individuals with variant</li>
+<li style="margin-left: 0px;">Insufficient data to support increased extracolonic cancer risk in AJ or non-AJ carriers</li>
+<li style="margin-left: 0px;">Further studies needed to elucidate intestinal/extraintestinal manifestations among AJ and non-AJ individuals</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>12. Practical Considerations &amp; Conclusions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Multidisciplinary Care</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Optimal management requires longitudinal care to understand intestinal/extraintestinal disease burden over time</li>
+<li style="margin-left: 0px;">Ongoing relationship ensures benefits/limitations of screening/surveillance discussed, timing of interventions (including surgery) considered</li>
+<li style="margin-left: 0px;">Multidisciplinary team needed: pediatric and adult gastroenterologists, psychologists, genetic counselors, social workers, surgeons</li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Transitions of Care</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Early onset of intestinal/extraintestinal manifestations in childhood/adolescent years → transitions from pediatric to adult providers inevitable</li>
+<li style="margin-left: 0px;">Transitions should avoid coinciding with major life events (e.g., surgery)</li>
+<li style="margin-left: 0px;">Children/adolescents should be involved in medical decision-making to ensure diagnosis competence</li>
+<li style="margin-left: 0px;">Assess readiness for transitions</li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Patient Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NCCN</strong>: www.nccn.org (patient-directed guidelines)</li>
+<li style="margin-left: 0px;"><strong>Facing Hereditary Cancer Empowered</strong>: www.facingourrisk.org</li>
+<li style="margin-left: 0px;"><strong>National Organization for Rare Disorders (NORD)</strong>: www.rarediseases.org</li>
+<li style="margin-left: 0px;"><strong>Colorectal Cancer Alliance</strong>: www.colorectalcancer.org</li>
+<li style="margin-left: 0px;">Laboratories: Quest Diagnostics, LabCorp/Invitae, Ambry, Myriad Genetics (</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
