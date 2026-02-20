@@ -1,0 +1,737 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adenomatous Polyposis Coli Gene Polyposis-related Syndromes</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Adenomatous Polyposis Coli Gene Polyposis-related Syndromes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: American Journal of Gastroenterology (AJG), 2026</li>
+<li style="margin-left: 0px;">Topic: APC Gene-Related Polyposis Syndromes (FAP, AFAP, GAPPS)</li>
+<li style="margin-left: 0px;">Author(s): Maratt JK, Frie A, Weiss JM</li>
+</ul>
+<details><summary><strong>1. Introduction: APC Gene and Hereditary Cancer Syndromes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">APC (adenomatous polyposis coli) gene --&gt; located on chromosome 5q21-22, functions as tumor suppressor</li>
+<li style="margin-left: 0px;">P/LP (pathogenic/likely pathogenic) germline variants --&gt; loss of tumor suppressor function via B-catenin regulation impairment in Wnt signaling</li>
+<li style="margin-left: 0px;">Wnt signaling disruption --&gt; leads to impaired cell migration, proliferation, and adhesion</li>
+<li style="margin-left: 0px;">APC variants associated with GI polyposis syndromes: FAP (familial adenomatous polyposis), AFAP (attenuated FAP), GAPPS (gastric adenocarcinoma and proximal polyposis of the stomach)</li>
+<li style="margin-left: 0px;">These syndromes increase risk for intestinal cancers (gastric, small bowel, colorectal) and extraintestinal cancers</li>
+<li style="margin-left: 0px;">Genotype-phenotype associations --&gt; essential for determining optimal screening, surveillance, and management strategies</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Diagnosis of APC Gene-Related Polyposis Syndromes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Diagnosis begins with clinical suspicion or molecular testing</li>
+<li style="margin-left: 0px;">Up to 30% of APC variants arise de novo (during embryogenesis), so family history may be unknown</li>
+<li style="margin-left: 0px;">Genetic testing recommendations:</li>
+<li style="margin-left: 20px;">First-degree relatives (FDR) with known APC P/LP variant --&gt; single site testing for same variant</li>
+<li style="margin-left: 20px;">Unknown APC variant presence --&gt; multigene panel testing to optimize yield of actionable gene variants</li>
+<li style="margin-left: 0px;">Multigene panel testing yield increases with greater polyp burden (from large cross-sectional study of 8,676 individuals):</li>
+<li style="margin-left: 20px;">10-19 adenomas: 5% (95% CI 3-5) had APC variant</li>
+<li style="margin-left: 20px;">20-99 adenomas: 10% (95% CI 9-11) had APC variant</li>
+<li style="margin-left: 20px;">100-999 adenomas: 56% (95% CI 54-59) had APC variant</li>
+<li style="margin-left: 20px;">&gt;1000 adenomas: 80% (95% CI 71-87) had APC variant</li>
+<li style="margin-left: 0px;">Positive molecular testing (heterozygous APC P/LP variant) --&gt; diagnostic of APC-related polyposis syndrome, further classification based on clinical features</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Familial Adenomatous Polyposis (FAP) and Attenuated FAP (AFAP): Epidemiology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Equal presentation in men and women, autosomal dominant inheritance pattern</li>
+<li style="margin-left: 0px;">Manifestations become apparent in adolescent and young adult years</li>
+<li style="margin-left: 0px;">Germline APC P/LP variants --&gt; responsible for both classic FAP and AFAP</li>
+<li style="margin-left: 0px;">Phenotypic variability due to: differences in germline variants, mosaicism, modifier genes, environmental factors</li>
+<li style="margin-left: 0px;">No significant phenotypic differences found among ethnic groups in U.S.</li>
+<li style="margin-left: 0px;">Scandinavian countries birth prevalence data (1990s):</li>
+<li style="margin-left: 20px;">Birth prevalence: 1:10,000 to 1:31,260</li>
+<li style="margin-left: 20px;">Incidence rate: 0.62 to 2.38 per million</li>
+</ul>
+</div></details>
+<details><summary><strong>4. FAP/AFAP: Diagnostic Criteria and Testing Thresholds</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Genetic testing recommended for individuals with:</li>
+<li style="margin-left: 20px;">Personal history of colorectal polyposis (≥10 cumulative/lifetime adenomas)</li>
+<li style="margin-left: 20px;">CRC diagnosis at age &lt;50 years</li>
+<li style="margin-left: 20px;">FDR with either of these clinical manifestations</li>
+<li style="margin-left: 0px;">Odds of having APC PGV (pathogenic germline variant) by adenoma count (vs. &lt;10):</li>
+<li style="margin-left: 20px;">10-19 adenomas: OR 2.4 (95% CI 1.6-3.6)</li>
+<li style="margin-left: 20px;">20-99 adenomas: OR 6.0 (95% CI 4.3-8.2)</li>
+<li style="margin-left: 20px;">100-999 adenomas: OR 40.1 (95% CI 29.2-55.1)</li>
+<li style="margin-left: 20px;">&gt;1000 adenomas: OR 124.0 (95% CI 69.7-220.7)</li>
+<li style="margin-left: 0px;">Odds of APC PGV by age at adenoma diagnosis (vs. &gt;50 years):</li>
+<li style="margin-left: 20px;">Age 40-49: OR 2.7 (95% CI 2.2-3.4)</li>
+<li style="margin-left: 20px;">Age 30-39: OR 6.1 (95% CI 4.8-7.8)</li>
+<li style="margin-left: 20px;">Age &lt;30: OR 15.4 (95% CI 12.2-19.5)</li>
+<li style="margin-left: 0px;">Additional clinical features prompting testing:</li>
+<li style="margin-left: 20px;">Desmoids</li>
+<li style="margin-left: 20px;">Multifocal or bilateral CHRPE (congenital hypertrophy of retinal pigment epithelium)</li>
+<li style="margin-left: 20px;">Hepatoblastoma</li>
+<li style="margin-left: 20px;">Papillary thyroid cancer (cribriform-morular variant)</li>
+<li style="margin-left: 0px;">Serrated polyposis syndrome (SPS) with synchronous adenomas: up to 1 in 5 may have germline variant in polyposis gene</li>
+</ul>
+</div></details>
+<details><summary><strong>5. FAP/AFAP: Clinical Manifestations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Classic FAP --&gt; ≥100 cumulative colorectal adenomas; AFAP --&gt; &lt;100 adenomas</li>
+<li style="margin-left: 0px;">Upper GI tract findings similar between classic and attenuated forms: gastric polyps, duodenal polyps, papillary thyroid cancer</li>
+<li style="margin-left: 0px;">Extraintestinal manifestations more common in classic FAP unless AFAP due to alterations in 3&#x27; region of APC gene</li>
+<li style="margin-left: 0px;">Desmoid tumors: third most common cause of mortality in FAP after CRC and duodenal cancer</li>
+<li style="margin-left: 20px;">Histologically benign tumors originating from fibroblasts</li>
+<li style="margin-left: 20px;">Potential for locally invasive behavior</li>
+<li style="margin-left: 20px;">Risk factors: APC P/LP variants in 3&#x27; region, family history of desmoid disease, abdominal surgery</li>
+<li style="margin-left: 20px;">Median time to development after surgery: 28.8-36 months</li>
+<li style="margin-left: 0px;">Other extraintestinal manifestations often precede colorectal polyposis by ~10 years</li>
+</ul>
+<details><summary><strong>5.1 Gastric Polyps in FAP/AFAP</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common type: fundic gland polyps (FGP) with prevalence 20-88%</li>
+<li style="margin-left: 0px;">Estimated 25% of individuals with FAP have FGP with low-grade dysplasia</li>
+<li style="margin-left: 0px;">Adenomas also present but less common than fundic gland polyps</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Duodenal Adenomas</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Characterized by number, size, and histology based on Spigelman criteria (guides management)</li>
+<li style="margin-left: 0px;">Estimated 50% of duodenal adenomas arise at or surrounding the ampulla</li>
+<li style="margin-left: 0px;">Risk factors for progression (increase in size &gt;10mm or advanced histologic features):</li>
+<li style="margin-left: 20px;">Male gender</li>
+<li style="margin-left: 20px;">Abnormal appearance of ampulla at time of adenoma detection</li>
+<li style="margin-left: 20px;">Cholecystectomy</li>
+<li style="margin-left: 20px;">History of extracolonic malignancy</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Extraintestinal Malignancies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Well-established: upper and lower GI tract cancers, papillary thyroid cancers, medulloblastomas, hepatoblastomas</li>
+<li style="margin-left: 0px;">Pancreatic cancer risk: recently studied using Danish Polyposis Register data (508 individuals with FAP matched to 1,890 controls)</li>
+<li style="margin-left: 20px;">Significantly higher risk of pancreatic cancer in FAP vs. controls: HR 6.45 (95% CI 2.02-20.64)</li>
+<li style="margin-left: 20px;">None of FAP patients with pancreatic cancer had FDR with pancreatic cancer</li>
+<li style="margin-left: 20px;">AFAP vs. controls: no increased risk (HR 3.19; 95% CI 0.61-16.42)</li>
+<li style="margin-left: 20px;">Classic FAP vs. controls: HR 7.66 (95% CI 1.67-35.26)</li>
+<li style="margin-left: 20px;">Most pancreatic cancers were adenocarcinomas</li>
+<li style="margin-left: 20px;">Further multicenter, prospective studies needed to clarify risk and inform screening recommendations</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Management: Upper GI Tract Polyposis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overall goal: early cancer detection and prevention via downstaging of duodenal/papillary disease</li>
+</ul>
+<details><summary><strong>6.1 Duodenal Disease Management (Spigelman Staging)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Spigelman staging system guides management due to association with duodenal cancer risk</li>
+<li style="margin-left: 0px;">High inter- and intra-observer agreement</li>
+<li style="margin-left: 0px;">Classification based on: number, size, histology, and dysplasia of duodenal polyps</li>
+<li style="margin-left: 0px;">Recent systematic review and meta-analysis provided pooled estimates of duodenal cancer risk at each Spigelman stage</li>
+<li style="margin-left: 0px;">Limitations: not all components uniformly predict duodenal cancer risk, lack of papilla-specific variables</li>
+<li style="margin-left: 0px;">If endoscopic downstaging achieved --&gt; continue monitoring based on highest previous Spigelman stage</li>
+<li style="margin-left: 0px;">Surgical management recommended for:</li>
+<li style="margin-left: 20px;">Endoscopically unmanageable Spigelman Stage III with high-grade dysplasia</li>
+<li style="margin-left: 20px;">Spigelman Stage IV</li>
+<li style="margin-left: 20px;">Duodenal or ampullary cancer</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Gastric Polyposis Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Less well-studied than duodenal/papillary management</li>
+<li style="margin-left: 0px;">Most common feature: proximal polyposis with fundic gland polyps with or without low-grade dysplasia</li>
+<li style="margin-left: 0px;">Rising incidence of gastric adenocarcinoma in 1.3-5% of individuals with FAP/AFAP in Western countries</li>
+<li style="margin-left: 0px;">Precursor lesions: gastric adenomas and fundic gland polyps with high-grade dysplasia (may be difficult to detect due to extent of polyposis)</li>
+<li style="margin-left: 0px;">Endoscopic features associated with increased risk of proximal gastric cancer:</li>
+<li style="margin-left: 20px;">Carpeting of gastric polyps</li>
+<li style="margin-left: 20px;">Solitary polyps &gt;20mm</li>
+<li style="margin-left: 20px;">Well-circumscribed large white mucosal patch overlying polyposis</li>
+<li style="margin-left: 20px;">Polypoid mounds ≥2cm in width and depth</li>
+<li style="margin-left: 0px;">Indications for gastrectomy:</li>
+<li style="margin-left: 20px;">Intramucosal or invasive cancer</li>
+<li style="margin-left: 20px;">Polypoid mounds with high-grade dysplasia</li>
+<li style="margin-left: 20px;">Endoscopically unresectable lesions with high-grade dysplasia</li>
+<li style="margin-left: 20px;">Multi-focal high-grade dysplasia</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Management: Lower GI Tract Polyposis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Management determined by features of colorectal polyps: number, size, histology</li>
+</ul>
+<details><summary><strong>7.1 Colonoscopy Surveillance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Lifetime CRC risk without intervention: nearly 100% for classic FAP, 70% for attenuated phenotype</li>
+<li style="margin-left: 0px;">Colonoscopy starting age: 10-15 years, continued every 1-2 years based on polyp burden (classic FAP vs. AFAP)</li>
+<li style="margin-left: 0px;">Important to note: estimated number of polyps (remaining and removed), rectal polyp burden at each colonoscopy</li>
+<li style="margin-left: 0px;">These factors inform timing and type of surgery over time</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Risk-Reducing Surgery</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cornerstone of management for FAP/AFAP</li>
+<li style="margin-left: 0px;">Genotype informs decision-making but should not be used in isolation (phenotypic variability among family members)</li>
+<li style="margin-left: 0px;">APC P/LP variants involving codon 1309: higher polyp burden, early cancer development</li>
+<li style="margin-left: 0px;">Variants involving 5&#x27; region of codon 160 and 3&#x27; region of codon 1450: later onset, fewer polyps</li>
+<li style="margin-left: 0px;">Indications for colectomy or proctocolectomy:</li>
+<li style="margin-left: 20px;">Polyps no longer endoscopically manageable (dense polyposis or advanced features: size &gt;10mm, villous features, high-grade dysplasia)</li>
+<li style="margin-left: 20px;">Symptoms related to polyp burden (i.e., rectal bleeding)</li>
+<li style="margin-left: 20px;">Presence of CRC</li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Surgical Options</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Total colectomy with ileorectal anastomosis (IRA)</li>
+<li style="margin-left: 0px;">Total colectomy with ileal pouch anal anastomosis (IPAA)</li>
+<li style="margin-left: 0px;">Proctocolectomy with end ileostomy</li>
+<li style="margin-left: 0px;">Decision based on: genotype, distribution of polyp burden, presence of CRC, overall health status/comorbidities, patient preferences</li>
+<li style="margin-left: 0px;">Early referral to experienced colorectal surgeon recommended for informed decision-making</li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Post-Operative Surveillance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Anal transition zone/rectal cuff (IRA or IPAA): annual surveillance</li>
+<li style="margin-left: 0px;">Stoma/ileum (proctocolectomy with end ileostomy): every 3 years with visual inspection, or sooner based on polyp burden and features</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Management: Extraintestinal Manifestations</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Thyroid Cancer Screening</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Mortality benefit unknown</li>
+<li style="margin-left: 0px;">NCCN recommendations: baseline thyroid ultrasound in late teenage years; if normal, consider repeating every 2-5 years with shorter intervals based on family history</li>
+<li style="margin-left: 0px;">Based on few single-center prospective screening studies</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Desmoid Tumor Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">No current recommendations for standard screening in FAP/AFAP</li>
+<li style="margin-left: 0px;">Majority develop after colectomy; higher risk after IPAA than colectomy with IRA</li>
+<li style="margin-left: 0px;">Management requires multidisciplinary input: oncology, radiology, gastroenterology, surgery</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Hepatoblastoma Screening</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rare, typically occurs before age 5 years</li>
+<li style="margin-left: 0px;">High-quality evidence for screening lacking</li>
+<li style="margin-left: 0px;">Some guidelines recommend considering abdominal ultrasound with serum alpha-fetoprotein every 3-6 months until age 5 years</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Chemoprevention in FAP/AFAP</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most data exist for chemoprevention with NSAIDs (non-steroidal anti-inflammatory drugs)</li>
+</ul>
+<details><summary><strong>9.1 Randomized Clinical Trials: Sulindac</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Sulindac 100mg three times daily vs. placebo for 4 months (FAP with IRA and rectal polyps, N=10):</li>
+<li style="margin-left: 20px;">With sulindac: 6 patients had complete regression, 3 had almost complete regression</li>
+<li style="margin-left: 20px;">With placebo: increase (5 patients), no change (2), relative decrease (2)</li>
+<li style="margin-left: 0px;">Sulindac 150mg twice daily for 9 months vs. placebo (FAP with intact colon or IRA, N=22):</li>
+<li style="margin-left: 20px;">Statistically significant decrease in mean number and diameter of polyps</li>
+<li style="margin-left: 20px;">At 9 months: number decreased 44% from baseline (p=0.014), size decreased to 35% of baseline (p&lt;0.001)</li>
+<li style="margin-left: 20px;">No patient had complete resolution</li>
+<li style="margin-left: 0px;">Sulindac 200mg twice daily vs. placebo (FAP post-colectomy with advanced duodenal polyposis, Spigelman stage 3 or 4, N=24):</li>
+<li style="margin-left: 20px;">Trend towards duodenal polyp regression (p=0.12)</li>
+<li style="margin-left: 20px;">Significant rectal polyp regression (p=0.01)</li>
+<li style="margin-left: 0px;">Sulindac 75 or 150mg twice daily vs. placebo for 48 months (individuals ≤25 years with genotypic FAP but no polyps, N=41):</li>
+<li style="margin-left: 20px;">Adenomas developed in 43% sulindac group vs. 55% placebo (p=0.54)</li>
+<li style="margin-left: 20px;">No significant differences in mean number (p=0.69) or size (p=0.17)</li>
+<li style="margin-left: 20px;">Did not slow development of adenomas</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Randomized Clinical Trials: Aspirin</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aspirin (600mg/day) plus resistant starch (30g/day) factorial design (FAP ages 10-21, N=206):</li>
+<li style="margin-left: 20px;">Neither intervention significantly reduced polyp count in rectum and sigmoid colon</li>
+<li style="margin-left: 20px;">Aspirin RR=0.77 (95% CI 0.54-1.10); resistant starch RR=1.05 (95% CI 0.73-1.49)</li>
+<li style="margin-left: 0px;">Aspirin 100mg daily vs. placebo for 6-10 months (FAP with intact rectum, N=34):</li>
+<li style="margin-left: 20px;">Trend towards greater reduction in polyp diameter in aspirin group (response ratio 2.33, 95% CI 0.72-7.55)</li>
+<li style="margin-left: 20px;">Number of polyps significantly decreased in aspirin group vs. placebo (2.18 ± 1.69 vs. 2.53 ± 1.38, p&lt;0.05)</li>
+<li style="margin-left: 0px;">Aspirin 100mg daily plus mesalazine 2g/day factorial design for 8 months (patients with &gt;100 polyps and intact colon, N=104):</li>
+<li style="margin-left: 20px;">Significant reduction in polyp recurrence with any aspirin (OR 0.37; 95% CI 0.16-0.86)</li>
+<li style="margin-left: 20px;">No significant reduction with any mesalazine (OR 0.87; 95% CI 0.38-2.00)</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Randomized Clinical Trials: Celecoxib</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Celecoxib 100mg or 400mg twice daily vs. placebo for 6 months (FAP ages 18-65, N=77):</li>
+<li style="margin-left: 20px;">Celecoxib 400mg twice daily: 28% reduction in mean number of polyps vs. 4.5% placebo (p=0.003)</li>
+<li style="margin-left: 20px;">Celecoxib 400mg: 30.7% reduction in polyp burden vs. 4.9% placebo (p=0.001)</li>
+<li style="margin-left: 20px;">No significant results in 100mg twice daily group</li>
+<li style="margin-left: 0px;">Celecoxib 16mg/kg/day vs. placebo for up to 5 years (FAP ages 10-17, N=106):</li>
+<li style="margin-left: 20px;">Disease progression in 12.7% intervention group vs. 25.5% placebo</li>
+<li style="margin-left: 20px;">Median time to progression: 2.1 years intervention vs. 1.1 years placebo</li>
+<li style="margin-left: 20px;">No patients developed CRC</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Combination Therapies and Other Agents</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Eflornithine 750mg daily, sulindac 150mg daily, or both for 48 months (FAP ≥18 years, N=171):</li>
+<li style="margin-left: 20px;">Disease progression HR 0.71 (95% CI 0.39-1.32) for combination vs. sulindac (p=0.29)</li>
+<li style="margin-left: 20px;">HR 0.66 (95% CI 0.36-1.24) for combination vs. eflornithine</li>
+<li style="margin-left: 0px;">Eflornithine plus sulindac post-hoc analysis (N=158):</li>
+<li style="margin-left: 20px;">When censoring endoscopic excision of adenomas ≥10mm: major surgery needed in 0/54 combination, 7/53 (13.2%) sulindac, 8/51 (15.7%) eflornithine</li>
+<li style="margin-left: 20px;">Risk reductions approaching 100% between combination and sulindac (p=0.005) or eflornithine (p=0.003)</li>
+<li style="margin-left: 0px;">Celecoxib 400mg twice daily plus DFMO 0.5g/m²/day vs. celecoxib plus placebo for 6 months (FAP ages 18-65, N=112):</li>
+<li style="margin-left: 20px;">Mean percent change in adenoma count: -13.0% combination vs. -1.0% celecoxib plus placebo (p=0.69)</li>
+<li style="margin-left: 0px;">Sulindac 150mg twice daily plus erlotinib 75mg daily vs. placebo for 6 months (FAP with colorectal adenomas, N=92):</li>
+<li style="margin-left: 20px;">Median change in proximal duodenal polyp number: -2.8 combination vs. +4.3 placebo (p&lt;0.001)</li>
+<li style="margin-left: 20px;">Median change in polyp burden: -8.5mm vs. +8.0mm (p&lt;0.001)</li>
+<li style="margin-left: 0px;">Sulindac plus erlotinib post-hoc analysis: colorectal polyp count significantly different with net percentage change of 69.4% in intact colorectum vs. placebo (p=0.009)</li>
+<li style="margin-left: 0px;">EPA-FFA 500mg twice daily vs. placebo for 6 months (FAP with IRA and ≥3 polyps, N=55):</li>
+<li style="margin-left: 20px;">Significant reduction in polyp number (mean 22.4% reduction, p=0.012)</li>
+<li style="margin-left: 20px;">Significant reduction in polyp size (mean 29.8% decrease in sum of diameters, p=0.027)</li>
+<li style="margin-left: 0px;">Curcumin 1500mg twice daily vs. placebo for 12 months (FAP ages 18-85, N=44):</li>
+<li style="margin-left: 20px;">No significant difference in mean number of polyps</li>
+</ul>
+</div></details>
+<details><summary><strong>9.5 Clinical Recommendations for Chemoprevention</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most convincing data: sulindac 150mg twice daily can result in colorectal polyp regression, may allow delays in surgery</li>
+<li style="margin-left: 0px;">NCCN guidelines: &quot;not known if decrease in colorectal polyp burden decreases cancer risk&quot;</li>
+<li style="margin-left: 0px;">No FDA-approved medications for duodenal polyposis chemoprevention</li>
+<li style="margin-left: 0px;">&quot;Data insufficient regarding definitive endpoints such as prevention of duodenal/ampullary cancer or need for surgical management&quot;</li>
+<li style="margin-left: 0px;">Chemoprevention should NOT replace surgical management</li>
+<li style="margin-left: 0px;">Can be considered on case-by-case basis to use in conjunction with endoscopic surveillance</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Family Planning in FAP/AFAP</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Following colectomy, fertility (ability to get pregnant) and fecundity (time to achieving pregnancy) can be significantly affected</li>
+</ul>
+<details><summary><strong>10.1 Impact on Fertility and Fecundity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Three nationwide studies: fertility rate after IPAA or IRA of 8% vs. Japan&#x27;s national average of 18.3%</li>
+<li style="margin-left: 0px;">Infertility rate between 10-17% vs. Netherlands&#x27; estimated infertility rate of 10%</li>
+<li style="margin-left: 0px;">Meta-analyses: baseline infertility rates after IPAA for FAP or ulcerative colitis were 13-20% prior to surgery, rose to 48-63% after surgery</li>
+<li style="margin-left: 0px;">2003 multi-nation Scandinavian survey (230 women with FAP): fecundability ratios dropped from 1.05 before surgery to 0.46 after IPAA</li>
+<li style="margin-left: 0px;">Likely causes: anatomic changes following pelvic surgery leading to uterine retroflexion, post-surgical pelvic adhesions with hydrosalpinx, fimbrial damage, or tubal</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
