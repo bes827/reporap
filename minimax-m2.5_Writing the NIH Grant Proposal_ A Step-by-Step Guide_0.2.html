@@ -1,0 +1,1143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Writing the NIH Grant Proposal: A Step-by-Step Guide</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Writing the NIH Grant Proposal: A Step-by-Step Guide</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: SAGE Publications, Inc. (eBook Collection)</li>
+<li style="margin-left: 0px;">Topic: NIH Grant Writing - Application Development and Submission</li>
+<li style="margin-left: 0px;">Author(s): William Gerin, Christine Kapelewski Kinkade, Niki L. Page</li>
+</ul>
+<details><summary><strong>1. Title Development and Strategic Framing</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1.1 Title Requirements and Character Limits</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">The title is the <strong>first detail</strong> reviewers see about your proposal</li>
+<li style="margin-left: 0px;">Maximum length: <strong>200 characters</strong> (including spaces and punctuation)</li>
+<li style="margin-left: 0px;">Title must provide substantial information about the proposal&#x27;s scope</li>
+<li style="margin-left: 0px;">Example provided: <em>&quot;RCT: Effect of Guided Breathing Intervention on Ambulatory BP in Hypertensives&quot;</em></li>
+</ul>
+</div></details>
+<details><summary><strong>1.2 Essential Elements to Include</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Major independent variable</strong> (e.g., guided breathing intervention)</li>
+<li style="margin-left: 0px;"><strong>Major dependent variable</strong> (e.g., ambulatory blood pressure)</li>
+<li style="margin-left: 0px;"><strong>Study population</strong> (e.g., hypertensives)</li>
+<li style="margin-left: 0px;"><strong>Research design</strong> (e.g., RCT - randomized controlled trial)</li>
+<li style="margin-left: 0px;">Mention cutting-edge measures you plan to use (e.g., ambulatory blood pressure is superior to clinic measurements)</li>
+<li style="margin-left: 0px;">Include abbreviations like &quot;RCT&quot; or &quot;BP&quot; if universally understood by study section experts</li>
+</ul>
+</div></details>
+<details><summary><strong>1.3 Strategic Considerations for Study Section Assignment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">The design type (RCT) signals methodological strength and helps route proposal to appropriate study section</li>
+<li style="margin-left: 0px;">Choose study section based on <strong>expert reviewer composition</strong> - consider whether laboratory experimentalists vs. clinical trial experts would better appreciate your methodology</li>
+<li style="margin-left: 0px;">Different study designs (RCT, laboratory, epidemiological) have distinct problem sets reviewers evaluate</li>
+<li style="margin-left: 0px;">Title should not be vague (e.g., &quot;A novel method for lowering blood pressure&quot; fails to guide NIH staff)</li>
+<li style="margin-left: 0px;">Avoid filler phrases like &quot;The Study of...&quot; - maximize every character</li>
+<li style="margin-left: 0px;">New applications must use a different title from any other application submitted by the same PD/PI to NIH/PHS with the same due date</li>
+<li style="margin-left: 0px;">Resubmission or Renewal Applications normally use the same title unless revisions significantly change Specific Aims</li>
+<li style="margin-left: 0px;">Revision Applications <strong>MUST</strong> use the same title as the currently funded award</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Budget Development Process</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 Budget Overview and Philosophy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Budget details how you plan to spend sponsor money to accomplish study goals</li>
+<li style="margin-left: 0px;">NIH grants budget requires <strong>less detail</strong> than many other sponsors</li>
+<li style="margin-left: 0px;">Find correct level of detail: instead of &quot;office supplies,&quot; specify &quot;photograph paper, toner cartridges, blank CD-ROMs for data storage&quot;</li>
+<li style="margin-left: 0px;">Do not over-detail: no need to explain purchase of 12 pencils at 49 cents each (unless applying for specific contract requiring such justification)</li>
+<li style="margin-left: 0px;">Seek advice from senior colleagues who have successfully submitted NIH budgets</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Regulatory Compliance and Audit Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH conducts audits of institutions receiving grants (remember: it&#x27;s not your money, it&#x27;s your institution&#x27;s)</li>
+<li style="margin-left: 0px;">NIH has right to conduct site visits to examine consent forms, data maintenance, and other records</li>
+<li style="margin-left: 0px;">Records must be in perfect order; finances must match up or you face serious consequences</li>
+<li style="margin-left: 0px;">For clinical trials, outline throughout the proposal: number of subjects to recruit, recruitment rate (e.g., 30 subjects in Year 2, 90 in Years 3 and 4, 30 in Year 5)</li>
+<li style="margin-left: 0px;">NIH personnel compare actual subjects studied (from yearly progress reports) with promised numbers</li>
+<li style="margin-left: 0px;">If actual study count is less than <strong>80% of promised</strong>, grant may be terminated</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 Political and Practical Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Budget development can involve politics concerning co-investigator appointments and effort allocation</li>
+<li style="margin-left: 0px;">Hard decisions needed on where to cut when hitting budget ceiling</li>
+<li style="margin-left: 0px;">Follow NIH rules <strong>and</strong> your home institution&#x27;s rules meticulously</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Abstract and Specific Aims Development</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Writing the Project Abstract</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Best written <strong>after completing the 13 pages of main text</strong></li>
+<li style="margin-left: 0px;">Read by <strong>all reviewers</strong> (not just assigned few), making it critical for first impression</li>
+<li style="margin-left: 0px;">Must grab reviewer interest immediately</li>
+<li style="margin-left: 0px;">Provides context for proposed work</li>
+<li style="margin-left: 0px;">If funded, abstract becomes <strong>public information</strong></li>
+<li style="margin-left: 0px;">Guides assignment to particular study section</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Abstract Content Requirements</strong></summary><div style="padding-left: 20px;">
+<p>The abstract must describe:</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Nature of the problem or research question</li>
+<li style="margin-left: 0px;">Long-term objectives</li>
+<li style="margin-left: 0px;">Innovative features of the research</li>
+<li style="margin-left: 0px;">Specific aims</li>
+<li style="margin-left: 0px;">Research design and methods</li>
+</ul>
+<p>Write in <strong>plain language</strong> (even non-scientist should understand):</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Limited to <strong>30 lines of text</strong></li>
+<li style="margin-left: 0px;">Must use specified font, font size, and margins</li>
+<li style="margin-left: 0px;">Single block of text</li>
+<li style="margin-left: 0px;">Convert to PDF before uploading via SF 424 &quot;Other Project Information&quot; form</li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Specific Aims Section Importance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Along with abstract, often the <strong>first thing reviewers read</strong></li>
+<li style="margin-left: 0px;">Influences perceptions of proposed research and your abilities</li>
+<li style="margin-left: 0px;">Must accomplish great deal in <strong>one page maximum</strong></li>
+<li style="margin-left: 0px;">Tells entire story or enough that reader enters 12-page section with understanding of context</li>
+</ul>
+</div></details>
+<details><summary><strong>3.4 Required Elements of Specific Aims</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clear statement of the problem or question to investigate</li>
+<li style="margin-left: 0px;">Public health significance</li>
+<li style="margin-left: 0px;">Background material (provides context)</li>
+<li style="margin-left: 0px;">Why proposal is innovative and needs to be done</li>
+<li style="margin-left: 0px;">What you plan to do (basics of design, primary outcome[s], study conditions)</li>
+<li style="margin-left: 0px;">Specific aims and, space permitting, hypotheses</li>
+</ul>
+</div></details>
+<details><summary><strong>3.5 Example Analysis: Guided Breathing Trial</strong></summary><div style="padding-left: 20px;">
+<p>The example R01 proposal demonstrates:</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Problem</strong>: 50% of hypertensives on drug treatment have inadequately controlled BP, causing excess morbidity/mortality and economic burden</li>
+<li style="margin-left: 0px;"><strong>Proposed solution</strong>: Guided breathing intervention (novel behavioral approach)</li>
+<li style="margin-left: 0px;"><strong>Rationale support</strong>: Previous studies show BP reductions of 5.5/3.6–15.2/10.0 mmHg, but limitations exist (small samples, short-term only)</li>
+<li style="margin-left: 0px;"><strong>Innovation</strong>: Addresses need for sustained 24-hour BP control, distinguishes specific breathing effects from nonspecific relaxation, examines long-term duration</li>
+</ul>
+</div></details>
+<details><summary><strong>3.6 Strategic Writing Notes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Do not propose overly ambitious aims (reviewers worry scope exceeds budget or effort insufficient)</li>
+<li style="margin-left: 0px;">Under-budgeting seen as sign of inexperience</li>
+<li style="margin-left: 0px;">Introductory paragraph should mention public health implications in first lines if possible (applies to all disciplines including basic research)</li>
+<li style="margin-left: 0px;">Use headings to signal new major sections</li>
+<li style="margin-left: 0px;">Maintain readable spacing between paragraphs (suggest 6-point distance; 5+4 if space-constrained)</li>
+<li style="margin-left: 0px;">Make it easy on reviewer&#x27;s eyes (they may read your application at 3AM)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Additional Application Components</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Project Narrative</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Not part of the 12 pages</strong> (or 6 pages for R03/R21) of science</li>
+<li style="margin-left: 0px;">New component required by NIH/PHS</li>
+<li style="margin-left: 0px;">Use <strong>2-3 sentences maximum</strong> in plain language</li>
+<li style="margin-left: 0px;">Describe relevance to public health</li>
+<li style="margin-left: 0px;">Write on word processor and convert to PDF</li>
+<li style="margin-left: 0px;">Upload via SF 424 &quot;Other Project Information&quot; form</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Research Plan and Bibliography</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Body of grant text (specific aims and science) written on word processor</li>
+<li style="margin-left: 0px;">Convert to PDF before uploading</li>
+<li style="margin-left: 0px;">Space provided in SF 424 forms for these files plus human/animal subjects documents, budget justification</li>
+<li style="margin-left: 0px;">Place references in separate file (convert to PDF)</li>
+<li style="margin-left: 0px;"><strong>Page number not limited</strong> for this section</li>
+<li style="margin-left: 0px;">NIH requires all authors listed (no &quot;et al.&quot; to shorten)</li>
+<li style="margin-left: 0px;">Include PMC and PMCI numbers if available</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Facilities &amp; Other Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Used to assess organizational capability to perform proposed effort</li>
+<li style="margin-left: 0px;">Identify facilities to be used: Laboratory, Animal, Computer, Office, Clinical, Other</li>
+<li style="margin-left: 0px;">Indicate capacities, pertinent capabilities, relative proximity, extent of availability</li>
+<li style="margin-left: 0px;">Describe only resources directly applicable to proposed work</li>
+<li style="margin-left: 0px;">Include Other Resources (e.g., machine shop, electronic shop) and their availability</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Research Strategy: Significance and Innovation</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1 Significance Section Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must establish the importance of your research question</li>
+<li style="margin-left: 0px;">Should address both scientific significance and public health relevance</li>
+<li style="margin-left: 0px;">Build a bridge where each point of your argument is supported by empirical evidence and biological/psychological plausibility</li>
+<li style="margin-left: 0px;">Demonstrate knowledge of published relevant work - there is no excuse for lack of knowledge here</li>
+<li style="margin-left: 0px;">Include two places to discuss significance: under Specific Aims and in the Significance section of Research Strategy</li>
+<li style="margin-left: 0px;">Be explicit about why your study needs to be done - do not be modest</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Common Significance Criticisms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Unexciting or uninspiring presentation</li>
+<li style="margin-left: 0px;">Appears to be merely a replication without new contributions</li>
+<li style="margin-left: 0px;">Background story fails to convince reviewers</li>
+<li style="margin-left: 0px;">Lack of theoretical framework (reviewers like visual representations with boxes and arrows)</li>
+<li style="margin-left: 0px;">Hypotheses too general</li>
+<li style="margin-left: 0px;">Too much extraneous background information (outline your story first to identify extraneous content)</li>
+<li style="margin-left: 0px;">Failure to convincingly state significance of your particular proposed study</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Innovation Section Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must demonstrate how your study makes a leap to a new level</li>
+<li style="margin-left: 0px;">Can be substantive: theoretical or applied push forward in the science</li>
+<li style="margin-left: 0px;">Can be methodological innovation</li>
+<li style="margin-left: 0px;">Can involve studying an unstudied population (animals, genes, humans)</li>
+<li style="margin-left: 0px;">Address what makes your approach novel compared to existing literature</li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Writing the Innovation Section</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clearly articulate what new knowledge your study will contribute</li>
+<li style="margin-left: 0px;">Explain how your approach differs from previous studies</li>
+<li style="margin-left: 0px;">Highlight any novel methods, populations, or theoretical frameworks</li>
+<li style="margin-left: 0px;">Demonstrate awareness of current state of the field and your unique contribution</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Research Design and Methods</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Approach Section Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Formerly separate section, now integrated into Research Strategy but use heading for organization</li>
+<li style="margin-left: 0px;">Must provide sufficient experimental detail</li>
+<li style="margin-left: 0px;">Balance between telling enough and leaving out unnecessary details</li>
+<li style="margin-left: 0px;">Walk through procedures mentally to identify omitted details that might raise questions</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Common Approach Criticisms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Lack of sufficient experimental detail</li>
+<li style="margin-left: 0px;">Overambitious, unrealistically large amount of work for the funding period</li>
+<li style="margin-left: 0px;">Proposed research not shown to be feasible by proposed staff given resources</li>
+<li style="margin-left: 0px;">Insufficient experience in the proposed methodology</li>
+<li style="margin-left: 0px;">Methods underdeveloped</li>
+<li style="margin-left: 0px;">Inclusion/exclusion criteria not well-justified</li>
+<li style="margin-left: 0px;">Availability of human research participants not assured</li>
+<li style="margin-left: 0px;">Justification for particular animal strains not provided</li>
+<li style="margin-left: 0px;">Inadequate description of instruments or variables and concerns about validity/reliability</li>
+<li style="margin-left: 0px;">Inadequate description of experimental manipulation</li>
+<li style="margin-left: 0px;">Concerns about lack of or inadequate blinding of outcome assessment</li>
+<li style="margin-left: 0px;">Inadequate description of manipulation (clinical trials: intervention)</li>
+<li style="margin-left: 0px;">Inadequate description or specification of outcome measure</li>
+<li style="margin-left: 0px;">Concerns about validity or reliability of the outcome</li>
+<li style="margin-left: 0px;">Concerns over generalizability of results to broader or different population</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Preliminary Studies Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must demonstrate necessary skills by PI and research team</li>
+<li style="margin-left: 0px;">Pilot data essential - lack of pilot data is &quot;kiss of death&quot; unless using exploratory mechanism like R21</li>
+<li style="margin-left: 0px;">Convince reviewers: (a) you will be able to carry out proposed work, (b) hypotheses are on right track</li>
+<li style="margin-left: 0px;">Beef up first part of Preliminary Studies describing research team members and accomplishments</li>
+</ul>
+</div></details>
+<details><summary><strong>6.4 Research Design Specifics for Clinical Trials</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Include detailed description of intervention</li>
+<li style="margin-left: 0px;">Specify primary and secondary outcomes clearly</li>
+<li style="margin-left: 0px;">Justify inclusion/exclusion criteria with scientific rationale</li>
+<li style="margin-left: 0px;">Describe blinding procedures for outcome assessment</li>
+<li style="margin-left: 0px;">Address randomization methods</li>
+<li style="margin-left: 0px;">Detail participant recruitment and retention strategies</li>
+</ul>
+</div></details>
+<details><summary><strong>6.5 Data Analysis Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Provide sufficient description of analytic approach</li>
+<li style="margin-left: 0px;">Clinical trials must include intention-to-treat analytic strategy</li>
+<li style="margin-left: 0px;">Consider advanced statistical approaches: mediation/moderation analysis, structural equation modeling, missing data analysis/imputation</li>
+<li style="margin-left: 0px;">Adequately control for potential confounders</li>
+<li style="margin-left: 0px;">Describe handling of missing data</li>
+<li style="margin-left: 0px;">Consider attrition adequately</li>
+<li style="margin-left: 0px;">Include power analysis - lack of adequate power is major weakness</li>
+</ul>
+</div></details>
+<details><summary><strong>6.6 Common Data Analysis Criticisms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Insufficient description of analytic approach</li>
+<li style="margin-left: 0px;">Lack of intention-to-treat strategy (clinical trials)</li>
+<li style="margin-left: 0px;">Not using advanced statistical approaches for mediation/moderation</li>
+<li style="margin-left: 0px;">Inadequate control for confounders</li>
+<li style="margin-left: 0px;">Insufficient description of handling missing data</li>
+<li style="margin-left: 0px;">Not enough consideration of attrition</li>
+<li style="margin-left: 0px;">No or inadequate power analysis</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Human Subjects and Ethical Considerations</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Human Subjects Research Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must address all human subjects protections in application</li>
+<li style="margin-left: 0px;">Include detailed protocol for informed consent</li>
+<li style="margin-left: 0px;">Describe recruitment procedures</li>
+<li style="margin-left: 0px;">Address risk/benefit analysis</li>
+<li style="margin-left: 0px;">Detail provisions for vulnerable populations if applicable</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Inclusion Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Address inclusion of women, children, and minorities</li>
+<li style="margin-left: 0px;">Provide justification for study population demographics</li>
+<li style="margin-left: 0px;">Ensure adequate representation for subgroup analyses if proposed</li>
+<li style="margin-left: 0px;">Follow NIH inclusion policies and reporting requirements</li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Animal Subjects Requirements (if applicable)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Provide justification for animal species and strains</li>
+<li style="margin-left: 0px;">Describe veterinary care provisions</li>
+<li style="margin-left: 0px;">Address pain and distress minimization</li>
+<li style="margin-left: 0px;">Detail euthanasia methods consistent with AVMA guidelines</li>
+</ul>
+</div></details>
+<details><summary><strong>7.4 Data Safety and Monitoring</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">For clinical trials, describe Data Safety Monitoring Board (DSMB) plans</li>
+<li style="margin-left: 0px;">Include interim analysis provisions if applicable</li>
+<li style="margin-left: 0px;">Address adverse event reporting procedures</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Letters of Support and Resources</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Letter of Support Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Obtain letters from collaborators, consultants, and equipment/instrumentation providers</li>
+<li style="margin-left: 0px;">Letters should confirm willingness to provide described support</li>
+<li style="margin-left: 0px;">Include manufacturer letters for equipment (e.g., device provision for clinical trials)</li>
+<li style="margin-left: 0px;">Sample letter format: company letterhead, specific details about what will be provided, signature from authorized representative</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Example: Manufacturer Letter of Agreement</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must be on company letterhead</li>
+<li style="margin-left: 0px;">Include specific details: number of devices provided, device configurations, software support</li>
+<li style="margin-left: 0px;">Example from text: Respirco, Inc. providing 80 modified devices for placebo condition plus 220 standard configuration devices</li>
+<li style="margin-left: 0px;">Confirm willingness to provide data download software and support</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Consultant Letters</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Document consultant expertise relevant to proposed work</li>
+<li style="margin-left: 0px;">Confirm availability and scope of consultation</li>
+<li style="margin-left: 0px;">Describe how consultant will contribute to project</li>
+</ul>
+</div></details>
+<details><summary><strong>8.4 Institutional Resources</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Demonstrate institutional support for proposed research</li>
+<li style="margin-left: 0px;">Document available equipment and facilities</li>
+<li style="margin-left: 0px;">Show administrative support for grant administration</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Submission Process and Requirements</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 SF 424 Application Form Package</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Obtain specific FOA (Funding Opportunity Announcement) for your application</li>
+<li style="margin-left: 0px;">Forms needed are customized to each opportunity</li>
+<li style="margin-left: 0px;">Forms are linked within the announcement</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 Document Preparation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Write all narrative sections in word processor first</li>
+<li style="margin-left: 0px;">Convert all documents to PDF format before uploading</li>
+<li style="margin-left: 0px;">Follow specific formatting requirements (font, font size, margins)</li>
+<li style="margin-left: 0px;">Ensure compliance with page limits for each section</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 File Upload Procedures</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use appropriate SF 424 form pages for each document type</li>
+<li style="margin-left: 0px;">Attach budget justification to budget forms</li>
+<li style="margin-left: 0px;">Attach human subjects documentation as required</li>
+<li style="margin-left: 0px;">Upload references in separate PDF file</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4 Submission Deadlines</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Note specific due dates in FOA</li>
+<li style="margin-left: 0px;">Allow time for internal institutional routing</li>
+<li style="margin-left: 0px;">Plan for potential technical issues</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Grant Review Process</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Initial Submission Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Application assigned to specific study section based on content</li>
+<li style="margin-left: 0px;">Reviewers with relevant expertise evaluate each application</li>
+<li style="margin-left: 0px;">All reviewers read the abstract; assigned reviewers read full application</li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Review Criteria</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Significance</strong>: Does the study address an important problem?</li>
+<li style="margin-left: 0px;"><strong>Innovation</strong>: Does the study break new ground in methods or concepts?</li>
+<li style="margin-left: 0px;"><strong>Approach</strong>: Are methods appropriate and feasible?</li>
+<li style="margin-left: 0px;"><strong>Investigators</strong>: Is the team qualified to conduct the research?</li>
+<li style="margin-left: 0px;"><strong>Environment</strong>: Are resources adequate?</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Summary Statement Components</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overall impact score</li>
+<li style="margin-left: 0px;">Criterion scores (Significance, Innovation, Approach, Investigators, Environment)</li>
+<li style="margin-left: 0px;">Reviewer comments identifying strengths and weaknesses</li>
+<li style="margin-left: 0px;">Budget may be adjusted based on concerns</li>
+</ul>
+</div></details>
+<details><summary><strong>10.4 Common Reviewer Criticisms and Solutions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>General Problems</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Lack of new ideas</strong>: Discuss with program officer; may not be salvageable</li>
+<li style="margin-left: 0px;"><strong>Poor writing/unclear arguments</strong>: Get editorial help; start early enough for colleague feedback; edit multiple times (minimum dozen iterations)</li>
+<li style="margin-left: 0px;"><strong>Reviewers not interested in subject</strong>: Distinguish between presentation problems vs. subject uninterest; if presentation, rewrite to sell importance and contribution; if wrong study section, request different review group in resubmission letter</li>
+</ul>
+</div></details>
+<details><summary><strong>Specific Aims Problems</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Aims poorly focused/underdeveloped</strong>: If reader</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>10. Grant Review Process (Continued)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.5 Understanding Summary Statements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Summary statement provides detailed feedback from review process</li>
+<li style="margin-left: 0px;">Includes overall impact score and individual criterion scores</li>
+<li style="margin-left: 0px;">Reviewers provide specific comments on strengths and weaknesses</li>
+<li style="margin-left: 0px;">Budget may be reduced if reviewers identify concerns about resources requested</li>
+</ul>
+</div></details>
+<details><summary><strong>10.6 Scoring System</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Overall impact score reflects likely contribution to the field</li>
+<li style="margin-left: 0px;">Criterion scores (1-9 scale) for Significance, Innovation, Approach, Investigators, Environment</li>
+<li style="margin-left: 0px;">Lower scores indicate stronger applications</li>
+<li style="margin-left: 0px;">Percentile ranking compares application to others in same study section</li>
+</ul>
+</div></details>
+<details><summary><strong>10.7 Addressing Reviewer Concerns</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Carefully read all reviewer comments</li>
+<li style="margin-left: 0px;">Identify common themes across multiple reviewers</li>
+<li style="margin-left: 0px;">Develop systematic response to each concern</li>
+<li style="margin-left: 0px;">Use feedback to strengthen resubmission</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Resubmission Process</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 NIH Resubmission Policy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH allows <strong>one resubmission</strong> of unfunded application</li>
+<li style="margin-left: 0px;">Must address previous reviewer concerns systematically</li>
+<li style="margin-left: 0px;">Resubmission letter must include introduction addressing prior review</li>
+<li style="margin-left: 0px;">Application marked as &quot;A1&quot; for first resubmission</li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 Resubmission Letter Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Begin with summary of substantial changes made in response to review</li>
+<li style="margin-left: 0px;">Address each weakness raised by reviewers point by point</li>
+<li style="margin-left: 0px;">Explain how each concern was addressed or why you disagree</li>
+<li style="margin-left: 0px;">Be respectful and constructive in tone</li>
+<li style="margin-left: 0px;">Do not be defensive or argumentative</li>
+</ul>
+</div></details>
+<details><summary><strong>11.3 Common Resubmission Mistakes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ignoring reviewer concerns rather than addressing them</li>
+<li style="margin-left: 0px;">Being defensive about legitimate criticisms</li>
+<li style="margin-left: 0px;">Making changes that create new problems</li>
+<li style="margin-left: 0px;">Not providing adequate pilot data when requested</li>
+</ul>
+</div></details>
+<details><summary><strong>11.4 Timeline for Resubmission</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Wait until summary statement received before planning resubmission</li>
+<li style="margin-left: 0px;">Allow adequate time to address concerns thoroughly</li>
+<li style="margin-left: 0px;">Consider discussing changes with program officer</li>
+<li style="margin-left: 0px;">Meet new application deadline</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Award Process and Administration</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Notice of Award</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Successful applications receive Notice of Award (NOA)</li>
+<li style="margin-left: 0px;">NOA specifies funding amount, project period, terms and conditions</li>
+<li style="margin-left: 0px;">Review all terms carefully before accepting award</li>
+<li style="margin-left: 0px;">Contact grants management with questions</li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Post-Award Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Submit annual progress reports documenting accomplishments</li>
+<li style="margin-left: 0px;">Report actual enrollment numbers vs. promised numbers</li>
+<li style="margin-left: 0px;">Maintain accurate financial records</li>
+<li style="margin-left: 0px;">Submit detailed budget reports annually</li>
+<li style="margin-left: 0px;">Report any changes in key personnel</li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Annual Progress Reporting</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Compare actual subjects studied with promised numbers</li>
+<li style="margin-left: 0px;">If actual less than 80% of promised, may trigger audit and potential termination</li>
+<li style="margin-left: 0px;">Document any deviations from original research plan</li>
+<li style="margin-left: 0px;">Explain reasons for changes and impact on project</li>
+</ul>
+</div></details>
+<details><summary><strong>12.4 Budget Administration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Funds must be used according to approved budget categories</li>
+<li style="margin-left: 0px;">Prior approval required for significant budget changes</li>
+<li style="margin-left: 0px;">Monitor spending throughout project period</li>
+<li style="margin-left: 0px;">Document all expenditures with proper receipts</li>
+</ul>
+</div></details>
+<details><summary><strong>12.5 Human Subjects Post-Award</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Continue to follow approved protocol</li>
+<li style="margin-left: 0px;">Report adverse events promptly</li>
+<li style="margin-left: 0px;">Maintain IRB approval throughout project period</li>
+<li style="margin-left: 0px;">Submit continuing reviews as required</li>
+</ul>
+</div></details>
+<details><summary><strong>12.6 No-Cost Extension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">May request extension if unable to complete work within original period</li>
+<li style="margin-left: 0px;">Must provide justification for extension</li>
+<li style="margin-left: 0px;">No-cost extensions do not add additional funding</li>
+<li style="margin-left: 0px;">Request through NIH electronic research administration system</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. Grant Types and Mechanisms</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.1 R01 - Research Project Grant</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Traditional independent research project</li>
+<li style="margin-left: 0px;">Typically 3-5 year project period</li>
+<li style="margin-left: 0px;">Previously limited to 25 pages for research strategy (now varies by FOA)</li>
+<li style="margin-left: 0px;">Most common mechanism for established investigators</li>
+</ul>
+</div></details>
+<details><summary><strong>13.2 R21 - Exploratory/Developmental Grant</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Pilot or feasibility studies</li>
+<li style="margin-left: 0px;">Limited to 6 pages for research strategy</li>
+<li style="margin-left: 0px;">Two-year project period</li>
+<li style="margin-left: 0px;">Designed for new investigators or novel approaches</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3 R03 - Small Research Grant</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Smaller scope projects</li>
+<li style="margin-left: 0px;">Limited to 6 pages for research strategy</li>
+<li style="margin-left: 0px;">Up to two-year project period</li>
+<li style="margin-left: 0px;">Suitable for pilot studies, secondary data analyses</li>
+</ul>
+</div></details>
+<details><summary><strong>13.4 Other Mechanisms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>R13</strong>: Conference grants</li>
+<li style="margin-left: 0px;"><strong>U01</strong>: Research Cooperative Agreement (more involvement than grant)</li>
+<li style="margin-left: 0px;"><strong>P50</strong>: Specialized Center grants</li>
+<li style="margin-left: 0px;"><strong>K awards</strong>: Career development awards</li>
+<li style="margin-left: 0px;"><strong>T32</strong>: Training grants</li>
+</ul>
+</div></details>
+<details><summary><strong>13.5 Choosing Appropriate Mechanism</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Match mechanism to career stage and project scope</li>
+<li style="margin-left: 0px;">R21 appropriate for high-risk, innovative projects</li>
+<li style="margin-left: 0px;">R01 requires substantial preliminary data</li>
+<li style="margin-left: 0px;">Consider whether you need clinical trial capability</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. Clinical Trial Specific Requirements</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>14.1 Clinical Trial Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH defines clinical trial as research studies assigning human participants to interventions</li>
+<li style="margin-left: 0px;">Must follow Good Clinical Practice requirements</li>
+<li style="margin-left: 0px;">Additional documentation and oversight required</li>
+</ul>
+</div></details>
+<details><summary><strong>14.2 Clinical Trial-Specific Forms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">PHS Human Subjects and Clinical Trials Information form required</li>
+<li style="margin-left: 0px;">Must describe study population, intervention, outcomes</li>
+<li style="margin-left: 0px;">Include certificate of confidentiality provision</li>
+<li style="margin-left: 0px;">Address data sharing plan</li>
+</ul>
+</div></details>
+<details><summary><strong>14.3 Clinical Trial Registration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must register on ClinicalTrials.gov per FDAAA requirements</li>
+<li style="margin-left: 0px;">Results reporting required within 12 months of completion</li>
+<li style="margin-left: 0px;">Follow CONSORT guidelines for reporting</li>
+</ul>
+</div></details>
+<details><summary><strong>14.4 Data Safety Monitoring Board Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most clinical trials require DSMB</li>
+<li style="margin-left: 0px;">Independent committee reviews interim data</li>
+<li style="margin-left: 0px;">Reviews safety and efficacy data</li>
+<li style="margin-left: 0px;">Makes recommendations about continuation</li>
+</ul>
+</div></details>
+<details><summary><strong>14.5 Clinical Trial Budget Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Include costs for clinical coordination staff</li>
+<li style="margin-left: 0px;">Budget for participant compensation if applicable</li>
+<li style="margin-left: 0px;">Include costs for data management systems</li>
+<li style="margin-left: 0px;">Consider costs for DSMB meetings</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>15. Budget Justification Development</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>15.1 Personnel Costs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Salary caps apply for NIH grants (level I of Executive Schedule)</li>
+<li style="margin-left: 0px;">Include fringe benefits in calculations</li>
+<li style="margin-left: 0px;">Document effort as person-months for key personnel</li>
+<li style="margin-left: 0px;">Justify each position with role description</li>
+</ul>
+</div></details>
+<details><summary><strong>15.2 Equipment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Items over $5,000 generally considered equipment</li>
+<li style="margin-left: 0px;">Justify need for each piece of equipment</li>
+<li style="margin-left: 0px;">Show quotes or estimates if available</li>
+<li style="margin-left: 0px;">Consider whether shared equipment more appropriate</li>
+</ul>
+</div></details>
+<details><summary><strong>15.3 Travel</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Domestic vs. international travel categories</li>
+<li style="margin-left: 0px;">Justify each trip with meeting/conference purpose</li>
+<li style="margin-left: 0px;">Include estimated costs for transportation, lodging, per diem</li>
+<li style="margin-left: 0px;">Follow institutional travel policies</li>
+</ul>
+</div></details>
+<details><summary><strong>15.4 Other Direct Costs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Materials and supplies with itemization</li>
+<li style="margin-left: 0px;">Publication costs for anticipated manuscripts</li>
+<li style="margin-left: 0px;">Consultant costs (must be justified)</li>
+<li style="margin-left: 0px;">Patient care costs if applicable</li>
+</ul>
+</div></details>
+<details><summary><strong>15.5 Indirect Costs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Facilities and Administrative (F&amp;A) costs</li>
+<li style="margin-left: 0px;">Rate determined by institutional negotiation with NIH</li>
+<li style="margin-left: 0px;">Apply to modified total direct costs (MTDC)</li>
+<li style="margin-left: 0px;">Exclude certain categories from MTDC base</li>
+</ul>
+</div></details>
+<details><summary><strong>15.6 Budget Revision Procedures</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Significant changes require prior approval</li>
+<li style="margin-left: 0px;">Changes between budget categories may be allowed without approval if under certain threshold</li>
+<li style="margin-left: 0px;">Document all budget modifications</li>
+<li style="margin-left: 0px;">Report changes in annual progress reports</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>16. Writing Strategies and Best Practices</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>16.1 Persuasive Writing Principles</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aim for clear communication even if breaking some rules</li>
+<li style="margin-left: 0px;">Your goal is reader understanding</li>
+<li style="margin-left: 0px;">Use standard abbreviations - unlikely to be penalized for common terms like RCT</li>
+<li style="margin-left: 0px;">Write to convince reviewers of importance and feasibility</li>
+</ul>
+</div></details>
+<details><summary><strong>16.2 Narrative Structure</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Tell a coherent story throughout application</li>
+<li style="margin-left: 0px;">Each section should build on previous sections</li>
+<li style="margin-left: 0px;">Use transitions between paragraphs and sections</li>
+<li style="margin-left: 0px;">Ensure logical flow from problem to solution</li>
+</ul>
+</div></details>
+<details><summary><strong>16.3 Visual Elements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Use figures to illustrate complex concepts (theoretical models, study design)</li>
+<li style="margin-left: 0px;">Reviewers appreciate visual representations</li>
+<li style="margin-left: 0px;">Include flowcharts for study procedures</li>
+<li style="margin-left: 0px;">Create tables for preliminary data or comparisons</li>
+</ul>
+</div></details>
+<details><summary><strong>16.4 Common Writing Pitfalls to Avoid</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Starting too late - allow time for multiple revisions</li>
+<li style="margin-left: 0px;">Being vague - be specific about methods and expected outcomes</li>
+<li style="margin-left: 0px;">Overloading with background - stay focused on your story</li>
+<li style="margin-left: 0px;">Ignoring reviewer feedback - address all concerns in resubmission</li>
+</ul>
+</div></details>
+<details><summary><strong>16.5 Editing Process</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Edit application minimum of a dozen times</li>
+<li style="margin-left: 0px;">Have co-investigators review and edit</li>
+<li style="margin-left: 0px;">Get outside readers to provide feedback</li>
+<li style="margin-left: 0px;">Read aloud to catch awkward phrasing</li>
+</ul>
+</div></details>
+<details><summary><strong>16.6 Timing Recommendations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Start developing ideas and preliminary data early</li>
+<li style="margin-left: 0px;">Begin writing at least 3-4 months before deadline</li>
+<li style="margin-left: 0px;">Allow time for institutional review and approval</li>
+<li style="margin-left: 0px;">Build in buffer for unexpected delays</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>17. Special Considerations</strong></summary><div style="padding-left: 20px;">
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
