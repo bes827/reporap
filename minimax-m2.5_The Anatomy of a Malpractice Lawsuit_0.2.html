@@ -1,0 +1,910 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Anatomy of a Malpractice Lawsuit</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <!-- NEW: READ MODE TOGGLE BUTTON -->
+    <button onclick="toggleReadMode()">Q/R</button>
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>The Anatomy of a Malpractice Lawsuit</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: Aesthetic Surgery Journal Open Forum, 2023</li>
+<li style="margin-left: 0px;">Topic: Medical Malpractice Lawsuits in Healthcare/Plastic Surgery</li>
+<li style="margin-left: 0px;">Author(s): Attaluri et al.</li>
+</ul>
+<details><summary><strong>1. Introduction and Background</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Medical malpractice expenditures in the US → <strong>$56 billion</strong> annually</li>
+<li style="margin-left: 0px;">Surgeons face higher rates of malpractice claims vs nonsurgical providers</li>
+<li style="margin-left: 0px;">Most surgeons will encounter medical malpractice at some point in their careers</li>
+<li style="margin-left: 0px;">Unexpected outcome + lawsuit → <strong>↓ personal and professional satisfaction</strong> for physicians</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Criteria of Medical Malpractice: Patient-Physician Relationship</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1 Definition and Establishment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Requires <strong>mutual consent</strong> (except emergency care)</li>
+<li style="margin-left: 0px;">Can be entered <strong>explicitly</strong>: outpatient consultation, inpatient consulting service request</li>
+<li style="margin-left: 0px;">Can be entered <strong>implicitly</strong>: informal discussions via phone or social settings</li>
+<li style="margin-left: 0px;">Both explicit and implicit relationships can hold physician accountable --&gt; adverse events, even w/o direct patient care</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2 Case Examples</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Adams v. Via Christi Regional Medical Center</strong>: Physician liable for wrongful death → offered medical advice during phone call, found guilty --&gt; established patient-physician relationship</li>
+<li style="margin-left: 0px;"><strong>Estate of Kundert v. Illinois Valley Community Hospital</strong>: Mother called for fever advice → provider gave informal opinion, later child died of bacterial meningitis --&gt; case dismissed: informal advice ≠ acceptance of patient relationship</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3 When Physicians Can Decline Relationship</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Care falls outside scope of practice</li>
+<li style="margin-left: 0px;">Care not indicated</li>
+<li style="margin-left: 0px;">Resources not readily available (if not discriminatory)</li>
+<li style="margin-left: 0px;">Patient is abusive or threatening</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Criteria of Medical Malpractice: Standard of Care</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1 Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Healthcare professional provides same care as peers in similar situations</li>
+<li style="margin-left: 0px;">Definition varies from state to state</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2 Landmark Cases Establishing Standard of Care</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>T.J. Hooper (1932)</strong>: Not medical case → established framework: if practice/precaution is reasonable but not universally adopted, it can still be standard of care</li>
+<li style="margin-left: 0px;"><strong>Helling v. Carey</strong>: Patient sued for glaucoma-induced blindness → Supreme Court ruled: even if condition rare in patients &lt;40 years, tonometer is inexpensive and harmless --&gt; should have been used</li>
+</ul>
+</div></details>
+<details><summary><strong>3.3 Establishing Breach in Standard of Care</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Res ipsa loquitor</strong> (&quot;the thing speaks for itself&quot;): obvious error (e.g., retained sponge) → obviates need for legal proceedings</li>
+<li style="margin-left: 0px;"><strong>Expert witness</strong>: needed when error not obvious --&gt; translates complex medical concepts into layperson vernacular</li>
+<li style="margin-left: 0px;">American Society of Plastic Surgeons Code of Ethics → members must testify as expert witnesses when appropriate</li>
+<li style="margin-left: 0px;">US system: plaintiff and defendant teams hire/pay their own expert witnesses --&gt; inherent biases possible</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Criteria of Medical Malpractice: Proximate Cause</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1 Definition and Components</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Determination that event is related to injury</li>
+<li style="margin-left: 0px;">Plaintiff must establish: (1) existence of duty by physician, (2) breach of that duty, (3) resulting injury to patient, (4) causal connection between breach and injury</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2 Two Principles for Establishing Causation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Cause-in-fact</strong> (sine qua non): tested with &quot;but for&quot; test --&gt; event B would not have happened without event A</li>
+<li style="margin-left: 20px;">Example: &quot;Without a rhinoplasty, patient would not have saddle nose deformity&quot;</li>
+<li style="margin-left: 0px;"><strong>Foreseeability</strong>: act/omission must be such that physician using ordinary care would have foreseen that event or similar event might reasonably result</li>
+<li style="margin-left: 20px;">Example: Malignant hyperthermia → physician may not anticipate if no previous surgery/family history</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3 Legal Process</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Plaintiffs attempt to establish each component of proximate cause during litigation</li>
+<li style="margin-left: 0px;">Goal: make case for compensation commensurate with injuries</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Structure of the Court System</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1 Hierarchy and Jurisdiction</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Trial courts: where civil disputes are tried first</li>
+<li style="margin-left: 0px;">Appeals courts: review trial court decisions</li>
+<li style="margin-left: 0px;">Ultimate judicial power lies within the state&#x27;s supreme court</li>
+<li style="margin-left: 0px;">Structure relatively constant across states</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2 Medical Malpractice Court Proceedings</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Lawsuits generally filed within <strong>state trial court system</strong></li>
+<li style="margin-left: 0px;">Unless settlement before trial → each defendant has right to <strong>jury trial</strong> in US</li>
+<li style="margin-left: 0px;">Jury = group of impartial peers from general public → assess plaintiff&#x27;s and defendant&#x27;s arguments, decide based on legal precedent</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3 Out-of-Court Settlements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Majority of medical malpractice suits settled outside of court</li>
+<li style="margin-left: 0px;">Most common reason: <strong>resource-intensive nature of trial is detrimental to clinical productivity</strong></li>
+<li style="margin-left: 0px;">If cost of pursuing trial &gt; cost of settling → physician may be advised to settle</li>
+</ul>
+</div></details>
+<details><summary><strong>5.4 Legal Representation Options</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Insurance carrier retains counsel when lawsuit is filed</li>
+<li style="margin-left: 0px;">Carrier will often honor physician&#x27;s request for specific attorney</li>
+<li style="margin-left: 0px;">If physician chooses personal lawyer → <strong>physician incurs costs</strong> of those legal fees</li>
+</ul>
+</div></details>
+<details><summary><strong>5.5 Conflicts of Interest Scenarios</strong></summary><div style="padding-left: 20px;">
+<p>Insurance carrier might not be willing to seek counsel for physician due to conflict of interest in:</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Claims for punitive damages</strong>: insurance carriers prohibited by law from paying punitive damages</li>
+<li style="margin-left: 0px;"><strong>Bad Faith Doctrine</strong>: physician wants to settle but carrier refuses</li>
+<li style="margin-left: 0px;"><strong>Uncovered claims</strong>: physician sued as both attending physician on record AND medical director of facility</li>
+<li style="margin-left: 0px;">Professional liability insurance covers claims to represent physician as healthcare provider → <strong>not as facility director</strong></li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Overview of the Trial Process</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1 Discovery Period</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">After suit is filed → laborious period of discovery, depositions, interrogations</li>
+<li style="margin-left: 0px;">Goal: sharing information between plaintiff&#x27;s and defendant&#x27;s teams --&gt; achieving out-of-court agreements</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2 Documents Requested</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Entire medical record</li>
+<li style="margin-left: 0px;">Billing records</li>
+<li style="margin-left: 0px;">Other records related to patient encounter</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3 Interrogatories and Depositions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">After document review → <strong>interrogatory</strong> (line of questioning) developed to gather information about other party</li>
+<li style="margin-left: 0px;">Followed by <strong>deposition</strong>: party questioned under oath</li>
+<li style="margin-left: 0px;">Judicial system hopes to gather reliable information that can still promote out-of-court settlement</li>
+<li style="margin-left: 0px;">Any information obtained during legal proceedings can later be used in court</li>
+</ul>
+</div></details>
+<details><summary><strong>6.4 Discoverable vs Protected Information</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Discoverable</strong>: personal communications, information in medical chart</li>
+<li style="margin-left: 0px;"><strong>Not discoverable</strong>:</li>
+<li style="margin-left: 20px;">Information protected by peer review in an institution</li>
+<li style="margin-left: 20px;">Information protected by attorney-client privilege</li>
+</ul>
+</div></details>
+<details><summary><strong>6.5 Protected Peer Review Process</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Includes conclusions reached by <strong>hospital-wide committee</strong> after thorough review of cases with established morbidity or mortality</li>
+</ul>
+</div></details>
+<details><summary><strong>6.6 Trial Proceedings</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">If case proceeds to trial → plaintiff&#x27;s legal team must convince jury with burden of proof that physician was not providing adequate care</li>
+<li style="margin-left: 0px;">Defense serves to negate proof presented by plaintiff</li>
+</ul>
+</div></details>
+<details><summary><strong>6.7 Burden of Proof</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Medical malpractice lawsuits require only <strong>&quot;preponderance of evidence&quot;</strong></li>
+<li style="margin-left: 0px;">Translates to: finding <strong>greater than 50% probability</strong> that professional negligence occurred → find physician guilty</li>
+</ul>
+</div></details>
+<details><summary><strong>6.8 Appeals and Reporting</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Losing party can file for appeal → variety of reasons including outcome or settlement</li>
+<li style="margin-left: 0px;">If court mandates monetary transaction → must be reported to <strong>National Practitioner Data Bank (NPDB)</strong></li>
+<li style="margin-left: 0px;">Pretrial exchange of monetary awards must also be reported to NPDB</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Significance of the National Practitioner Data Bank (NPDB)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1 Establishment and Purpose</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Established by Congress in <strong>1986</strong></li>
+<li style="margin-left: 0px;">Goals:</li>
+<li style="margin-left: 20px;">Improve quality of healthcare</li>
+<li style="margin-left: 20px;">Encourage state licensing boards, hospitals, other health care entities, professional societies to identify and discipline those who engage in unprofessional behavior</li>
+<li style="margin-left: 20px;">Restrict ability of incompetent physicians, dentists, other healthcare practitioners to move from state to state without disclosure of previous medical malpractice payment and adverse action history</li>
+</ul>
+</div></details>
+<details><summary><strong>7.2 Reporting and Querying Entities</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Medical malpractice payers</li>
+<li style="margin-left: 0px;">Hospitals</li>
+<li style="margin-left: 0px;">State licensing boards</li>
+<li style="margin-left: 0px;">Professional societies with formal peer review</li>
+<li style="margin-left: 0px;">US Drug Enforcement Agency</li>
+</ul>
+</div></details>
+<details><summary><strong>7.3 Mandatory Reporting Criteria</strong></summary><div style="padding-left: 20px;">
+<p>Payments must be reported when <strong>all 4</strong> of following criteria met:</p>
+<p>1. Payments made by an organization, not an individual</p>
+<p>2. Made on behalf of an individual, not a group</p>
+<p>3. In settlement of written complaint related to lack of provision of care</p>
+<p>4. Request of money</p>
+<p>All 4 criteria must be met → <strong>irrespective of amount of money or merit of claim</strong></p>
+</div></details>
+<details><summary><strong>7.4 Significance for Physicians</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Hospitals can query NPDB as physicians apply for new jobs or expand existing privileges</li>
+</ul>
+</div></details>
+<details><summary><strong>7.5 Imperfections and Controversies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Argument 1</strong>: payments made on behalf of physicians do not translate to malpractice</li>
+<li style="margin-left: 20px;">Legal process expensive → incentivizes insurance companies to settle with payment rather than engage in costly malpractice trial</li>
+<li style="margin-left: 0px;"><strong>Argument 2</strong>: &quot;Corporate shield&quot; concept → controversial</li>
+<li style="margin-left: 20px;">Occurs when payments made on behalf of institution rather than individual --&gt; effectively bypass entities with mandatory reporting responsibilities</li>
+<li style="margin-left: 20px;">Can prove unfair to practitioners in private practice (common in plastic surgery)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Understanding Tort Reform</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1 Definition and Purpose</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">One of most instrumental strategies implemented to limit number of medical malpractice lawsuits</li>
+<li style="margin-left: 0px;">Described as comprehensive list of legal strategies and provisions implemented by state legislatures</li>
+<li style="margin-left: 0px;">Goals: limit medical malpractice costs, ensure patients injured by medical negligence can be fairly compensated</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2 Historical Impact</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Since <strong>1970s</strong>: helped reduce number of baseless medical malpractice lawsuits and limit excessive awards from jury</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3 Key Provisions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Caps on noneconomic damage</li>
+<li style="margin-left: 0px;">Limitations on proportion of contingency fees collected by attorneys</li>
+<li style="margin-left: 0px;">Limitation on collateral source rule</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Caps on Noneconomic Damages</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1 Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Limit amount of monetary damages plaintiff may collect for <strong>pain and suffering</strong> associated with injury</li>
+<li style="margin-left: 0px;">Attempts to capture intangible losses suffered by victim → separate from financial losses</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2 California MICRA Example</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cap set at <strong>$250,000US</strong> → first established by state of California under Medical Injury Compensation Reform Act (MICRA)</li>
+<li style="margin-left: 0px;">Created after noticing <strong>exodus of physicians</strong> from state due to increasing insurance premiums resulting from high malpractice awards</li>
+<li style="margin-left: 0px;">Left noticeable gap in healthcare throughout state → forced legislature to create more hospitable environment to practice medicine</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3 Recent Changes: AB-35 (2023)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">California recently passed law (AB-35) → significant changes to preexisting cap</li>
+<li style="margin-left: 0px;"><strong>Cases not involving death</strong>:</li>
+<li style="margin-left: 20px;">$350,000US in 2023</li>
+<li style="margin-left: 20px;">Gradual increase over next 10 years → <strong>$750,000US by 2033</strong></li>
+<li style="margin-left: 0px;"><strong>Cases involving patient&#x27;s death</strong>:</li>
+<li style="margin-left: 20px;">$500,000US in 2023</li>
+<li style="margin-left: 20px;">Incremental increases over next 10 years → <strong>$1,000,000US by 2033</strong></li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Contingency Fee Caps</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1 Definition and Mechanism</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Form of payment to lawyer for legal services</li>
+<li style="margin-left: 0px;">Lawyers only receive compensation when client <strong>wins or settles</strong> the case</li>
+<li style="margin-left: 0px;">Differs from fixed payment</li>
+</ul>
+</div></details>
+<details><summary><strong>10.2 Sliding Scale Regulation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Some states further regulate payment of lawyers via sliding scale</li>
+<li style="margin-left: 0px;">Allocates <strong>higher contingency fees for first $50,000US</strong> of recovery</li>
+<li style="margin-left: 0px;">Reduction of contingency fee for amounts exceeding $50,000US</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Benefits and Criticisms</strong></summary><div style="padding-left: 20px;">
+<p><strong>Benefits (patient advocacy standpoint)</strong>:</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Allows access to quality legal representation</li>
+<li style="margin-left: 0px;">Lawyers motivated to work diligently for plaintiff</li>
+<li style="margin-left: 0px;">Prompted lawyers to be judicious about case selection → may limit number of malpractice lawsuits</li>
+<li style="margin-left: 0px;">Incentivizes lawyers to prefer defending plaintiffs when factual</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3 Opponents&#x27; Perspective</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Opponents believe contingency fees <strong>deter most able defense attorneys</strong> from taking on cases in which they believe compensation is not worth time and resources</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Limiting Collateral Source Rule</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1 Traditional Definition</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Law that prevents reduction of damages awarded to plaintiff</li>
+<li style="margin-left: 0px;">Common law states: plaintiff entitled to be fully compensated by negligent party → even if losses already paid by separate party (i.e., plaintiff&#x27;s insurance company)</li>
+</ul>
+</div></details>
+<details><summary><strong>11.2 Purpose of Limitation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Decreases payouts by not allowing plaintiff to profit from losses already appropriately compensated by separate party</li>
+<li style="margin-left: 0px;">Prevents &quot;<strong>double-dipping</strong>&quot; from plaintiff&#x27;s insurance company</li>
+</ul>
+</div></details>
+<details><summary><strong>11.3 Current Status</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most states have <strong>modified or abrogated</strong> the rule to be more compliant with economic realities of today&#x27;s healthcare system</li>
+</ul>
+</div></details>
+<details><summary><strong>11.4 Punitive Damages</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Traditionally used in cases where defendant committed intentional or negligent crimes against plaintiff</li>
+<li style="margin-left: 0px;">Purpose: punish defendant, deter future crimes of similar nature</li>
+<li style="margin-left: 0px;">Has also been eliminated in many jurisdictions</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Common Mistakes in Plastic Surgery</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>12.1 Unhappiness with Result</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common adverse event in lawsuits against plastic surgeons</li>
+<li style="margin-left: 0px;">While unhappiness may stem from subjective and objective measures of poor performance → indicates <strong>failure to meet patient&#x27;s expectations</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>12.2 Traditional Informed Consent Limitations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Process by which surgeons explain risks, benefits, alternatives, expected preoperative and postoperative care</li>
+<li style="margin-left: 0px;">Does not necessarily address concept of &quot;happiness&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>12.3 Effective Physician-Patient Relationship</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Essential in decision making for informed consent process</li>
+<li style="margin-left: 0px;">Optimized relationship leads to better therapeutic strategy</li>
+<li style="margin-left: 0px;">Engaging patient, understanding emotional motivation behind surgery → greater satisfaction in informed consent process</li>
+</ul>
+</div></details>
+<details><summary><strong>12.4 Informed Consent Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Who should obtain consent: surgeon providing treatment OR associated clinician with sufficient knowledge of surgery, potential complications, alternative treatment options</li>
+<li style="margin-left: 0px;">Patient must be: competent, adequately informed, not coerced</li>
+</ul>
+</div></details>
+<details><summary><strong>12.5 AMA Minimum Required Elements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Diagnosis</strong></li>
+<li style="margin-left: 0px;">Nature and purpose of recommended intervention</li>
+<li style="margin-left: 0px;">Burdens, risks, expected benefits of all options including forgoing treatment</li>
+<li style="margin-left: 0px;">Conversation must be meticulously documented in totality → serves as verification of informed consent process</li>
+</ul>
+</div></details>
+<details><summary><strong>12.6 Communication Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Must be tailored to patient&#x27;s need material to decision-making process</li>
+<li style="margin-left: 0px;">Places <strong>onus on physician</strong> to determine what is necessary based on medical judgment</li>
+</ul>
+</div></details>
+<details><summary><strong>12.7 Shared Decision Making (SDM) in Plastic Surgery</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Aesthetic surgeons long recognized importance in developing treatment plan meeting patient&#x27;s specific goals</li>
+</ul>
+</div></details>
+<details><summary><strong>12.8 Three Phases of SDM (Elwyn et al.)</strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>&quot;Choice talk&quot;</strong>: patient made aware options available for treatment</p>
+<p>2. <strong>&quot;Option talk&quot;</strong>: specific options for treatment of condition reviewed</p>
+<p>3. <strong>&quot;Decision talk&quot;</strong>: patient preferences regarding treatment options conveyed → reach mutual decision</p>
+</div></details>
+<details><summary><strong>12.9 Perceived Barriers to SDM</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Perceived to take too long during consultations</li>
+<li style="margin-left: 0px;">Many believe they are already incorporating SDM in their practice</li>
+</ul>
+</div></details>
+<details><summary><strong>12.10 ASAPS Member Survey Results</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>63%</strong> of respondents believed consent documents did not help teach patients essential information needed from informed consent process</li>
+</ul>
+</div></details>
+<details><summary><strong>12.11 Gap in Expectations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Highlights difference between what plastic surgeons understand to be needed (includes SDM) vs current model focused on disclosure of information without demonstration of understanding</li>
+<li style="margin-left: 0px;">Inevitably, gaps in expectations and goals between patient and surgeon exist → eroding foundational relationship --&gt; opening door for future litigation</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>13. Strategies to Avoid a Lawsuit</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.1 Statistical Context</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most plastic surgeons will be named in lawsuit at least once during career</li>
+<li style="margin-left: 0px;">Yet compared to all physicians → plastic surgeons have some of <strong>lowest indemnity payments</strong></li>
+<li style="margin-left: 0px;">Study by Boyd et al: plastic surgeons comprised only <strong>3.31%</strong> of reported claims and <strong>3.16%</strong> of paid claims between 2006-2016</li>
+<li style="margin-left: 0px;"><strong>58%</strong> of payments were less than <strong>$100,000US</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>13.2 Most Prevalent Claims Against Plastic Surgeons</strong></summary><div style="padding-left: 20px;">
+<p>1. <strong>Failure to perform procedure properly</strong>: 60%</p>
+<p>2. Failure to supervise</p>
+<p>3. Failure to recognize a complication</p>
+<p>4. Error in diagnosis</p>
+<p>5. Treatment delay</p>
+</div></details>
+<details><summary><strong>13.3 Strategies to Optimize Patient Safety and Reduce Litigation Risk</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.3.1 Certification Requirements</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Maintain board certification by American Board of Plastic Surgeons</li>
+<li style="margin-left: 0px;">Ensure maintenance of mandatory certifications as determined by local, state, federal laws for surgeons, nurses, other clinic staff (ACLS, BLS)</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3.2 Facility and Procedure Standards</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ensure surgical procedures performed in <strong>accredited facilities</strong> when appropriate based on:</li>
+<li style="margin-left: 20px;">Procedure type</li>
+<li style="margin-left: 20px;">Patient&#x27;s medical comorbidities</li>
+<li style="margin-left: 20px;">Availability of emergency services or equipment</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3.3 Documentation and Consent</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Provide clear written information on surgical procedures → remains up to date with current practices</li>
+<li style="margin-left: 0px;">Ensure informed consent obtained with focus on <strong>shared decision making</strong></li>
+<li style="margin-left: 0px;">Precise documentation of preoperative discussions</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3.4 Scope of Practice</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Do not offer surgical procedures:</li>
+<li style="margin-left: 20px;">Outside scope of practice</li>
+<li style="margin-left: 20px;">Not clinically indicated</li>
+<li style="margin-left: 20px;">In cases where risks outweigh benefits</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3.5 Patient Selection</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Do not offer surgical procedures if:</li>
+<li style="margin-left: 20px;">Surgeon or staff do not like the patient</li>
+<li style="margin-left: 20px;">Surgeon cannot understand patient&#x27;s goals</li>
+<li style="margin-left: 20px;">Patient has <strong>unrealistic expectations</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>13.3.6 Safety Protocols</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Abide by Universal Protocol as outlined by The Joint Commission</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>14. Conclusions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>14.1 Importance of Understanding Malpractice Landscape</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Of paramount importance for plastic surgeons to have thorough understanding of medical malpractice landscape</li>
+</ul>
+</div></details>
+<details><summary><strong>14.2 Legal Outcomes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Though most legal outcomes favor surgeon → necessary to be cognizant of potential for litigation in specific patient care situations</li>
+</ul>
+</div></details>
+<details><summary><strong>14.3 Recommendations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">By implementing recommendations from governing bodies → hope to reduce medical malpractice lawsuits and poor outcomes for surgeon and patient</li>
+</ul>
+</div></details>
+<details><summary><strong>14.4 Future Responsibility</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">In arena where change is only constant → field&#x27;s responsibility to educate surgical trainees and providers to ensure:</li>
+<li style="margin-left: 20px;">Optimal patient safety</li>
+<li style="margin-left: 20px;">Prevention of medical malpractice lawsuits</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>
