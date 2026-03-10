@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comprehensive Architectural Analysis of Secondary Data Sources for Gastrointestinal and Hepatology Research</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Comprehensive Architectural Analysis of Secondary Data Sources for Gastrointestinal and Hepatology Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Source: Academic Analytical Report</li>
+<li style="margin-left: 0px;">Topic: Secondary Data Sources for GI/Hepatology Research</li>
+<li style="margin-left: 0px;">Author(s): Graduate/Medical Education Resource</li>
+</ul>
+<details><summary><strong>Topics</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Section 1</strong>: Survey-based population health databases (NHANES, NHIS) and oncology/specialized procedural registries (SEER, GIQUIC)</li>
+<li style="margin-left: 0px;"><strong>Section 2</strong>: Administrative claims and linked healthcare repositories (MarketScan, NIS, SEER-Medicare) plus EHR/precision medicine platforms (VA VINCI, All of Us)</li>
+<li style="margin-left: 0px;"><strong>Section 3</strong>: Specialized complementary databases for GI/hepatology (GBD, NIDDK Central Repository, SRTR, UK Biobank, IBD Plexus) plus analytical synthesis and methodological implications</li>
+</ul>
+<p><strong>Organization Strategy</strong>: Group databases by type (survey-based, oncology registries, administrative claims, EHR/precision medicine, specialized complementary). Use ## headings for major database categories, ### for individual databases within each category, and #### for specific parameters (time range, population, variables, granularity, access requirements). Maintain bullet format with ≤12 words per bullet while preserving all numerical values, percentages, and key statistics.</p>
+</div></details>
+</div></details>
+<details><summary><strong>Section 1: Survey-Based Population Health Databases &amp; Oncology Registries</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Part I: Survey-Based Population Health Databases</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>National Health and Nutrition Examination Survey (NHANES)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Continuous 2-year cycles since 1999; merged 2017–March 2020 pre-pandemic cycle available</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: ~5,000 civilian, non-institutionalized U.S. residents per year</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Demographics, dietary intake, medication use, lab panels (ALT, AST, ALP, GGT, CRP), Vibration-Controlled Transient Elastography (VCTE)</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Individual-level survey and clinical examination data</li>
+<li style="margin-left: 0px;"><strong>Access</strong>: Publicly accessible; no formal application required; download from CDC portal as SAS transport (.XPT) files</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Machine learning (XGBoost) prediction of liver stiffness using HOMA-IR, METS-IR</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: How do concurrent environmental toxicant exposures synergistically interact with ultra-processed food consumption to accelerate lean MASLD progression in historically marginalized cohorts?</li>
+<li style="margin-left: 0px;"><strong>Key Technical Note</strong>: Requires sample weights and Taylor series linearization for proper variance estimation</li>
+<li style="margin-left: 0px;"><strong>Liver Ultrasound Data</strong>: 2017–2018 cycle introduced FibroScan® 502 V2 Touch with M/XL probes; up to 30 measurements per participant for CAP (dB/m) and LSM (kPa)</li>
+<li style="margin-left: 0px;"><strong>Clinical Applications</strong>: Define fatty liver disease (CAP &gt;300 dB/m) and advanced fibrosis risk (LSM &gt;8 kPa) across demographic strata</li>
+</ul>
+</div></details>
+<details><summary><strong>National Health Interview Survey (NHIS)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Continuous annual surveys spanning several decades</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: ~30,000 households annually; &gt;100,000 individuals across U.S.</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Self-reported chronic conditions (cirrhosis, hepatitis, IBD), healthcare utilization, insurance status, mental health comorbidities, alcohol/drug use</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Individual-level and household-level self-reported data</li>
+<li style="margin-left: 0px;"><strong>Access</strong>: Publicly accessible and free; DNA/serum samples require specific research proposals</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Evaluating food insecurity among IBD patients; examining colorectal cancer screening adherence among African Americans</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: To what extent do social determinants of health (e.g., insurance discontinuity) mediate the relationship between self-reported IBD and severe psychiatric comorbidities over the last decade?</li>
+<li style="margin-left: 0px;"><strong>Methodological Note</strong>: Standardized coding: &quot;7&quot; for refusals, &quot;9&quot; for &quot;don&#x27;t know&quot; responses</li>
+<li style="margin-left: 0px;"><strong>Limitation</strong>: Lacks longitudinal tracking and objective laboratory data</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Part II: Oncology and Specialized Procedural Registries</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Surveillance, Epidemiology, and End Results (SEER)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Continuous data collection since January 1, 1973</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: ~48% of U.S. population; expanding to include Texas (2022), Illinois (2024)</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Demographics, tumor site, stage, histology, grade, biomarker results, first-course surgery/radiation</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Individual tumor-level records</li>
+<li style="margin-left: 0px;"><strong>Access</strong>: Free; requires application and signed Data Use Agreement for SEER Research Plus data</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Tracking rising incidence of early-onset colorectal cancer; epidemiological shifts in esophageal adenocarcinoma</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: What is the survival disparity among intrahepatic cholangiocarcinoma patients across neighborhood-level socioeconomic indices, and how has early surgical intervention uptake mitigated these disparities?</li>
+<li style="margin-left: 0px;"><strong>SEER 5-Digit Site Recodes</strong>: Esophagus (C150-C159), Stomach (C160-C169), Small Intestine (C170-C179), Cecum (C180), Colon (C182), Rectum (C209), Liver (C220), Intrahepatic Bile Duct (C221), Pancreas (C250-C259)</li>
+<li style="margin-left: 0px;"><strong>Limitation</strong>: Captures only first-course treatment (first 4 months); lacks systemic chemotherapy, recurrence, or metastasis data</li>
+</ul>
+</div></details>
+<details><summary><strong>GI Quality Improvement Consortium (GIQUIC)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Established 2010; continuous ongoing data collection</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Millions of patients undergoing endoscopy across diverse U.S. practice settings (hospitals, ambulatory surgery centers)</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Indication, sedation details, bowel prep quality, polyp characteristics, Barrett&#x27;s mucosa extent, adverse events</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Procedure and provider-level data; de-identified patient identifiers</li>
+<li style="margin-left: 0px;"><strong>Access</strong>: Requires Project Pre-Proposal, Conflict of Interest review, Research Committee approval, mutually agreed budget/fee</li>
+<li style="margin-left: 0px;"><strong>Licensing Fees</strong>: $4,000–$10,800 annually based on physician volume for MIPS reporting</li>
+<li style="margin-left: 0px;"><strong>Data Analysis</strong>: Not directly provided; analyses run internally by GIQUIC staff with tabular results returned</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Age-stratified prevalence of neoplasia in screening colonoscopies; evaluating Seattle protocol adherence in Barrett&#x27;s esophagus</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: How does ADR variation among endoscopists in ambulatory surgical centers vs. academic teaching hospitals correlate with interval recommendations for patients with high-risk sessile serrated lesions?</li>
+<li style="margin-left: 0px;"><strong>Polyp Classification</strong>: Non-neoplastic, low-risk adenomas (1-2 tubular &lt;10mm), high-risk adenomas (≥10mm, villous component, HGD, ≥3 adenomas)</li>
+<li style="margin-left: 0px;"><strong>Recent Publications</strong>: 2025 studies in Gastroenterology and AJG demonstrating ADR association with prevalent colorectal cancer detection</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Part III: Administrative Claims and Linked Healthcare Repositories</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Merative MarketScan Research Databases</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Continuous longitudinal data tracking over 300 million unique patient lives across multiple decades</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Predominantly employed individuals with commercial health insurance and retirees with Medicare supplemental insurance</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: ICD diagnosis codes, procedural codes, inpatient/outpatient claims, outpatient pharmacy claims, high-level insurance product types (HMO, PPO)</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Claim-level data tracking beneficiary enrollment and healthcare service encounters</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Requires substantial funding; external non-profit grant projects typically start at $30,000, scaling to $60,000+ for industry funding; some universities maintain internal licenses</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Estimating the $119.6 billion annual economic burden of gastrointestinal, liver, and pancreatic diseases in the United States</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: What is the longitudinal economic impact and step-therapy adherence pattern for newly approved biologic therapies versus small molecule inhibitors in privately insured patients with moderate-to-severe ulcerative colitis?</li>
+<li style="margin-left: 0px;"><strong>Critical Limitation</strong>: Ascertainment bias; demographics exclude race, income, language, other social determinants of health</li>
+<li style="margin-left: 0px;"><strong>Population Bias</strong>: Over 65 population represents only those with commercial insurance in addition to Medicare; non-representative of general U.S. population</li>
+<li style="margin-left: 0px;"><strong>Provider Attribution</strong>: Difficult to differentiate individual healthcare providers or attribute patients to unique clinicians</li>
+<li style="margin-left: 0px;"><strong>Landmark Study</strong>: 2021 Gastroenterology study using MarketScan Commercial Claims data revealed &gt;43.4 million annual ambulatory visits with primary GI diagnosis, millions of hospitalizations, and &gt;22.2 million GI endoscopies</li>
+</ul>
+</div></details>
+<details><summary><strong>National (Nationwide) Inpatient Sample (NIS)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Annual releases; 2023 dataset available; ICD-10-CM/PCS coding implemented from 2016 onwards</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Nationally representative of all short-term, non-Federal U.S. hospitals; includes all patients regardless of payer status (Medicare, Medicaid, private, uninsured)</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Primary/secondary diagnoses, procedures, patient demographics, expected payer, total hospital charges, length of stay, severity/comorbidity measures</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Discharge-level billing data; ~7 million unweighted stays per year, estimating &gt;33 million hospitalizations nationally</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Requires registration via HCUP Central Distributor, completion of DUA training course, purchase fees (student discounts available)</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Studying impact of mental health disorders on cardiac disease outcomes; tracking hospital costs for gastric cancer patients</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Following widespread adoption of direct-acting antivirals, how has incidence, length of stay, and inpatient mortality for HCV-related decompensated cirrhosis shifted compared to MASLD-related decompensated cirrhosis in safety-net hospitals?</li>
+<li style="margin-left: 0px;"><strong>Methodological Shifts</strong>: 2023 NIS release removed HOSP<em>REGION and HOSP</em>DIVISION data elements to enhance data privacy and ensure accurate national estimates</li>
+<li style="margin-left: 0px;"><strong>Limitation</strong>: Encounter-based hospital database does not allow longitudinal tracking of individual patients across multiple admissions; single patient admitted three times appears as three distinct discharges</li>
+<li style="margin-left: 0px;"><strong>Related Database</strong>: For 30-day readmission rates, utilize companion HCUP Nationwide Readmissions Database (NRD) instead of NIS</li>
+</ul>
+</div></details>
+<details><summary><strong>SEER-Medicare Linked Database</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Tumor cases spanning 1999 to 2021 (November 2023 submission) with corresponding longitudinal claims</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Medicare beneficiaries (primarily age 65+) diagnosed with cancer within SEER registry areas</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: SEER clinical variables (site, stage, histology) fused with Medicare claims (Parts A, B, D) covering hospitalizations, outpatient visits, prescriptions</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Patient-level clinical data linked to claim-level utilization data</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Requires rigorous application, IRB approval, detailed Data Storage Plan (cloud storage strictly prohibited without explicit CMS approval), significant acquisition costs</li>
+<li style="margin-left: 0px;"><strong>Database Volume</strong>: Exactly 86,720 liver cancer cases (56,848 Fee-For-Service, 29,872 Medicare Advantage); 614,822 colorectal cancer cases; 203,854 pancreatic cancer cases</li>
+<li style="margin-left: 0px;"><strong>File Cost Structure</strong>: Base Cancer File $350; MEDPAR file for cancer cases $175; Carrier Claims (NCH) $135 per year requested</li>
+<li style="margin-left: 0px;"><strong>Billing Multiplier Logic</strong>: Breast, Lung, Colorectal, Prostate cancers = multiplier 1 each; requesting other combinations (5-8 sites) applies multiplier of 3 to file costs</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Assessing cost-effectiveness of systemic therapies for advanced hepatocellular carcinoma; evaluating racial disparities in palliative care</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Among elderly patients diagnosed with localized colorectal cancer, how do pre-existing frailty markers in Medicare claims predict chemotherapy-induced toxicity trajectories and subsequent hospital readmission rates?</li>
+<li style="margin-left: 0px;"><strong>Methodological Limitation</strong>: Ascertainment of outpatient chemotherapy and radiation therapy within Medicare claims can be incomplete; positive predictive value high (&gt;85%) but overall sensitivity moderate (68% for chemotherapy)</li>
+<li style="margin-left: 0px;"><strong>Validation Note</strong>: SEER-Medicare should not generally be used to estimate absolute proportion of untreated individuals in the population</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Part IV: Electronic Health Records (EHR) and Precision Medicine Platforms</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Veterans Affairs (VA) Corporate Data Warehouse &amp; VINCI</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Spans several decades of continuous, integrated medical care</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: U.S. military veterans; demographic profile skews older and predominantly male with high prevalence rates of Hepatitis C and MASLD</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Full EHR depth including unstructured clinical notes, precise laboratory values (AST, ALT, platelets), imaging reports, pathology, pharmacy dispensing records</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Highly granular, longitudinal clinical chart level</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Free of charge but strictly limited to VA-affiliated investigators or those actively collaborating with VA staff under approved regulatory protocols</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Deriving risk stratification models for hepatic fibrosis utilizing non-invasive algorithms like FIB-4 combined with BMI and diabetes data extracted from EHR</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Utilizing NLP of clinical progress notes and longitudinal FIB-4 scores, what are early phenotypic predictors of rapid progression to HCC in veterans who achieved SVR following hepatitis C treatment?</li>
+<li style="margin-left: 0px;"><strong>Historical Context</strong>: VA GI research legacy includes Dr. Morton I. Grossman (father of modern GI physiology) and Nobel laureates Dr. Rosalyn S. Yalow and Dr. Andrew V. Schally studying gastrointestinal hormones</li>
+<li style="margin-left: 0px;"><strong>NLP Applications</strong>: Researchers use VINCI to apply natural language processing to unstructured clinical notes characterizing complex phenotypes like Gulf War Illness presenting as IBS</li>
+<li style="margin-left: 0px;"><strong>Million Veteran Program (MVP)</strong>: Integrates deep clinical EHRs with massive biobank-derived genomic data (&gt;200,000 samples analyzed via customized Affymetrix Axiom Biobank chip)</li>
+<li style="margin-left: 0px;"><strong>Genomic Capabilities</strong>: Enables unprecedented genome-wide association studies evaluating associations between genetics, military exposure, lifestyle factors, and metabolic liver conditions</li>
+<li style="margin-left: 0px;"><strong>Key Limitation</strong>: External validity constrained; findings regarding MASLD progression in older predominantly male veteran population may not generalize to pre-menopausal women or pediatric populations</li>
+</ul>
+</div></details>
+<details><summary><strong>All of Us Research Program</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Enrollment and continuous tracking initiated recently with commitment to follow participants for 10 years or more</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Adults 18+ living in U.S., intentionally oversampling groups historically underrepresented in biomedical research</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Survey responses, physical measurements, linked EHR data, genomic data (Whole Genome Sequencing), patient-generated data from wearables (e.g., Fitbit)</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Highly granular molecular, physiological, and behavioral tracking</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Tiered access system; free of charge but requires institutional agreements, identity verification, public description of research project</li>
+<li style="margin-left: 0px;"><strong>Data Access Framework</strong>: Established by Committee on Access Privacy and Security (CAPS)</li>
+<li style="margin-left: 0px;"><strong>Registered Tier</strong>: Access to obfuscated EHR data, survey answers, wearable data; precise geographic locations masked to state level</li>
+<li style="margin-left: 0px;"><strong>Controlled Tier</strong>: Unlocks highly sensitive genomic data and more granular demographic information (e.g., 3-digit ZIP codes); requires stringent oversight</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Exploring connections between visual health (Eyes on Health study), metabolic dysfunction, and cognitive/behavioral health disorders</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: By integrating Whole Genome Sequencing with continuous physical activity data derived from wearables, how do specific polygenic risk scores for hepatic steatosis modify the dose-response relationship between sedentary behavior and onset of symptomatic GERD?</li>
+<li style="margin-left: 0px;"><strong>Significance</strong>: Represents quantum leap in data integration; allows sophisticated modeling of multi-system metabolic diseases previously impossible without massive genome-wide association funding</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Part V: Specialized Complementary Databases for GI and Hepatology</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. Global Burden of Disease (GBD) Study</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Host Institution</strong>: Institute for Health Metrics and Evaluation (IHME), University of Washington</li>
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Longitudinal estimates spanning 1990 to 2021</li>
+<li style="margin-left: 0px;"><strong>Population Coverage</strong>: Global coverage across 204 countries and territories</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Incidence, prevalence, mortality, Years of Life Lost (YLLs), Years Lived with Disability (YLDs), Disability-Adjusted Life Years (DALYs), attributable risk factors (alcohol use, high BMI)</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Aggregated data at national, regional, and global levels</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Completely free and publicly accessible without restrictive application barriers; available via Global Health Data Exchange (GHDx) interactive query tool and downloadable datasets</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Analyzing 2021 burden of cirrhosis (estimated 1.42 million deaths and 46.4 million DALYs globally) and modeling future trajectory of NAFLD/NASH</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Analyzing GBD 2021 data, how do diverging trajectories of viral hepatitis-related DALYs versus MASLD-related DALYs across differing Socio-Demographic Index (SDI) quintiles inform optimal resource allocation for global liver cancer prevention over the next decade?</li>
+<li style="margin-left: 0px;"><strong>Disease Classification</strong>: Digestive diseases categorized into ten overarching categories including cirrhosis, appendicitis, pancreatitis, inflammatory bowel disease</li>
+<li style="margin-left: 0px;"><strong>Macro-Epidemiological Value</strong>: Provides foundational statistics for justifying clinical research funding and policy interventions</li>
+<li style="margin-left: 0px;"><strong>Key Finding</strong>: While hepatitis B and C infections decreasing in certain developing regions due to vaccination and DAAs, global NAFLD burden accelerating rapidly particularly in Middle East and Latin America</li>
+</ul>
+</div></details>
+<details><summary><strong>2. NIDDK Central Repository</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Host Institution</strong>: National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK)</li>
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Highly variable, dependent on specific clinical trial or observational cohort (e.g., NASH CRN data collection ran 2009-2020)</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Carefully selected clinical trial participants including specialized pediatric and adult cohorts</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Strict protocol-driven clinical data, detailed follow-up medical history, specific physical activity surveys, highly curated central histology reviews of liver biopsies</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Highly granular patient-level and specimen-level data</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Free access but requires submission of robust research application detailing specific statistical plan and intent to ensure protection of participant data</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Accessing Hepatitis C Antiviral Long-Term Treatment Against Cirrhosis (HALT-C) trial data to study progression of liver disease in patients receiving peginterferon alfa-2a</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Utilizing central histology review data from NASH CRN Adult Database, what subtle histological predictors (e.g., varying degrees of lobular inflammation versus ballooning) most accurately forecast rapid progression to bridging fibrosis in non-diabetic patients?</li>
+<li style="margin-left: 0px;"><strong>NASH CRN Components</strong>: Comprises numerous observational studies and landmark clinical trials including PIVENS trial (Piogltazone vs. Vitamin E) and FLINT trial (Obeticholic Acid)</li>
+<li style="margin-left: 0px;"><strong>NAFLD Adult Database 2</strong>: Includes 2,501 participants</li>
+<li style="margin-left: 0px;"><strong>NAFLD Pediatric Database 2</strong>: Includes 971 participants followed from adolescence into adulthood</li>
+<li style="margin-left: 0px;"><strong>Variable Depth</strong>: Adult Database contains 341 variables dedicated solely to follow-up medical history and 41 variables capturing exact results of NASH CRN Pathology Committee&#x27;s central review of liver biopsy slides</li>
+<li style="margin-left: 0px;"><strong>Unique Value</strong>: Provides high-fidelity histological endpoints rather than mere ICD-10 diagnostic codes</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Scientific Registry of Transplant Recipients (SRTR)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Host Institution</strong>: Manages and analyzes data collected by Organ Procurement and Transplantation Network (OPTN), supplemented by Medicare data and Death Master File</li>
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Comprehensive data spanning from 1987 to present</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Captures 100% of solid organ transplant candidates, living and deceased donors, and recipients in U.S.</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Waitlist dates, listing center types, MELD scores, previous malignancies, life support mechanisms, donor characteristics, post-transplant immunosuppression regimens</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Patient-level files organized by candidate, donor, transplant event, and long-term follow-up</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Requires Data Use Agreement, stringent data security plan, approved research protocol, acquisition fee of $1,000 for initial SAF</li>
+<li style="margin-left: 0px;"><strong>Data Release Schedule</strong>: Standard Analysis Files (SAFs) released quarterly (March, June, September, December); provided exclusively in SAS format</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Evaluating impact of newly implemented MELD 3.0 scoring system on equalizing liver transplant rates between male and female candidates</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Following implementation of MELD 3.0, how has incorporation of sex and updated creatinine coefficients altered waitlist mortality and early post-transplant graft survival rates among female patients with decompensated cirrhosis?</li>
+<li style="margin-left: 0px;"><strong>Predictive Modeling Applications</strong>: Standard machine learning techniques (Multilayer Perceptron, Random Forest, Gradient Boosting) applied to UNOS/SRTR data for Donor-Recipient matching optimization; predicting survival at 3-month, 1-year, and 5-year endpoints compared to standard MELD, SOFT, or BAR scores</li>
+<li style="margin-left: 0px;"><strong>Specific Operational Variables</strong>: CAN<em>LISTING</em>DT (exact date/time candidate added to waitlist), CAN<em>MALIG</em>TY (previous malignancy types)</li>
+<li style="margin-left: 0px;"><strong>Privacy Note</strong>: Standard SAFs exclude geographic data (like zip codes) and most text fields to preserve patient privacy; obtaining these requires special permission and additional fees</li>
+</ul>
+</div></details>
+<details><summary><strong>4. UK Biobank</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Host Institution</strong>: Based in United Kingdom; widely accessed by international researchers</li>
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Prospective cohort launched with baseline data in 2012; continuously updated with new modalities (e.g., accelerated repeat studies 2018-2019)</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Over 500,000 adult participants</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Deep genomic ancestry, environmental exposures, psychological stressors, accelerometry, highly detailed abdominal imaging metrics</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: Individual-level multi-omics, survey, and raw imaging data</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Open to bona fide researchers globally for health-related research in public interest; requires rigorous application and payment of substantial data access tiers</li>
+<li style="margin-left: 0px;"><strong>Data Format</strong>: Accessible via secure research environment; imaging files provided in raw DICOM format</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Applying machine learning to MRI-derived liver shape to identify variations linked to iron homeostasis and hemolysis</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: By integrating multi-omics data with high-resolution environmental exposure records and objective physical activity metrics, what are causal bidirectional relationships between chronic psychological stress and progression of inflammatory bowel disease?</li>
+<li style="margin-left: 0px;"><strong>Hepatology Value</strong>: Uniquely includes abdominal MRI scans for tens of thousands of participants</li>
+<li style="margin-left: 0px;"><strong>Imaging Variables</strong>: Directly and non-invasively quantify liver fat percentage, liver iron content, liver inflammation factor (LIF), abdominal subcutaneous adipose tissue (ASAT), visceral adipose tissue (VAT)</li>
+<li style="margin-left: 0px;"><strong>Lean MASLD Research</strong>: Recent studies explore distinctive clinical and genetic features of lean MASLD (BMI &lt;25) versus overweight/obese MASLD using MILTON machine-learning framework for augmented phenome-wide association studies (PheWAS)</li>
+</ul>
+</div></details>
+<details><summary><strong>5. IBD Plexus (Crohn&#x27;s &amp; Colitis Foundation)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Host Institution</strong>: Crohn&#x27;s &amp; Colitis Foundation</li>
+<li style="margin-left: 0px;"><strong>Time Range</strong>: Continuous, ongoing data aggregation from several longitudinal cohorts (e.g., SPARC IBD, CAPTURE IBD, IBD SIRQC)</li>
+<li style="margin-left: 0px;"><strong>Population</strong>: Specialized cohort of adult and pediatric patients diagnosed with Crohn&#x27;s disease, Ulcerative Colitis, and indeterminate IBD</li>
+<li style="margin-left: 0px;"><strong>Variables</strong>: Patient-reported outcomes, precise medication history (breakdown of specific biologic usage), genetic data, transcriptomic/molecular data</li>
+<li style="margin-left: 0px;"><strong>Granularity</strong>: High-resolution clinical phenotypes linked directly to molecular biosamples (blood, stool, intestinal cells)</li>
+<li style="margin-left: 0px;"><strong>Access Requirements</strong>: Academic researchers must submit responses to specific Requests for Proposals (RFPs) reviewed in six annual cycles; Foundation grant awardees (e.g., Senior Research Awardees) can access data and biosamples at no cost</li>
+<li style="margin-left: 0px;"><strong>Example Project</strong>: Over 200 active projects evaluating disease management, therapeutic optimization, identification/validation of novel diagnostic biomarkers</li>
+<li style="margin-left: 0px;"><strong>Competitive Research Question</strong>: Utilizing longitudinal transcriptomic profiles and matched patient-reported symptom outcomes from IBD Plexus, what novel molecular signatures predict loss of response to anti-TNF therapies in patients with stricturing Crohn&#x27;s disease prior to clinical manifestation?</li>
+<li style="margin-left: 0px;"><strong>Operational Structure</strong>: Feeds data from foundational studies into central analytical hub</li>
+<li style="margin-left: 0px;"><strong>Pharmacological Detail Level</strong>: Extraordinary level not found in administrative claims; recent demographic breakdowns show 61% patients received steroid therapies, 51% immunomodulators, 44% biologics</li>
+<li style="margin-left: 0px;"><strong>Biologic-Specific Data</strong>: Breakdown by agent: 40% Infliximab, 13% Adalimumab, emerging therapies like Vedolizumab and Ustekinumab</li>
+<li style="margin-left: 0px;"><strong>Research Advantage</strong>: Links exact clinical exposure data to physical biosamples enabling accelerated therapeutic optimization and disease prevention strategies without years of screening and recruiting patients for tissue sample donation</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Analytical Synthesis and Methodological Implications</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Database Selection Framework</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">For graduate students and fellows structuring epidemiological and clinical research, database selection is rarely binary; demands aligning specific constraints, biases, and architecture with clinical nuances of hypothesis</li>
+<li style="margin-left: 0px;">Selection requires understanding inherent strengths and limitations of each repository type</li>
+</ul>
+</div></details>
+<details><summary><strong>Administrative Claims Databases: Strengths and Limitations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Databases</strong>: MarketScan, NIS excel at quantifying systemic economic burdens and healthcare utilization on massive scale</li>
+<li style="margin-left: 0px;"><strong>Inherent Design</strong>: Designed for billing, not clinical research; diagnoses rely on ICD-10 coding accuracy leading to significant misclassification bias</li>
+<li style="margin-left: 0px;"><strong>Critical Gap</strong>: Absence of granular laboratory values (bilirubin, INR, creatinine) makes it impossible to accurately calculate MELD score or assess biochemical severity of decompensated cirrhosis</li>
+<li style="margin-left: 0px;"><strong>Appropriate Use</strong>: Demonstrate rising aggregate inpatient costs of acute alcoholic hepatitis across regions</li>
+<li style="margin-left: 0px;"><strong>Inappropriate Use</strong>: Correlate costs with precise disease severity trajectories</li>
+</ul>
+</div></details>
+<details><summary><strong>EHR Databases: Depth versus Generalizability</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>VA VINCI System</strong>: Offers unparalleled depth into biochemical markers and longitudinal disease progression via continuous EHRs</li>
+<li style="margin-left: 0px;"><strong>External Validity Constraint</strong>: Tightly constrained by demographically homogeneous population predominantly older and male</li>
+<li style="margin-left: 0px;"><strong>Generalizability Issue</strong>: Findings regarding MASLD or autoimmune hepatitis progression may not directly generalize to pre-menopausal women or pediatric populations</li>
+<li style="margin-left: 0px;"><strong>Pediatric Research Alternative</strong>: NASH CRN Pediatric Database within NIDDK Central Repository tracks patients from adolescence into adulthood with precisely graded and standardized histology</li>
+</ul>
+</div></details>
+<details><summary><strong>Future Directions: Multi-Omics Integration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Paradigm Shift</strong>: Future of GI and hepatology research lies unequivocally in integration of multi-omics and real-time physiological monitoring; shifting from reactive diagnosis to predictive modeling</li>
+<li style="margin-left: 0px;"><strong>Vanguard Platforms</strong>: All of Us Research Program and UK Biobank represent absolute vanguard of this shift</li>
+<li style="margin-left: 0px;"><strong>Data Integration Capabilities</strong>: Incorporate continuous physiological data from wearable devices alongside whole-genome sequencing and high-resolution abdominal MRI</li>
+<li style="margin-left: 0px;"><strong>Research Applications</strong>: Enable researchers to interrogate complex gene-environment interactions driving functional GI disorders and metabolic liver diseases</li>
+<li style="margin-left: 0px;"><strong>Machine Learning Applications</strong>: Advanced algorithms (Random Survival Forests, XGBoost) applied to massive datasets identify unrecognized phenotypes providing direct pathway to personalized precision therapeutics</li>
+</ul>
+</div></details>
+<details><summary><strong>Summary of Database Toolkit</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Macro-Epidemiological Tracking</strong>: Global Burden of Disease study provides foundational global disease burden statistics</li>
+<li style="margin-left: 0px;"><strong>Clinical Trial Data</strong>: NIDDK Central Repository offers high-fidelity histological endpoints and protocol-driven clinical trial data</li>
+<li style="margin-left: 0px;"><strong>Transplantation Research</strong>: SRTR provides comprehensive solid organ transplantation data for predictive modeling</li>
+<li style="margin-left: 0px;"><strong>Multi-Omics Integration</strong>: UK Biobank offers unparalleled depth of phenotypic, genotypic, and advanced imaging integration</li>
+<li style="margin-left: 0px;"><strong>IBD-Specific Research</strong>: IBD Plexus provides revolutionary precision medicine ecosystem with molecular biosample linkage</li>
+<li style="margin-left: 0px;"><strong>Statistical Power</strong>: Secondary data sources allow investigators to answer critical clinical questions with statistical power impossible to achieve through traditional prospective trials</li>
+</ul>
+</div></details>
+<details><summary><strong>Conclusion</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Researcher Preparation</strong>: By mastering acquisition, cleaning, and complex statistical analysis of diverse datasets, next generation of medical researchers uniquely equipped to unravel complexities of digestive diseases</li>
+<li style="margin-left: 0px;"><strong>Impact Goal</strong>: Drive implementation of equitable, data-driven patient care globally through rigorous secondary data analysis</li>
+<li style="margin-left: 0px;"><strong>Transformative Potential</strong>: Vast array of available databases provides unparalleled toolkit for advancing gastrointestinal and hepatology research across all domains from population epidemiology to precision therapeutics</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "Q29tcHJlaGVuc2l2ZSBBcmNoaXRlY3R1cmFsIEFuYWx5c2lzIG9mIFNlY29uZGFyeSBEYXRhIFNvdXJjZXMgZm9yIEdhc3Ryb2ludGVzdGluYWwgYW5kIEhlcGF0b2xvZ3kgUmVzZWFyY2hUaGUgbGFuZHNjYXBlIG9mIGdhc3Ryb2ludGVzdGluYWwgKEdJKSBhbmQgaGVwYXRvbG9neSByZXNlYXJjaCBoYXMgdW5kZXJnb25lIGEgcGFyYWRpZ20gc2hpZnQsIHRyYW5zaXRpb25pbmcgZnJvbSBsb2NhbGl6ZWQsIGhlYXZpbHkgY29udHJvbGxlZCBwcm9zcGVjdGl2ZSBjbGluaWNhbCB0cmlhbHMgdG8gdGhlIGludGVncmF0aW9uIG9mIG1hc3NpdmUsIHN0cnVjdHVyZWQsIGFuZCBhY2Nlc3NpYmxlIHNlY29uZGFyeSBkYXRhYmFzZXMuIFRoZSBlY29ub21pYyBhbmQgZXBpZGVtaW9sb2dpY2FsIGJ1cmRlbiBvZiBkaWdlc3RpdmUgZGlzZWFzZXMgaXMgc3RhZ2dlcmluZzsgcmVjZW50IGFuYWx5c2VzIGluZGljYXRlIHRoYXQgZ2FzdHJvaW50ZXN0aW5hbCBoZWFsdGggY2FyZSBleHBlbmRpdHVyZXMgaW4gdGhlIFVuaXRlZCBTdGF0ZXMgZXhjZWVkICQxMTkuNiBiaWxsaW9uIGFubnVhbGx5LCBhY2NvdW50aW5nIGZvciBtb3JlIHRoYW4gMzYuOCBtaWxsaW9uIGFtYnVsYXRvcnkgdmlzaXRzIGFuZCBvdmVyIDMuOCBtaWxsaW9uIGlucGF0aWVudCBhZG1pc3Npb25zLiBGdXJ0aGVybW9yZSwgY29uZGl0aW9ucyBzdWNoIGFzIG1ldGFib2xpYyBkeXNmdW5jdGlvbi1hc3NvY2lhdGVkIHN0ZWF0b3RpYyBsaXZlciBkaXNlYXNlIChNQVNMRCksIGluZmxhbW1hdG9yeSBib3dlbCBkaXNlYXNlIChJQkQpLCBhbmQgZ2FzdHJvaW50ZXN0aW5hbCBtYWxpZ25hbmNpZXMgcHJlc2VudCBwcm9mb3VuZCBwdWJsaWMgaGVhbHRoIGNoYWxsZW5nZXMgY2hhcmFjdGVyaXplZCBieSBjb21wbGV4IGdlbmUtZW52aXJvbm1lbnQgaW50ZXJhY3Rpb25zLCBzb2Npb2Vjb25vbWljIGRpc3Bhcml0aWVzLCBhbmQgZXZvbHZpbmcgdGhlcmFwZXV0aWMgbGFuZHNjYXBlcy5Gb3IgZ3JhZHVhdGUgc3R1ZGVudHMsIG1lZGljYWwgZmVsbG93cywgYW5kIGVhcmx5LWNhcmVlciBpbnZlc3RpZ2F0b3JzLCBkYXRhYmFzZS1vcmllbnRlZCByZXNlYXJjaCBvZmZlcnMgYW4gdW5wcmVjZWRlbnRlZCB2ZWhpY2xlIHRvIHRlc3QgY2xpbmljYWxseSBtZWFuaW5nZnVsIGh5cG90aGVzZXMgd2l0aG91dCB0aGUgZGF1bnRpbmcgdGVtcG9yYWwgYW5kIGZpbmFuY2lhbCBiYXJyaWVycyBhc3NvY2lhdGVkIHdpdGggcHJpbWFyeSBkYXRhIGNvbGxlY3Rpb24uIEhvd2V2ZXIsIHRoZSBtb2Rlcm4gaW50ZXJzZWN0aW9uIG9mIHRoZSBndXQtYnJhaW4gYXhpcywgdGhlIGludGVzdGluYWwgbWljcm9iaW9tZSwgbXVsdGktb21pY3MsIGFuZCBzeXN0ZW1pYyBtZXRhYm9saWMgZnVuY3Rpb24gcG9zZXMgcGFydGljdWxhciBjaGFsbGVuZ2VzIHRoYXQgZGVtYW5kIHNvcGhpc3RpY2F0ZWQgdGVjaG5pY2FsIGtub3ctaG93IGluIG1lZGljYWwgaW5mb3JtYXRpY3MuIFJlc2VhcmNoZXJzIG11c3QgbmF2aWdhdGUgYSBoaWdobHkgZnJhZ21lbnRlZCBkYXRhIGVjb3N5c3RlbSwgY3JpdGljYWxseSBldmFsdWF0aW5nIHRoZSBpbmhlcmVudCBhc2NlcnRhaW5tZW50IGJpYXNlcywgZ2VuZXJhbGl6YWJpbGl0eSwgYW5kIGNsaW5pY2FsIGdyYW51bGFyaXR5IG9mIHZhcmlvdXMgcmVwb3NpdG9yaWVzLlRoaXMgZXhoYXVzdGl2ZSBhbmFseXRpY2FsIHJlcG9ydCBwcm92aWRlcyBhIGdyYW51bGFyIGV4YW1pbmF0aW9uIG9mIHByaW1hcnkgZGF0YWJhc2Vz4oCUc3BlY2lmaWNhbGx5IE5IQU5FUywgTkhJUywgU0VFUiwgR0lRVUlDLCB0aGUgVmV0ZXJhbnMgQWZmYWlycyAoVkEpIFZJTkNJIHN5c3RlbSwgTWFya2V0U2NhbiwgU0VFUi1NZWRpY2FyZSwgTklTLCBhbmQgdGhlIEFsbCBvZiBVcyBSZXNlYXJjaCBQcm9ncmFtLiBJbiBhZGRpdGlvbiwgaXQgaWRlbnRpZmllcyBhbmQgZXZhbHVhdGVzIGNyaXRpY2FsLCBmcmVlbHkgYWNjZXNzaWJsZSBjb21wbGVtZW50YXJ5IHBsYXRmb3JtcyBzdWNoIGFzIHRoZSBHbG9iYWwgQnVyZGVuIG9mIERpc2Vhc2UgKEdCRCkgc3R1ZHksIHRoZSBOSURESyBDZW50cmFsIFJlcG9zaXRvcnksIHRoZSBTY2llbnRpZmljIFJlZ2lzdHJ5IG9mIFRyYW5zcGxhbnQgUmVjaXBpZW50cyAoU1JUUiksIHRoZSBVSyBCaW9iYW5rLCBhbmQgSUJEIFBsZXh1cy4gQnkgZGV0YWlsaW5nIHRoZSB0aW1lIHJhbmdlcywgcG9wdWxhdGlvbiBkZW1vZ3JhcGhpY3MsIHZhcmlhYmxlIGdyYW51bGFyaXR5LCBhY2Nlc3MgcHJvdG9jb2xzLCBhbmQgY29tcGV0aXRpdmUgcmVzZWFyY2ggYXBwbGljYXRpb25zIGZvciBlYWNoIHJlcG9zaXRvcnksIHRoaXMgYW5hbHlzaXMgc2VydmVzIGFzIGEgZGVmaW5pdGl2ZSBhcmNoaXRlY3R1cmFsIGd1aWRlIGZvciBmb3JtdWxhdGluZyBoaWdoLWltcGFjdCwgZGF0YS1kcml2ZW4gZXBpZGVtaW9sb2dpY2FsIGFuZCBjbGluaWNhbCByZXNlYXJjaC5QYXJ0IEk6IFN1cnZleS1CYXNlZCBQb3B1bGF0aW9uIEhlYWx0aCBEYXRhYmFzZXNTdXJ2ZXktYmFzZWQgZGF0YWJhc2VzIHJlbHkgb24gY29tcGxleCwgc3RyYXRpZmllZCBwcm9iYWJpbGl0eSBzYW1wbGluZyB0byBnZW5lcmF0ZSBuYXRpb25hbGx5IHJlcHJlc2VudGF0aXZlIGVzdGltYXRlcyBvZiBkaXNlYXNlIHByZXZhbGVuY2UsIGhlYWx0aCBiZWhhdmlvcnMsIGFuZCBwaHlzaW9sb2dpY2FsIHBhcmFtZXRlcnMuIFRoZXNlIHJlc291cmNlcyBhcmUgZm91bmRhdGlvbmFsIGZvciBjcm9zcy1zZWN0aW9uYWwgZXBpZGVtaW9sb2dpY2FsIHN0dWRpZXMsIGFsbG93aW5nIHJlc2VhcmNoZXJzIHRvIGV4dHJhcG9sYXRlIGZpbmRpbmdzIHRvIHRoZSBicm9hZGVyIG5vbi1pbnN0aXR1dGlvbmFsaXplZCBjaXZpbGlhbiBwb3B1bGF0aW9uLk5hdGlvbmFsIEhlYWx0aCBhbmQgTnV0cml0aW9uIEV4YW1pbmF0aW9uIFN1cnZleSAoTkhBTkVTKVRoZSBOYXRpb25hbCBIZWFsdGggYW5kIE51dHJpdGlvbiBFeGFtaW5hdGlvbiBTdXJ2ZXkgKE5IQU5FUyksIGFkbWluaXN0ZXJlZCBieSB0aGUgQ2VudGVycyBmb3IgRGlzZWFzZSBDb250cm9sIGFuZCBQcmV2ZW50aW9uIChDREMpLCByZXByZXNlbnRzIHRoZSBnb2xkIHN0YW5kYXJkIGZvciBjcm9zcy1zZWN0aW9uYWwgcGh5c2lvbG9naWNhbCBhbmQgbnV0cml0aW9uYWwgZGF0YSBpbiB0aGUgVW5pdGVkIFN0YXRlcy4gQ29tYmluaW5nIHN0cnVjdHVyZWQgaG9tZSBpbnRlcnZpZXdzIHdpdGggaGlnaGx5IHN0YW5kYXJkaXplZCBwaHlzaWNhbCBleGFtaW5hdGlvbnMgYW5kIGxhYm9yYXRvcnkgZGF0YSBjb2xsZWN0ZWQgaW4gbW9iaWxlIGV4YW1pbmF0aW9uIGNlbnRlcnMsIE5IQU5FUyBwcm92aWRlcyB1bnBhcmFsbGVsZWQgcGh5c2lvbG9naWNhbCBkZXB0aC5EYXRhYmFzZSBQYXJhbWV0ZXJOSEFORVMgUHJvZmlsZSBEZXNjcmlwdGlvblRpbWUgUmFuZ2VDb250aW51b3VzIHR3by15ZWFyIGN5Y2xlcyBzaW5jZSAxOTk5ICh3aXRoIGhpc3RvcmljYWwgaXRlcmF0aW9ucyBkYXRpbmcgYmFjayB0byAxOTcxKS4gUmVjZW50IGRhdGEgaW5jbHVkZXMgYSBtZXJnZWQgMjAxN+KAk01hcmNoIDIwMjAgcHJlLXBhbmRlbWljIGN5Y2xlLlBvcHVsYXRpb24gRGVtb2dyYXBoaWNzQXBwcm94aW1hdGVseSA1LDAwMCBjaXZpbGlhbiwgbm9uLWluc3RpdHV0aW9uYWxpemVkIFUuUy4gcmVzaWRlbnRzIHBlciB5ZWFyLlZhcmlhYmxlcyBJbmNsdWRlZERlbW9ncmFwaGljIGluZGljZXMsIGRpZXRhcnkgaW50YWtlLCBtZWRpY2F0aW9uIHVzZSwgY29tcHJlaGVuc2l2ZSBsYWJvcmF0b3J5IHBhbmVscyAoQUxULCBBU1QsIEFMUCwgR0dULCBDUlApLCBhbmQgVmlicmF0aW9uLUNvbnRyb2xsZWQgVHJhbnNpZW50IEVsYXN0b2dyYXBoeSAoVkNURSkuR3JhbnVsYXJpdHlJbmRpdmlkdWFsLWxldmVsIHN1cnZleSBhbmQgY2xpbmljYWwgZXhhbWluYXRpb24gZGF0YS5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5RnJlZWx5IGF2YWlsYWJsZSBpbiBzdHJ1Y3R1cmVkIFNBUyB0cmFuc3BvcnQgKC5YUFQpIGZpbGVzLkFjY2VzcyBSZXF1aXJlbWVudHNQdWJsaWNseSBhY2Nlc3NpYmxlOyBubyBmb3JtYWwgYXBwbGljYXRpb24gcmVxdWlyZWQuIERhdGEgc2V0cyBtdXN0IGJlIGRvd25sb2FkZWQgZGlyZWN0bHkgZnJvbSB0aGUgQ0RDIHBvcnRhbC5FeGFtcGxlIFByb2plY3RzTWFjaGluZSBsZWFybmluZyAoWEdCb29zdCkgcHJlZGljdGlvbiBvZiBsaXZlciBzdGlmZm5lc3MgdXNpbmcgaW5zdWxpbiByZXNpc3RhbmNlIG1ldHJpY3MgKEhPTUEtSVIsIE1FVFMtSVIpLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uSG93IGRvIGNvbmN1cnJlbnQgZW52aXJvbm1lbnRhbCB0b3hpY2FudCBleHBvc3VyZXMgc3luZXJnaXN0aWNhbGx5IGludGVyYWN0IHdpdGggdWx0cmEtcHJvY2Vzc2VkIGZvb2QgY29uc3VtcHRpb24gdG8gYWNjZWxlcmF0ZSB0aGUgcHJvZ3Jlc3Npb24gb2YgbGVhbiBNQVNMRCBpbiBoaXN0b3JpY2FsbHkgbWFyZ2luYWxpemVkIGNvaG9ydHM/VGhlIHRydWUgcG93ZXIgb2YgTkhBTkVTIGZvciBoZXBhdG9sb2d5IHJlc2VhcmNoIHdhcyB1bmxvY2tlZCBkdXJpbmcgdGhlIDIwMTfigJMyMDE4IGN5Y2xlLCB3aGljaCBpbnRyb2R1Y2VkIGxpdmVyIHVsdHJhc291bmQgdHJhbnNpZW50IGVsYXN0b2dyYXBoeSAoTFVYKS4gRHVlIHRvIHRoZSBDT1ZJRC0xOSBwYW5kZW1pYywgZGF0YSBjb2xsZWN0aW9uIGZvciB0aGUgc3Vic2VxdWVudCAyMDE54oCTMjAyMCBjeWNsZSB3YXMgc3VzcGVuZGVkOyBjb25zZXF1ZW50bHksIHRoZSBDREMgbWVyZ2VkIHRoZSBjb2xsZWN0ZWQgZGF0YSB0byBmb3JtIGEgbmF0aW9uYWxseSByZXByZXNlbnRhdGl2ZSBwcmUtcGFuZGVtaWMgc2FtcGxlIGNvdmVyaW5nIDIwMTcgdG8gTWFyY2ggMjAyMC4gVGhlIHRyYW5zaWVudCBlbGFzdG9ncmFwaHkgZXhhbWluYXRpb25zIHdlcmUgcGVyZm9ybWVkIHVzaW5nIHRoZSBGaWJyb1NjYW7CriA1MDIgVjIgVG91Y2ggZGV2aWNlLCB1dGlsaXppbmcgYm90aCBtZWRpdW0gKE0pIGFuZCBsYXJnZSAoWEwpIHByb2JlcyB0byBhY2NvbW1vZGF0ZSB2YXJ5aW5nIGJvZHkgaGFiaXR1cy4gVXAgdG8gdGhpcnR5IG1lYXN1cmVtZW50cyB3ZXJlIHRha2VuIHBlciBwYXJ0aWNpcGFudCB0byBkZXJpdmUgdGhlIENvbnRyb2xsZWQgQXR0ZW51YXRpb24gUGFyYW1ldGVyIChDQVAsIG1lYXN1cmVkIGluIGRCL20pIGZvciBoZXBhdGljIHN0ZWF0b3NpcyBhbmQgbGl2ZXIgc3RpZmZuZXNzIG1lYXN1cmVtZW50cyAoTFNNLCBtZWFzdXJlZCBpbiBrUGEpIGZvciBoZXBhdGljIGZpYnJvc2lzLlJlc2VhcmNoZXJzIG11c3QgZXhlcmNpc2UgY2F1dGlvbiBhbmQgdXRpbGl6ZSBhcHByb3ByaWF0ZSBzdGF0aXN0aWNhbCBtZXRob2RvbG9neSB3aGVuIGFuYWx5emluZyBOSEFORVMgZGF0YS4gQmVjYXVzZSBvZiB0aGUgY29tcGxleCwgbXVsdGlzdGFnZSBwcm9iYWJpbGl0eSBzYW1wbGluZyBkZXNpZ24sIHJhdyBzYW1wbGUgY291bnRzIGNhbm5vdCBiZSBkaXJlY3RseSBleHRyYXBvbGF0ZWQuIEFuYWx5c3RzIG11c3QgYXBwbHkgc3BlY2lmaWMgc2FtcGxlIHdlaWdodHMgdG8gYWNjb3VudCBmb3IgdW5lcXVhbCBzZWxlY3Rpb24gcHJvYmFiaWxpdGllcyBhbmQgbm9ucmVzcG9uc2UsIGFuZCB1dGlsaXplIFRheWxvciBzZXJpZXMgbGluZWFyaXphdGlvbiBvciBwcm9wZXIgdmFyaWFuY2UgZXN0aW1hdGlvbiB0ZWNobmlxdWVzIChzdWNoIGFzIHRob3NlIGF2YWlsYWJsZSBpbiBTVURBQU4gb3Igc3BlY2lmaWMgU0FTIHN1cnZleSBwcm9jZWR1cmVzKSB0byBhY2NvdW50IGZvciB0aGUgc3VydmV5IGRlc2lnbiBlZmZlY3RzLiBXaGVuIHByb3Blcmx5IHdlaWdodGVkLCB0aGlzIGRhdGEgYWxsb3dzIHJlc2VhcmNoZXJzIHRvIGRlZmluZSBmYXR0eSBsaXZlciBkaXNlYXNlIG9iamVjdGl2ZWx5IChlLmcuLCBDQVAgPiAzMDAgZEIvbSkgYW5kIGFzc2VzcyBhZHZhbmNlZCBmaWJyb3NpcyByaXNrIChlLmcuLCBMU00gPiA4IGtQYSkgYWNyb3NzIGRlbW9ncmFwaGljIHN0cmF0YSwgYWRqdXN0aW5nIGZvciBjb3ZhcmlhdGVzIHN1Y2ggYXMgZ2x5Y29oZW1vZ2xvYmluLCB1cmljIGFjaWQsIGFuZCBsZWlzdXJlLXRpbWUgcGh5c2ljYWwgYWN0aXZpdHkuTmF0aW9uYWwgSGVhbHRoIEludGVydmlldyBTdXJ2ZXkgKE5ISVMpV2hpbGUgTkhBTkVTIHByb3ZpZGVzIHByb2ZvdW5kIHBoeXNpb2xvZ2ljYWwgZGVwdGgsIHRoZSBOYXRpb25hbCBIZWFsdGggSW50ZXJ2aWV3IFN1cnZleSAoTkhJUykgb2ZmZXJzIGJyb2FkIGluc2lnaHRzIGludG8gaGVhbHRoIGNhcmUgYWNjZXNzLCB1dGlsaXphdGlvbiwgYW5kIHNvY2lvZWNvbm9taWMgYmFycmllcnMgYWNyb3NzIGEgc2lnbmlmaWNhbnRseSBsYXJnZXIgcG9wdWxhdGlvbiBzY2FsZS5EYXRhYmFzZSBQYXJhbWV0ZXJOSElTIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlQ29udGludW91cyBhbm51YWwgc3VydmV5cyB3aXRoIGRhdGEgcHVibGljbHkgYXZhaWxhYmxlIHNwYW5uaW5nIHNldmVyYWwgZGVjYWRlcy5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc0FwcHJveGltYXRlbHkgMzAsMDAwIGhvdXNlaG9sZHMgYW5udWFsbHksIGNhcHR1cmluZyBkYXRhIG9uIG92ZXIgMTAwLDAwMCBpbmRpdmlkdWFscyBhY3Jvc3MgdGhlIFVuaXRlZCBTdGF0ZXMuVmFyaWFibGVzIEluY2x1ZGVkU2VsZi1yZXBvcnRlZCBjaHJvbmljIGNvbmRpdGlvbnMgKGNpcnJob3NpcywgaGVwYXRpdGlzLCBJQkQpLCBoZWFsdGhjYXJlIHV0aWxpemF0aW9uLCBpbnN1cmFuY2Ugc3RhdHVzLCBtZW50YWwgaGVhbHRoIGNvbW9yYmlkaXRpZXMgKGRlcHJlc3Npb24pLCBhbmQgYWxjb2hvbC9kcnVnIHVzZS5HcmFudWxhcml0eUluZGl2aWR1YWwtbGV2ZWwgYW5kIGhvdXNlaG9sZC1sZXZlbCBzZWxmLXJlcG9ydGVkIGRhdGEuVGFidWxhciBEYXRhIEF2YWlsYWJpbGl0eUF2YWlsYWJsZSBhcyBzdHJ1Y3R1cmVkIHRhYnVsYXIgZGF0YSBmaWxlcyB3aXRoIGNvbXByZWhlbnNpdmUgY29kZWJvb2tzLkFjY2VzcyBSZXF1aXJlbWVudHNQdWJsaWNseSBhY2Nlc3NpYmxlIGFuZCBmcmVlIG9mIGNoYXJnZS4gRXh0cmEgRE5BIG9yIHNlcnVtIHNhbXBsZXMgcmVxdWlyZSBzcGVjaWZpYyByZXNlYXJjaCBwcm9wb3NhbHMuRXhhbXBsZSBQcm9qZWN0c0V2YWx1YXRpbmcgZm9vZCBpbnNlY3VyaXR5IGFtb25nIHBhdGllbnRzIHdpdGggaW5mbGFtbWF0b3J5IGJvd2VsIGRpc2Vhc2UsIG9yIGV4YW1pbmluZyBjb2xvcmVjdGFsIGNhbmNlciBzY3JlZW5pbmcgYWRoZXJlbmNlIGFtb25nIEFmcmljYW4gQW1lcmljYW5zLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uVG8gd2hhdCBleHRlbnQgZG8gc3BlY2lmaWMgc29jaWFsIGRldGVybWluYW50cyBvZiBoZWFsdGggKGUuZy4sIGluc3VyYW5jZSBkaXNjb250aW51aXR5KSBtZWRpYXRlIHRoZSByZWxhdGlvbnNoaXAgYmV0d2VlbiBzZWxmLXJlcG9ydGVkIElCRCBhbmQgdGhlIGluY2lkZW5jZSBvZiBzZXZlcmUgcHN5Y2hpYXRyaWMgY29tb3JiaWRpdGllcyBvdmVyIHRoZSBsYXN0IGRlY2FkZT9UaGUgTkhJUyBpcyBwYXJ0aWN1bGFybHkgdmFsdWFibGUgZm9yIGhlYWx0aCBzZXJ2aWNlcyByZXNlYXJjaGVycyBldmFsdWF0aW5nIHRoZSBzdHJ1Y3R1cmFsIGFuZCBzeXN0ZW1pYyBiYXJyaWVycyB0byBnYXN0cm9lbnRlcm9sb2dpY2FsIGNhcmUuIFRoZSBzdXJ2ZXkgZXhwbGljaXRseSBxdWVyaWVzIHJlc3BvbmRlbnRzIG9uIHdoZXRoZXIgdGhleSBoYXZlIGV2ZXIgYmVlbiB0b2xkIGJ5IGEgaGVhbHRoIHByb2Zlc3Npb25hbCB0aGF0IHRoZXkgaGF2ZSBhIGxvbmctdGVybSBsaXZlciBjb25kaXRpb24sIGNpcnJob3NpcywgaGVwYXRpdGlzLCBDcm9obidzIGRpc2Vhc2UsIG9yIHVsY2VyYXRpdmUgY29saXRpcy4gRnVydGhlcm1vcmUsIGl0IGNhcHR1cmVzIGRldGFpbGVkIGRhdGEgb24gcHN5Y2hvc29jaWFsIHZhcmlhYmxlcyBzdWNoIGFzIGZhdGlndWUgc3ltcHRvbXMsIGRlbWVudGlhLCBkZXByZXNzaW9uLCBhbmQgdGFzdGUvc21lbGwgc3ltcHRvbXMgZm9sbG93aW5nIENPVklELTE5IGluZmVjdGlvbi5BIGNyaXRpY2FsIG1ldGhvZG9sb2dpY2FsIGFzcGVjdCBvZiB1c2luZyB0aGUgTkhJUyBpcyBuYXZpZ2F0aW5nIGl0cyBzdGFuZGFyZGl6ZWQgY29kaW5nIHNjaGVtZS4gQWNyb3NzIGFsbCBOSElTIGZpbGVzLCBzcGVjaWZpYyBjb2RlcyBhcmUgdW5pZm9ybWx5IHV0aWxpemVkIHRvIGRlc2lnbmF0ZSBub24tcmVzcG9uc2Ugb3IgdW5jZXJ0YWludHk7IGZvciBleGFtcGxlLCByZWZ1c2FscyBhcmUgdW5pdmVyc2FsbHkgY29kZWQgYXMgIjciLCB3aGlsZSAiZG9uJ3Qga25vdyIgcmVzcG9uc2VzIGFyZSBjb2RlZCBhcyAiOSIuIFdoaWxlIHRoZSBOSElTIGxhY2tzIGxvbmdpdHVkaW5hbCB0cmFja2luZyBhbmQgb2JqZWN0aXZlIGxhYm9yYXRvcnkgZGF0YSwgaXRzIHNoZWVyIHZvbHVtZSBlbmFibGVzIGhpZ2gtcG93ZXJlZCBtdWx0aXZhcmlhYmxlIGxvZ2lzdGljIHJlZ3Jlc3Npb24gYW5hbHlzZXMgZXhhbWluaW5nIHRoZSBpbnRlcnNlY3Rpb24gb2Ygc29jaW9kZW1vZ3JhcGhpYyBmYWN0b3JzLCBsaWZlc3R5bGUgY2hvaWNlcyAoZS5nLiwgaWxsaWNpdCBkcnVnIHVzZSwgc2V4dWFsIGJlaGF2aW9yKSwgYW5kIHRoZSBzZWxmLXJlcG9ydGVkIHByZXZhbGVuY2Ugb2YgR0kgcGF0aG9sb2dpZXMuUGFydCBJSTogT25jb2xvZ3kgYW5kIFNwZWNpYWxpemVkIFByb2NlZHVyYWwgUmVnaXN0cmllc1JlZ2lzdHJpZXMgYWdncmVnYXRlIGhpZ2hseSBzcGVjaWZpYywgc3RydWN0dXJlZCBjbGluaWNhbCBkYXRhIGZvciB0YXJnZXRlZCBkaXNlYXNlIHN0YXRlcyBvciBwcm9jZWR1cmFsIG91dGNvbWVzLCBmb3JtaW5nIHRoZSBiYWNrYm9uZSBvZiBxdWFsaXR5IGltcHJvdmVtZW50IGluaXRpYXRpdmVzIGFuZCBvbmNvbG9naWNhbCBzdXJ2aXZhbCBhbmFseXNpcy5TdXJ2ZWlsbGFuY2UsIEVwaWRlbWlvbG9neSwgYW5kIEVuZCBSZXN1bHRzIChTRUVSKUZ1bmRlZCBieSB0aGUgTmF0aW9uYWwgQ2FuY2VyIEluc3RpdHV0ZSAoTkNJKSwgdGhlIFNFRVIgcHJvZ3JhbSBpcyB0aGUgYXV0aG9yaXRhdGl2ZSwgcG9wdWxhdGlvbi1iYXNlZCBzdXJ2ZWlsbGFuY2Ugc3lzdGVtIGRlc2lnbmVkIHRvIHRyYWNrIGNhbmNlciBpbmNpZGVuY2UgYW5kIHN1cnZpdmFsIGluIHRoZSBVbml0ZWQgU3RhdGVzLkRhdGFiYXNlIFBhcmFtZXRlclNFRVIgUHJvZmlsZSBEZXNjcmlwdGlvblRpbWUgUmFuZ2VDb250aW51b3VzIGRhdGEgY29sbGVjdGlvbiBzaW5jZSBKYW51YXJ5IDEsIDE5NzMuUG9wdWxhdGlvbiBEZW1vZ3JhcGhpY3NDYXB0dXJlcyBhcHByb3hpbWF0ZWx5IDQ4JSBvZiB0aGUgVS5TLiBwb3B1bGF0aW9uLCBleHBhbmRpbmcgb3ZlciB0aW1lIHRvIGluY2x1ZGUgZGl2ZXJzZSBnZW9ncmFwaGljIGFyZWFzIChlLmcuLCBUZXhhcyBpbiAyMDIyLCBJbGxpbm9pcyBpbiAyMDI0KS5WYXJpYWJsZXMgSW5jbHVkZWREZW1vZ3JhcGhpY3MsIHR1bW9yIHNpdGUsIHN0YWdlLCBoaXN0b2xvZ3ksIGdyYWRlLCBiaW9tYXJrZXIgdGVzdCByZXN1bHRzLCBhbmQgZmlyc3QtY291cnNlIGNhbmNlci1kaXJlY3RlZCBzdXJnZXJ5L3JhZGlhdGlvbi5HcmFudWxhcml0eUluZGl2aWR1YWwgdHVtb3ItbGV2ZWwgcmVjb3Jkcy5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5SGlnaGx5IHN0cnVjdHVyZWQgdGFidWxhciBkYXRhIGFuYWx5emVkIHZpYSBwcm9wcmlldGFyeSBTRUVSKlN0YXQgc29mdHdhcmUuQWNjZXNzIFJlcXVpcmVtZW50c0ZyZWUgYWNjZXNzOyByZXF1aXJlcyBhbiBhcHBsaWNhdGlvbiBhbmQgYSBzaWduZWQgRGF0YSBVc2UgQWdyZWVtZW50IChEVUEpIGZvciBTRUVSIFJlc2VhcmNoIFBsdXMgZGF0YS5FeGFtcGxlIFByb2plY3RzVHJhY2tpbmcgdGhlIHJpc2luZyBpbmNpZGVuY2Ugb2YgZWFybHktb25zZXQgY29sb3JlY3RhbCBjYW5jZXIgYW5kIGlkZW50aWZ5aW5nIGVwaWRlbWlvbG9naWNhbCBzaGlmdHMgaW4gZXNvcGhhZ2VhbCBhZGVub2NhcmNpbm9tYS5Db21wZXRpdGl2ZSBSZXNlYXJjaCBRdWVzdGlvbldoYXQgaXMgdGhlIHN1cnZpdmFsIGRpc3Bhcml0eSBhbW9uZyBwYXRpZW50cyBkaWFnbm9zZWQgd2l0aCBpbnRyYWhlcGF0aWMgY2hvbGFuZ2lvY2FyY2lub21hIGFjcm9zcyBkaWZmZXJpbmcgbmVpZ2hib3Job29kLWxldmVsIHNvY2lvZWNvbm9taWMgaW5kaWNlcywgYW5kIGhvdyBoYXMgdGhlIHVwdGFrZSBvZiBlYXJseSBzdXJnaWNhbCBpbnRlcnZlbnRpb24gbWl0aWdhdGVkIHRoZXNlIGRpc3Bhcml0aWVzP1NFRVIgb3BlcmF0ZXMgYnkgc3RhbmRhcmRpemluZyB0dW1vciBjbGFzc2lmaWNhdGlvbiB0aHJvdWdoIGNvbXBsZXggNS1kaWdpdCBzaXRlIHJlY29kZXMuIEZvciBnYXN0cm9pbnRlc3RpbmFsIGFuZCBsaXZlciByZXNlYXJjaGVycywgc3BlY2lmaWMgY29kZXMgbXVzdCBiZSByaWdvcm91c2x5IGFwcGxpZWQgdG8gY29ob3J0IHNlbGVjdGlvbi4gVGhlIGZvbGxvd2luZyB0YWJsZSBkZWxpbmVhdGVzIHRoZSBwcmltYXJ5IElDRC1PLTMgc2l0ZSByZWNvZGVzIHV0aWxpemVkIHdpdGhpbiB0aGUgU0VFUiBkYXRhYmFzZSBmb3IgdGhlIGRpZ2VzdGl2ZSBzeXN0ZW0sIGV4Y2x1ZGluZyBzcGVjaWZpYyBoZW1hdG9sb2dpY2FsIGFuZCBtZXNlbmNoeW1hbCBoaXN0b2xvZ2llcyAoc3VjaCBhcyBLYXBvc2kgU2FyY29tYSBvciBNZXNvdGhlbGlvbWEpIDpHYXN0cm9pbnRlc3RpbmFsL0xpdmVyIENhbmNlciBUeXBlU0VFUiA1LURpZ2l0IFNpdGUgUmVjb2RlSW5jbHVkZWQgSUNELU8tMyBTaXRlIENvZGVzRXNvcGhhZ3VzMjEwMTBDMTUwLUMxNTlTdG9tYWNoMjEwMjBDMTYwLUMxNjlTbWFsbCBJbnRlc3RpbmUyMTAzMEMxNzAtQzE3OUNlY3VtMjEwNDFDMTgwQXNjZW5kaW5nIENvbG9uMjEwNDNDMTgyUmVjdHVtMjEwNTJDMjA5TGl2ZXIyMTA3MUMyMjBJbnRyYWhlcGF0aWMgQmlsZSBEdWN0MjEwNzJDMjIxUGFuY3JlYXMyMTEwMEMyNTAtQzI1OVRoZSBwcmltYXJ5IGxpbWl0YXRpb24gb2YgdGhlIHN0YW5kYWxvbmUgU0VFUiBkYXRhYmFzZSBpcyBpdHMgdGVtcG9yYWwgcmVzdHJpY3Rpb24gcmVnYXJkaW5nIHRyZWF0bWVudCBkYXRhLiBTRUVSIGNhcHR1cmVzIGNhbmNlci1kaXJlY3RlZCBzdXJnZXJ5IGFuZCByYWRpYXRpb24gdGhlcmFweSBwcm92aWRlZCBzb2xlbHkgZHVyaW5nIHRoZSBmaXJzdCBjb3Vyc2Ugb2YgdHJlYXRtZW50LCBkZWZpbmVkIGFzIHRoZSBmaXJzdCBmb3VyIG1vbnRocyBmb2xsb3dpbmcgZGlhZ25vc2lzLiBJdCBkb2VzIG5vdCBjYXB0dXJlIGluZm9ybWF0aW9uIHJlZ2FyZGluZyBzeXN0ZW1pYyBjaGVtb3RoZXJhcHksIG5vciBkb2VzIGl0IHRyYWNrIHJlY3VycmVuY2Ugb3IgbWV0YXN0YXNpcyBkZXRlY3RlZCBzdWJzZXF1ZW50IHRvIHRoZSBpbml0aWFsIGRpYWdub3N0aWMgd2luZG93LiBUaGVyZWZvcmUsIHdoaWxlIFNFRVIgaXMgZXhjZXB0aW9uYWwgZm9yIGluY2lkZW5jZSB0cmVuZHMgYW5kIGJhc2VsaW5lIHN1cnZpdmFsIHN0YXRpc3RpY3MsIGl0IGlzIGZ1bmRhbWVudGFsbHkgaW5hZGVxdWF0ZSBmb3IgbG9uZ2l0dWRpbmFsIHBoYXJtYWNvbG9naWNhbCBvdXRjb21lIHN0dWRpZXMuR0kgUXVhbGl0eSBJbXByb3ZlbWVudCBDb25zb3J0aXVtIChHSVFVSUMpRGV2ZWxvcGVkIGpvaW50bHkgYnkgdGhlIEFtZXJpY2FuIENvbGxlZ2Ugb2YgR2FzdHJvZW50ZXJvbG9neSAoQUNHKSBhbmQgdGhlIEFtZXJpY2FuIFNvY2lldHkgZm9yIEdhc3Ryb2ludGVzdGluYWwgRW5kb3Njb3B5IChBU0dFKSwgR0lRVUlDIGlzIGEgc3BlY2lhbGl6ZWQgbWVkaWNhbCByZWdpc3RyeSBkZXNpZ25lZCBleHBsaWNpdGx5IHRvIGJlbmNobWFyayB0aGUgcXVhbGl0eSBvZiBlbmRvc2NvcGljIHByb2NlZHVyZXMgYWNyb3NzIHRoZSBVbml0ZWQgU3RhdGVzLkRhdGFiYXNlIFBhcmFtZXRlckdJUVVJQyBQcm9maWxlIERlc2NyaXB0aW9uVGltZSBSYW5nZUVzdGFibGlzaGVkIGluIDIwMTA7IGNvbnRpbnVvdXMgb25nb2luZyBkYXRhIGNvbGxlY3Rpb24uUG9wdWxhdGlvbiBEZW1vZ3JhcGhpY3NFbmNvbXBhc3NlcyBtaWxsaW9ucyBvZiBwYXRpZW50cyB1bmRlcmdvaW5nIGVuZG9zY29weSBhY3Jvc3MgZGl2ZXJzZSBVLlMuIHByYWN0aWNlIHNldHRpbmdzIChob3NwaXRhbHMsIGFtYnVsYXRvcnkgc3VyZ2VyeSBjZW50ZXJzKS5WYXJpYWJsZXMgSW5jbHVkZWRJbmRpY2F0aW9uLCBzZWRhdGlvbiBkZXRhaWxzLCBib3dlbCBwcmVwIHF1YWxpdHksIHBvbHlwIGNoYXJhY3RlcmlzdGljcyAobG9jYXRpb24sIHNpemUsIGhpc3RvbG9neSksIEJhcnJldHQncyBtdWNvc2EgZXh0ZW50LCBhbmQgYWR2ZXJzZSBldmVudHMuR3JhbnVsYXJpdHlQcm9jZWR1cmUgYW5kIHByb3ZpZGVyLWxldmVsIGRhdGEuIFBhdGllbnQgaWRlbnRpZmllcnMgKERPQiwgcHJvY2VkdXJlIGRhdGUpIGFyZSBkZS1pZGVudGlmaWVkLlRhYnVsYXIgRGF0YSBBdmFpbGFiaWxpdHlEYXRhIGlzIG5vdCBkaXJlY3RseSBwcm92aWRlZCB0byByZXNlYXJjaGVyczsgYW5hbHlzZXMgYXJlIHJ1biBpbnRlcm5hbGx5IGJ5IEdJUVVJQyBzdGFmZiBhbmQgdGFidWxhciByZXN1bHRzIGFyZSByZXR1cm5lZC5BY2Nlc3MgUmVxdWlyZW1lbnRzUmVxdWlyZXMgYSBkZXRhaWxlZCBQcm9qZWN0IFByZS1Qcm9wb3NhbCwgQ29uZmxpY3Qgb2YgSW50ZXJlc3QgcmV2aWV3LCBSZXNlYXJjaCBDb21taXR0ZWUgYXBwcm92YWwsIGFuZCBhIG11dHVhbGx5IGFncmVlZC11cG9uIGJ1ZGdldC9mZWUuRXhhbXBsZSBQcm9qZWN0c0FnZS1zdHJhdGlmaWVkIHByZXZhbGVuY2Ugb2YgbmVvcGxhc2lhIGluIHNjcmVlbmluZyBjb2xvbm9zY29waWVzOyBldmFsdWF0aW5nIGFkaGVyZW5jZSB0byB0aGUgU2VhdHRsZSBwcm90b2NvbCBpbiBCYXJyZXR0J3MgZXNvcGhhZ3VzLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uSG93IGRvZXMgdGhlIHZhcmlhdGlvbiBpbiBhZGVub21hIGRldGVjdGlvbiByYXRlcyAoQURSKSBhbW9uZyBlbmRvc2NvcGlzdHMgaW4gYW1idWxhdG9yeSBzdXJnaWNhbCBjZW50ZXJzIHZlcnN1cyBhY2FkZW1pYyB0ZWFjaGluZyBob3NwaXRhbHMgY29ycmVsYXRlIHdpdGggc3Vic2VxdWVudCBpbnRlcnZhbCByZWNvbW1lbmRhdGlvbnMgZm9yIHBhdGllbnRzIHdpdGggaGlnaC1yaXNrIHNlc3NpbGUgc2VycmF0ZWQgbGVzaW9ucz9EYXRhIGVudGVycyB0aGUgR0lRVUlDIHJlZ2lzdHJ5IHZpYSBkaXJlY3QgbWFudWFsIGVudHJ5IG9yIHVwbG9hZHMgZnJvbSBlbmRvc2NvcGljIGhlYWx0aCB3cml0ZXJzIChlbmRvd3JpdGVycykuIEZhY2lsaXRpZXMgcGF5IHN1YnN0YW50aWFsIGFubnVhbCBsaWNlbnNpbmcgZmVlcyByYW5naW5nIGZyb20gJDQsMDAwIHRvICQxMCw4MDAgYmFzZWQgb24gcGh5c2ljaWFuIHZvbHVtZSB0byBwYXJ0aWNpcGF0ZSBpbiB0aGUgcmVnaXN0cnkgYW5kIHV0aWxpemUgaXQgZm9yIE1lcml0LWJhc2VkIEluY2VudGl2ZSBQYXltZW50IFN5c3RlbSAoTUlQUykgcmVwb3J0aW5nLkZvciByZXNlYXJjaGVycywgdGhlIGRhdGEgdW5kZXJnb2VzIGEgcmlnb3JvdXMgZGUtaWRlbnRpZmljYXRpb24gcHJvY2VzcyBiZWZvcmUgZW50ZXJpbmcgdGhlIFJlc2VhcmNoIERhdGEgV2FyZWhvdXNlLiBUaGUgdmFyaWFibGVzIGNhcHR1cmVkIGFyZSBleHRyYW9yZGluYXJpbHkgZGV0YWlsZWQuIFRoZSBDb2xvbm9zY29weSBEYXRhIENvbGxlY3Rpb24gRm9ybSBzdHJhdGlmaWVzIGluZGljYXRpb25zIGludG8gc3ltcHRvbWF0aWMsIHNjcmVlbmluZywgb3Igc3VydmVpbGxhbmNlLCBhbmQgY2F0ZWdvcml6ZXMgYm93ZWwgcHJlcGFyYXRpb24gcXVhbGl0eSBzdHJpY3RseS4gUG9seXAgZGF0YSBpcyBoaWdobHkgZ3JhbnVsYXIsIGNsYXNzaWZ5aW5nIGZpbmRpbmdzIGludG8gbm9uLW5lb3BsYXN0aWMsIGxvdy1yaXNrIGFkZW5vbWFzICgxLTIgdHVidWxhciBhZGVub21hcyA8MTBtbSksIGFuZCBoaWdoLXJpc2sgYWRlbm9tYXMgKOKJpTEwbW0sIHZpbGxvdXMgY29tcG9uZW50LCBoaWdoLWdyYWRlIGR5c3BsYXNpYSwgb3Ig4omlMyBhZGVub21hcykuIFRoZSBFR0QgbW9kdWxlIGNhcHR1cmVzIGNyaXRpY2FsIHF1YWxpdHkgaW5kaWNhdG9ycyBzdWNoIGFzIHRoZSBwcmVjaXNlIG1lYXN1cmVtZW50IG9mIEJhcnJldHQncyBlc29waGFndXMgKGNpcmN1bWZlcmVudGlhbCBhbmQgbWF4aW1hbCBleHRlbnQgaW4gY2VudGltZXRlcnMpIGFuZCB0aGUgZHlzcGxhc2lhIGxldmVsIHVwb24gcGF0aG9sb2d5IGNvbmZpcm1hdGlvbi5SZWNlbnQgc3R1ZGllcyBwdWJsaXNoZWQgZnJvbSB0aGlzIGRhdGFiYXNlIGhpZ2hsaWdodCBpdHMgdXRpbGl0eSBmb3IgbWVhc3VyaW5nIGNsaW5pY2FsIGFkaGVyZW5jZS4gRm9yIGV4YW1wbGUsIDIwMjUgcHVibGljYXRpb25zIGluIEdhc3Ryb2VudGVyb2xvZ3kgYW5kIHRoZSBBbWVyaWNhbiBKb3VybmFsIG9mIEdhc3Ryb2VudGVyb2xvZ3kgdXRpbGl6ZWQgR0lRVUlDIHRvIGRlbW9uc3RyYXRlIHRoZSBhc3NvY2lhdGlvbiBiZXR3ZWVuIGFkZW5vbWEgZGV0ZWN0aW9uIHJhdGVzIGFuZCBwcmV2YWxlbnQgY29sb3JlY3RhbCBjYW5jZXIgZGV0ZWN0aW9uLCBhcyB3ZWxsIGFzIHRoZSB3aWRlIHZhcmlhbmNlIGluIHJvdXRpbmUgcG9seXBlY3RvbXkgcHJhY3RpY2VzIGFtb25nIFUuUy4gZW5kb3Njb3Bpc3RzLlBhcnQgSUlJOiBBZG1pbmlzdHJhdGl2ZSBDbGFpbXMgYW5kIExpbmtlZCBIZWFsdGhjYXJlIFJlcG9zaXRvcmllc0FkbWluaXN0cmF0aXZlIGNsYWltcyBkYXRhIHByb3ZpZGUgbG9uZ2l0dWRpbmFsLCByZWFsLXdvcmxkIGV2aWRlbmNlIG9mIGhlYWx0aCBjYXJlIGRlbGl2ZXJ5LCByZXNvdXJjZSB1dGlsaXphdGlvbiwgYW5kIHN5c3RlbWljIGVjb25vbWljIGJ1cmRlbnMuIFdoaWxlIHRoZXkgaW5oZXJlbnRseSBsYWNrIHRoZSBudWFuY2VkIGNsaW5pY2FsIGRldGFpbHMgb2YgRUhScyBvciBzcGVjaWFsaXplZCByZWdpc3RyaWVzIChlLmcuLCBleGFjdCBsYWJvcmF0b3J5IHZhbHVlcyBvciBwYXRob2xvZ3kgZ3JhZGVzKSwgdGhlaXIgc2hlZXIgdm9sdW1lIGFuZCBsb25naXR1ZGluYWwgdHJhY2tpbmcgY2FwYWJpbGl0aWVzIGFyZSBpbmRpc3BlbnNhYmxlIGZvciBoZWFsdGggZWNvbm9taWNzIGFuZCBvdXRjb21lcyByZXNlYXJjaC5NZXJhdGl2ZSBNYXJrZXRTY2FuIFJlc2VhcmNoIERhdGFiYXNlc1RoZSBNYXJrZXRTY2FuIGRhdGFiYXNlcyBjb250YWluIG9uZSBvZiB0aGUgbGFyZ2VzdCBhbmQgbG9uZ2VzdC1ydW5uaW5nIHByb3ByaWV0YXJ5IFUuUy4gY29sbGVjdGlvbnMgb2YgZGUtaWRlbnRpZmllZCBpbnN1cmFuY2UgY2xhaW1zLCB0cnVzdGVkIGJ5IGhlYWx0aCBwbGFucywgbGlmZSBzY2llbmNlcyBmaXJtcywgYW5kIGdvdmVybm1lbnRhbCBhZ2VuY2llcyB0byBhbmFseXplIHV0aWxpemF0aW9uIHBhdHRlcm5zIGFuZCBjb3N0cy5EYXRhYmFzZSBQYXJhbWV0ZXJNYXJrZXRTY2FuIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlQ29udGludW91cyBsb25naXR1ZGluYWwgZGF0YSB0cmFja2luZyBvdmVyIDMwMCBtaWxsaW9uIHVuaXF1ZSBwYXRpZW50IGxpdmVzIG92ZXIgbXVsdGlwbGUgZGVjYWRlcy5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc1ByZWRvbWluYW50bHkgY2FwdHVyZXMgZW1wbG95ZWQgaW5kaXZpZHVhbHMgd2l0aCBjb21tZXJjaWFsIGhlYWx0aCBpbnN1cmFuY2UgYW5kIHJldGlyZWVzIHdpdGggTWVkaWNhcmUgc3VwcGxlbWVudGFsIGluc3VyYW5jZS5WYXJpYWJsZXMgSW5jbHVkZWRJQ0QgZGlhZ25vc2lzIGNvZGVzLCBwcm9jZWR1cmFsIGNvZGVzLCBpbnBhdGllbnQvb3V0cGF0aWVudCBjbGFpbXMsIG91dHBhdGllbnQgcGhhcm1hY3kgY2xhaW1zLCBhbmQgaGlnaC1sZXZlbCBpbnN1cmFuY2UgcHJvZHVjdCB0eXBlcyAoSE1PLCBQUE8pLkdyYW51bGFyaXR5Q2xhaW0tbGV2ZWwgZGF0YSB0cmFja2luZyBiZW5lZmljaWFyeSBlbnJvbGxtZW50IGFuZCBoZWFsdGggY2FyZSBzZXJ2aWNlIGVuY291bnRlcnMuVGFidWxhciBEYXRhIEF2YWlsYWJpbGl0eVN0cnVjdHVyZWQgcmVsYXRpb25hbCBkYXRhYmFzZSB0YWJsZXMgcmVxdWlyaW5nIGFkdmFuY2VkIFNRTC9TQVMgcHJvZ3JhbW1pbmcgZm9yIGNvaG9ydCBleHRyYWN0aW9uLkFjY2VzcyBSZXF1aXJlbWVudHNSZXF1aXJlcyBzdWJzdGFudGlhbCBmdW5kaW5nLiBQcm9qZWN0cyBmdW5kZWQgYnkgZXh0ZXJuYWwgbm9uLXByb2ZpdCBncmFudHMgdHlwaWNhbGx5IGluY3VyIGZlZXMgc3RhcnRpbmcgYXQgJDMwLDAwMCwgc2NhbGluZyB0byAkNjAsMDAwKyBmb3IgaW5kdXN0cnkgZnVuZGluZy4gU29tZSB1bml2ZXJzaXRpZXMgbWFpbnRhaW4gaW50ZXJuYWwgbGljZW5zZXMuRXhhbXBsZSBQcm9qZWN0c0VzdGltYXRpbmcgdGhlICQxMTkuNiBiaWxsaW9uIGFubnVhbCBlY29ub21pYyBidXJkZW4gb2YgZ2FzdHJvaW50ZXN0aW5hbCwgbGl2ZXIsIGFuZCBwYW5jcmVhdGljIGRpc2Vhc2VzIGluIHRoZSBVbml0ZWQgU3RhdGVzLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uV2hhdCBpcyB0aGUgbG9uZ2l0dWRpbmFsIGVjb25vbWljIGltcGFjdCBhbmQgc3RlcC10aGVyYXB5IGFkaGVyZW5jZSBwYXR0ZXJuIGZvciBuZXdseSBhcHByb3ZlZCBiaW9sb2dpYyB0aGVyYXBpZXMgdmVyc3VzIHNtYWxsIG1vbGVjdWxlIGluaGliaXRvcnMgaW4gcHJpdmF0ZWx5IGluc3VyZWQgcGF0aWVudHMgd2l0aCBtb2RlcmF0ZS10by1zZXZlcmUgdWxjZXJhdGl2ZSBjb2xpdGlzP0EgY3JpdGljYWwgYW5hbHl0aWNhbCBsaW1pdGF0aW9uIG9mIE1hcmtldFNjYW4gaXMgaXRzIGFzY2VydGFpbm1lbnQgYmlhcy4gVGhlIGRlbW9ncmFwaGljcyBkbyBub3QgaW5jbHVkZSB2YXJpYWJsZXMgZm9yIHJhY2UsIGluY29tZSwgbGFuZ3VhZ2UsIG9yIG90aGVyIHNvY2lhbCBkZXRlcm1pbmFudHMgb2YgaGVhbHRoLCBhbmQgdGhlIHBvcHVsYXRpb24gb3ZlciBhZ2UgNjUgcmVwcmVzZW50cyBvbmx5IHRob3NlIHdobyBwb3NzZXNzIGNvbW1lcmNpYWwgaW5zdXJhbmNlIGluIGFkZGl0aW9uIHRvIE1lZGljYXJlLCByZW5kZXJpbmcgaXQgYSBub24tcmVwcmVzZW50YXRpdmUgc2FtcGxlIG9mIHRoZSBnZW5lcmFsIFUuUy4gcG9wdWxhdGlvbi4gRnVydGhlcm1vcmUsIGl0IGlzIGRpZmZpY3VsdCB0byBkaWZmZXJlbnRpYXRlIGluZGl2aWR1YWwgaGVhbHRoIGNhcmUgcHJvdmlkZXJzIG9yIGF0dHJpYnV0ZSBwYXRpZW50cyB0byB1bmlxdWUgY2xpbmljaWFucy5Ib3dldmVyLCBmb3IgcXVlc3Rpb25zIG9mIHB1cmUgZWNvbm9taWMgYnVyZGVuIGFuZCBwaGFybWFjb2xvZ2ljYWwgYWRoZXJlbmNlLCBNYXJrZXRTY2FuIGlzIHVucGFyYWxsZWxlZC4gQSBsYW5kbWFyayAyMDIxIHN0dWR5IHB1Ymxpc2hlZCBpbiBHYXN0cm9lbnRlcm9sb2d5IGxldmVyYWdlZCBNYXJrZXRTY2FuIENvbW1lcmNpYWwgQ2xhaW1zIGFuZCBFbmNvdW50ZXJzIGRhdGEgdG8gcmV2ZWFsIHRoYXQgdGhlcmUgYXJlIG1vcmUgdGhhbiA0My40IG1pbGxpb24gYW1idWxhdG9yeSB2aXNpdHMgYW5udWFsbHkgd2l0aCBhIHByaW1hcnkgR0kgZGlhZ25vc2lzLCByZXN1bHRpbmcgaW4gbWlsbGlvbnMgb2YgaG9zcGl0YWxpemF0aW9ucyBhbmQgb3ZlciAyMi4yIG1pbGxpb24gR0kgZW5kb3Njb3BpZXMuTmF0aW9uYWwgKE5hdGlvbndpZGUpIElucGF0aWVudCBTYW1wbGUgKE5JUylPcGVyYXRlZCB1bmRlciB0aGUgSGVhbHRoY2FyZSBDb3N0IGFuZCBVdGlsaXphdGlvbiBQcm9qZWN0IChIQ1VQKSBieSB0aGUgQWdlbmN5IGZvciBIZWFsdGhjYXJlIFJlc2VhcmNoIGFuZCBRdWFsaXR5IChBSFJRKSwgdGhlIE5JUyBpcyB0aGUgbGFyZ2VzdCBwdWJsaWNseSBhdmFpbGFibGUgYWxsLXBheWVyIGlucGF0aWVudCBjYXJlIGRhdGFiYXNlIGluIHRoZSBVbml0ZWQgU3RhdGVzLkRhdGFiYXNlIFBhcmFtZXRlck5JUyBQcm9maWxlIERlc2NyaXB0aW9uVGltZSBSYW5nZUFubnVhbCByZWxlYXNlcy4gUmVjZW50IHVwZGF0ZXMgaW5jbHVkZSB0aGUgMjAyMyBkYXRhc2V0OyBJQ0QtMTAtQ00vUENTIGNvZGluZyBpbXBsZW1lbnRlZCBmcm9tIDIwMTYgb253YXJkcy5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc05hdGlvbmFsbHkgcmVwcmVzZW50YXRpdmUgb2YgYWxsIHNob3J0LXRlcm0sIG5vbi1GZWRlcmFsIFUuUy4gaG9zcGl0YWxzLiBJbmNsdWRlcyBhbGwgcGF0aWVudHMgcmVnYXJkbGVzcyBvZiBwYXllciBzdGF0dXMgKE1lZGljYXJlLCBNZWRpY2FpZCwgcHJpdmF0ZSwgdW5pbnN1cmVkKS5WYXJpYWJsZXMgSW5jbHVkZWRQcmltYXJ5L3NlY29uZGFyeSBkaWFnbm9zZXMsIHByb2NlZHVyZXMsIHBhdGllbnQgZGVtb2dyYXBoaWNzLCBleHBlY3RlZCBwYXllciwgdG90YWwgaG9zcGl0YWwgY2hhcmdlcywgbGVuZ3RoIG9mIHN0YXksIGFuZCBzZXZlcml0eS9jb21vcmJpZGl0eSBtZWFzdXJlcy5HcmFudWxhcml0eURpc2NoYXJnZS1sZXZlbCBiaWxsaW5nIGRhdGEuIEFwcHJveGltYXRlbHkgNyBtaWxsaW9uIHVud2VpZ2h0ZWQgc3RheXMgcGVyIHllYXIsIGVzdGltYXRpbmcgb3ZlciAzMyBtaWxsaW9uIGhvc3BpdGFsaXphdGlvbnMgbmF0aW9uYWxseS5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5QXZhaWxhYmxlIGFzIHN0cnVjdHVyZWQgbG9hZCBwcm9ncmFtcyBmb3IgU0FTLCBTUFNTLCBhbmQgU3RhdGEuQWNjZXNzIFJlcXVpcmVtZW50c1JlcXVpcmVzIHJlZ2lzdHJhdGlvbiB2aWEgdGhlIEhDVVAgQ2VudHJhbCBEaXN0cmlidXRvciwgY29tcGxldGlvbiBvZiBhIERVQSB0cmFpbmluZyBjb3Vyc2UsIGFuZCBwdXJjaGFzZSBmZWVzIChzdHVkZW50IGRpc2NvdW50cyBhdmFpbGFibGUpLkV4YW1wbGUgUHJvamVjdHNTdHVkeWluZyB0aGUgaW1wYWN0IG9mIG1lbnRhbCBoZWFsdGggZGlzb3JkZXJzIG9uIGNhcmRpYWMgZGlzZWFzZSBvdXRjb21lcywgb3IgdHJhY2tpbmcgaG9zcGl0YWwgY29zdHMgZm9yIGdhc3RyaWMgY2FuY2VyIHBhdGllbnRzLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uRm9sbG93aW5nIHRoZSB3aWRlc3ByZWFkIGFkb3B0aW9uIG9mIGRpcmVjdC1hY3RpbmcgYW50aXZpcmFscywgaG93IGhhcyB0aGUgaW5jaWRlbmNlLCBsZW5ndGggb2Ygc3RheSwgYW5kIGlucGF0aWVudCBtb3J0YWxpdHkgb2YgSENWLXJlbGF0ZWQgZGVjb21wZW5zYXRlZCBjaXJyaG9zaXMgc2hpZnRlZCBjb21wYXJlZCB0byBNQVNMRC1yZWxhdGVkIGRlY29tcGVuc2F0ZWQgY2lycmhvc2lzIGluIHNhZmV0eS1uZXQgaG9zcGl0YWxzP1RoZSB2YXN0IHNpemUgb2YgdGhlIE5JUyBtYWtlcyBpdCBhbiBpZGVhbCByZXNvdXJjZSBmb3IgZ3JhZHVhdGUgc3R1ZGVudHMgYW5kIGZlbGxvd3MgYXR0ZW1wdGluZyB0byBlc3RhYmxpc2ggbmF0aW9uYWwgYW5kIHJlZ2lvbmFsIGVzdGltYXRlcyBmb3IgcmFyZSBjb25kaXRpb25zLCB1bmNvbW1vbiB0cmVhdG1lbnRzLCBvciBzcGVjaWFsIHBvcHVsYXRpb25zLiBSZXNlYXJjaGVycyBtdXN0IGJlIGF3YXJlIG9mIHJlY2VudCBtZXRob2RvbG9naWNhbCBzaGlmdHM7IGZvciBleGFtcGxlLCBpbiB0aGUgMjAyMyBOSVMgcmVsZWFzZSwgQUhSUSByZW1vdmVkIGRhdGEgZWxlbWVudHMgaWRlbnRpZnlpbmcgdGhlIENlbnN1cyByZWdpb24gYW5kIGRpdmlzaW9uIG9mIHRoZSBob3NwaXRhbCAoSE9TUF9SRUdJT04gYW5kIEhPU1BfRElWSVNJT04pIHRvIGVuaGFuY2UgZGF0YSBwcml2YWN5IGFuZCBlbnN1cmUgYWNjdXJhdGUgbmF0aW9uYWwgZXN0aW1hdGVzLkJlY2F1c2UgdGhlIE5JUyBpcyBhbiBlbmNvdW50ZXItYmFzZWQgaG9zcGl0YWwgZGF0YWJhc2UsIGl0IGRvZXMgbm90IGFsbG93IGZvciBsb25naXR1ZGluYWwgdHJhY2tpbmcgb2YgaW5kaXZpZHVhbCBwYXRpZW50cyBhY3Jvc3MgbXVsdGlwbGUgYWRtaXNzaW9uczsgYSBzaW5nbGUgcGF0aWVudCBhZG1pdHRlZCB0aHJlZSB0aW1lcyBpbiBhIHllYXIgYXBwZWFycyBhcyB0aHJlZSBkaXN0aW5jdCBkaXNjaGFyZ2VzLiBUaGVyZWZvcmUsIHJlc2VhcmNoZXJzIGludGVyZXN0ZWQgaW4gMzAtZGF5IHJlYWRtaXNzaW9uIHJhdGVzIG11c3QgdXRpbGl6ZSB0aGUgY29tcGFuaW9uIEhDVVAgTmF0aW9ud2lkZSBSZWFkbWlzc2lvbnMgRGF0YWJhc2UgKE5SRCkgcmF0aGVyIHRoYW4gdGhlIE5JUy5TRUVSLU1lZGljYXJlIExpbmtlZCBEYXRhYmFzZVRvIG92ZXJjb21lIHRoZSBpbmhlcmVudCBsaW1pdGF0aW9ucyBvZiBTRUVSICh3aGljaCBsYWNrcyBsb25naXR1ZGluYWwgdHJlYXRtZW50IGFuZCBjb21vcmJpZGl0eSBkYXRhKSBhbmQgTWVkaWNhcmUgY2xhaW1zICh3aGljaCBsYWNrIHByZWNpc2UgY2xpbmljYWwgdHVtb3Igc3RhZ2luZyBhbmQgaGlzdG9sb2d5KSwgdGhlIE5DSSBsaW5rZWQgdGhlIHR3byByZXBvc2l0b3JpZXMsIGNyZWF0aW5nIGFuIGV4Y2VwdGlvbmFsbHkgcG93ZXJmdWwgdG9vbCBmb3Igb25jb2xvZ2ljYWwgaGVhbHRoIHNlcnZpY2VzIHJlc2VhcmNoLkRhdGFiYXNlIFBhcmFtZXRlclNFRVItTWVkaWNhcmUgUHJvZmlsZSBEZXNjcmlwdGlvblRpbWUgUmFuZ2VUdW1vciBjYXNlcyBzcGFubmluZyBmcm9tIDE5OTkgdG8gMjAyMSAoYmFzZWQgb24gdGhlIE5vdmVtYmVyIDIwMjMgc3VibWlzc2lvbiksIHdpdGggY29ycmVzcG9uZGluZyBsb25naXR1ZGluYWwgY2xhaW1zLlBvcHVsYXRpb24gRGVtb2dyYXBoaWNzTWVkaWNhcmUgYmVuZWZpY2lhcmllcyAocHJpbWFyaWx5IGFnZSA2NSspIGRpYWdub3NlZCB3aXRoIGNhbmNlciB3aXRoaW4gU0VFUiByZWdpc3RyeSBhcmVhcy5WYXJpYWJsZXMgSW5jbHVkZWRTRUVSIGNsaW5pY2FsIHZhcmlhYmxlcyAoc2l0ZSwgc3RhZ2UsIGhpc3RvbG9neSkgZnVzZWQgd2l0aCBNZWRpY2FyZSBjbGFpbXMgKFBhcnRzIEEsIEIsIEQpIGNvdmVyaW5nIGhvc3BpdGFsaXphdGlvbnMsIG91dHBhdGllbnQgdmlzaXRzLCBhbmQgcHJlc2NyaXB0aW9ucy5HcmFudWxhcml0eVBhdGllbnQtbGV2ZWwgY2xpbmljYWwgZGF0YSBsaW5rZWQgdG8gY2xhaW0tbGV2ZWwgdXRpbGl6YXRpb24gZGF0YS5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5UHJvdmlkZWQgaW4gaGlnaGx5IHN0cnVjdHVyZWQgZmlsZXMgKGUuZy4sIE1FRFBBUiwgT1VUUEFULCBQREUpIHJlcXVpcmluZyBhZHZhbmNlZCBkYXRhIG1hbmFnZW1lbnQgc2tpbGxzIHRvIG1lcmdlLkFjY2VzcyBSZXF1aXJlbWVudHNSZXF1aXJlcyBhIHJpZ29yb3VzIGFwcGxpY2F0aW9uLCBJUkIgYXBwcm92YWwsIGRldGFpbGVkIERhdGEgU3RvcmFnZSBQbGFuIChjbG91ZCBzdG9yYWdlIHN0cmljdGx5IHByb2hpYml0ZWQgd2l0aG91dCBleHBsaWNpdCBDTVMgYXBwcm92YWwpLCBhbmQgc2lnbmlmaWNhbnQgYWNxdWlzaXRpb24gY29zdHMuRXhhbXBsZSBQcm9qZWN0c0Fzc2Vzc2luZyB0aGUgY29zdC1lZmZlY3RpdmVuZXNzIG9mIHN5c3RlbWljIHRoZXJhcGllcyBmb3IgYWR2YW5jZWQgaGVwYXRvY2VsbHVsYXIgY2FyY2lub21hOyBldmFsdWF0aW5nIHJhY2lhbCBkaXNwYXJpdGllcyBpbiBwYWxsaWF0aXZlIGNhcmUuQ29tcGV0aXRpdmUgUmVzZWFyY2ggUXVlc3Rpb25BbW9uZyBlbGRlcmx5IHBhdGllbnRzIGRpYWdub3NlZCB3aXRoIGxvY2FsaXplZCBjb2xvcmVjdGFsIGNhbmNlciwgaG93IGRvZXMgdGhlIHByZXNlbmNlIG9mIHByZS1leGlzdGluZyBmcmFpbHR5IG1hcmtlcnMgaW4gTWVkaWNhcmUgY2xhaW1zIHByZWRpY3QgdGhlIHRyYWplY3Rvcnkgb2YgY2hlbW90aGVyYXB5LWluZHVjZWQgdG94aWNpdGllcyBhbmQgc3Vic2VxdWVudCBob3NwaXRhbCByZWFkbWlzc2lvbiByYXRlcz9UaGUgc2hlZXIgdm9sdW1lIG9mIHRoZSBTRUVSLU1lZGljYXJlIGxpbmthZ2UgaXMgbW9udW1lbnRhbC4gQWNjb3JkaW5nIHRvIHJlY2VudCBkYXRhIHNwYW5uaW5nIDE5OTkgdG8gMjAyMSwgdGhlIGRhdGFiYXNlIGNvbnRhaW5zIGV4YWN0bHkgODYsNzIwIGNhc2VzIG9mIGxpdmVyIGNhbmNlciAoNTYsODQ4IHVuZGVyIEZlZS1Gb3ItU2VydmljZSBhbmQgMjksODcyIHVuZGVyIE1lZGljYXJlIEFkdmFudGFnZSkuIEZ1cnRoZXJtb3JlLCBpdCBob3VzZXMgNjE0LDgyMiBjYXNlcyBvZiBjb2xvcmVjdGFsIGNhbmNlciBhbmQgMjAzLDg1NCBjYXNlcyBvZiBwYW5jcmVhdGljIGNhbmNlci5BY3F1aXJpbmcgdGhpcyBkYXRhIGlzIGEgY29tcGxleCBhZG1pbmlzdHJhdGl2ZSBhbmQgZmluYW5jaWFsIHVuZGVydGFraW5nLiBSZXNlYXJjaGVycyBtdXN0IHN1Ym1pdCBhbiBhcHBsaWNhdGlvbiBleHBsaWNpdGx5IGRldGFpbGluZyB0aGVpciBoeXBvdGhlc2lzLCBjb2hvcnQgc2VsZWN0aW9uIGNyaXRlcmlhLCBhbmQgYSBqdXN0aWZpY2F0aW9uIGZvciBldmVyeSBmaWxlIHJlcXVlc3RlZCAoZS5nLiwgTUVEUEFSLCBOQ0ggZmlsZXMpLiBDb3N0cyBhcmUgY2FsY3VsYXRlZCBiYXNlZCBvbiB0aGUgbnVtYmVyIG9mIGNhbmNlciBzaXRlcyBhbmQgdGhlIHNwZWNpZmljIGZpbGVzIHJlcXVlc3RlZC4gRm9yIGluc3RhbmNlLCB0aGUgQmFzZSBDYW5jZXIgRmlsZSBjb3N0cyAkMzUwLCB0aGUgTUVEUEFSIGZpbGUgZm9yIGNhbmNlciBjYXNlcyBjb3N0cyAkMTc1LCBhbmQgQ2FycmllciBDbGFpbXMgKE5DSCkgY29zdCAkMTM1IHBlciB5ZWFyIHJlcXVlc3RlZC4gTkNJIHV0aWxpemVzIGEgbXVsdGlwbGllciBsb2dpYyBmb3IgYmlsbGluZzsgd2hpbGUgcmVxdWVzdGluZyBCcmVhc3QsIEx1bmcsIENvbG9yZWN0YWwsIGFuZCBQcm9zdGF0ZSBjYW5jZXJzIGNvdW50cyBhcyBhIG11bHRpcGxpZXIgb2YgMSBlYWNoLCByZXF1ZXN0aW5nIG90aGVyIGNvbWJpbmF0aW9ucyAoZS5nLiwgNSB0byA4IHNpdGVzKSBhcHBsaWVzIGEgbXVsdGlwbGllciBvZiAzIHRvIHRoZSBmaWxlIGNvc3RzLk1ldGhvZG9sb2dpY2FsbHksIHJlc2VhcmNoZXJzIHV0aWxpemluZyBTRUVSLU1lZGljYXJlIG11c3QgcmVjb2duaXplIGl0cyB2YWxpZGF0aW9uIGxpbWl0cy4gTXVsdGlwbGUgYW5hbHlzZXMgaGF2ZSBkZW1vbnN0cmF0ZWQgdGhhdCB0aGUgYXNjZXJ0YWlubWVudCBvZiBvdXRwYXRpZW50IGNoZW1vdGhlcmFweSBhbmQgcmFkaWF0aW9uIHRoZXJhcHkgd2l0aGluIE1lZGljYXJlIGNsYWltcyBjYW4gYmUgaW5jb21wbGV0ZS4gV2hpbGUgdGhlIHBvc2l0aXZlIHByZWRpY3RpdmUgdmFsdWUgb2YgaWRlbnRpZnlpbmcgdGhlc2UgdHJlYXRtZW50cyBpcyBoaWdoICg+ODUlKSwgdGhlIG92ZXJhbGwgc2Vuc2l0aXZpdHkgaXMgbW9kZXJhdGUgKDY4JSBmb3IgY2hlbW90aGVyYXB5KSwgbWVhbmluZyBTRUVSLU1lZGljYXJlIGRhdGEgc2hvdWxkIG5vdCBnZW5lcmFsbHkgYmUgdXNlZCB0byBlc3RpbWF0ZSB0aGUgYWJzb2x1dGUgcHJvcG9ydGlvbiBvZiB1bnRyZWF0ZWQgaW5kaXZpZHVhbHMgaW4gdGhlIHBvcHVsYXRpb24uUGFydCBJVjogRWxlY3Ryb25pYyBIZWFsdGggUmVjb3JkcyAoRUhSKSBhbmQgUHJlY2lzaW9uIE1lZGljaW5lIFBsYXRmb3Jtc1RoZSBpbnRlZ3JhdGlvbiBvZiBncmFudWxhciBlbGVjdHJvbmljIGhlYWx0aCByZWNvcmRzIHdpdGggZ2Vub21pYyBkYXRhIGFuZCBwYXRpZW50LWdlbmVyYXRlZCBoZWFsdGggbWV0cmljcyByZXByZXNlbnRzIHRoZSBhYnNvbHV0ZSBmcm9udGllciBvZiBwcmVjaXNpb24gbWVkaWNpbmUgaW4gZ2FzdHJvZW50ZXJvbG9neS4gVGhlc2UgZGF0YWJhc2VzIGFsbG93IGZvciBkZWVwIHBoZW5vdHlwaW5nIGFuZCB0aGUgaWRlbnRpZmljYXRpb24gb2Ygbm92ZWwgZ2VuZXRpYyBzdXNjZXB0aWJpbGl0aWVzLlZldGVyYW5zIEFmZmFpcnMgKFZBKSBDb3Jwb3JhdGUgRGF0YSBXYXJlaG91c2UgJiBWSU5DSVRoZSBVLlMuIERlcGFydG1lbnQgb2YgVmV0ZXJhbnMgQWZmYWlycyBvcGVyYXRlcyB0aGUgbGFyZ2VzdCBpbnRlZ3JhdGVkIGhlYWx0aCBjYXJlIHN5c3RlbSBpbiB0aGUgY291bnRyeS4gVG8gZmFjaWxpdGF0ZSBoaWdoLWxldmVsIHJlc2VhcmNoLCB0aGUgVkEgSW5mb3JtYXRpY3MgYW5kIENvbXB1dGluZyBJbmZyYXN0cnVjdHVyZSAoVklOQ0kpIHByb3ZpZGVzIGEgc2VjdXJlLCBmdWxsLXNlcnZpY2UgY29tcHV0aW5nIGVudmlyb25tZW50IGdyYW50aW5nIGFjY2VzcyB0byB0aGUgQ29ycG9yYXRlIERhdGEgV2FyZWhvdXNlIChDRFcpLkRhdGFiYXNlIFBhcmFtZXRlclZBIChWSU5DSSkgUHJvZmlsZSBEZXNjcmlwdGlvblRpbWUgUmFuZ2VTcGFucyBzZXZlcmFsIGRlY2FkZXMgb2YgY29udGludW91cywgaW50ZWdyYXRlZCBtZWRpY2FsIGNhcmUuUG9wdWxhdGlvbiBEZW1vZ3JhcGhpY3NVLlMuIG1pbGl0YXJ5IHZldGVyYW5zLiBUaGUgZGVtb2dyYXBoaWMgcHJvZmlsZSBza2V3cyBvbGRlciBhbmQgcHJlZG9taW5hbnRseSBtYWxlLCB3aXRoIGhpZ2ggcHJldmFsZW5jZSByYXRlcyBvZiBIZXBhdGl0aXMgQyBhbmQgTUFTTEQuVmFyaWFibGVzIEluY2x1ZGVkRnVsbCBFSFIgZGVwdGg6IHVuc3RydWN0dXJlZCBjbGluaWNhbCBub3RlcywgcHJlY2lzZSBsYWJvcmF0b3J5IHZhbHVlcyAoQVNULCBBTFQsIHBsYXRlbGV0cyksIGltYWdpbmcgcmVwb3J0cywgcGF0aG9sb2d5LCBhbmQgcGhhcm1hY3kgZGlzcGVuc2luZyByZWNvcmRzLkdyYW51bGFyaXR5SGlnaGx5IGdyYW51bGFyLCBsb25naXR1ZGluYWwgY2xpbmljYWwgY2hhcnQgbGV2ZWwuVGFidWxhciBEYXRhIEF2YWlsYWJpbGl0eVJlbGF0aW9uYWwgZGF0YWJhc2VzIGhvdXNlZCB3aXRoaW4gdGhlIHNlY3VyZSBWSU5DSSBlbnZpcm9ubWVudC5BY2Nlc3MgUmVxdWlyZW1lbnRzRnJlZSBvZiBjaGFyZ2UsIGJ1dCBzdHJpY3RseSBsaW1pdGVkIHRvIFZBLWFmZmlsaWF0ZWQgaW52ZXN0aWdhdG9ycyBvciB0aG9zZSBhY3RpdmVseSBjb2xsYWJvcmF0aW5nIHdpdGggVkEgc3RhZmYgdW5kZXIgYXBwcm92ZWQgcmVndWxhdG9yeSBwcm90b2NvbHMuRXhhbXBsZSBQcm9qZWN0c0Rlcml2aW5nIHJpc2sgc3RyYXRpZmljYXRpb24gbW9kZWxzIGZvciBoZXBhdGljIGZpYnJvc2lzIHV0aWxpemluZyBub24taW52YXNpdmUgYWxnb3JpdGhtcyBsaWtlIEZJQi00IGNvbWJpbmVkIHdpdGggQk1JIGFuZCBkaWFiZXRlcyBkYXRhIGV4dHJhY3RlZCBmcm9tIHRoZSBFSFIuQ29tcGV0aXRpdmUgUmVzZWFyY2ggUXVlc3Rpb25VdGlsaXppbmcgbmF0dXJhbCBsYW5ndWFnZSBwcm9jZXNzaW5nIG9mIGNsaW5pY2FsIHByb2dyZXNzIG5vdGVzIGFuZCBsb25naXR1ZGluYWwgRklCLTQgc2NvcmVzLCB3aGF0IGFyZSB0aGUgZWFybHkgcGhlbm90eXBpYyBwcmVkaWN0b3JzIG9mIHJhcGlkIHByb2dyZXNzaW9uIHRvIGhlcGF0b2NlbGx1bGFyIGNhcmNpbm9tYSBpbiB2ZXRlcmFucyB3aG8gaGF2ZSBhY2hpZXZlZCBTVlIgZm9sbG93aW5nIGhlcGF0aXRpcyBDIHRyZWF0bWVudD9UaGUgVkEgaGFzIGEgc3RvcmllZCBoaXN0b3J5IGluIEdJIHJlc2VhcmNoLCBkYXRpbmcgYmFjayB0byBwaW9uZWVycyBsaWtlIERyLiBNb3J0b24gSS4gR3Jvc3NtYW4gKHRoZSBmYXRoZXIgb2YgbW9kZXJuIEdJIHBoeXNpb2xvZ3kpIGFuZCBOb2JlbCBsYXVyZWF0ZXMgRHIuIFJvc2FseW4gUy4gWWFsb3cgYW5kIERyLiBBbmRyZXcgVi4gU2NoYWxseSwgd2hvIHN0dWRpZWQgZ2FzdHJvaW50ZXN0aW5hbCBob3Jtb25lcy4gVG9kYXksIHRoYXQgbGVnYWN5IGNvbnRpbnVlcyB0aHJvdWdoIHRoZSBhcHBsaWNhdGlvbiBvZiBhcnRpZmljaWFsIGludGVsbGlnZW5jZSBhbmQgZGVlcCBwaGVub3R5cGluZy4gUmVzZWFyY2hlcnMgdXNlIFZJTkNJIHRvIGFwcGx5IG5hdHVyYWwgbGFuZ3VhZ2UgcHJvY2Vzc2luZyAoTkxQKSB0byB1bnN0cnVjdHVyZWQgY2xpbmljYWwgbm90ZXMgdG8gY2hhcmFjdGVyaXplIGNvbXBsZXggcGhlbm90eXBlcywgc3VjaCBhcyBHdWxmIFdhciBJbGxuZXNzIHByZXNlbnRpbmcgYXMgSXJyaXRhYmxlIEJvd2VsIFN5bmRyb21lIChJQlMpLkZ1cnRoZXJtb3JlLCB0aGUgVkHigJlzIE1pbGxpb24gVmV0ZXJhbiBQcm9ncmFtIChNVlApIGludGVncmF0ZXMgdGhlc2UgZGVlcCBjbGluaWNhbCBFSFJzIHdpdGggbWFzc2l2ZSBiaW9iYW5rLWRlcml2ZWQgZ2Vub21pYyBkYXRhIChvdmVyIDIwMCwwMDAgc2FtcGxlcyBhbmFseXplZCB2aWEgYSBjdXN0b21pemVkIEFmZnltZXRyaXggQXhpb20gQmlvYmFuayBjaGlwKS4gVGhpcyBlbmFibGVzIHVucHJlY2VkZW50ZWQgZ2Vub21lLXdpZGUgYXNzb2NpYXRpb24gc3R1ZGllcyBldmFsdWF0aW5nIHRoZSBhc3NvY2lhdGlvbnMgYmV0d2VlbiBnZW5ldGljcywgbWlsaXRhcnkgZXhwb3N1cmUsIGxpZmVzdHlsZSBmYWN0b3JzLCBhbmQgbWV0YWJvbGljIGxpdmVyIGNvbmRpdGlvbnMuIEEga2V5IGxpbWl0YXRpb24gb2YgdGhlIFZBIGRhdGFiYXNlLCBob3dldmVyLCBpcyBpdHMgZXh0ZXJuYWwgdmFsaWRpdHk7IGZpbmRpbmdzIHJlZ2FyZGluZyB0aGUgcHJvZ3Jlc3Npb24gb2YgTUFTTEQgaW4gYW4gb2xkZXIsIHByZWRvbWluYW50bHkgbWFsZSB2ZXRlcmFuIHBvcHVsYXRpb24gbWF5IG5vdCBiZSBkaXJlY3RseSBnZW5lcmFsaXphYmxlIHRvIHByZS1tZW5vcGF1c2FsIHdvbWVuIG9yIHBlZGlhdHJpYyBwb3B1bGF0aW9ucy5BbGwgb2YgVXMgUmVzZWFyY2ggUHJvZ3JhbUFkbWluaXN0ZXJlZCBieSB0aGUgTmF0aW9uYWwgSW5zdGl0dXRlcyBvZiBIZWFsdGggKE5JSCksIHRoZSBBbGwgb2YgVXMgUmVzZWFyY2ggUHJvZ3JhbSBpcyBhIGhpc3RvcmljLCBmZWRlcmFsbHkgZnVuZGVkIGVmZm9ydCB0byBnYXRoZXIgbXVsdGktbW9kYWwgaGVhbHRoIGRhdGEgZnJvbSBvbmUgbWlsbGlvbiBvciBtb3JlIHBlb3BsZSBsaXZpbmcgaW4gdGhlIFVuaXRlZCBTdGF0ZXMgdG8gYWNjZWxlcmF0ZSBwcmVjaXNpb24gbWVkaWNpbmUuRGF0YWJhc2UgUGFyYW1ldGVyQWxsIG9mIFVzIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlRW5yb2xsbWVudCBhbmQgY29udGludW91cyB0cmFja2luZyBpbml0aWF0ZWQgaW4gcmVjZW50IHllYXJzLCB3aXRoIGEgY29tbWl0bWVudCB0byBmb2xsb3cgcGFydGljaXBhbnRzIGZvciAxMCB5ZWFycyBvciBtb3JlLlBvcHVsYXRpb24gRGVtb2dyYXBoaWNzQWR1bHRzIDE4KyBsaXZpbmcgaW4gdGhlIFUuUy4sIGludGVudGlvbmFsbHkgb3ZlcnNhbXBsaW5nIGdyb3VwcyBoaXN0b3JpY2FsbHkgdW5kZXJyZXByZXNlbnRlZCBpbiBiaW9tZWRpY2FsIHJlc2VhcmNoLlZhcmlhYmxlcyBJbmNsdWRlZFN1cnZleSByZXNwb25zZXMsIHBoeXNpY2FsIG1lYXN1cmVtZW50cywgbGlua2VkIEVIUiBkYXRhLCBnZW5vbWljIGRhdGEgKFdob2xlIEdlbm9tZSBTZXF1ZW5jaW5nKSwgYW5kIHBhdGllbnQtZ2VuZXJhdGVkIGRhdGEgZnJvbSB3ZWFyYWJsZXMgKGUuZy4sIEZpdGJpdCkuR3JhbnVsYXJpdHlIaWdobHkgZ3JhbnVsYXIgbW9sZWN1bGFyLCBwaHlzaW9sb2dpY2FsLCBhbmQgYmVoYXZpb3JhbCB0cmFja2luZy5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5QWNjZXNzZWQgc2VjdXJlbHkgdmlhIHRoZSBjbG91ZC1iYXNlZCBSZXNlYXJjaGVyIFdvcmtiZW5jaC5BY2Nlc3MgUmVxdWlyZW1lbnRzVGllcmVkIGFjY2VzcyBzeXN0ZW0uIEZyZWUgb2YgY2hhcmdlLCBidXQgcmVxdWlyZXMgaW5zdGl0dXRpb25hbCBhZ3JlZW1lbnRzLCBpZGVudGl0eSB2ZXJpZmljYXRpb24sIGFuZCBhIHB1YmxpYyBkZXNjcmlwdGlvbiBvZiB0aGUgcmVzZWFyY2ggcHJvamVjdC5FeGFtcGxlIFByb2plY3RzRXhwbG9yaW5nIGNvbm5lY3Rpb25zIGJldHdlZW4gdmlzdWFsIGhlYWx0aCAoRXllcyBvbiBIZWFsdGggc3R1ZHkpLCBtZXRhYm9saWMgZHlzZnVuY3Rpb24sIGFuZCBjb2duaXRpdmUvYmVoYXZpb3JhbCBoZWFsdGggZGlzb3JkZXJzLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uQnkgaW50ZWdyYXRpbmcgV2hvbGUgR2Vub21lIFNlcXVlbmNpbmcgd2l0aCBjb250aW51b3VzIHBoeXNpY2FsIGFjdGl2aXR5IGRhdGEgZGVyaXZlZCBmcm9tIHdlYXJhYmxlcywgaG93IGRvIHNwZWNpZmljIHBvbHlnZW5pYyByaXNrIHNjb3JlcyBmb3IgaGVwYXRpYyBzdGVhdG9zaXMgbW9kaWZ5IHRoZSBkb3NlLXJlc3BvbnNlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIHNlZGVudGFyeSBiZWhhdmlvciBhbmQgdGhlIG9uc2V0IG9mIHN5bXB0b21hdGljIEdFUkQ/VGhlIEFsbCBvZiBVcyBSZXNlYXJjaCBQcm9ncmFtIHJlcHJlc2VudHMgYSBxdWFudHVtIGxlYXAgaW4gZGF0YSBpbnRlZ3JhdGlvbi4gVG8gYWNjZXNzIHRoZSBkYXRhLCByZXNlYXJjaGVycyBtdXN0IG5hdmlnYXRlIHRoZSBEYXRhIEFjY2VzcyBGcmFtZXdvcmssIGVzdGFibGlzaGVkIGJ5IHRoZSBDb21taXR0ZWUgb24gQWNjZXNzIFByaXZhY3kgYW5kIFNlY3VyaXR5IChDQVBTKS4gVGhlICJSZWdpc3RlcmVkIFRpZXIiIHByb3ZpZGVzIGFjY2VzcyB0byBvYmZ1c2NhdGVkIEVIUiBkYXRhLCBzdXJ2ZXkgYW5zd2VycywgYW5kIHdlYXJhYmxlIGRhdGEsIG1hc2tpbmcgcHJlY2lzZSBnZW9ncmFwaGljIGxvY2F0aW9ucyB0byB0aGUgc3RhdGUgbGV2ZWwuIFRoZSAiQ29udHJvbGxlZCBUaWVyIiB1bmxvY2tzIHRoZSBoaWdobHkgc2Vuc2l0aXZlIGdlbm9taWMgZGF0YSBhbmQgbW9yZSBncmFudWxhciBkZW1vZ3JhcGhpYyBpbmZvcm1hdGlvbiAoZS5nLiwgMy1kaWdpdCBaSVAgY29kZXMpLCByZXF1aXJpbmcgc3RyaW5nZW50IG92ZXJzaWdodC4gRm9yIGdhc3Ryb2VudGVyb2xvZ3kgcmVzZWFyY2hlcnMgbGFja2luZyB0aGUgcmVzb3VyY2VzIHRvIGZ1bmQgbWFzc2l2ZSBnZW5vbWUtd2lkZSBhc3NvY2lhdGlvbiBjb2hvcnRzLCB0aGUgZnJlZSBhdmFpbGFiaWxpdHkgb2YgcGFpcmVkIEVIUiwgZ2Vub21pYywgYW5kIHdlYXJhYmxlIGRhdGEgaW4gQWxsIG9mIFVzIGFsbG93cyBmb3IgdGhlIHNvcGhpc3RpY2F0ZWQgbW9kZWxpbmcgb2YgbXVsdGktc3lzdGVtIG1ldGFib2xpYyBkaXNlYXNlcyB0aGF0IHdhcyBwcmV2aW91c2x5IGltcG9zc2libGUuUGFydCBWOiBTcGVjaWFsaXplZCBDb21wbGVtZW50YXJ5IERhdGFiYXNlcyBmb3IgR0kgYW5kIEhlcGF0b2xvZ3lCZXlvbmQgdGhlIGNvcmUgYWRtaW5pc3RyYXRpdmUgYW5kIHN1cnZleSBkYXRhYmFzZXMsIHNldmVyYWwgaGlnaGx5IHNwZWNpYWxpemVkIHBsYXRmb3JtcyBwcm92aWRlIGluZGlzcGVuc2FibGUgZGF0YSBmb3IgZm9jdXNlZCByZXNlYXJjaCBpbiBnbG9iYWwgZXBpZGVtaW9sb2d5LCBjbGluaWNhbCB0cmlhbCBoaXN0b3BhdGhvbG9neSwgb3JnYW4gdHJhbnNwbGFudGF0aW9uLCBhbmQgcHJlY2lzZSBtb2xlY3VsYXIgYmlvbWFya2VyIGRpc2NvdmVyeSBpbiBJQkQuMS4gR2xvYmFsIEJ1cmRlbiBvZiBEaXNlYXNlIChHQkQpIFN0dWR5SG9zdGVkIGJ5IHRoZSBJbnN0aXR1dGUgZm9yIEhlYWx0aCBNZXRyaWNzIGFuZCBFdmFsdWF0aW9uIChJSE1FKSBhdCB0aGUgVW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uLCB0aGUgR0JEIHN0dWR5IGlzIHRoZSBtb3N0IGNvbXByZWhlbnNpdmUgb2JzZXJ2YXRpb25hbCBlcGlkZW1pb2xvZ2ljYWwgc3R1ZHkgZXZlciB1bmRlcnRha2VuLkRhdGFiYXNlIFBhcmFtZXRlckdCRCBQcm9maWxlIERlc2NyaXB0aW9uVGltZSBSYW5nZUxvbmdpdHVkaW5hbCBlc3RpbWF0ZXMgc3Bhbm5pbmcgZnJvbSAxOTkwIHRvIDIwMjEuUG9wdWxhdGlvbiBEZW1vZ3JhcGhpY3NHbG9iYWwgY292ZXJhZ2U7IHByb3ZpZGVzIGVzdGltYXRlcyBhY3Jvc3MgMjA0IGNvdW50cmllcyBhbmQgdGVycml0b3JpZXMuVmFyaWFibGVzIEluY2x1ZGVkSW5jaWRlbmNlLCBwcmV2YWxlbmNlLCBtb3J0YWxpdHksIFllYXJzIG9mIExpZmUgTG9zdCAoWUxMcyksIFllYXJzIExpdmVkIHdpdGggRGlzYWJpbGl0eSAoWUxEcyksIERpc2FiaWxpdHktQWRqdXN0ZWQgTGlmZSBZZWFycyAoREFMWXMpLCBhbmQgYXR0cmlidXRhYmxlIHJpc2sgZmFjdG9ycyAoZS5nLiwgYWxjb2hvbCB1c2UsIGhpZ2ggQk1JKS5HcmFudWxhcml0eUFnZ3JlZ2F0ZWQgZGF0YSBhdCB0aGUgbmF0aW9uYWwsIHJlZ2lvbmFsLCBhbmQgZ2xvYmFsIGxldmVscy5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5QXZhaWxhYmxlIHZpYSB0aGUgR2xvYmFsIEhlYWx0aCBEYXRhIEV4Y2hhbmdlIChHSER4KSBpbnRlcmFjdGl2ZSBxdWVyeSB0b29sIGFuZCBkb3dubG9hZGFibGUgZGF0YXNldHMuQWNjZXNzIFJlcXVpcmVtZW50c0RhdGEgaXMgY29tcGxldGVseSBmcmVlIGFuZCBwdWJsaWNseSBhY2Nlc3NpYmxlIHdpdGhvdXQgcmVzdHJpY3RpdmUgYXBwbGljYXRpb24gYmFycmllcnMuRXhhbXBsZSBQcm9qZWN0c0FuYWx5emluZyB0aGUgMjAyMSBidXJkZW4gb2YgY2lycmhvc2lzLCB3aGljaCBhY2NvdW50ZWQgZm9yIGFuIGVzdGltYXRlZCAxLjQyIG1pbGxpb24gZGVhdGhzIGFuZCA0Ni40IG1pbGxpb24gREFMWXMgZ2xvYmFsbHksIGFuZCBtb2RlbGluZyB0aGUgZnV0dXJlIHRyYWplY3Rvcnkgb2YgTkFGTEQvTkFTSC5Db21wZXRpdGl2ZSBSZXNlYXJjaCBRdWVzdGlvbkFuYWx5emluZyBHQkQgMjAyMSBkYXRhLCBob3cgZG8gdGhlIGRpdmVyZ2luZyB0cmFqZWN0b3JpZXMgb2YgdmlyYWwgaGVwYXRpdGlzLXJlbGF0ZWQgREFMWXMgdmVyc3VzIE1BU0xELXJlbGF0ZWQgREFMWXMgYWNyb3NzIGRpZmZlcmluZyBTb2Npby1EZW1vZ3JhcGhpYyBJbmRleCAoU0RJKSBxdWludGlsZXMgaW5mb3JtIG9wdGltYWwgcmVzb3VyY2UgYWxsb2NhdGlvbiBmb3IgZ2xvYmFsIGxpdmVyIGNhbmNlciBwcmV2ZW50aW9uIG92ZXIgdGhlIG5leHQgZGVjYWRlP1RoZSBHQkQgZGF0YWJhc2UgY2xhc3NpZmllcyBkaWdlc3RpdmUgZGlzZWFzZXMgaW50byB0ZW4gb3ZlcmFyY2hpbmcgY2F0ZWdvcmllcywgaW5jbHVkaW5nIGNpcnJob3NpcywgYXBwZW5kaWNpdGlzLCBwYW5jcmVhdGl0aXMsIGFuZCBpbmZsYW1tYXRvcnkgYm93ZWwgZGlzZWFzZS4gRm9yIGdyYWR1YXRlIHN0dWRlbnRzIGludGVyZXN0ZWQgaW4gbWFjcm8tZXBpZGVtaW9sb2d5LCB0aGUgR0JEIHByb3ZpZGVzIHRoZSBmb3VuZGF0aW9uYWwgc3RhdGlzdGljcyBuZWNlc3NhcnkgdG8ganVzdGlmeSBjbGluaWNhbCByZXNlYXJjaCBmdW5kaW5nIGFuZCBwb2xpY3kgaW50ZXJ2ZW50aW9ucy4gRm9yIGV4YW1wbGUsIEdCRCAyMDIxIGRhdGEgaGlnaGxpZ2h0cyB0aGF0IHdoaWxlIGhlcGF0aXRpcyBCIGFuZCBDIGluZmVjdGlvbnMgYXJlIGRlY3JlYXNpbmcgaW4gY2VydGFpbiBkZXZlbG9waW5nIHJlZ2lvbnMgZHVlIHRvIHZhY2NpbmF0aW9uIGFuZCBEQUFzLCB0aGUgZ2xvYmFsIGJ1cmRlbiBvZiBOQUZMRCBpcyBhY2NlbGVyYXRpbmcgcmFwaWRseSwgcGFydGljdWxhcmx5IGluIHRoZSBNaWRkbGUgRWFzdCBhbmQgTGF0aW4gQW1lcmljYS4yLiBOSURESyBDZW50cmFsIFJlcG9zaXRvcnlUaGUgTmF0aW9uYWwgSW5zdGl0dXRlIG9mIERpYWJldGVzIGFuZCBEaWdlc3RpdmUgYW5kIEtpZG5leSBEaXNlYXNlcyAoTklEREspIENlbnRyYWwgUmVwb3NpdG9yeSBzZXJ2ZXMgYXMgdGhlIHByZW1pZXIgYXJjaGl2YWwgdmF1bHQgZm9yIGRhdGEgYW5kIGJpb3NwZWNpbWVucyBnZW5lcmF0ZWQgZnJvbSBmZWRlcmFsbHkgZnVuZGVkLCBtdWx0aS1jZW50ZXIgY2xpbmljYWwgdHJpYWxzIGFuZCBvYnNlcnZhdGlvbmFsIGNvaG9ydHMuRGF0YWJhc2UgUGFyYW1ldGVyTklEREsgQ2VudHJhbCBSZXBvc2l0b3J5IFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlSGlnaGx5IHZhcmlhYmxlLCBkZXBlbmRlbnQgb24gdGhlIHNwZWNpZmljIGNsaW5pY2FsIHRyaWFsIG9yIG9ic2VydmF0aW9uYWwgY29ob3J0IChlLmcuLCBOQVNIIENSTiBkYXRhIGNvbGxlY3Rpb24gcmFuIGZyb20gMjAwOSB0byAyMDIwKS5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc0NhcmVmdWxseSBzZWxlY3RlZCBjbGluaWNhbCB0cmlhbCBwYXJ0aWNpcGFudHMsIGluY2x1ZGluZyBzcGVjaWFsaXplZCBwZWRpYXRyaWMgYW5kIGFkdWx0IGNvaG9ydHMuVmFyaWFibGVzIEluY2x1ZGVkU3RyaWN0IHByb3RvY29sLWRyaXZlbiBjbGluaWNhbCBkYXRhLCBkZXRhaWxlZCBmb2xsb3ctdXAgbWVkaWNhbCBoaXN0b3J5LCBzcGVjaWZpYyBwaHlzaWNhbCBhY3Rpdml0eSBzdXJ2ZXlzLCBhbmQgaGlnaGx5IGN1cmF0ZWQgY2VudHJhbCBoaXN0b2xvZ3kgcmV2aWV3cyBvZiBsaXZlciBiaW9wc2llcy5HcmFudWxhcml0eUhpZ2hseSBncmFudWxhciBwYXRpZW50LWxldmVsIGFuZCBzcGVjaW1lbi1sZXZlbCBkYXRhLlRhYnVsYXIgRGF0YSBBdmFpbGFiaWxpdHlEYXRhIHBhY2thZ2VzIGFyZSBwcm92aWRlZCBpbiBzdHJ1Y3R1cmVkIGZvcm1hdHMgKGUuZy4sIFNBUyAuc2FzN2JkYXQgZmlsZXMgYW5kIC5jc3YgZmlsZXMpLkFjY2VzcyBSZXF1aXJlbWVudHNGcmVlIGFjY2VzcywgYnV0IHJlcXVpcmVzIHN1Ym1pc3Npb24gb2YgYSByb2J1c3QgcmVzZWFyY2ggYXBwbGljYXRpb24gZGV0YWlsaW5nIHRoZSBzcGVjaWZpYyBzdGF0aXN0aWNhbCBwbGFuIGFuZCBpbnRlbnQgdG8gZW5zdXJlIHRoZSBwcm90ZWN0aW9uIG9mIHBhcnRpY2lwYW50IGRhdGEuRXhhbXBsZSBQcm9qZWN0c0FjY2Vzc2luZyB0aGUgSGVwYXRpdGlzIEMgQW50aXZpcmFsIExvbmctVGVybSBUcmVhdG1lbnQgQWdhaW5zdCBDaXJyaG9zaXMgKEhBTFQtQykgdHJpYWwgZGF0YSB0byBzdHVkeSBwcm9ncmVzc2lvbiBvZiBsaXZlciBkaXNlYXNlIGluIHBhdGllbnRzIHJlY2VpdmluZyBwZWdpbnRlcmZlcm9uIGFsZmEtMmEuQ29tcGV0aXRpdmUgUmVzZWFyY2ggUXVlc3Rpb25VdGlsaXppbmcgdGhlIGNlbnRyYWwgaGlzdG9sb2d5IHJldmlldyBkYXRhIGZyb20gdGhlIE5BU0ggQ1JOIEFkdWx0IERhdGFiYXNlLCB3aGF0IGFyZSB0aGUgc3VidGxlIGhpc3RvbG9naWNhbCBwcmVkaWN0b3JzIChlLmcuLCB2YXJ5aW5nIGRlZ3JlZXMgb2YgbG9idWxhciBpbmZsYW1tYXRpb24gdmVyc3VzIGJhbGxvb25pbmcpIHRoYXQgbW9zdCBhY2N1cmF0ZWx5IGZvcmVjYXN0IHJhcGlkIHByb2dyZXNzaW9uIHRvIGJyaWRnaW5nIGZpYnJvc2lzIGluIG5vbi1kaWFiZXRpYyBwYXRpZW50cz9UaGUgcmVwb3NpdG9yeSBpcyBleGNlcHRpb25hbGx5IHZhbHVhYmxlIGZvciBoZXBhdG9sb2d5IHJlc2VhcmNoZXJzIGR1ZSB0byBpdHMgaW5jbHVzaW9uIG9mIHRoZSBOQVNIIENsaW5pY2FsIFJlc2VhcmNoIE5ldHdvcmsgKE5BU0ggQ1JOKSBkYXRhLiBUaGUgTkFTSCBDUk4gY29tcHJpc2VzIG51bWVyb3VzIG9ic2VydmF0aW9uYWwgc3R1ZGllcyBhbmQgbGFuZG1hcmsgY2xpbmljYWwgdHJpYWxzLCBpbmNsdWRpbmcgdGhlIFBJVkVOUyB0cmlhbCAoUGlvZ2xpdGF6b25lIHZzLiBWaXRhbWluIEUpIGFuZCB0aGUgRkxJTlQgdHJpYWwgKE9iZXRpY2hvbGljIEFjaWQpLiBUaGUgTkFGTEQgQWR1bHQgRGF0YWJhc2UgMiBpbmNsdWRlcyAyLDUwMSBwYXJ0aWNpcGFudHMsIHdoaWxlIHRoZSBOQUZMRCBQZWRpYXRyaWMgRGF0YWJhc2UgMiBpbmNsdWRlcyA5NzEgcGFydGljaXBhbnRzIGZvbGxvd2VkIGZyb20gYWRvbGVzY2VuY2UgaW50byBhZHVsdGhvb2QuIFRoZSB2YXJpYWJsZXMgd2l0aGluIHRoZXNlIGRhdGFzZXRzIGFyZSBleHRyYW9yZGluYXJpbHkgcHJlY2lzZTsgZm9yIGV4YW1wbGUsIHRoZSBBZHVsdCBEYXRhYmFzZSBjb250YWlucyAzNDEgdmFyaWFibGVzIGRlZGljYXRlZCBzb2xlbHkgdG8gZm9sbG93LXVwIG1lZGljYWwgaGlzdG9yeSBhbmQgNDEgdmFyaWFibGVzIGNhcHR1cmluZyB0aGUgZXhhY3QgcmVzdWx0cyBvZiB0aGUgTkFTSCBDUk4gUGF0aG9sb2d5IENvbW1pdHRlZSdzIGNlbnRyYWwgcmV2aWV3IG9mIGxpdmVyIGJpb3BzeSBzbGlkZXMuIEZvciBncmFkdWF0ZSBzdHVkZW50cyByZXF1aXJpbmcgaGlnaC1maWRlbGl0eSBoaXN0b2xvZ2ljYWwgZW5kcG9pbnRzIHJhdGhlciB0aGFuIG1lcmUgSUNELTEwIGRpYWdub3N0aWMgY29kZXMsIHRoZSBOSURESyBDZW50cmFsIFJlcG9zaXRvcnkgaXMgdW5tYXRjaGVkLjMuIFNjaWVudGlmaWMgUmVnaXN0cnkgb2YgVHJhbnNwbGFudCBSZWNpcGllbnRzIChTUlRSKVRoZSBTUlRSIG1hbmFnZXMgYW5kIGFuYWx5emVzIGRhdGEgY29sbGVjdGVkIGJ5IHRoZSBPcmdhbiBQcm9jdXJlbWVudCBhbmQgVHJhbnNwbGFudGF0aW9uIE5ldHdvcmsgKE9QVE4pLCBzdXBwbGVtZW50ZWQgYnkgTWVkaWNhcmUgZGF0YSBhbmQgdGhlIERlYXRoIE1hc3RlciBGaWxlLCByZXByZXNlbnRpbmcgdGhlIGRlZmluaXRpdmUgZGF0YWJhc2UgZm9yIHNvbGlkIG9yZ2FuIHRyYW5zcGxhbnRhdGlvbiBpbiB0aGUgVW5pdGVkIFN0YXRlcy5EYXRhYmFzZSBQYXJhbWV0ZXJTUlRSIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlQ29tcHJlaGVuc2l2ZSBkYXRhIHNwYW5uaW5nIGZyb20gMTk4NyB0byB0aGUgcHJlc2VudC5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc0NhcHR1cmVzIDEwMCUgb2Ygc29saWQgb3JnYW4gdHJhbnNwbGFudCBjYW5kaWRhdGVzLCBsaXZpbmcgYW5kIGRlY2Vhc2VkIGRvbm9ycywgYW5kIHJlY2lwaWVudHMgaW4gdGhlIFUuUy4uVmFyaWFibGVzIEluY2x1ZGVkV2FpdGxpc3QgZGF0ZXMsIGxpc3RpbmcgY2VudGVyIHR5cGVzLCBNRUxEIHNjb3JlcywgcHJldmlvdXMgbWFsaWduYW5jaWVzLCBsaWZlIHN1cHBvcnQgbWVjaGFuaXNtcywgZG9ub3IgY2hhcmFjdGVyaXN0aWNzLCBhbmQgcG9zdC10cmFuc3BsYW50IGltbXVub3N1cHByZXNzaW9uIHJlZ2ltZW5zLkdyYW51bGFyaXR5UGF0aWVudC1sZXZlbCBmaWxlcyBvcmdhbml6ZWQgYnkgY2FuZGlkYXRlLCBkb25vciwgdHJhbnNwbGFudCBldmVudCwgYW5kIGxvbmctdGVybSBmb2xsb3ctdXAuVGFidWxhciBEYXRhIEF2YWlsYWJpbGl0eVN0YW5kYXJkIEFuYWx5c2lzIEZpbGVzIChTQUZzKSBhcmUgcmVsZWFzZWQgcXVhcnRlcmx5IChNYXJjaCwgSnVuZSwgU2VwdGVtYmVyLCBEZWNlbWJlcikgYW5kIHByb3ZpZGVkIGV4Y2x1c2l2ZWx5IGluIFNBUyBmb3JtYXQuQWNjZXNzIFJlcXVpcmVtZW50c1JlcXVpcmVzIGEgRGF0YSBVc2UgQWdyZWVtZW50LCBhIHN0cmluZ2VudCBkYXRhIHNlY3VyaXR5IHBsYW4sIGFuIGFwcHJvdmVkIHJlc2VhcmNoIHByb3RvY29sLCBhbmQgYW4gYWNxdWlzaXRpb24gZmVlIG9mICQxLDAwMCBmb3IgdGhlIGluaXRpYWwgU0FGLkV4YW1wbGUgUHJvamVjdHNFdmFsdWF0aW5nIHRoZSBpbXBhY3Qgb2YgdGhlIG5ld2x5IGltcGxlbWVudGVkIE1FTEQgMy4wIHNjb3Jpbmcgc3lzdGVtIG9uIGVxdWFsaXppbmcgbGl2ZXIgdHJhbnNwbGFudCByYXRlcyBiZXR3ZWVuIG1hbGUgYW5kIGZlbWFsZSBjYW5kaWRhdGVzLkNvbXBldGl0aXZlIFJlc2VhcmNoIFF1ZXN0aW9uRm9sbG93aW5nIHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBNRUxEIDMuMCwgaG93IGhhcyB0aGUgaW5jb3Jwb3JhdGlvbiBvZiBzZXggYW5kIHVwZGF0ZWQgY3JlYXRpbmluZSBjb2VmZmljaWVudHMgYWx0ZXJlZCB3YWl0bGlzdCBtb3J0YWxpdHkgYW5kIGVhcmx5IHBvc3QtdHJhbnNwbGFudCBncmFmdCBzdXJ2aXZhbCByYXRlcyBhbW9uZyBmZW1hbGUgcGF0aWVudHMgd2l0aCBkZWNvbXBlbnNhdGVkIGNpcnJob3Npcz9UaGUgU1JUUiBkYXRhYmFzZXMgYXJlIGNyaXRpY2FsIGZvciBkZXZlbG9waW5nIGFuZCB2YWxpZGF0aW5nIHByZWRpY3RpdmUgbW9kZWxzIGluIGhlcGF0b2xvZ3kuIFN0YW5kYXJkIG1hY2hpbmUgbGVhcm5pbmcgdGVjaG5pcXVlcyAoZS5nLiwgTXVsdGlsYXllciBQZXJjZXB0cm9uLCBSYW5kb20gRm9yZXN0LCBHcmFkaWVudCBCb29zdGluZykgaGF2ZSBiZWVuIGFwcGxpZWQgdG8gVU5PUy9TUlRSIGRhdGEgdG8gYXR0ZW1wdCB0byBvcHRpbWl6ZSBEb25vci1SZWNpcGllbnQgbWF0Y2hpbmcsIHByZWRpY3Rpbmcgc3Vydml2YWwgYXQgMy1tb250aCwgMS15ZWFyLCBhbmQgNS15ZWFyIGVuZHBvaW50cyBjb21wYXJlZCB0byBzdGFuZGFyZCBNRUxELCBTT0ZULCBvciBCQVIgc2NvcmVzLiBUaGUgU1JUUiBkYXRhIGRpY3Rpb25hcnkgaW5jbHVkZXMgaGlnaGx5IHNwZWNpZmljIG9wZXJhdGlvbmFsIHZhcmlhYmxlcyBzdWNoIGFzIENBTl9MSVNUSU5HX0RUICh0aGUgZXhhY3QgZGF0ZSBhbmQgdGltZSBhIGNhbmRpZGF0ZSB3YXMgcGh5c2ljYWxseSBhZGRlZCB0byB0aGUgd2FpdGxpc3QpIGFuZCBDQU5fTUFMSUdfVFkgKHByZXZpb3VzIG1hbGlnbmFuY3kgdHlwZXMpLiBJdCBpcyBpbXBvcnRhbnQgdG8gbm90ZSB0aGF0IHRoZSBzdGFuZGFyZCBTQUZzIGV4Y2x1ZGUgZ2VvZ3JhcGhpYyBkYXRhIChsaWtlIHppcCBjb2RlcykgYW5kIG1vc3QgdGV4dCBmaWVsZHMgdG8gcHJlc2VydmUgcGF0aWVudCBwcml2YWN5OyBvYnRhaW5pbmcgdGhlc2UgcmVxdWlyZXMgc3BlY2lhbCBwZXJtaXNzaW9uIGFuZCBhZGRpdGlvbmFsIGZlZXMuNC4gVUsgQmlvYmFua1doaWxlIGJhc2VkIGluIHRoZSBVbml0ZWQgS2luZ2RvbSwgdGhlIFVLIEJpb2JhbmsgaXMgd2lkZWx5IGFjY2Vzc2VkIGJ5IGludGVybmF0aW9uYWwgcmVzZWFyY2hlcnMgZHVlIHRvIGl0cyB1bnBhcmFsbGVsZWQgZGVwdGggb2YgcGhlbm90eXBpYywgZ2Vub3R5cGljLCBhbmQgYWR2YW5jZWQgaW1hZ2luZyBpbnRlZ3JhdGlvbi5EYXRhYmFzZSBQYXJhbWV0ZXJVSyBCaW9iYW5rIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlUHJvc3BlY3RpdmUgY29ob3J0IGxhdW5jaGVkIHdpdGggYmFzZWxpbmUgZGF0YSBpbiAyMDEyLCBjb250aW51b3VzbHkgdXBkYXRlZCB3aXRoIG5ldyBtb2RhbGl0aWVzIChlLmcuLCBhY2NlbGVyYXRlZCByZXBlYXQgc3R1ZGllcyBpbiAyMDE4LTIwMTkpLlBvcHVsYXRpb24gRGVtb2dyYXBoaWNzT3ZlciA1MDAsMDAwIGFkdWx0IHBhcnRpY2lwYW50cy5WYXJpYWJsZXMgSW5jbHVkZWREZWVwIGdlbm9taWMgYW5jZXN0cnksIGVudmlyb25tZW50YWwgZXhwb3N1cmVzLCBwc3ljaG9sb2dpY2FsIHN0cmVzc29ycywgYWNjZWxlcm9tZXRyeSwgYW5kIGhpZ2hseSBkZXRhaWxlZCBhYmRvbWluYWwgaW1hZ2luZyBtZXRyaWNzLkdyYW51bGFyaXR5SW5kaXZpZHVhbC1sZXZlbCBtdWx0aS1vbWljcywgc3VydmV5LCBhbmQgcmF3IGltYWdpbmcgZGF0YS5UYWJ1bGFyIERhdGEgQXZhaWxhYmlsaXR5QWNjZXNzaWJsZSB2aWEgYSBzZWN1cmUgcmVzZWFyY2ggZW52aXJvbm1lbnQuIEltYWdpbmcgZmlsZXMgYXJlIHByb3ZpZGVkIGluIHJhdyBESUNPTSBmb3JtYXQuQWNjZXNzIFJlcXVpcmVtZW50c09wZW4gdG8gYm9uYSBmaWRlIHJlc2VhcmNoZXJzIGdsb2JhbGx5IGZvciBoZWFsdGgtcmVsYXRlZCByZXNlYXJjaCBpbiB0aGUgcHVibGljIGludGVyZXN0LiBSZXF1aXJlcyBhIHJpZ29yb3VzIGFwcGxpY2F0aW9uIGFuZCBwYXltZW50IG9mIHN1YnN0YW50aWFsIGRhdGEgYWNjZXNzIHRpZXJzLkV4YW1wbGUgUHJvamVjdHNBcHBseWluZyBtYWNoaW5lIGxlYXJuaW5nIHRvIE1SSS1kZXJpdmVkIGxpdmVyIHNoYXBlIHRvIGlkZW50aWZ5IHZhcmlhdGlvbnMgbGlua2VkIHRvIGlyb24gaG9tZW9zdGFzaXMgYW5kIGhlbW9seXNpcy5Db21wZXRpdGl2ZSBSZXNlYXJjaCBRdWVzdGlvbkJ5IGludGVncmF0aW5nIG11bHRpLW9taWNzIGRhdGEgd2l0aCBoaWdoLXJlc29sdXRpb24gZW52aXJvbm1lbnRhbCBleHBvc3VyZSByZWNvcmRzIGFuZCBvYmplY3RpdmUgcGh5c2ljYWwgYWN0aXZpdHkgbWV0cmljcywgd2hhdCBhcmUgdGhlIGNhdXNhbCBiaWRpcmVjdGlvbmFsIHJlbGF0aW9uc2hpcHMgYmV0d2VlbiBjaHJvbmljIHBzeWNob2xvZ2ljYWwgc3RyZXNzIGFuZCB0aGUgcHJvZ3Jlc3Npb24gb2YgaW5mbGFtbWF0b3J5IGJvd2VsIGRpc2Vhc2U/VGhlIFVLIEJpb2JhbmsgaXMgdW5pcXVlbHkgdmFsdWFibGUgdG8gaGVwYXRvbG9neSBkdWUgdG8gaXRzIGluY2x1c2lvbiBvZiBhYmRvbWluYWwgTVJJIHNjYW5zIGZvciB0ZW5zIG9mIHRob3VzYW5kcyBvZiBwYXJ0aWNpcGFudHMuIFRoZXNlIGltYWdpbmcgdmFyaWFibGVzIGRpcmVjdGx5IGFuZCBub24taW52YXNpdmVseSBxdWFudGlmeSBsaXZlciBmYXQgcGVyY2VudGFnZSwgbGl2ZXIgaXJvbiBjb250ZW50LCBsaXZlciBpbmZsYW1tYXRpb24gZmFjdG9yIChMSUYpLCBhYmRvbWluYWwgc3ViY3V0YW5lb3VzIGFkaXBvc2UgdGlzc3VlIChBU0FUKSwgYW5kIHZpc2NlcmFsIGFkaXBvc2UgdGlzc3VlIChWQVQpLiBUaGlzIGFsbG93cyByZXNlYXJjaGVycyB0byBkZWVwbHkgcGhlbm90eXBlIHN1YmplY3RzIHdpdGggbWV0YWJvbGljIGRpc2Vhc2VzLiBGb3IgaW5zdGFuY2UsIHJlY2VudCBzdHVkaWVzIGhhdmUgdXRpbGl6ZWQgdGhlIFVLIEJpb2JhbmsgdG8gZXhwbG9yZSB0aGUgZGlzdGluY3RpdmUgY2xpbmljYWwgYW5kIGdlbmV0aWMgZmVhdHVyZXMgb2YgbGVhbiBNQVNMRCAoQk1JIDwgMjUpIHZlcnN1cyBvdmVyd2VpZ2h0L29iZXNlIE1BU0xELCBpZGVudGlmeWluZyBtaXNzaW5nIGdlbmV0aWMgbGlua3MgdXRpbGl6aW5nIHRvb2xzIGxpa2UgdGhlIE1JTFRPTiBtYWNoaW5lLWxlYXJuaW5nIGZyYW1ld29yayB0byBwZXJmb3JtIGF1Z21lbnRlZCBwaGVub21lLXdpZGUgYXNzb2NpYXRpb24gc3R1ZGllcyAoUGhlV0FTKS41LiBJQkQgUGxleHVzIChDcm9obidzICYgQ29saXRpcyBGb3VuZGF0aW9uKUlCRCBQbGV4dXMgaXMgYSByZXZvbHV0aW9uYXJ5IHByZWNpc2lvbiBtZWRpY2luZSByZXNlYXJjaCBlY29zeXN0ZW0gZGVzaWduZWQgc3BlY2lmaWNhbGx5IGZvciB0aGUgc3R1ZHkgb2YgaW5mbGFtbWF0b3J5IGJvd2VsIGRpc2Vhc2UsIHVuaWZ5aW5nIG1hc3NpdmUgZGlnaXRhbCBkYXRhc2V0cyB3aXRoIHBoeXNpY2FsIGJpb2xvZ2ljYWwgc2FtcGxlcy5EYXRhYmFzZSBQYXJhbWV0ZXJJQkQgUGxleHVzIFByb2ZpbGUgRGVzY3JpcHRpb25UaW1lIFJhbmdlQ29udGludW91cywgb25nb2luZyBkYXRhIGFnZ3JlZ2F0aW9uIGZyb20gc2V2ZXJhbCBsb25naXR1ZGluYWwgY29ob3J0cyAoZS5nLiwgU1BBUkMgSUJELCBDQVBUVVJFIElCRCwgSUJEIFNJUlFDKS5Qb3B1bGF0aW9uIERlbW9ncmFwaGljc1NwZWNpYWxpemVkIGNvaG9ydCBvZiBhZHVsdCBhbmQgcGVkaWF0cmljIHBhdGllbnRzIGRpYWdub3NlZCB3aXRoIENyb2huJ3MgZGlzZWFzZSwgVWxjZXJhdGl2ZSBDb2xpdGlzLCBhbmQgaW5kZXRlcm1pbmF0ZSBJQkQuVmFyaWFibGVzIEluY2x1ZGVkUGF0aWVudC1yZXBvcnRlZCBvdXRjb21lcywgcHJlY2lzZSBtZWRpY2F0aW9uIGhpc3RvcnkgKGJyZWFrZG93biBvZiBzcGVjaWZpYyBiaW9sb2dpYyB1c2FnZSksIGdlbmV0aWMgZGF0YSwgYW5kIHRyYW5zY3JpcHRvbWljL21vbGVjdWxhciBkYXRhLkdyYW51bGFyaXR5SGlnaC1yZXNvbHV0aW9uIGNsaW5pY2FsIHBoZW5vdHlwZXMgbGlua2VkIGRpcmVjdGx5IHRvIG1vbGVjdWxhciBiaW9zYW1wbGVzIChibG9vZCwgc3Rvb2wsIGludGVzdGluYWwgY2VsbHMpLlRhYnVsYXIgRGF0YSBBdmFpbGFiaWxpdHlJbnRlZ3JhdGVkIGRhdGEgd2FyZWhvdXNlIGFjY2Vzc2VkIHZpYSBzZWN1cmUgcG9ydGFscy5BY2Nlc3MgUmVxdWlyZW1lbnRzQWNhZGVtaWMgcmVzZWFyY2hlcnMgbXVzdCBzdWJtaXQgcmVzcG9uc2VzIHRvIHNwZWNpZmljIFJlcXVlc3RzIGZvciBQcm9wb3NhbHMgKFJGUHMpIHJldmlld2VkIGluIHNpeCBhbm51YWwgY3ljbGVzLiBGb3VuZGF0aW9uIGdyYW50IGF3YXJkZWVzIChlLmcuLCBTZW5pb3IgUmVzZWFyY2ggQXdhcmRlZXMpIGNhbiBhY2Nlc3MgZGF0YSBhbmQgYmlvc2FtcGxlcyBhdCBubyBjb3N0LkV4YW1wbGUgUHJvamVjdHNPdmVyIDIwMCBhY3RpdmUgcHJvamVjdHMgZXZhbHVhdGluZyBkaXNlYXNlIG1hbmFnZW1lbnQsIHRoZXJhcGV1dGljIG9wdGltaXphdGlvbiwgYW5kIHRoZSBpZGVudGlmaWNhdGlvbi92YWxpZGF0aW9uIG9mIG5vdmVsIGRpYWdub3N0aWMgYmlvbWFya2Vycy5Db21wZXRpdGl2ZSBSZXNlYXJjaCBRdWVzdGlvblV0aWxpemluZyBsb25naXR1ZGluYWwgdHJhbnNjcmlwdG9taWMgcHJvZmlsZXMgYW5kIG1hdGNoZWQgcGF0aWVudC1yZXBvcnRlZCBzeW1wdG9tIG91dGNvbWVzIGZyb20gSUJEIFBsZXh1cywgd2hhdCBub3ZlbCBtb2xlY3VsYXIgc2lnbmF0dXJlcyBwcmVkaWN0IHRoZSBsb3NzIG9mIHJlc3BvbnNlIHRvIGFudGktVE5GIHRoZXJhcGllcyBpbiBwYXRpZW50cyB3aXRoIHN0cmljdHVyaW5nIENyb2huJ3MgZGlzZWFzZSBwcmlvciB0byBjbGluaWNhbCBtYW5pZmVzdGF0aW9uP0lCRCBQbGV4dXMgb3BlcmF0ZXMgYnkgZmVlZGluZyBkYXRhIGZyb20gZm91bmRhdGlvbmFsIHN0dWRpZXMgaW50byBhIGNlbnRyYWwgYW5hbHl0aWNhbCBodWIuIEl0IHByb3ZpZGVzIGFuIGV4dHJhb3JkaW5hcnkgbGV2ZWwgb2YgcGhhcm1hY29sb2dpY2FsIGRldGFpbCBub3QgZm91bmQgaW4gYWRtaW5pc3RyYXRpdmUgY2xhaW1zLiBGb3IgZXhhbXBsZSwgcmVjZW50IGRlbW9ncmFwaGljIGJyZWFrZG93bnMgb2YgdGhlIHBsYXRmb3JtIGluZGljYXRlIHRoYXQgNjElIG9mIHBhdGllbnRzIGhhdmUgcmVjZWl2ZWQgc3Rlcm9pZCB0aGVyYXBpZXMsIDUxJSBpbW11bm9tb2R1bGF0b3JzLCBhbmQgNDQlIGJpb2xvZ2ljcy4gQ3J1Y2lhbGx5LCB0aGUgYmlvbG9naWMgZGF0YSBpcyBicm9rZW4gZG93biBzcGVjaWZpY2FsbHkgYnkgYWdlbnQ6IDQwJSBJbmZsaXhpbWFiLCAxMyUgQWRhbGltdW1hYiwgYW5kIGVtZXJnaW5nIHRoZXJhcGllcyBsaWtlIFZlZG9saXp1bWFiIGFuZCBVc3Rla2ludW1hYi4gQnkgbGlua2luZyB0aGlzIGV4YWN0IGNsaW5pY2FsIGV4cG9zdXJlIGRhdGEgdG8gcGh5c2ljYWwgYmlvc2FtcGxlcywgcmVzZWFyY2hlcnMgY2FuIGFjY2VsZXJhdGUgdGhlcmFwZXV0aWMgb3B0aW1pemF0aW9uIGFuZCBkaXNlYXNlIHByZXZlbnRpb24gc3RyYXRlZ2llcyB3aXRob3V0IGhhdmluZyB0byBzcGVuZCB5ZWFycyBzY3JlZW5pbmcgYW5kIHJlY3J1aXRpbmcgcGF0aWVudHMgdG8gZG9uYXRlIHRpc3N1ZSBzYW1wbGVzLkFuYWx5dGljYWwgU3ludGhlc2lzIGFuZCBNZXRob2RvbG9naWNhbCBJbXBsaWNhdGlvbnNGb3IgZ3JhZHVhdGUgc3R1ZGVudHMgYW5kIGZlbGxvd3Mgc3RydWN0dXJpbmcgdGhlaXIgZXBpZGVtaW9sb2dpY2FsIGFuZCBjbGluaWNhbCByZXNlYXJjaCwgdGhlIHNlbGVjdGlvbiBvZiBhIGRhdGFiYXNlIGlzIHJhcmVseSBhIGJpbmFyeSBjaG9pY2U7IHJhdGhlciwgaXQgZGVtYW5kcyBhbGlnbmluZyB0aGUgc3BlY2lmaWMgY29uc3RyYWludHMsIGJpYXNlcywgYW5kIGFyY2hpdGVjdHVyZSBvZiB0aGUgZGF0YWJhc2Ugd2l0aCB0aGUgY2xpbmljYWwgbnVhbmNlcyBvZiB0aGUgaHlwb3RoZXNpcy5BZG1pbmlzdHJhdGl2ZSBjbGFpbXMgZGF0YWJhc2VzIGxpa2UgTWFya2V0U2NhbiBhbmQgTklTIGV4Y2VsIGF0IHF1YW50aWZ5aW5nIHN5c3RlbWljIGVjb25vbWljIGJ1cmRlbnMgYW5kIGhlYWx0aCBjYXJlIHV0aWxpemF0aW9uIG9uIGEgbWFzc2l2ZSBzY2FsZS4gSG93ZXZlciwgdGhleSBhcmUgaW5oZXJlbnRseSBkZXNpZ25lZCBmb3IgYmlsbGluZywgbm90IGNsaW5pY2FsIHJlc2VhcmNoLiBEaWFnbm9zZXMgcmVseSBvbiBJQ0QtMTAgY29kaW5nIGFjY3VyYWN5LCB3aGljaCBjYW4gbGVhZCB0byBzaWduaWZpY2FudCBtaXNjbGFzc2lmaWNhdGlvbiBiaWFzLiBGdXJ0aGVybW9yZSwgdGhlIGFic2VuY2Ugb2YgZ3JhbnVsYXIgbGFib3JhdG9yeSB2YWx1ZXMgKGUuZy4sIGJpbGlydWJpbiwgSU5SLCBjcmVhdGluaW5lKSBpbiBjbGFpbXMgZGF0YSBtYWtlcyBpdCBpbXBvc3NpYmxlIHRvIGFjY3VyYXRlbHkgY2FsY3VsYXRlIGEgcGF0aWVudCdzIE1FTEQgc2NvcmUgb3IgYXNzZXNzIHRoZSBiaW9jaGVtaWNhbCBzZXZlcml0eSBvZiBkZWNvbXBlbnNhdGVkIGNpcnJob3Npcy4gVGhlcmVmb3JlLCB3aGlsZSBhbiBpbnZlc3RpZ2F0b3IgbWlnaHQgZWZmZWN0aXZlbHkgdXNlIE5JUyB0byBkZW1vbnN0cmF0ZSB0aGUgcmlzaW5nIGFnZ3JlZ2F0ZSBpbnBhdGllbnQgY29zdHMgb2YgYWN1dGUgYWxjb2hvbGljIGhlcGF0aXRpcyBhY3Jvc3MgcmVnaW9ucywgdGhleSBjYW5ub3QgdXNlIE5JUyB0byBjb3JyZWxhdGUgdGhvc2UgY29zdHMgd2l0aCBwcmVjaXNlIGRpc2Vhc2Ugc2V2ZXJpdHkgdHJhamVjdG9yaWVzLkNvbnZlcnNlbHksIHdoaWxlIHRoZSBWQSBWSU5DSSBzeXN0ZW0gb2ZmZXJzIHVucGFyYWxsZWxlZCBkZXB0aCBpbnRvIGJpb2NoZW1pY2FsIG1hcmtlcnMgYW5kIGxvbmdpdHVkaW5hbCBkaXNlYXNlIHByb2dyZXNzaW9uIHZpYSBjb250aW51b3VzIEVIUnMsIGl0cyBleHRlcm5hbCB2YWxpZGl0eSBpcyB0aWdodGx5IGNvbnN0cmFpbmVkIGJ5IGEgZGVtb2dyYXBoaWNhbGx5IGhvbW9nZW5lb3VzIHBvcHVsYXRpb24gdGhhdCBpcyBwcmVkb21pbmFudGx5IG9sZGVyIGFuZCBtYWxlLiBGaW5kaW5ncyByZWdhcmRpbmcgdGhlIHByb2dyZXNzaW9uIG9mIE1BU0xEIG9yIGF1dG9pbW11bmUgaGVwYXRpdGlzIGluIHRoZSBWQSBzeXN0ZW0gbWF5IG5vdCBiZSBkaXJlY3RseSBnZW5lcmFsaXphYmxlIHRvIHByZS1tZW5vcGF1c2FsIHdvbWVuIG9yIHBlZGlhdHJpYyBwb3B1bGF0aW9ucy4gVG8gc3R1ZHkgcGVkaWF0cmljIE5BRkxELCBhbiBpbnZlc3RpZ2F0b3Igd291bGQgYmUgdmFzdGx5IGJldHRlciBzZXJ2ZWQgYXBwbHlpbmcgZm9yIGFjY2VzcyB0byB0aGUgTkFTSCBDUk4gUGVkaWF0cmljIERhdGFiYXNlIHdpdGhpbiB0aGUgTklEREsgQ2VudHJhbCBSZXBvc2l0b3J5LCB3aGljaCB0cmFja3MgcGF0aWVudHMgZnJvbSBhZG9sZXNjZW5jZSBpbnRvIGFkdWx0aG9vZCB3aXRoIHByZWNpc2VseSBncmFkZWQgYW5kIHN0YW5kYXJkaXplZCBoaXN0b2xvZ3kuVGhlIGZ1dHVyZSBvZiBnYXN0cm9pbnRlc3RpbmFsIGFuZCBoZXBhdG9sb2d5IHJlc2VhcmNoIGxpZXMgdW5lcXVpdm9jYWxseSBpbiB0aGUgaW50ZWdyYXRpb24gb2YgbXVsdGktb21pY3MgYW5kIHJlYWwtdGltZSBwaHlzaW9sb2dpY2FsIG1vbml0b3JpbmcsIHNoaWZ0aW5nIHRoZSBwYXJhZGlnbSBmcm9tIHJlYWN0aXZlIGRpYWdub3NpcyB0byBwcmVkaWN0aXZlIG1vZGVsaW5nLiBUaGUgQWxsIG9mIFVzIFJlc2VhcmNoIFByb2dyYW0gYW5kIHRoZSBVSyBCaW9iYW5rIHJlcHJlc2VudCB0aGUgYWJzb2x1dGUgdmFuZ3VhcmQgb2YgdGhpcyBzaGlmdC4gQnkgaW5jb3Jwb3JhdGluZyBjb250aW51b3VzIHBoeXNpb2xvZ2ljYWwgZGF0YSBmcm9tIHdlYXJhYmxlIGRldmljZXMgYWxvbmdzaWRlIHdob2xlLWdlbm9tZSBzZXF1ZW5jaW5nIGFuZCBoaWdoLXJlc29sdXRpb24gYWJkb21pbmFsIE1SSSwgdGhlc2UgZGF0YWJhc2VzIGFsbG93IHJlc2VhcmNoZXJzIHRvIGludGVycm9nYXRlIHRoZSBjb21wbGV4IGdlbmUtZW52aXJvbm1lbnQgaW50ZXJhY3Rpb25zIHRoYXQgZHJpdmUgZnVuY3Rpb25hbCBHSSBkaXNvcmRlcnMgYW5kIG1ldGFib2xpYyBsaXZlciBkaXNlYXNlcy4gVGhlIGFiaWxpdHkgdG8gYXBwbHkgYWR2YW5jZWQgbWFjaGluZSBsZWFybmluZyBhbGdvcml0aG1z4oCUc3VjaCBhcyBSYW5kb20gU3Vydml2YWwgRm9yZXN0cyBvciBYR0Jvb3N04oCUdG8gdGhlc2UgbWFzc2l2ZSBkYXRhc2V0cyB0byBpZGVudGlmeSB1bnJlY29nbml6ZWQgcGhlbm90eXBlcyBwcm92aWRlcyBhIGRpcmVjdCBwYXRod2F5IHRvIHBlcnNvbmFsaXplZCBwcmVjaXNpb24gdGhlcmFwZXV0aWNzLlRoZSB2YXN0IGFycmF5IG9mIGF2YWlsYWJsZSBkYXRhYmFzZXMgcHJvdmlkZXMgYW4gdW5wYXJhbGxlbGVkIHRvb2xraXQgZm9yIGFkdmFuY2luZyByZXNlYXJjaC4gRnJvbSB0aGUgbWFjcm8tZXBpZGVtaW9sb2dpY2FsIHRyYWNraW5nIGNhcGFiaWxpdGllcyBvZiB0aGUgR2xvYmFsIEJ1cmRlbiBvZiBEaXNlYXNlIHN0dWR5IHRvIHRoZSBtb2xlY3VsYXIgYW5kIGdlbmV0aWMgZGVwdGhzIG9mIElCRCBQbGV4dXMsIHNlY29uZGFyeSBkYXRhIHNvdXJjZXMgYWxsb3cgaW52ZXN0aWdhdG9ycyB0byBhbnN3ZXIgY3JpdGljYWwgY2xpbmljYWwgcXVlc3Rpb25zIHdpdGggc3RhdGlzdGljYWwgcG93ZXIgdGhhdCBzaW1wbHkgY2Fubm90IGJlIGFjaGlldmVkIHRocm91Z2ggdHJhZGl0aW9uYWwgcHJvc3BlY3RpdmUgdHJpYWxzLiBCeSBtYXN0ZXJpbmcgdGhlIGFjcXVpc2l0aW9uLCBjbGVhbmluZywgYW5kIGNvbXBsZXggc3RhdGlzdGljYWwgYW5hbHlzaXMgb2YgdGhlc2UgZGl2ZXJzZSBkYXRhc2V0cywgdGhlIG5leHQgZ2VuZXJhdGlvbiBvZiBtZWRpY2FsIHJlc2VhcmNoZXJzIHdpbGwgYmUgdW5pcXVlbHkgZXF1aXBwZWQgdG8gdW5yYXZlbCB0aGUgY29tcGxleGl0aWVzIG9mIGRpZ2VzdGl2ZSBkaXNlYXNlcyBhbmQgZHJpdmUgdGhlIGltcGxlbWVudGF0aW9uIG9mIGVxdWl0YWJsZSwgZGF0YS1kcml2ZW4gcGF0aWVudCBjYXJlIGdsb2JhbGx5Lg==";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "Comprehensive Architectural Analysis of Secondary Data Sources for Gastrointestinal and Hepatology Research..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
