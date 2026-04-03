@@ -1,0 +1,836 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ASGE AI Summit Transcripts: Optimized Summary</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>ASGE AI Summit Transcripts: Optimized Summary</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source</strong>: sources/transcript<em>talks1</em>2.txt (Sessions 1-3)</li>
+<li style="margin-left: 0px;"><strong>Topic</strong>: AI Regulation in Gastroenterology</li>
+<li style="margin-left: 0px;"><strong>Purpose</strong>: Extract key insights for publication on AI regulation</li>
+</ul>
+<details><summary><strong>Document Overview</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Key Lectures Covered</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Lecture 1</strong>: NIH Role in Advancing AI Research (Gastroenterology Focus)</li>
+<li style="margin-left: 0px;"><strong>Lecture 2</strong>: Legislative Developments</li>
+<li style="margin-left: 0px;"><strong>Lecture 3</strong>: Medicare &amp; Reimbursement</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Lecture 1: NIH Role in Advancing AI Research</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Core Focus Areas</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>NIH strategic role</strong> in funding <em>multimodal AI systems</em> for digestive disease research</li>
+<li style="margin-left: 0px;">Infrastructure support for <strong>data extraction</strong> and <em>risk modeling</em> in GI</li>
+<li style="margin-left: 0px;"><strong>AI Scholars program</strong> supporting young faculty in GI AI innovation</li>
+<li style="margin-left: 0px;">Evaluation of <strong>Large Language Models (LLMs)</strong> for clinical applications</li>
+</ul>
+</div></details>
+<details><summary><strong>Relevance for Publication</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NIH funding priorities signal <strong>government endorsement</strong> of specific AI research directions</li>
+<li style="margin-left: 0px;">Emphasis on <strong>cancer prevention</strong> and <em>risk modeling</em> aligns with GI priorities</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Lecture 2: Legislative Developments</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Speaker Background</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Partner at leading government relations firm</li>
+<li style="margin-left: 0px;">Heads healthcare lobbying practice with <strong>20+ years experience</strong></li>
+<li style="margin-left: 0px;">Executive Director of AI Healthcare Coalition</li>
+<li style="margin-left: 0px;">Teaches health law at American University</li>
+<li style="margin-left: 0px;">Previously lobbyist/attorney at AMA and legislative counsel on Capitol Hill</li>
+</ul>
+</div></details>
+<details><summary><strong>Current Congress Status</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Congress is in <strong>&quot;education mode&quot;</strong> on AI—members recognize it but lack deep understanding</li>
+<li style="margin-left: 0px;">Basic building blocks being discussed:</li>
+<li style="margin-left: 20px;">What is an algorithm?</li>
+<li style="margin-left: 20px;">What is an LLM?</li>
+<li style="margin-left: 20px;">How does a chatbot differ from a diagnostic tool?</li>
+<li style="margin-left: 0px;">Few staff members do both <strong>tech AND health</strong>—expertise melding is &quot;work in progress&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>Key Legislative Actions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. AI Moratorium (Rejected)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Ten-year moratorium</strong> proposed in reconciliation bill debate (&quot;One Big Beautiful Bill Act&quot;)</li>
+<li style="margin-left: 0px;">Would have precluded state laws that inhibit AI innovation while waiting for federal system</li>
+<li style="margin-left: 0px;">Passed out of House but was beaten back—did not make into final bill</li>
+<li style="margin-left: 0px;">Many in larger tech organizations still want to see it proceed before year-end</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Algorithmic Based Healthcare Service (ABHS) Bill</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Creates new classification for AI medical services in <strong>OUTPATIENT PAYMENT SYSTEM</strong></li>
+<li style="margin-left: 0px;">Currently, AI services reimbursed under <em>new technology ambulatory payment classifications</em> (no specific pathway, time-limited)</li>
+<li style="margin-left: 0px;">This bill would give <strong>minimum 5-year certainty</strong> for reimbursement</li>
+<li style="margin-left: 0px;">Defines &quot;algorithmic-based healthcare service&quot; (ABHS) for first time</li>
+<li style="margin-left: 0px;">ABHS definition could be duplicated across:</li>
+<li style="margin-left: 20px;">Physician fee schedule</li>
+<li style="margin-left: 20px;">Inpatient payment system</li>
+<li style="margin-left: 20px;">Private payers</li>
+<li style="margin-left: 20px;">Medicare Advantage</li>
+<li style="margin-left: 0px;"><strong>Leads</strong>: Senators Rounds and Heinrich (leaders of AI Senate caucus)</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Sandbox Act (Senator Cruz)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Concept: Regulatory &quot;sandbox&quot; for experimentation when legacy regulations encumber innovation</li>
+<li style="margin-left: 0px;">Would give <strong>FDA flexibility</strong> to permit experimentation, innovation, development in controlled environment</li>
+<li style="margin-left: 0px;">Applies to AI tools under FDA jurisdiction</li>
+<li style="margin-left: 0px;">Example of executive-level AI action plan duplicated in Congress</li>
+<li style="margin-left: 0px;">Speaker uncertain if it will pass but considers it &quot;interesting bill to watch&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>4. Health Technology Act (Mr. Schweikert, House)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Would clarify that <strong>AI/ML technologies</strong> can qualify as &quot;practitioner eligible to prescribe drugs&quot;</li>
+<li style="margin-left: 0px;">Speaker guesses it probably won&#x27;t pass but shows willingness to break through AI barriers</li>
+<li style="margin-left: 0px;">Connects to workforce debate—what does AI healthcare service mean for employment?</li>
+<li style="margin-left: 0px;">Note: <strong>Autonomous AI</strong> already has CPT code being paid in physician fee schedule (outpatient)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>State vs. Federal Tension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Significant state-level activity (<strong>50+ slides</strong> worth of bills)</li>
+<li style="margin-left: 0px;">California chatbot bill mentioned as recent example</li>
+<li style="margin-left: 0px;">State laws create friction with need for <strong>federal preemption</strong></li>
+<li style="margin-left: 0px;">Expect more state activity, which will continue to prompt federal moratorium discussions</li>
+</ul>
+</div></details>
+<details><summary><strong>Timeline Outlook</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Current 119th Congress: <strong>~4 AI-related bills</strong></li>
+<li style="margin-left: 0px;">Next session: Expect <strong>~30 bills</strong> instead of 4</li>
+<li style="margin-left: 0px;">&quot;Drips and drabs&quot; currently but will accelerate</li>
+<li style="margin-left: 0px;">AI is &quot;fun issue&quot; for members—easy to talk about risks AND American innovation vs. China</li>
+</ul>
+</div></details>
+<details><summary><strong>Key Quotes/Phrases</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Congress is in education mode&quot; on AI basics</li>
+<li style="margin-left: 0px;">&quot;White House down to Congress&quot;—legislation flows top-down, not bottom-up</li>
+<li style="margin-left: 0px;">ABHS definition &quot;much more important than what the bill actually does&quot; because it will be replicated</li>
+<li style="margin-left: 0px;">Regulatory sandbox for &quot;experimentation, innovation, development&quot;</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Lecture 3: Medicare &amp; Reimbursement</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Speaker Background</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Senior Vice President of Payment and Healthcare Delivery Policy, head of research at <strong>AdvaMed</strong></li>
+<li style="margin-left: 0px;">Previously led healthcare policy teams at MITRE supporting CMS on quality/payment strategy</li>
+<li style="margin-left: 0px;"><strong>JD</strong> from American University Washington College of Law</li>
+<li style="margin-left: 0px;"><strong>MPH</strong> from Johns Hopkins Bloomberg School of Public Health</li>
+</ul>
+</div></details>
+<details><summary><strong>Core Premise</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Medicare is the <strong>&quot;bellwether&quot;</strong>—how Medicare handles AI drives private payer behavior</li>
+<li style="margin-left: 0px;">One Blues program varies by insurer, but <strong>Medicare sets tone</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>Three Key Questions CMS Asks</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. Benefit Categories (Statutory—set by Congress)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Hasn&#x27;t been meaningfully updated since <strong>1970s</strong></li>
+<li style="margin-left: 0px;">Social Security Act mentions &quot;iron lungs&quot; (no longer in use)—doesn&#x27;t contemplate modern technology</li>
+<li style="margin-left: 0px;">Many AI services not contemplated by existing benefit categories</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Is It &quot;Reasonable and Necessary&quot; for Medicare Population?</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Ages <strong>65+</strong>, certain disabilities, end-stage renal disease</li>
+<li style="margin-left: 0px;">Standard Medicare criteria</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Coding and Payment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">How do we explain the service? (coding)</li>
+<li style="margin-left: 0px;">How much will we pay? (fee schedule)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Current Payment Landscape by Setting</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>Inpatient Hospital (IPPS)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Coverage exists for AI technologies but is &quot;very technology specific&quot;</li>
+<li style="margin-left: 0px;"><strong>New Technology Add-on Payments</strong> pathway available for innovative tech</li>
+<li style="margin-left: 0px;">Example: Stroke AI predictor received pass-through payment, now part of IPPS</li>
+<li style="margin-left: 0px;">Once added to system, must &quot;fight with every other specialty&quot; about payment rates</li>
+</ul>
+</div></details>
+<details><summary><strong>Outpatient (OPPS + ASCs)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clear pathway: <strong>New Technology APC</strong> (Ambulatory Payment Classification)</li>
+<li style="margin-left: 0px;">CMS acknowledges significant upfront costs for new tech adoption</li>
+<li style="margin-left: 0px;">Will pay for period of years based on technology cost (if certain tests met)</li>
+<li style="margin-left: 0px;">ABHS bill would expand New Technology APC timeline beyond current <strong>3 years</strong></li>
+<li style="margin-left: 0px;">After new tech APC expires, must go back to groupings based on clinical/cost coherence</li>
+<li style="margin-left: 0px;">CMS uses &quot;dartboard approach&quot;—difficult, involves proprietary pricing information</li>
+<li style="margin-left: 0px;">CMS often pays <strong>30% of requested price</strong>—no one happy with outcome</li>
+</ul>
+</div></details>
+<details><summary><strong>Physician Fee Schedule</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Yes, but a very big yes, but&quot; (complicated)</li>
+<li style="margin-left: 0px;">CMS generally does <strong>NOT pay for efficiency gains</strong>—will &quot;pay less as you become more efficient&quot; with idea that physicians can do infinitely more care</li>
+<li style="margin-left: 0px;"><strong>EXCEPTION</strong>: One fully autonomous AI code covered (Digital Diagnostics—eye imaging for diabetic retinopathy)</li>
+<li style="margin-left: 0px;">Problem: Crosswalked to contact lens correction code (not cataract), creating complex dynamics</li>
+<li style="margin-left: 20px;">Every time price drops for crosswalked code, everything linked to it also drops</li>
+<li style="margin-left: 20px;">Constant tension: &quot;I&#x27;m getting paid but my rates are dropping because of something beyond my control&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>Physician Services (Non-AI Adjacent)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Active remote monitoring covered but limited to specific conditions</li>
+<li style="margin-left: 0px;">Physiologic monitoring: <strong>GI NOT included</strong> (limited set of conditions)</li>
+<li style="margin-left: 0px;">Therapeutic monitoring: Mental health conditions, physical therapy tracking covered</li>
+<li style="margin-left: 0px;">Digital therapeutics: Cognitive behavioral therapy technologies covered</li>
+<li style="margin-left: 0px;">Efficiency improvements outside SAMD (Software as Medical Device) NOT reimbursable</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Current CMS Activity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Request for Information (RFI)</strong> in proposed rules this year around payment for SaaS</li>
+<li style="margin-left: 0px;">CMS has specific SaaS definition (from years ago) that doesn&#x27;t quite fit</li>
+<li style="margin-left: 0px;">AdvaMed pushed to focus on <strong>SAMD (Software as a Medical Device)</strong> instead:</li>
+<li style="margin-left: 20px;">Regulated, FDA-evaluated technologies</li>
+<li style="margin-left: 20px;">Greater certainty around accuracy and endpoint achievement</li>
+</ul>
+</div></details>
+<details><summary><strong>Practice Expense Pathway</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Not perfect answer (physicians don&#x27;t want to &quot;buy and bill&quot;)</li>
+<li style="margin-left: 0px;">Two options:</li>
+</ul>
+<p>1. Directly into cost of procedure (fight over code costs)</p>
+<p>2. As supply—goes into direct practice expense component</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Not beautiful or perfect system&quot; but only discrete pathways available</li>
+</ul>
+</div></details>
+<details><summary><strong>Durable Medical Equipment (DMEPOS)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Acronym means: &quot;things used by patient at home&quot;</li>
+<li style="margin-left: 0px;">Currently <strong>NO coverage</strong> for digital technologies used by patients at home under conventional care</li>
+<li style="margin-left: 0px;">Example: If AI solution tracks patient at home outside PFS coverage—nothing happens, can&#x27;t get paid</li>
+<li style="margin-left: 0px;">Industry workaround: Reverse-engineer software into physical components to meet DMEPOS requirements</li>
+<li style="margin-left: 20px;">Example: Abbott sensor technology—package includes handheld (even though patient has phone)</li>
+<li style="margin-left: 20px;">Handheld legally required under DMEPOS statute even if redundant</li>
+<li style="margin-left: 20px;">Companies build &quot;little plastic box&quot; to satisfy legal requirements</li>
+</ul>
+</div></details>
+<details><summary><strong>Medicare Advantage (MA)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Extremely important to watch—now <strong>52% of Medicare patients</strong> in MA plans</li>
+<li style="margin-left: 0px;">Early interest: Patients transitioning into system</li>
+<li style="margin-left: 0px;">Current concern: Plans using AI for prior authorizations (inappropriately limiting care)</li>
+<li style="margin-left: 20px;">Example: United Healthcare issue with SNF stays</li>
+<li style="margin-left: 0px;">Plans closely evaluating what is/isn&#x27;t covered to ensure nothing uncovered is offered</li>
+<li style="margin-left: 0px;">Troubling for AI space—no level of certainty on payment rates</li>
+<li style="margin-left: 0px;">Monitoring MA closely as larger transition occurs and margins prove variable</li>
+</ul>
+</div></details>
+<details><summary><strong>Key Insight: Perpetual Tension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;How do we ensure payment rates can be appropriately supported by specialists who use technologies BUT also want to ensure rates for other procedures aren&#x27;t inappropriately lowered just to pay for different things?&quot;</li>
+<li style="margin-left: 0px;">&quot;Impossible tension&quot;—hard to explain rebalancing when representing 600 members</li>
+</ul>
+</div></details>
+<details><summary><strong>CMMI Innovation Center Opportunity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Center for Medicare and Medicaid Innovation (CMMI)</strong> can pay for expanding into NEW care pathways facilitated by AI/digital health</li>
+<li style="margin-left: 0px;">Recent model: WISER (specifics not detailed)</li>
+<li style="margin-left: 0px;">Proposed model: Ambulatory surgical pathway</li>
+<li style="margin-left: 0px;">Key message being communicated to CMMI:</li>
+<li style="margin-left: 20px;">Focus on <strong>EXPANDING access</strong> and facilitating efficient/effective care</li>
+<li style="margin-left: 20px;">Efficiency should NOT mean &quot;making you work harder&quot;</li>
+<li style="margin-left: 20px;">Should allow AI/digital tech to carry load WHILE ensuring providers get paid for adoption costs</li>
+</ul>
+</div></details>
+<details><summary><strong>Summary: Payment for AI in Medicare</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Yes, but approached on <strong>technology-by-technology basis</strong></li>
+<li style="margin-left: 0px;">No high enough certainty for manufacturers going through FDA process</li>
+<li style="margin-left: 0px;">Creates disincentive: Do studies for FDA, then CMS says &quot;what does this look like for Medicare patients?&quot;</li>
+<li style="margin-left: 0px;">Payment rate significantly lower than expected because fitting into system built by people who &quot;did not contemplate this world&quot;</li>
+<li style="margin-left: 0px;">Not negative message—actively working to address issues</li>
+</ul>
+</div></details>
+<details><summary><strong>Key Quotes/Phrases</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Benefit categories haven&#x27;t been meaningfully updated since the 1970s&quot;</li>
+<li style="margin-left: 0px;">&quot;Iron lungs&quot;—statute mentions obsolete technology, not modern AI</li>
+<li style="margin-left: 0px;">&quot;Efficiency trap&quot;: CMS doesn&#x27;t pay for pure efficiency gains</li>
+<li style="margin-left: 0px;">&quot;Crosswalking&quot; problems—AI diagnostics pigeonholed into wrong code categories</li>
+<li style="margin-left: 0px;">&quot;Dartboard approach&quot; to pricing—CMS uses imprecise methods</li>
+<li style="margin-left: 0px;">&quot;Perpetual dance with Medicare&quot;—uncertainty cycle for manufacturers</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Cross-Cutting Themes (Synthesis)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. Legislative Activity Accelerating</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Current Congress: <strong>~4 AI bills</strong></li>
+<li style="margin-left: 0px;">Next session: Expect <strong>~30 bills</strong></li>
+<li style="margin-left: 0px;">Momentum building on Capitol Hill</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Payment/Reimbursement Is Central Barrier</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Lecture 2 (Sybil)</strong>: ABHS bill creates outpatient payment classification</li>
+<li style="margin-left: 0px;"><strong>Lecture 3 (Kristen)</strong>: Medicare lacks benefit categories for software interventions</li>
+<li style="margin-left: 0px;">Poll data: <strong>Reimbursement #1 priority</strong> from physicians</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Regulatory Flexibility Needed</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Sandbox Act (Lecture 2): FDA needs flexibility for AI innovation</li>
+<li style="margin-left: 0px;">New Technology APCs (Lecture 3): Need longer timelines than current <strong>3 years</strong></li>
+<li style="margin-left: 0px;"><strong>PCCPs (Predetermined Change Control Plans)</strong>: Industry wants ability to update without constant new submissions</li>
+</ul>
+</div></details>
+<details><summary><strong>4. Physician Perspective Underrepresented</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Lack of knowledge by regulators&quot; (poll + Lecture 2)</li>
+<li style="margin-left: 0px;">Need for <strong>physician-trained models</strong> (poll word map)</li>
+<li style="margin-left: 0px;">GI-specific needs not contemplated in general AI legislation</li>
+</ul>
+</div></details>
+<details><summary><strong>5. State vs. Federal Tension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">State laws (California chatbot bill) create patchwork</li>
+<li style="margin-left: 0px;"><strong>Federal preemption</strong> needed but moratorium proposals rejected</li>
+<li style="margin-left: 0px;">Balance between innovation protection and safety oversight</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Implications for Publication Writing</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1. Reimbursement Section Should Reference</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>ABHS bill</strong> (Algorithmic Based Healthcare Service) as potential solution</li>
+<li style="margin-left: 0px;">New Technology APC pathway and its limitations (<strong>3-year timeline</strong> too short)</li>
+<li style="margin-left: 0px;">Crosswalking problems—AI diagnostics in wrong code categories</li>
+<li style="margin-left: 0px;">DMEPOS gap for home-based AI monitoring</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Regulatory Section Should Reference</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Sandbox Act</strong> as mechanism for FDA flexibility</li>
+<li style="margin-left: 0px;">Predetermined Change Control Plans (PCCPs) for iterative updates</li>
+<li style="margin-left: 0px;">State vs. federal tension requiring careful navigation</li>
+</ul>
+</div></details>
+<details><summary><strong>3. Timeline Context</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Current 119th Congress seeing &quot;drips and drabs&quot; (<strong>~4 bills</strong>)</li>
+<li style="margin-left: 0px;">Expect acceleration to <strong>~30 bills</strong> in next session</li>
+<li style="margin-left: 0px;">Momentum building but still early stages</li>
+</ul>
+</div></details>
+<details><summary><strong>4. Key Terminology to Define</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Term</th>
+<th>Full Form</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>ABHS</strong></td>
+<td>Algorithmic Based Healthcare Service</td>
+</tr>
+<tr>
+<td><strong>APC</strong></td>
+<td>Ambulatory Payment Classification</td>
+</tr>
+<tr>
+<td><strong>IPPS</strong></td>
+<td>Inpatient Prospective Payment System</td>
+</tr>
+<tr>
+<td><strong>OPPS</strong></td>
+<td>Outpatient Prospective Payment System</td>
+</tr>
+<tr>
+<td><strong>SAMD</strong></td>
+<td>Software as a Medical Device</td>
+</tr>
+<tr>
+<td><strong>DMEPOS</strong></td>
+<td>Durable Medical Equipment, Prosthetics, Orthotics, and Supplies</td>
+</tr>
+<tr>
+<td><strong>CMMI</strong></td>
+<td>Center for Medicare and Medicaid Innovation</td>
+</tr>
+<tr>
+<td><strong>PCCPs</strong></td>
+<td>Predetermined Change Control Plans</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div></details>
+<details><summary><strong>Key Statistics Summary</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Medicare Advantage penetration: <strong>52%</strong> of Medicare patients</li>
+<li style="margin-left: 0px;">New Technology APC timeline: <strong>3 years</strong> (current)</li>
+<li style="margin-left: 0px;">ABHS bill guarantee: <strong>minimum 5 years</strong></li>
+<li style="margin-left: 0px;">Current Congress AI bills: <strong>~4</strong></li>
+<li style="margin-left: 0px;">Expected next session AI bills: <strong>~30</strong></li>
+<li style="margin-left: 0px;">CMS typical payment: <strong>30% of requested price</strong></li>
+<li style="margin-left: 0px;">Physician fee schedule efficiency: <strong>NOT paid</strong> (efficiency trap)</li>
+</ul>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "T1BUSU1JWkVEIFNVTU1BUlk6IEFTR0UgQUkgU1VNTUlUIFRSQU5TQ1JJUFRTCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CkRPQ1VNRU5UIE9WRVJWSUVXCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KU291cmNlOiBzb3VyY2VzL3RyYW5zY3JpcHRfdGFsa3MxXzIudHh0IChmdWxsIHRyYW5zY3JpcHQgZnJvbSBTZXNzaW9ucyAxLTMpClB1cnBvc2U6IEV4dHJhY3Qga2V5IGluc2lnaHRzIGZvciBpbmNvcnBvcmF0aW9uIGludG8gcHVibGljYXRpb24gc2VjdGlvbiBvbiBBSSByZWd1bGF0aW9uIGluIGdhc3Ryb2VudGVyb2xvZ3kKCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KTEVDVFVSRSAxOiBOSUggUk9MRSBJTiBBRFZBTkNJTkcgQUkgUkVTRUFSQ0ggKEdhc3Ryb2VudGVyb2xvZ3kgRm9jdXMpCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KU291cmNlOiBFbXBvd2VyaW5nIElubm92YXRpb246IFRoZSBOSUgncyBSb2xlIGluIEFkdmFuY2luZyBBSSBSZXNlYXJjaCBpbiBHYXN0cm9lbnRlcm9sb2d5CgpLRVkgVEhFTUVTOgotIE5JSCBzdHJhdGVnaWMgcm9sZSBpbiBmdW5kaW5nIG11bHRpbW9kYWwgQUkgc3lzdGVtcyBmb3IgZGlnZXN0aXZlIGRpc2Vhc2UgcmVzZWFyY2gKLSBJbmZyYXN0cnVjdHVyZSBzdXBwb3J0IGZvciBkYXRhIGV4dHJhY3Rpb24gYW5kIHJpc2sgbW9kZWxpbmcgaW4gR0kKLSBBSSBTY2hvbGFycyBwcm9ncmFtIHN1cHBvcnRpbmcgeW91bmcgZmFjdWx0eSBpbiBHSSBBSSBpbm5vdmF0aW9uCi0gRXZhbHVhdGlvbiBvZiBMYXJnZSBMYW5ndWFnZSBNb2RlbHMgKExMTXMpIGZvciBjbGluaWNhbCBhcHBsaWNhdGlvbnMKClJFTEVWQU5UIEZPUiBQVUJMSUNBVElPTjoKLSBOSUggZnVuZGluZyBwcmlvcml0aWVzIHNpZ25hbCBnb3Zlcm5tZW50IGVuZG9yc2VtZW50IG9mIHNwZWNpZmljIEFJIHJlc2VhcmNoIGRpcmVjdGlvbnMKLSBFbXBoYXNpcyBvbiBjYW5jZXIgcHJldmVudGlvbiBhbmQgcmlzayBtb2RlbGluZyBhbGlnbnMgd2l0aCBHSSBwcmlvcml0aWVzCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CkxFQ1RVUkUgMjogTEVHSVNMQVRJVkUgREVWRUxPUE1FTlRTIChTeWJpbCBSb2FyaW5iZWspCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KU3BlYWtlciBDcmVkZW50aWFsczogUGFydG5lciBhdCBsZWFkaW5nIGdvdmVybm1lbnQgcmVsYXRpb25zIGZpcm0sIGhlYWRzIGhlYWx0aGNhcmUgbG9iYnlpbmcgcHJhY3RpY2U7IDIwKyB5ZWFycyBleHBlcmllbmNlOyBFeGVjdXRpdmUgRGlyZWN0b3Igb2YgQUkgSGVhbHRoY2FyZSBDb2FsaXRpb247IHRlYWNoZXMgaGVhbHRoIGxhdyBhdCBBbWVyaWNhbiBVbml2ZXJzaXR5OyBwcmV2aW91c2x5IGxvYmJ5aXN0L2F0dG9ybmV5IGF0IEFNQSBhbmQgbGVnaXNsYXRpdmUgY291bnNlbCBvbiBDYXBpdG9sIEhpbGwKCkNVUlJFTlQgU1RBVEUgT0YgQ09OR1JFU1M6Ci0gQ29uZ3Jlc3MgaXMgaW4gImVkdWNhdGlvbiBtb2RlIiBvbiBBSeKAlG1lbWJlcnMgcmVjb2duaXplIGl0IGJ1dCBsYWNrIGRlZXAgdW5kZXJzdGFuZGluZwotIEJhc2ljIGJ1aWxkaW5nIGJsb2NrcyBiZWluZyBkaXNjdXNzZWQ6IFdoYXQgaXMgYW4gYWxnb3JpdGhtPyBXaGF0IGlzIGFuIExMTT8gSG93IGRvZXMgYSBjaGF0Ym90IGRpZmZlciBmcm9tIGEgZGlhZ25vc3RpYyB0b29sPwotIEZldyBzdGFmZiBtZW1iZXJzIGRvIGJvdGggdGVjaCBBTkQgaGVhbHRo4oCUZXhwZXJ0aXNlIG1lbGRpbmcgaXMgIndvcmsgaW4gcHJvZ3Jlc3MiCgpLRVkgTEVHSVNMQVRJVkUgQUNUSU9OUzoKCjEuIEFJIE1PUkFUT1JJVU0gKFJlamVjdGVkKQotIFRlbi15ZWFyIG1vcmF0b3JpdW0gcHJvcG9zZWQgaW4gcmVjb25jaWxpYXRpb24gYmlsbCBkZWJhdGUgKCJPbmUgQmlnIEJlYXV0aWZ1bCBCaWxsIEFjdCIpCi0gV291bGQgaGF2ZSBwcmVjbHVkZWQgc3RhdGUgbGF3cyB0aGF0IGluaGliaXQgQUkgaW5ub3ZhdGlvbiB3aGlsZSB3YWl0aW5nIGZvciBmZWRlcmFsIHN5c3RlbQotIFBhc3NlZCBvdXQgb2YgSG91c2UgYnV0IHdhcyBiZWF0ZW4gYmFja+KAlGRpZCBub3QgbWFrZSBpbnRvIGZpbmFsIGJpbGwKLSBNYW55IGluIGxhcmdlciB0ZWNoIG9yZ2FuaXphdGlvbnMgc3RpbGwgd2FudCB0byBzZWUgaXQgcHJvY2VlZCBiZWZvcmUgeWVhci1lbmQKCjIuIEFMR09SSVRITUlDIEJBU0VEIEhFQUxUSENBUkUgU0VSVklDRSAoQUJIUykgQklMTAotIENyZWF0ZXMgbmV3IGNsYXNzaWZpY2F0aW9uIGZvciBBSSBtZWRpY2FsIHNlcnZpY2VzIGluIE9VVFBBVElFTlQgUEFZTUVOVCBTWVNURU0KLSBDdXJyZW50bHksIEFJIHNlcnZpY2VzIHJlaW1idXJzZWQgdW5kZXIgbmV3IHRlY2hub2xvZ3kgYW1idWxhdG9yeSBwYXltZW50IGNsYXNzaWZpY2F0aW9ucyAobm8gc3BlY2lmaWMgcGF0aHdheSwgdGltZS1saW1pdGVkKQotIFRoaXMgYmlsbCB3b3VsZCBnaXZlIG1pbmltdW0gNS15ZWFyIGNlcnRhaW50eSBmb3IgcmVpbWJ1cnNlbWVudAotIEltcG9ydGFudGx5LCBkZWZpbmVzICJhbGdvcml0aG1pYy1iYXNlZCBoZWFsdGhjYXJlIHNlcnZpY2UiIChBQkhTKSBmb3IgZmlyc3QgdGltZQotIEFCSFMgZGVmaW5pdGlvbiBjb3VsZCBiZSBkdXBsaWNhdGVkIGFjcm9zczogcGh5c2ljaWFuIGZlZSBzY2hlZHVsZSwgaW5wYXRpZW50IHBheW1lbnQgc3lzdGVtLCBwcml2YXRlIHBheWVycywgTWVkaWNhcmUgQWR2YW50YWdlCi0gTGVhZHM6IFNlbmF0b3JzIFJvdW5kcyBhbmQgSGVpbnJpY2ggKGxlYWRlcnMgb2YgQUkgU2VuYXRlIGNhdWN1cykKCjMuIFNBTkRCT1ggQUNUIChTZW5hdG9yIENydXopCi0gQ29uY2VwdDogUmVndWxhdG9yeSAic2FuZGJveCIgZm9yIGV4cGVyaW1lbnRhdGlvbiB3aGVuIGxlZ2FjeSByZWd1bGF0aW9ucyBlbmN1bWJlciBpbm5vdmF0aW9uCi0gV291bGQgZ2l2ZSBGREEgZmxleGliaWxpdHkgdG8gcGVybWl0IGV4cGVyaW1lbnRhdGlvbiwgaW5ub3ZhdGlvbiwgZGV2ZWxvcG1lbnQgaW4gY29udHJvbGxlZCBlbnZpcm9ubWVudAotIEFwcGxpZXMgdG8gQUkgdG9vbHMgdW5kZXIgRkRBIGp1cmlzZGljdGlvbgotIEV4YW1wbGUgb2YgZXhlY3V0aXZlLWxldmVsIEFJIGFjdGlvbiBwbGFuIGR1cGxpY2F0ZWQgaW4gQ29uZ3Jlc3MKLSBTcGVha2VyIHVuY2VydGFpbiBpZiBpdCB3aWxsIHBhc3MgYnV0IGNvbnNpZGVycyBpdCAiaW50ZXJlc3RpbmcgYmlsbCB0byB3YXRjaCIKCjQuIEhFQUxUSCBURUNITk9MT0dZIEFDVCAoTXIuIFNjaHdlaWtlcnQsIEhvdXNlKQotIFdvdWxkIGNsYXJpZnkgdGhhdCBBSS9NTCB0ZWNobm9sb2dpZXMgY2FuIHF1YWxpZnkgYXMgInByYWN0aXRpb25lciBlbGlnaWJsZSB0byBwcmVzY3JpYmUgZHJ1Z3MiCi0gU3BlYWtlciBndWVzc2VzIGl0IHByb2JhYmx5IHdvbid0IHBhc3MgYnV0IHNob3dzIHdpbGxpbmduZXNzIHRvIGJyZWFrIHRocm91Z2ggQUkgYmFycmllcnMKLSBDb25uZWN0cyB0byB3b3JrZm9yY2UgZGViYXRl4oCUd2hhdCBkb2VzIEFJIGhlYWx0aGNhcmUgc2VydmljZSBtZWFuIGZvciBlbXBsb3ltZW50PwotIE5vdGU6IEF1dG9ub21vdXMgQUkgYWxyZWFkeSBoYXMgQ1BUIGNvZGUgYmVpbmcgcGFpZCBpbiBwaHlzaWNpYW4gZmVlIHNjaGVkdWxlIChvdXRwYXRpZW50KQoKU1RBVEUgVlMuIEZFREVSQUwgVEVOU0lPTjoKLSBTaWduaWZpY2FudCBzdGF0ZS1sZXZlbCBhY3Rpdml0eSAoNTArIHNsaWRlcyB3b3J0aCBvZiBiaWxscykKLSBDYWxpZm9ybmlhIGNoYXRib3QgYmlsbCBtZW50aW9uZWQgYXMgcmVjZW50IGV4YW1wbGUKLSBTdGF0ZSBsYXdzIGNyZWF0ZSBmcmljdGlvbiB3aXRoIG5lZWQgZm9yIGZlZGVyYWwgcHJlZW1wdGlvbgotIEV4cGVjdCBtb3JlIHN0YXRlIGFjdGl2aXR5LCB3aGljaCB3aWxsIGNvbnRpbnVlIHRvIHByb21wdCBmZWRlcmFsIG1vcmF0b3JpdW0gZGlzY3Vzc2lvbnMKClRJTUVMSU5FIE9VVExPT0s6Ci0gQ3VycmVudCAxMTl0aCBDb25ncmVzczogfjQgQUktcmVsYXRlZCBiaWxscwotIE5leHQgc2Vzc2lvbjogRXhwZWN0IH4zMCBiaWxscyBpbnN0ZWFkIG9mIDQKLSAiRHJpcHMgYW5kIGRyYWJzIiBjdXJyZW50bHkgYnV0IHdpbGwgYWNjZWxlcmF0ZQotIEFJIGlzICJmdW4gaXNzdWUiIGZvciBtZW1iZXJz4oCUZWFzeSB0byB0YWxrIGFib3V0IHJpc2tzIEFORCBBbWVyaWNhbiBpbm5vdmF0aW9uIHZzLiBDaGluYQoKS0VZIFFVT1RFUy9QSFJBU0VTIEZPUiBQVUJMSUNBVElPTjoKLSAiQ29uZ3Jlc3MgaXMgaW4gZWR1Y2F0aW9uIG1vZGUiIG9uIEFJIGJhc2ljcwotICJXaGl0ZSBIb3VzZSBkb3duIHRvIENvbmdyZXNzIuKAlGxlZ2lzbGF0aW9uIGZsb3dzIHRvcC1kb3duLCBub3QgYm90dG9tLXVwCi0gQUJIUyBkZWZpbml0aW9uICJtdWNoIG1vcmUgaW1wb3J0YW50IHRoYW4gd2hhdCB0aGUgYmlsbCBhY3R1YWxseSBkb2VzIiBiZWNhdXNlIGl0IHdpbGwgYmUgcmVwbGljYXRlZAotIFJlZ3VsYXRvcnkgc2FuZGJveCBmb3IgImV4cGVyaW1lbnRhdGlvbiwgaW5ub3ZhdGlvbiwgZGV2ZWxvcG1lbnQiCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CkxFQ1RVUkUgMzogTUVESUNBUkUgJiBSRUlNQlVSU0VNRU5UIChLcmlzdGVuIFR1bGlhKQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClNwZWFrZXIgQ3JlZGVudGlhbHM6IFNlbmlvciBWaWNlIFByZXNpZGVudCBvZiBQYXltZW50IGFuZCBIZWFsdGhjYXJlIERlbGl2ZXJ5IFBvbGljeSwgaGVhZCBvZiByZXNlYXJjaCBhdCBBZHZhTWVkOyBwcmV2aW91c2x5IGxlZCBoZWFsdGhjYXJlIHBvbGljeSB0ZWFtcyBhdCBNSVRSRSBzdXBwb3J0aW5nIENNUyBvbiBxdWFsaXR5L3BheW1lbnQgc3RyYXRlZ3k7IEpEIGZyb20gQW1lcmljYW4gVW5pdmVyc2l0eSBXYXNoaW5ndG9uIENvbGxlZ2Ugb2YgTGF3OyBNUEggZnJvbSBKb2hucyBIb3BraW5zIEJsb29tYmVyZyBTY2hvb2wgb2YgUHVibGljIEhlYWx0aAoKQ09SRSBQUkVNSVNFOgotIE1lZGljYXJlIGlzIHRoZSAiYmVsbHdldGhlciLigJRob3cgTWVkaWNhcmUgaGFuZGxlcyBBSSBkcml2ZXMgcHJpdmF0ZSBwYXllciBiZWhhdmlvciAoT25lIEJsdWVzIHByb2dyYW0gdmFyaWVzIGJ5IGluc3VyZXIsIGJ1dCBNZWRpY2FyZSBzZXRzIHRvbmUpCgpUSFJFRSBLRVkgUVVFU1RJT05TIENNUyBBU0tTIFdIRU4gRVZBTFVBVElORyBQQVlNRU5UOgoxLiBCRU5FRklUIENBVEVHT1JJRVMgKFN0YXR1dG9yeeKAlHNldCBieSBDb25ncmVzcykKICAgLSBIYXNuJ3QgYmVlbiBtZWFuaW5nZnVsbHkgdXBkYXRlZCBzaW5jZSAxOTcwcwogICAtIFNvY2lhbCBTZWN1cml0eSBBY3QgbWVudGlvbnMgImlyb24gbHVuZ3MiIChubyBsb25nZXIgaW4gdXNlKeKAlGRvZXNuJ3QgY29udGVtcGxhdGUgbW9kZXJuIHRlY2hub2xvZ3kKICAgLSBNYW55IEFJIHNlcnZpY2VzIG5vdCBjb250ZW1wbGF0ZWQgYnkgZXhpc3RpbmcgYmVuZWZpdCBjYXRlZ29yaWVzCgoyLiBJUyBJVCAiUkVBU09OQUJMRSBBTkQgTkVDRVNTQVJZIiBmb3IgTWVkaWNhcmUgcG9wdWxhdGlvbj8KICAgLSBBZ2VzIDY1KywgY2VydGFpbiBkaXNhYmlsaXRpZXMsIGVuZC1zdGFnZSByZW5hbCBkaXNlYXNlCiAgIC0gU3RhbmRhcmQgTWVkaWNhcmUgY3JpdGVyaWEKCjMuIENPRElORyBBTkQgUEFZTUVOVAogICAtIEhvdyBkbyB3ZSBleHBsYWluIHRoZSBzZXJ2aWNlPyAoY29kaW5nKQogICAtIEhvdyBtdWNoIHdpbGwgd2UgcGF5PyAoZmVlIHNjaGVkdWxlKQoKQ1VSUkVOVCBQQVlNRU5UIExBTkRTQ0FQRSBCWSBTRVRUSU5HOgoKSU5QQVRJRU5UIEhPU1BJVEFMIChJUFBTKToKLSBDb3ZlcmFnZSBleGlzdHMgZm9yIEFJIHRlY2hub2xvZ2llcyBidXQgaXMgInZlcnkgdGVjaG5vbG9neSBzcGVjaWZpYyIKLSBOZXcgVGVjaG5vbG9neSBBZGQtb24gUGF5bWVudHMgcGF0aHdheSBhdmFpbGFibGUgZm9yIGlubm92YXRpdmUgdGVjaAotIEV4YW1wbGU6IFN0cm9rZSBBSSBwcmVkaWN0b3IgcmVjZWl2ZWQgcGFzcy10aHJvdWdoIHBheW1lbnQsIG5vdyBwYXJ0IG9mIElQUFMKLSBPbmNlIGFkZGVkIHRvIHN5c3RlbSwgbXVzdCAiZmlnaHQgd2l0aCBldmVyeSBvdGhlciBzcGVjaWFsdHkiIGFib3V0IHBheW1lbnQgcmF0ZXMKCk9VVFBBVElFTlQgKE9QUFMgKyBBU0NzKToKLSBDbGVhciBwYXRod2F5OiBOZXcgVGVjaG5vbG9neSBBUEMgKEFtYnVsYXRvcnkgUGF5bWVudCBDbGFzc2lmaWNhdGlvbikKLSBDTVMgYWNrbm93bGVkZ2VzIHNpZ25pZmljYW50IHVwZnJvbnQgY29zdHMgZm9yIG5ldyB0ZWNoIGFkb3B0aW9uCi0gV2lsbCBwYXkgZm9yIHBlcmlvZCBvZiB5ZWFycyBiYXNlZCBvbiB0ZWNobm9sb2d5IGNvc3QgKGlmIGNlcnRhaW4gdGVzdHMgbWV0KQotIEFCSFMgYmlsbCAoZnJvbSBMZWN0dXJlIDIpIHdvdWxkIGV4cGFuZCBOZXcgVGVjaG5vbG9neSBBUEMgdGltZWxpbmUgYmV5b25kIGN1cnJlbnQgMyB5ZWFycwotIEFmdGVyIG5ldyB0ZWNoIEFQQyBleHBpcmVzLCBtdXN0IGdvIGJhY2sgdG8gZ3JvdXBpbmdzIGJhc2VkIG9uIGNsaW5pY2FsL2Nvc3QgY29oZXJlbmNlCi0gQ01TIHVzZXMgImRhcnRib2FyZCBhcHByb2FjaCLigJRkaWZmaWN1bHQsIGludm9sdmVzIHByb3ByaWV0YXJ5IHByaWNpbmcgaW5mb3JtYXRpb24KLSBDTVMgb2Z0ZW4gcGF5cyAzMCUgb2YgcmVxdWVzdGVkIHByaWNl4oCUbm8gb25lIGhhcHB5IHdpdGggb3V0Y29tZQoKUEhZU0lDSUFOIEZFRSBTQ0hFRFVMRToKLSAiWWVzLCBidXQgYSB2ZXJ5IGJpZyB5ZXMsIGJ1dCIgKGNvbXBsaWNhdGVkKQotIENNUyBnZW5lcmFsbHkgZG9lcyBOT1QgcGF5IGZvciBlZmZpY2llbmN5IGdhaW5z4oCUd2lsbCAicGF5IGxlc3MgYXMgeW91IGJlY29tZSBtb3JlIGVmZmljaWVudCIgd2l0aCBpZGVhIHRoYXQgcGh5c2ljaWFucyBjYW4gZG8gaW5maW5pdGVseSBtb3JlIGNhcmUKLSBFWENFUFRJT046IE9uZSBmdWxseSBhdXRvbm9tb3VzIEFJIGNvZGUgY292ZXJlZCAoRGlnaXRhbCBEaWFnbm9zdGljc+KAlGV5ZSBpbWFnaW5nIGZvciBkaWFiZXRpYyByZXRpbm9wYXRoeSkKLSBQcm9ibGVtOiBDcm9zc3dhbGtlZCB0byBjb250YWN0IGxlbnMgY29ycmVjdGlvbiBjb2RlIChub3QgY2F0YXJhY3QpLCBjcmVhdGluZyBjb21wbGV4IGR5bmFtaWNzCiAgKiBFdmVyeSB0aW1lIHByaWNlIGRyb3BzIGZvciBjcm9zc3dhbGtlZCBjb2RlLCBldmVyeXRoaW5nIGxpbmtlZCB0byBpdCBhbHNvIGRyb3BzCiAgKiBDb25zdGFudCB0ZW5zaW9uOiAiSSdtIGdldHRpbmcgcGFpZCBidXQgbXkgcmF0ZXMgYXJlIGRyb3BwaW5nIGJlY2F1c2Ugb2Ygc29tZXRoaW5nIGJleW9uZCBteSBjb250cm9sIgoKUEhZU0lDSUFOIFNFUlZJQ0VTIChOb24tQUkgQWRqYWNlbnQpOgotIEFjdGl2ZSByZW1vdGUgbW9uaXRvcmluZyBjb3ZlcmVkIGJ1dCBsaW1pdGVkIHRvIHNwZWNpZmljIGNvbmRpdGlvbnMKLSBQaHlzaW9sb2dpYyBtb25pdG9yaW5nOiBHSSBOT1QgaW5jbHVkZWQgKGxpbWl0ZWQgc2V0IG9mIGNvbmRpdGlvbnMpCi0gVGhlcmFwZXV0aWMgbW9uaXRvcmluZzogTWVudGFsIGhlYWx0aCBjb25kaXRpb25zLCBwaHlzaWNhbCB0aGVyYXB5IHRyYWNraW5nIGNvdmVyZWQKLSBEaWdpdGFsIHRoZXJhcGV1dGljczogQ29nbml0aXZlIGJlaGF2aW9yYWwgdGhlcmFweSB0ZWNobm9sb2dpZXMgY292ZXJlZAotIEVmZmljaWVuY3kgaW1wcm92ZW1lbnRzIG91dHNpZGUgU0FNRCAoU29mdHdhcmUgYXMgTWVkaWNhbCBEZXZpY2UpIE5PVCByZWltYnVyc2FibGUKCkNVUlJFTlQgQ01TIEFDVElWSVRZOgotIFJlcXVlc3QgZm9yIEluZm9ybWF0aW9uIChSRkkpIGluIHByb3Bvc2VkIHJ1bGVzIHRoaXMgeWVhciBhcm91bmQgcGF5bWVudCBmb3IgU2FhUwotIENNUyBoYXMgc3BlY2lmaWMgU2FhUyBkZWZpbml0aW9uIChmcm9tIHllYXJzIGFnbykgdGhhdCBkb2Vzbid0IHF1aXRlIGZpdAotIEFkdmFNZWQgcHVzaGVkIHRvIGZvY3VzIG9uIFNBTUQgKFNvZnR3YXJlIGFzIE1lZGljYWwgRGV2aWNlKSBpbnN0ZWFkOgogICogUmVndWxhdGVkLCBGREEtZXZhbHVhdGVkIHRlY2hub2xvZ2llcwogICogR3JlYXRlciBjZXJ0YWludHkgYXJvdW5kIGFjY3VyYWN5IGFuZCBlbmRwb2ludCBhY2hpZXZlbWVudAotIFBvc3NpYmlsaXR5IG9mIGV4cGFuZGluZyBwYXltZW50IGZvciBTQU1EIGFzICJkaXJlY3QgcHJhY3RpY2UgZXhwZW5zZSIKClBSQUNUSUNFIEVYUEVOU0UgUEFUSFdBWToKLSBOb3QgcGVyZmVjdCBhbnN3ZXIgKHBoeXNpY2lhbnMgZG9uJ3Qgd2FudCB0byAiYnV5IGFuZCBiaWxsIikKLSBUd28gb3B0aW9uczoKICAxLiBEaXJlY3RseSBpbnRvIGNvc3Qgb2YgcHJvY2VkdXJlIChmaWdodCBvdmVyIGNvZGUgY29zdHMpCiAgMi4gQXMgc3VwcGx54oCUZ29lcyBpbnRvIGRpcmVjdCBwcmFjdGljZSBleHBlbnNlIGNvbXBvbmVudAotICJOb3QgYmVhdXRpZnVsIG9yIHBlcmZlY3Qgc3lzdGVtIiBidXQgb25seSBkaXNjcmV0ZSBwYXRod2F5cyBhdmFpbGFibGUKCkRVUkFCTEUgTUVESUNBTCBFUVVJUE1FTlQgKERNRVBPUyk6Ci0gQWNyb255bSBtZWFuczogInRoaW5ncyB1c2VkIGJ5IHBhdGllbnQgYXQgaG9tZSIKLSBDdXJyZW50bHkgTk8gY292ZXJhZ2UgZm9yIGRpZ2l0YWwgdGVjaG5vbG9naWVzIHVzZWQgYnkgcGF0aWVudHMgYXQgaG9tZSB1bmRlciBjb252ZW50aW9uYWwgY2FyZQotIEV4YW1wbGU6IElmIEFJIHNvbHV0aW9uIHRyYWNrcyBwYXRpZW50IGF0IGhvbWUgb3V0c2lkZSBQRlMgY292ZXJhZ2XigJRub3RoaW5nIGhhcHBlbnMsIGNhbid0IGdldCBwYWlkCi0gSW5kdXN0cnkgd29ya2Fyb3VuZDogUmV2ZXJzZS1lbmdpbmVlciBzb2Z0d2FyZSBpbnRvIHBoeXNpY2FsIGNvbXBvbmVudHMgdG8gbWVldCBETUVQT1MgcmVxdWlyZW1lbnRzCiAgKiBFeGFtcGxlOiBBYmJvdHQgc2Vuc29yIHRlY2hub2xvZ3nigJRwYWNrYWdlIGluY2x1ZGVzIGhhbmRoZWxkIChldmVuIHRob3VnaCBwYXRpZW50IGhhcyBwaG9uZSkKICAqIEhhbmRoZWxkIGxlZ2FsbHkgcmVxdWlyZWQgdW5kZXIgRE1FUE9TIHN0YXR1dGUgZXZlbiBpZiByZWR1bmRhbnQKICAqIENvbXBhbmllcyBidWlsZCAibGl0dGxlIHBsYXN0aWMgYm94IiB0byBzYXRpc2Z5IGxlZ2FsIHJlcXVpcmVtZW50cwoKTUVESUNBUkUgQURWQU5UQUdFIChNQSk6Ci0gRXh0cmVtZWx5IGltcG9ydGFudCB0byB3YXRjaOKAlG5vdyA1MiUgb2YgTWVkaWNhcmUgcGF0aWVudHMgaW4gTUEgcGxhbnMKLSBFYXJseSBpbnRlcmVzdDogUGF0aWVudHMgdHJhbnNpdGlvbmluZyBpbnRvIHN5c3RlbQotIEN1cnJlbnQgY29uY2VybjogUGxhbnMgdXNpbmcgQUkgZm9yIHByaW9yIGF1dGhvcml6YXRpb25zIChpbmFwcHJvcHJpYXRlbHkgbGltaXRpbmcgY2FyZSkKICAqIEV4YW1wbGU6IFVuaXRlZCBIZWFsdGhjYXJlIGlzc3VlIHdpdGggU05GIHN0YXlzCi0gUGxhbnMgY2xvc2VseSBldmFsdWF0aW5nIHdoYXQgaXMvaXNuJ3QgY292ZXJlZCB0byBlbnN1cmUgbm90aGluZyB1bmNvdmVyZWQgaXMgb2ZmZXJlZAotIFRyb3VibGluZyBmb3IgQUkgc3BhY2XigJRubyBsZXZlbCBvZiBjZXJ0YWludHkgb24gcGF5bWVudCByYXRlcwotIE1vbml0b3JpbmcgTUEgY2xvc2VseSBhcyBsYXJnZXIgdHJhbnNpdGlvbiBvY2N1cnMgYW5kIG1hcmdpbnMgcHJvdmUgdmFyaWFibGUKCktFWSBJTlNJR0hUOiBQRVJQRVRVQUwgVEVOU0lPTgotICJIb3cgZG8gd2UgZW5zdXJlIHBheW1lbnQgcmF0ZXMgY2FuIGJlIGFwcHJvcHJpYXRlbHkgc3VwcG9ydGVkIGJ5IHNwZWNpYWxpc3RzIHdobyB1c2UgdGVjaG5vbG9naWVzIEJVVCBhbHNvIHdhbnQgdG8gZW5zdXJlIHJhdGVzIGZvciBvdGhlciBwcm9jZWR1cmVzIGFyZW4ndCBpbmFwcHJvcHJpYXRlbHkgbG93ZXJlZCBqdXN0IHRvIHBheSBmb3IgZGlmZmVyZW50IHRoaW5ncz8iCi0gIkltcG9zc2libGUgdGVuc2lvbiLigJRoYXJkIHRvIGV4cGxhaW4gcmViYWxhbmNpbmcgd2hlbiByZXByZXNlbnRpbmcgNjAwIG1lbWJlcnMKCkNNTUkgSU5OT1ZBVElPTiBDRU5URVIgT1BQT1JUVU5JVFk6Ci0gQ2VudGVyIGZvciBNZWRpY2FyZSBhbmQgTWVkaWNhaWQgSW5ub3ZhdGlvbiAoQ01NSSkgY2FuIHBheSBmb3IgZXhwYW5kaW5nIGludG8gTkVXIGNhcmUgcGF0aHdheXMgZmFjaWxpdGF0ZWQgYnkgQUkvZGlnaXRhbCBoZWFsdGgKLSBSZWNlbnQgbW9kZWw6IFdJU0VSIChzcGVjaWZpY3Mgbm90IGRldGFpbGVkKQotIFByb3Bvc2VkIG1vZGVsOiBBbWJ1bGF0b3J5IHN1cmdpY2FsIHBhdGh3YXkKLSBLZXkgbWVzc2FnZSBiZWluZyBjb21tdW5pY2F0ZWQgdG8gQ01NSTogRm9jdXMgb24gRVhQQU5ESU5HIGFjY2VzcyBhbmQgZmFjaWxpdGF0aW5nIGVmZmljaWVudC9lZmZlY3RpdmUgY2FyZQogICogRWZmaWNpZW5jeSBzaG91bGQgTk9UIG1lYW4gIm1ha2luZyB5b3Ugd29yayBoYXJkZXIiCiAgKiBTaG91bGQgYWxsb3cgQUkvZGlnaXRhbCB0ZWNoIHRvIGNhcnJ5IGxvYWQgV0hJTEUgZW5zdXJpbmcgcHJvdmlkZXJzIGdldCBwYWlkIGZvciBhZG9wdGlvbiBjb3N0cwoKU1VNTUFSWTogUEFZTUVOVCBGT1IgQUkgSU4gTUVESUNBUkUKLSBZZXMsIGJ1dCBhcHByb2FjaGVkIG9uIHRlY2hub2xvZ3ktYnktdGVjaG5vbG9neSBiYXNpcwotIE5vIGhpZ2ggZW5vdWdoIGNlcnRhaW50eSBmb3IgbWFudWZhY3R1cmVycyBnb2luZyB0aHJvdWdoIEZEQSBwcm9jZXNzCi0gQ3JlYXRlcyBkaXNpbmNlbnRpdmU6IERvIHN0dWRpZXMgZm9yIEZEQSwgdGhlbiBDTVMgc2F5cyAid2hhdCBkb2VzIHRoaXMgbG9vayBsaWtlIGZvciBNZWRpY2FyZSBwYXRpZW50cz8iCi0gUGF5bWVudCByYXRlIHNpZ25pZmljYW50bHkgbG93ZXIgdGhhbiBleHBlY3RlZCBiZWNhdXNlIGZpdHRpbmcgaW50byBzeXN0ZW0gYnVpbHQgYnkgcGVvcGxlIHdobyAiZGlkIG5vdCBjb250ZW1wbGF0ZSB0aGlzIHdvcmxkIgotIE5vdCBuZWdhdGl2ZSBtZXNzYWdl4oCUYWN0aXZlbHkgd29ya2luZyB0byBhZGRyZXNzIGlzc3VlcwoKS0VZIFFVT1RFUy9QSFJBU0VTIEZPUiBQVUJMSUNBVElPTjoKLSAiQmVuZWZpdCBjYXRlZ29yaWVzIGhhdmVuJ3QgYmVlbiBtZWFuaW5nZnVsbHkgdXBkYXRlZCBzaW5jZSB0aGUgMTk3MHMiCi0gIklyb24gbHVuZ3Mi4oCUc3RhdHV0ZSBtZW50aW9ucyBvYnNvbGV0ZSB0ZWNobm9sb2d5LCBub3QgbW9kZXJuIEFJCi0gIkVmZmljaWVuY3kgdHJhcCI6IENNUyBkb2Vzbid0IHBheSBmb3IgcHVyZSBlZmZpY2llbmN5IGdhaW5zCi0gIkNyb3Nzd2Fsa2luZyIgcHJvYmxlbXPigJRBSSBkaWFnbm9zdGljcyBwaWdlb25ob2xlZCBpbnRvIHdyb25nIGNvZGUgY2F0ZWdvcmllcwotICJEYXJ0Ym9hcmQgYXBwcm9hY2giIHRvIHByaWNpbmfigJRDTVMgdXNlcyBpbXByZWNpc2UgbWV0aG9kcwotICJQZXJwZXR1YWwgZGFuY2Ugd2l0aCBNZWRpY2FyZSLigJR1bmNlcnRhaW50eSBjeWNsZSBmb3IgbWFudWZhY3R1cmVycwoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpDUk9TUy1DVVRUSU5HIFRIRU1FUyAoU3ludGhlc2lzIEFjcm9zcyBBbGwgTGVjdHVyZXMpCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCjEuIExFR0lTTEFUSVZFIEFDVElWSVRZIEFDQ0VMRVJBVElORwotIEN1cnJlbnQgQ29uZ3Jlc3M6IH40IEFJIGJpbGxzCi0gTmV4dCBzZXNzaW9uOiBFeHBlY3QgfjMwIGJpbGxzCi0gTW9tZW50dW0gYnVpbGRpbmcgb24gQ2FwaXRvbCBIaWxsCgoyLiBQQVlNRU5UL1JFSU1CVVJTRU1FTlQgSVMgQ0VOVFJBTCBCQVJSSUVSCi0gTGVjdHVyZSAyIChTeWJpbCk6IEFCSFMgYmlsbCBjcmVhdGVzIG91dHBhdGllbnQgcGF5bWVudCBjbGFzc2lmaWNhdGlvbgotIExlY3R1cmUgMyAoS3Jpc3Rlbik6IE1lZGljYXJlIGxhY2tzIGJlbmVmaXQgY2F0ZWdvcmllcyBmb3Igc29mdHdhcmUgaW50ZXJ2ZW50aW9ucwotIFBvbGwgZGF0YTogUmVpbWJ1cnNlbWVudCAjMSBwcmlvcml0eSBmcm9tIHBoeXNpY2lhbnMKCjMuIFJFR1VMQVRPUlkgRkxFWElCSUxJVFkgTkVFREVECi0gU2FuZGJveCBBY3QgKExlY3R1cmUgMik6IEZEQSBuZWVkcyBmbGV4aWJpbGl0eSBmb3IgQUkgaW5ub3ZhdGlvbgotIE5ldyBUZWNobm9sb2d5IEFQQ3MgKExlY3R1cmUgMyk6IE5lZWQgbG9uZ2VyIHRpbWVsaW5lcyB0aGFuIGN1cnJlbnQgMyB5ZWFycwotIFBDQ1BzIChQcmVkZXRlcm1pbmVkIENoYW5nZSBDb250cm9sIFBsYW5zKTogSW5kdXN0cnkgd2FudHMgYWJpbGl0eSB0byB1cGRhdGUgd2l0aG91dCBjb25zdGFudCBuZXcgc3VibWlzc2lvbnMKCjQuIFBIWVNJQ0lBTiBQRVJTUEVDVElWRSBVTkRFUlJFUFJFU0VOVEVECi0gIkxhY2sgb2Yga25vd2xlZGdlIGJ5IHJlZ3VsYXRvcnMiIChwb2xsICsgTGVjdHVyZSAyKQotIE5lZWQgZm9yIHBoeXNpY2lhbi10cmFpbmVkIG1vZGVscyAocG9sbCB3b3JkIG1hcCkKLSBHSS1zcGVjaWZpYyBuZWVkcyBub3QgY29udGVtcGxhdGVkIGluIGdlbmVyYWwgQUkgbGVnaXNsYXRpb24KCjUuIFNUQVRFIFZTLiBGRURFUkFMIFRFTlNJT04KLSBTdGF0ZSBsYXdzIChDYWxpZm9ybmlhIGNoYXRib3QgYmlsbCkgY3JlYXRlIHBhdGNod29yawotIEZlZGVyYWwgcHJlZW1wdGlvbiBuZWVkZWQgYnV0IG1vcmF0b3JpdW0gcHJvcG9zYWxzIHJlamVjdGVkCi0gQmFsYW5jZSBiZXR3ZWVuIGlubm92YXRpb24gcHJvdGVjdGlvbiBhbmQgc2FmZXR5IG92ZXJzaWdodAoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpJTVBMSUNBVElPTlMgRk9SIFBVQkxJQ0FUSU9OIFdSSVRJTkcKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKMS4gUkVJTUJVUlNFTUVOVCBTRUNUSU9OIFNIT1VMRCBSRUZFUkVOQ0U6Ci0gQUJIUyBiaWxsIChBbGdvcml0aG1pYyBCYXNlZCBIZWFsdGhjYXJlIFNlcnZpY2UpIGFzIHBvdGVudGlhbCBzb2x1dGlvbgotIE5ldyBUZWNobm9sb2d5IEFQQyBwYXRod2F5IGFuZCBpdHMgbGltaXRhdGlvbnMgKDMteWVhciB0aW1lbGluZSB0b28gc2hvcnQpCi0gQ3Jvc3N3YWxraW5nIHByb2JsZW1z4oCUQUkgZGlhZ25vc3RpY3MgaW4gd3JvbmcgY29kZSBjYXRlZ29yaWVzCi0gRE1FUE9TIGdhcCBmb3IgaG9tZS1iYXNlZCBBSSBtb25pdG9yaW5nCgoyLiBSRUdVTEFUT1JZIFNFQ1RJT04gU0hPVUxEIFJFRkVSRU5DRToKLSBTYW5kYm94IEFjdCBhcyBtZWNoYW5pc20gZm9yIEZEQSBmbGV4aWJpbGl0eQotIFByZWRldGVybWluZWQgQ2hhbmdlIENvbnRyb2wgUGxhbnMgKFBDQ1BzKSBmb3IgaXRlcmF0aXZlIHVwZGF0ZXMKLSBTdGF0ZSB2cy4gZmVkZXJhbCB0ZW5zaW9uIHJlcXVpcmluZyBjYXJlZnVsIG5hdmlnYXRpb24KCjMuIFRJTUVMSU5FIENPTlRFWFQ6Ci0gQ3VycmVudCAxMTl0aCBDb25ncmVzcyBzZWVpbmcgImRyaXBzIGFuZCBkcmFicyIgKH40IGJpbGxzKQotIEV4cGVjdCBhY2NlbGVyYXRpb24gdG8gfjMwIGJpbGxzIGluIG5leHQgc2Vzc2lvbgotIE1vbWVudHVtIGJ1aWxkaW5nIGJ1dCBzdGlsbCBlYXJseSBzdGFnZXMKCjQuIEtFWSBURVJNSU5PTE9HWSBUTyBERUZJTkU6Ci0gQUJIUyAoQWxnb3JpdGhtaWMgQmFzZWQgSGVhbHRoY2FyZSBTZXJ2aWNlKQotIEFQQyAoQW1idWxhdG9yeSBQYXltZW50IENsYXNzaWZpY2F0aW9uKQotIElQUFMgKElucGF0aWVudCBQcm9zcGVjdGl2ZSBQYXltZW50IFN5c3RlbSkKLSBPUFBTIChPdXRwYXRpZW50IFByb3NwZWN0aXZlIFBheW1lbnQgU3lzdGVtKQotIFNBTUQgKFNvZnR3YXJlIGFzIGEgTWVkaWNhbCBEZXZpY2UpCi0gRE1FUE9TIChEdXJhYmxlIE1lZGljYWwgRXF1aXBtZW50LCBQcm9zdGhldGljcywgT3J0aG90aWNzLCBhbmQgU3VwcGxpZXMpCi0gQ01NSSAoQ2VudGVyIGZvciBNZWRpY2FyZSBhbmQgTWVkaWNhaWQgSW5ub3ZhdGlvbikKCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUkVMRVZBTlQgQ0lUQVRJT05TIFRPIFNPVVJDRSAoUE1JRHMgdG8gRmluZCkKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotIE5JSCBBSSByZXNlYXJjaCBmdW5kaW5nIGluIGdhc3Ryb2VudGVyb2xvZ3kKLSBNZWRpY2FyZSBwYXltZW50IHBvbGljeSBmb3IgZGlnaXRhbCBoZWFsdGggdGVjaG5vbG9naWVzCi0gUmVndWxhdG9yeSBwYXRod2F5cyBmb3IgQUkgbWVkaWNhbCBkZXZpY2VzIChGREEgNTEwKGspLCBkZSBub3ZvKQotIFByZWRldGVybWluZWQgQ2hhbmdlIENvbnRyb2wgUGxhbnMgKFBDQ1BzKSBmb3IgQUk=";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "ASGE AI Summit Transcripts: Optimized Summary..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
