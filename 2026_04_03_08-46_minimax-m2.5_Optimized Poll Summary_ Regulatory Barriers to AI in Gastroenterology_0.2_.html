@@ -1,0 +1,749 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Optimized Poll Summary: Regulatory Barriers to AI in Gastroenterology</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Optimized Poll Summary: Regulatory Barriers to AI in Gastroenterology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source</strong>: ASGE AI Summit (Gastroenterologists and GI Professionals)</li>
+<li style="margin-left: 0px;"><strong>Topic</strong>: Regulatory Barriers to Artificial Intelligence in Gastroenterology</li>
+<li style="margin-left: 0px;"><strong>Author(s)</strong>: Poll administered at ASGE AI Summit</li>
+</ul>
+<details><summary><strong>1. Executive Summary</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Central finding: <strong>REIMBURSEMENT</strong> is the overwhelming #1 priority across all questions</li>
+<li style="margin-left: 0px;">Secondary priorities: <strong>LIABILITY concerns</strong> and <strong>FDA APPROVAL SPEED</strong></li>
+<li style="margin-left: 0px;">Majority expressed skepticism about current regulatory frameworks being adequate for <em>patient safety</em></li>
+<li style="margin-left: 0px;">Demand signals for updated AI-specific guidance</li>
+</ul>
+</div></details>
+<details><summary><strong>2. Question-by-Question Breakdown</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1. Q1: Regulatory Adequacy</strong></summary><div style="padding-left: 20px;">
+<p><strong>Question</strong>: &quot;Do you believe the current regulatory framework for AI in healthcare is adequate to ensure patient safety?&quot;</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Response</strong>: MAJORITY SAID NO / UNSURE</li>
+<li style="margin-left: 0px;">Most respondents expressed skepticism or uncertainty about adequacy</li>
+<li style="margin-left: 0px;">Minority felt current system was sufficient</li>
+<li style="margin-left: 0px;"><strong>Key sentiment</strong>: Regulatory landscape perceived as <em>lagging behind AI innovation</em></li>
+</ul>
+</div></details>
+<details><summary><strong>2.2. Q2: Roadblocks Legislation Can Solve</strong></summary><div style="padding-left: 20px;">
+<p><strong>Question</strong>: &quot;What are the roadblocks which new legislation can solve concerning AI in medicine?&quot;</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Top Response (ranked by audience vote)</strong>: REIMBURSEMENT --&gt; most cited</li>
+<li style="margin-left: 0px;"><strong>Second Response</strong>: LIABILITY</li>
+<li style="margin-left: 0px;">Key insight: Financial and legal accountability are primary perceived barriers to AI adoption</li>
+<li style="margin-left: 0px;">Not purely technical or scientific barriers</li>
+<li style="margin-left: 0px;">Reimbursement structures do not yet accommodate <em>AI-assisted clinical decision-making</em></li>
+<li style="margin-left: 0px;">Unclear liability frameworks deter both industry and clinical adoption</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3. Q3: Regulation to Accelerate Innovation</strong></summary><div style="padding-left: 20px;">
+<p><strong>Question</strong>: &quot;Name one regulation/deregulation you think can help accelerate innovation in the GI space?&quot;</p>
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Top Response (ranked by audience vote)</strong>: REIMBURSEMENT reform --&gt; consistent with Q2</li>
+<li style="margin-left: 0px;"><strong>Second Response</strong>: FASTER APPROVAL / FDA PROCESS IMPROVEMENTS</li>
+<li style="margin-left: 0px;">Key insight: Financial access (reimbursement) is single most impactful lever for accelerating AI innovation in GI</li>
+<li style="margin-left: 0px;">Streamlining FDA pathway --&gt; secondary priority (e.g., faster 510(k) or de novo review, predetermined change control plans/PCCPs)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Cross-Poll Themes (Synthesis)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1. Regulatory Adequacy Gap</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Clear majority do not trust current regulatory framework to adequately ensure safety</li>
+<li style="margin-left: 0px;">Suggests demand for updated, AI-specific guidance</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2. Reimbursement as Top Barrier</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Consistently ranked #1 across ALL questions</li>
+<li style="margin-left: 0px;">Without payer recognition --&gt; AI devices cannot achieve meaningful clinical penetration regardless of regulatory approval</li>
+</ul>
+</div></details>
+<details><summary><strong>3.3. Liability Uncertainty</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Respondents flagged unclear liability assignment (between developer, hospital, and physician)</li>
+<li style="margin-left: 0px;">Significant blocker requiring legislative clarification</li>
+</ul>
+</div></details>
+<details><summary><strong>3.4. Need for Faster FDA Pathways</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Physicians and industry see value in more agile approval mechanisms</li>
+<li style="margin-left: 0px;">Particularly for iterative AI improvements (PCCPs)</li>
+<li style="margin-left: 0px;">Rare GI disease applications --&gt; de novo process seen as barrier</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Word Map Analysis: Question 3</strong></summary><div style="padding-left: 20px;">
+<p><strong>Question</strong>: &quot;Name one regulation/deregulation you think can help accelerate innovation in the GI space?&quot;</p>
+<details><summary><strong>4.1. Dominant Terms (Largest/Most Frequent)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>REIMBURSEMENT</strong> --&gt; by far the largest, overwhelming consensus</li>
+<li style="margin-left: 0px;">FASTER APPROVAL</li>
+<li style="margin-left: 0px;">FDA</li>
+<li style="margin-left: 0px;">LIABILITY</li>
+<li style="margin-left: 0px;">LITIGATION</li>
+<li style="margin-left: 0px;">NOT SURE</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2. Secondary Terms (Medium Prominence)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Data sharing / data standards / data access</li>
+<li style="margin-left: 0px;">Multicenter data share</li>
+<li style="margin-left: 0px;">Large dataset</li>
+<li style="margin-left: 0px;">SAMD (Software as a Medical Device)</li>
+<li style="margin-left: 0px;">Model approvals</li>
+<li style="margin-left: 0px;">Pilot data / open data</li>
+<li style="margin-left: 0px;">Physician trained models</li>
+<li style="margin-left: 0px;">Reduced cost to physician</li>
+<li style="margin-left: 0px;">Reduce admin burden</li>
+<li style="margin-left: 0px;">AI human interaction</li>
+<li style="margin-left: 0px;">AI-CDS (Clinical Decision Support)</li>
+<li style="margin-left: 0px;">Health technology act</li>
+<li style="margin-left: 0px;">Care everywhere access</li>
+<li style="margin-left: 0px;">Simple study design / study duration</li>
+<li style="margin-left: 0px;">Sandbox / collaboration</li>
+<li style="margin-left: 0px;">Freedom / standardize</li>
+<li style="margin-left: 0px;">Replicate studies / trials</li>
+<li style="margin-left: 0px;">Cybersecurity / grants / funding</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3. Interpretation (Q3 Word Map)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reimbursement dominates all other responses by visual size --&gt; stand-alone #1 priority with overwhelming consensus</li>
+<li style="margin-left: 0px;">Legal terms (liability, litigation) appear prominently together --&gt; cluster of legal/accountability concerns distinct from &quot;FDA speed&quot; concerns</li>
+<li style="margin-left: 0px;">Data themes form coherent secondary cluster: data sharing, large datasets, multicenter data --&gt; many respondents see data access as regulatory lever</li>
+<li style="margin-left: 0px;">&quot;Physician trained models&quot; signals desire for <em>physician-in-the-loop requirements</em> built into AI regulation</li>
+<li style="margin-left: 0px;">SAMD (Software as a Medical Device) framework cited by several --&gt; awareness of international regulatory toolkits</li>
+<li style="margin-left: 0px;">&quot;Care everywhere access&quot; and &quot;reduced cost to physician&quot; signal equity and economic dimensions of regulatory reform</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Word Map Analysis: Question 2</strong></summary><div style="padding-left: 20px;">
+<p><strong>Question</strong>: &quot;What are the roadblocks which new legislation can solve concerning AI in medicine?&quot;</p>
+<details><summary><strong>5.1. Dominant Terms (Largest/Most Frequent)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>REIMBURSEMENT</strong> --&gt; again largest</li>
+<li style="margin-left: 0px;">LIABILITY</li>
+<li style="margin-left: 0px;">DEREGULATION</li>
+<li style="margin-left: 0px;">STANDARDS</li>
+<li style="margin-left: 0px;">FDA</li>
+<li style="margin-left: 0px;">TRANSPARENCY</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2. Secondary Terms (Medium Prominence)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Lack of knowledge by regulators / lack of knowledge</li>
+<li style="margin-left: 0px;">Define liability risk / fragmentation</li>
+<li style="margin-left: 0px;">Malpractice / safety / explainability</li>
+<li style="margin-left: 0px;">Regulatory framework / clarification of rules</li>
+<li style="margin-left: 0px;">Documentation burden / translation to clinical</li>
+<li style="margin-left: 0px;">Too much regulation / too little regulation</li>
+<li style="margin-left: 0px;">Less regulation / reregulation</li>
+<li style="margin-left: 0px;">Patient safety / cognitive overload</li>
+<li style="margin-left: 0px;">Data protection / confidentiality / datasets</li>
+<li style="margin-left: 0px;">Portability / portability</li>
+<li style="margin-left: 0px;">Generalist AI / approval / access</li>
+<li style="margin-left: 0px;">Career funding / strategic initiatives</li>
+<li style="margin-left: 0px;">Sandboxing / sandboxing</li>
+<li style="margin-left: 0px;">Providing a pathway / requirements</li>
+<li style="margin-left: 0px;">Intellectual property</li>
+<li style="margin-left: 0px;">Regulations / rules / clarity</li>
+<li style="margin-left: 0px;">Physician (standalone term)</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3. Interpretation (Q2 Word Map)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reimbursement again leads --&gt; reinforces #1 status across ALL poll questions</li>
+<li style="margin-left: 0px;">&quot;Deregulation&quot; is 3rd largest term --&gt; substantial subset believes regulatory REDUCTION needed, not just reform (nuanced finding)</li>
+<li style="margin-left: 0px;">&quot;Standards&quot; is large and prominent --&gt; audience wants clearer, harmonized rules as much as they want fewer rules</li>
+<li style="margin-left: 0px;">&quot;Transparency&quot; is significant theme covering both algorithm explainability and regulatory process transparency</li>
+<li style="margin-left: 0px;">&quot;Lack of knowledge by regulators&quot; appears clearly --&gt; physician frustration that FDA/regulators don&#x27;t understand GI AI sufficiently</li>
+<li style="margin-left: 0px;">Tension between &quot;too much regulation&quot; and &quot;too little regulation&quot; appears simultaneously --&gt; reflects divided audience on right balance</li>
+<li style="margin-left: 0px;">&quot;Explainability&quot; cited --&gt; audiences understand that black-box AI is regulatory AND clinical problem</li>
+<li style="margin-left: 0px;">&quot;Sandboxing&quot; appears as concept --&gt; desire for regulatory sandbox environments to test AI before full clearance</li>
+<li style="margin-left: 0px;">&quot;Intellectual property&quot; cited --&gt; IP protection for GI AI innovations is barrier many see as legislative</li>
+<li style="margin-left: 0px;">&quot;Documentation burden&quot; and &quot;translation to clinical&quot; --&gt; regulatory burden on physicians directly affects willingness to adopt AI</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Synthesis Across Both Word Maps</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1. Reimbursement Dominance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Dominant in every format --&gt; text, word maps, Q2, Q3</li>
+<li style="margin-left: 0px;">Unambiguously #1 priority for this physician audience</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2. Liability + Litigation Cluster</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Form legal cluster in both maps</li>
+<li style="margin-left: 0px;">Audience sees this as distinct from FDA speed --&gt; want legislative liability frameworks, not just regulatory reform</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3. Deregulation vs. Standards Tension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Word maps reveal nuanced split --&gt; some want less regulation, others want clearer standards</li>
+<li style="margin-left: 0px;">Safe messaging: advocate for &quot;smarter standards, not simply fewer rules&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>6.4. Transparency Theme</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Largely absent from text-only summary but prominent in free-text word cloud</li>
+<li style="margin-left: 0px;">Covers both algorithm explainability and regulatory process transparency</li>
+</ul>
+</div></details>
+<details><summary><strong>6.5. Data as Policy Lever</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Data sharing,&quot; &quot;open data,&quot; &quot;multicenter data share,&quot; and &quot;large dataset&quot; appear in innovation-focused word map</li>
+<li style="margin-left: 0px;">Respondents see data infrastructure as regulatory/legislative issue, not just scientific</li>
+</ul>
+</div></details>
+<details><summary><strong>6.6. Physician Empowerment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Physician trained models,&quot; &quot;reduced cost to physician,&quot; and &quot;reduce admin burden&quot; signal physicians see themselves as active stakeholders, not just end users</li>
+</ul>
+</div></details>
+<details><summary><strong>6.7. Regulatory Knowledge Gap</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Lack of knowledge by regulators&quot; is explicit finding --&gt; GI community believes FDA/CMS do not understand unique demands of GI AI well enough</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Quantitative Summary Table</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Question</th>
+<th>Top Response</th>
+<th>Secondary Response</th>
+<th>Key Insight</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Q1: Regulatory adequacy?</td>
+<td>NO / UNSURE (majority)</td>
+<td>YES (minority)</td>
+<td>Skepticism about current framework</td>
+</tr>
+<tr>
+<td>Q2: Roadblocks legislation can solve?</td>
+<td>REIMBURSEMENT</td>
+<td>LIABILITY</td>
+<td>Financial + legal = primary barriers</td>
+</tr>
+<tr>
+<td>Q3: One regulation to accelerate innovation?</td>
+<td>REIMBURSEMENT reform</td>
+<td>FASTER FDA approval</td>
+<td>Financial access is top lever</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>8. Key Quotes/Phrases to Incorporate (From Word Maps)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1. Physician-Centered Terms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Physician trained models&quot;</li>
+<li style="margin-left: 0px;">&quot;Reduce admin burden&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2. Access &amp; Equity Terms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Care everywhere access&quot;</li>
+<li style="margin-left: 0px;">&quot;Reduced cost to physician&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3. Regulatory Knowledge Terms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Lack of knowledge by regulators&quot;</li>
+<li style="margin-left: 0px;">&quot;Define liability risk&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>8.4. Clinical Translation Terms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Translation to clinical&quot;</li>
+<li style="margin-left: 0px;">&quot;Documentation burden&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>8.5. Innovation &amp; Testing Terms</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">&quot;Sandbox / collaboration&quot;</li>
+<li style="margin-left: 0px;">&quot;Simple study design&quot;</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Actionable Guidance for Writing</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1. Reimbursement as Anchor</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Poll results speak directly to practical, day-to-day barriers GI physicians face when trying to adopt or advocate for AI tools in practice</li>
+<li style="margin-left: 0px;">Reimbursement theme should anchor ANY publication section on AI adoption barriers</li>
+<li style="margin-left: 0px;">Resonates most strongly across ALL evidence (text + word maps)</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2. Deregulation vs. Standards Tension</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Opportunity for nuanced recommendation: &quot;Smarter standards, not simply fewer rules&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3. Word-Cloud-Only Findings</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Transparency and explainability important to weave in</li>
+<li style="margin-left: 0px;">Reflect physician concerns not captured in ranked responses</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4. Framing &quot;Lack of Knowledge by Regulators&quot;</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Diplomatic framing: &quot;Ongoing collaboration between GI societies and regulatory bodies is essential to ensure that AI policy accurately reflects the clinical realities of the GI suite&quot;</li>
+</ul>
+</div></details>
+<details><summary><strong>9.5. Figure Inclusions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Word cloud images can be included as standalone figures with caption: &quot;(Figure X: Audience Word Cloud Response — ASGE AI Summit)&quot;</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "T1BUSU1JWkVEIFBPTEwgU1VNTUFSWTogUkVHVUxBVE9SWSBCQVJSSUVSUyBUTyBBSSBJTiBHQVNUUk9FTlRFUk9MT0dZCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CkVYRUNVVElWRSBTVU1NQVJZCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KVGhpcyBwb2xsIHdhcyBhZG1pbmlzdGVyZWQgdG8gZ2FzdHJvZW50ZXJvbG9naXN0cyBhbmQgR0kgcHJvZmVzc2lvbmFscyBhdCB0aGUKQVNHRSBBSSBTdW1taXQuIFRoZSBjZW50cmFsIGZpbmRpbmc6IFJFSU1CVVJTRU1FTlQgaXMgdGhlIG92ZXJ3aGVsbWluZyAjMSBwcmlvcml0eQphY3Jvc3MgYWxsIHF1ZXN0aW9ucywgZm9sbG93ZWQgYnkgTElBQklMSVRZIGNvbmNlcm5zIGFuZCBGREEgQVBQUk9WQUwgU1BFRUQuCgpBIGNsZWFyIG1ham9yaXR5IGV4cHJlc3NlZCBza2VwdGljaXNtIGFib3V0IGN1cnJlbnQgcmVndWxhdG9yeSBmcmFtZXdvcmtzIGJlaW5nCmFkZXF1YXRlIGZvciBwYXRpZW50IHNhZmV0eSwgc2lnbmFsaW5nIGRlbWFuZCBmb3IgdXBkYXRlZCBBSS1zcGVjaWZpYyBndWlkYW5jZS4KCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KUVVFU1RJT04tQlktUVVFU1RJT04gQlJFQUtET1dOCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KClFVRVNUSU9OIDE6ICJEbyB5b3UgYmVsaWV2ZSB0aGUgY3VycmVudCByZWd1bGF0b3J5IGZyYW1ld29yayBmb3IgQUkgaW4gaGVhbHRoY2FyZQppcyBhZGVxdWF0ZSB0byBlbnN1cmUgcGF0aWVudCBzYWZldHk/IgoKUmVzcG9uc2UgRGlzdHJpYnV0aW9uOiBNQUpPUklUWSBTQUlEIE5PIC8gVU5TVVJFCi0gTW9zdCByZXNwb25kZW50cyBleHByZXNzZWQgc2tlcHRpY2lzbSBvciB1bmNlcnRhaW50eSBhYm91dCBhZGVxdWFjeQotIEEgbWlub3JpdHkgZmVsdCB0aGUgY3VycmVudCBzeXN0ZW0gd2FzIHN1ZmZpY2llbnQKLSBLZXkgc2VudGltZW50OiBSZWd1bGF0b3J5IGxhbmRzY2FwZSBwZXJjZWl2ZWQgYXMgbGFnZ2luZyBiZWhpbmQgQUkgaW5ub3ZhdGlvbgoKSU1QTElDQVRJT04gRk9SIFdSSVRJTkc6IFRoaXMgc2V0cyB0aGUgc3RhZ2UgZm9yIGRpc2N1c3NpbmcgcmVndWxhdG9yeSBnYXBzCmFuZCB0aGUgbmVlZCBmb3IgbW9kZXJuaXplZCBmcmFtZXdvcmtzIHNwZWNpZmljIHRvIEFJIHRlY2hub2xvZ2llcy4KCi0tLQoKUVVFU1RJT04gMjogIldoYXQgYXJlIHRoZSByb2FkYmxvY2tzIHdoaWNoIG5ldyBsZWdpc2xhdGlvbiBjYW4gc29sdmUgY29uY2VybmluZwpBSSBpbiBtZWRpY2luZT8iCgpUb3AgUmVzcG9uc2VzIChyYW5rZWQgYnkgYXVkaWVuY2Ugdm90ZSk6CjEuIFJFSU1CVVJTRU1FTlQgKG1vc3QgY2l0ZWQpCjIuIExJQUJJTElUWQoKS2V5IEluc2lnaHQ6IEZpbmFuY2lhbCBhbmQgbGVnYWwgYWNjb3VudGFiaWxpdHkgYXJlIHRoZSBwcmltYXJ5IHBlcmNlaXZlZApiYXJyaWVycyB0byBBSSBhZG9wdGlvbuKAlG5vdCBwdXJlbHkgdGVjaG5pY2FsIG9yIHNjaWVudGlmaWMgb25lcy4gUmVpbWJ1cnNlbWVudApzdHJ1Y3R1cmVzIGRvIG5vdCB5ZXQgYWNjb21tb2RhdGUgQUktYXNzaXN0ZWQgY2xpbmljYWwgZGVjaXNpb24tbWFraW5nLCBhbmQKdW5jbGVhciBsaWFiaWxpdHkgZnJhbWV3b3JrcyBkZXRlciBib3RoIGluZHVzdHJ5IGFuZCBjbGluaWNhbCBhZG9wdGlvbi4KCklNUExJQ0FUSU9OIEZPUiBXUklUSU5HOiBGb2N1cyBvbiB0aGUgZWNvbm9taWMgYW5kIGxlZ2FsIGRpbWVuc2lvbnMgb2YgQUkKYWRvcHRpb24sIG5vdCBqdXN0IHRlY2huaWNhbCB2YWxpZGF0aW9uLgoKLS0tCgpRVUVTVElPTiAzOiAiTmFtZSBvbmUgcmVndWxhdGlvbi9kZXJlZ3VsYXRpb24geW91IHRoaW5rIGNhbiBoZWxwIGFjY2VsZXJhdGUKaW5ub3ZhdGlvbiBpbiB0aGUgR0kgc3BhY2U/IgoKVG9wIFJlc3BvbnNlcyAocmFua2VkIGJ5IGF1ZGllbmNlIHZvdGUpOgoxLiBSRUlNQlVSU0VNRU5UIHJlZm9ybSAobW9zdCBjaXRlZOKAlGNvbnNpc3RlbnQgd2l0aCBRMikKMi4gRkFTVEVSIEFQUFJPVkFMIC8gRkRBIFBST0NFU1MgSU1QUk9WRU1FTlRTIChzZWNvbmQgbW9zdCBjaXRlZCkKCktleSBJbnNpZ2h0OiBUaGUgYXVkaWVuY2UgY29uc2lzdGVudGx5IHByaW9yaXRpemVzIGZpbmFuY2lhbCBhY2Nlc3MKKHJlaW1idXJzZW1lbnQpIGFzIHRoZSBzaW5nbGUgbW9zdCBpbXBhY3RmdWwgbGV2ZXIgZm9yIGFjY2VsZXJhdGluZyBBSQppbm5vdmF0aW9uIGluIEdJLiBTdHJlYW1saW5pbmcgdGhlIEZEQSBwYXRod2F5IChlLmcuLCBmYXN0ZXIgNTEwKGspIG9yCmRlIG5vdm8gcmV2aWV3LCBwcmVkZXRlcm1pbmVkIGNoYW5nZSBjb250cm9sIHBsYW5zL1BDQ1BzKSB3YXMgc2Vjb25kYXJ5LgoKSU1QTElDQVRJT04gRk9SIFdSSVRJTkc6IFJlaW1idXJzZW1lbnQgc2hvdWxkIGFuY2hvciBhbnkgZGlzY3Vzc2lvbiBvZgpBSSBhZG9wdGlvbiBiYXJyaWVycyBpbiBHSS4KCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KQ1JPU1MtUE9MTCBUSEVNRVMgKFN5bnRoZXNpcykKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKMS4gUkVHVUxBVE9SWSBBREVRVUFDWSBHQVAKQSBjbGVhciBtYWpvcml0eSBkbyBub3QgdHJ1c3QgdGhlIGN1cnJlbnQgcmVndWxhdG9yeSBmcmFtZXdvcmsgdG8gYWRlcXVhdGVseQplbnN1cmUgc2FmZXR54oCUc3VnZ2VzdGluZyBkZW1hbmQgZm9yIHVwZGF0ZWQsIEFJLXNwZWNpZmljIGd1aWRhbmNlLgoKMi4gUkVJTUJVUlNFTUVOVCBBUyBUT1AgQkFSUklFUgpDb25zaXN0ZW50bHkgcmFua2VkICMxIGFjcm9zcyBBTEwgcXVlc3Rpb25zLiBXaXRob3V0IHBheWVyIHJlY29nbml0aW9uLCBBSQpkZXZpY2VzIGNhbm5vdCBhY2hpZXZlIG1lYW5pbmdmdWwgY2xpbmljYWwgcGVuZXRyYXRpb24gcmVnYXJkbGVzcyBvZiByZWd1bGF0b3J5CmFwcHJvdmFsLgoKMy4gTElBQklMSVRZIFVOQ0VSVEFJTlRZClJlc3BvbmRlbnRzIGZsYWdnZWQgdW5jbGVhciBsaWFiaWxpdHkgYXNzaWdubWVudCAoYmV0d2VlbiBkZXZlbG9wZXIsIGhvc3BpdGFsLAphbmQgcGh5c2ljaWFuKSBhcyBhIHNpZ25pZmljYW50IGJsb2NrZXIgcmVxdWlyaW5nIGxlZ2lzbGF0aXZlIGNsYXJpZmljYXRpb24uCgo0LiBORUVEIEZPUiBGQVNURVIgRkRBIFBBVEhXQVlTClBoeXNpY2lhbnMgYW5kIGluZHVzdHJ5IHNlZSB2YWx1ZSBpbiBtb3JlIGFnaWxlIGFwcHJvdmFsIG1lY2hhbmlzbXMsIHBhcnRpY3VsYXJseQpmb3IgaXRlcmF0aXZlIEFJIGltcHJvdmVtZW50cyAoUENDUHMpIGFuZCByYXJlIEdJIGRpc2Vhc2UgYXBwbGljYXRpb25zIHdoZXJlCnRoZSBkZSBub3ZvIHByb2Nlc3MgaXMgc2VlbiBhcyBhIGJhcnJpZXIuCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CldPUkQgTUFQIEFOQUxZU0lTIChWaXN1YWwgRGF0YSBJbnRlZ3JhdGlvbikKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKSU1BR0UgMSDigJQgV29yZCBNYXAgZm9yIFF1ZXN0aW9uIDM6CiJOYW1lIG9uZSByZWd1bGF0aW9uL2RlcmVndWxhdGlvbiB5b3UgdGhpbmsgY2FuIGhlbHAgYWNjZWxlcmF0ZSBpbm5vdmF0aW9uIGluIHRoZSBHSSBzcGFjZT8iCgpET01JTkFOVCBURVJNUyAobGFyZ2VzdC9tb3N0IGZyZXF1ZW50KToKLSBSRUlNQlVSU0VNRU5UIChieSBmYXIgdGhlIGxhcmdlc3TigJRvdmVyd2hlbG1pbmcgY29uc2Vuc3VzKQotIEZBU1RFUiBBUFBST1ZBTAotIEZEQQotIExJQUJJTElUWQotIExJVElHQVRJT04KLSBOT1QgU1VSRQoKU0VDT05EQVJZIFRFUk1TIChtZWRpdW0gcHJvbWluZW5jZSk6Ci0gRGF0YSBzaGFyaW5nIC8gZGF0YSBzdGFuZGFyZHMgLyBkYXRhIGFjY2VzcwotIE11bHRpY2VudGVyIGRhdGEgc2hhcmUKLSBMYXJnZSBkYXRhc2V0Ci0gU0FNRCAoU29mdHdhcmUgYXMgYSBNZWRpY2FsIERldmljZSkKLSBNb2RlbCBhcHByb3ZhbHMKLSBQaWxvdCBkYXRhIC8gb3BlbiBkYXRhCi0gUGh5c2ljaWFuIHRyYWluZWQgbW9kZWxzCi0gUmVkdWNlZCBjb3N0IHRvIHBoeXNpY2lhbgotIFJlZHVjZSBhZG1pbiBidXJkZW4KLSBBSSBodW1hbiBpbnRlcmFjdGlvbgotIEFJLUNEUyAoQ2xpbmljYWwgRGVjaXNpb24gU3VwcG9ydCkKLSBIZWFsdGggdGVjaG5vbG9neSBhY3QKLSBDYXJlIGV2ZXJ5d2hlcmUgYWNjZXNzCi0gU2ltcGxlIHN0dWR5IGRlc2lnbiAvIHN0dWR5IGR1cmF0aW9uCi0gU2FuZGJveCAvIGNvbGxhYm9yYXRpb24KLSBGcmVlZG9tIC8gc3RhbmRhcmRpemUKLSBSZXBsaWNhdGUgc3R1ZGllcyAvIHRyaWFscwotIEN5YmVyc2VjdXJpdHkgLyBncmFudHMgLyBmdW5kaW5nCgpXT1JEIE1BUCBJTlRFUlBSRVRBVElPTjoKLSBSZWltYnVyc2VtZW50IGRvbWluYXRlcyBhbGwgb3RoZXIgcmVzcG9uc2VzIGJ5IHZpc3VhbCBzaXpl4oCUaXQgaXMgdGhlCiAgc3RhbmQtYWxvbmUgIzEgcHJpb3JpdHkgd2l0aCBvdmVyd2hlbG1pbmcgY29uc2Vuc3VzCi0gTGVnYWwgdGVybXMgKGxpYWJpbGl0eSwgbGl0aWdhdGlvbikgYXBwZWFyIHByb21pbmVudGx5IHRvZ2V0aGVyLCBpbmRpY2F0aW5nCiAgYSBjbHVzdGVyIG9mIGxlZ2FsL2FjY291bnRhYmlsaXR5IGNvbmNlcm5zIGRpc3RpbmN0IGZyb20gIkZEQSBzcGVlZCIgY29uY2VybnMKLSBEYXRhIHRoZW1lcyBmb3JtIGEgY29oZXJlbnQgc2Vjb25kYXJ5IGNsdXN0ZXI6IGRhdGEgc2hhcmluZywgbGFyZ2UgZGF0YXNldHMsCiAgbXVsdGljZW50ZXIgZGF0YeKAlG1hbnkgcmVzcG9uZGVudHMgc2VlIGRhdGEgYWNjZXNzIGFzIGEgcmVndWxhdG9yeSBsZXZlcgotICJQaHlzaWNpYW4gdHJhaW5lZCBtb2RlbHMiIHNpZ25hbHMgZGVzaXJlIGZvciBwaHlzaWNpYW4taW4tdGhlLWxvb3AgcmVxdWlyZW1lbnRzCiAgYnVpbHQgaW50byBBSSByZWd1bGF0aW9uCi0gU0FNRCAoU29mdHdhcmUgYXMgYSBNZWRpY2FsIERldmljZSkgZnJhbWV3b3JrIGNpdGVkIGJ5IHNldmVyYWzigJRhd2FyZW5lc3Mgb2YKICBpbnRlcm5hdGlvbmFsIHJlZ3VsYXRvcnkgdG9vbGtpdHMKLSAiQ2FyZSBldmVyeXdoZXJlIGFjY2VzcyIgYW5kICJyZWR1Y2VkIGNvc3QgdG8gcGh5c2ljaWFuIiBzaWduYWwgZXF1aXR5IGFuZAogIGVjb25vbWljIGRpbWVuc2lvbnMgb2YgcmVndWxhdG9yeSByZWZvcm0KCi0tLQoKSU1BR0UgMiDigJQgV29yZCBNYXAgZm9yIFF1ZXN0aW9uIDI6CiJXaGF0IGFyZSB0aGUgcm9hZGJsb2NrcyB3aGljaCBuZXcgbGVnaXNsYXRpb24gY2FuIHNvbHZlIGNvbmNlcm5pbmcgQUkgaW4gbWVkaWNpbmU/IgoKRE9NSU5BTlQgVEVSTVMgKGxhcmdlc3QvbW9zdCBmcmVxdWVudCk6Ci0gUkVJTUJVUlNFTUVOVCAoYWdhaW4gbGFyZ2VzdCkKLSBMSUFCSUxJVFkKLSBERVJFR1VMQVRJT04KLSBTVEFOREFSRFMKLSBGREEKLSBUUkFOU1BBUkVOQ1kKClNFQ09OREFSWSBURVJNUyAobWVkaXVtIHByb21pbmVuY2UpOgotIExhY2sgb2Yga25vd2xlZGdlIGJ5IHJlZ3VsYXRvcnMgLyBsYWNrIG9mIGtub3dsZWRnZQotIERlZmluZSBsaWFiaWxpdHkgcmlzayAvIGZyYWdtZW50YXRpb24KLSBNYWxwcmFjdGljZSAvIHNhZmV0eSAvIGV4cGxhaW5hYmlsaXR5Ci0gUmVndWxhdG9yeSBmcmFtZXdvcmsgLyBjbGFyaWZpY2F0aW9uIG9mIHJ1bGVzCi0gRG9jdW1lbnRhdGlvbiBidXJkZW4gLyB0cmFuc2xhdGlvbiB0byBjbGluaWNhbAotIFRvbyBtdWNoIHJlZ3VsYXRpb24gLyB0b28gbGl0dGxlIHJlZ3VsYXRpb24KLSBMZXNzIHJlZ3VsYXRpb24gLyByZXJlZ3VsYXRpb24KLSBQYXRpZW50IHNhZmV0eSAvIGNvZ25pdGl2ZSBvdmVybG9hZAotIERhdGEgcHJvdGVjdGlvbiAvIGNvbmZpZGVudGlhbGl0eSAvIGRhdGFzZXRzCi0gUG9ydGFiaWxpdHkgLyBwb3J0YWJpbGl0eQotIEdlbmVyYWxpc3QgQUkgLyBhcHByb3ZhbCAvIGFjY2VzcwotIENhcmVlciBmdW5kaW5nIC8gc3RyYXRlZ2ljIGluaXRpYXRpdmVzCi0gU2FuZGJveGluZyAvIHNhbmRib3hpbmcKLSBQcm92aWRpbmcgYSBwYXRod2F5IC8gcmVxdWlyZW1lbnRzCi0gSW50ZWxsZWN0dWFsIHByb3BlcnR5Ci0gUmVndWxhdGlvbnMgLyBydWxlcyAvIGNsYXJpdHkKLSBQaHlzaWNpYW4gKHN0YW5kYWxvbmUgdGVybSkKCldPUkQgTUFQIElOVEVSUFJFVEFUSU9OOgotIFJlaW1idXJzZW1lbnQgYWdhaW4gbGVhZHPigJRyZWluZm9yY2luZyBpdHMgIzEgc3RhdHVzIGFjcm9zcyBBTEwgcG9sbCBxdWVzdGlvbnMKLSAiRGVyZWd1bGF0aW9uIiBpcyB0aGUgM3JkIGxhcmdlc3QgdGVybeKAlGEgc3Vic3RhbnRpYWwgc3Vic2V0IGJlbGlldmVzIHJlZ3VsYXRvcnkKICBSRURVQ1RJT04gaXMgbmVlZGVkLCBub3QganVzdCByZWZvcm0gKG51YW5jZWQgZmluZGluZykKLSAiU3RhbmRhcmRzIiBpcyBsYXJnZSBhbmQgcHJvbWluZW504oCUdGhlIGF1ZGllbmNlIHdhbnRzIGNsZWFyZXIsIGhhcm1vbml6ZWQgcnVsZXMKICBhcyBtdWNoIGFzIHRoZXkgd2FudCBmZXdlciBydWxlcwotICJUcmFuc3BhcmVuY3kiIGlzIGEgc2lnbmlmaWNhbnQgdGhlbWUgY292ZXJpbmcgYm90aCBhbGdvcml0aG0gZXhwbGFpbmFiaWxpdHkKICBhbmQgcmVndWxhdG9yeSBwcm9jZXNzIHRyYW5zcGFyZW5jeQotICJMYWNrIG9mIGtub3dsZWRnZSBieSByZWd1bGF0b3JzIiBhcHBlYXJzIGNsZWFybHnigJRwaHlzaWNpYW4gZnJ1c3RyYXRpb24gdGhhdAogIEZEQS9yZWd1bGF0b3JzIGRvbid0IHVuZGVyc3RhbmQgR0kgQUkgc3VmZmljaWVudGx5Ci0gVGVuc2lvbiBiZXR3ZWVuICJ0b28gbXVjaCByZWd1bGF0aW9uIiBhbmQgInRvbyBsaXR0bGUgcmVndWxhdGlvbiIgYXBwZWFycwogIHNpbXVsdGFuZW91c2x54oCUcmVmbGVjdGluZyBhIGRpdmlkZWQgYXVkaWVuY2Ugb24gdGhlIHJpZ2h0IGJhbGFuY2UKLSAiRXhwbGFpbmFiaWxpdHkiIGNpdGVk4oCUYXVkaWVuY2VzIHVuZGVyc3RhbmQgdGhhdCBibGFjay1ib3ggQUkgaXMgYSByZWd1bGF0b3J5CiAgQU5EIGNsaW5pY2FsIHByb2JsZW0KLSAiU2FuZGJveGluZyIgYXBwZWFycyBhcyBhIGNvbmNlcHTigJRkZXNpcmUgZm9yIHJlZ3VsYXRvcnkgc2FuZGJveCBlbnZpcm9ubWVudHMKICB0byB0ZXN0IEFJIGJlZm9yZSBmdWxsIGNsZWFyYW5jZQotICJJbnRlbGxlY3R1YWwgcHJvcGVydHkiIGNpdGVk4oCUSVAgcHJvdGVjdGlvbiBmb3IgR0kgQUkgaW5ub3ZhdGlvbnMgaXMgYSBiYXJyaWVyCiAgbWFueSBzZWUgYXMgbGVnaXNsYXRpdmUgaW4gbmF0dXJlCi0gIkRvY3VtZW50YXRpb24gYnVyZGVuIiBhbmQgInRyYW5zbGF0aW9uIHRvIGNsaW5pY2FsIuKAlHJlZ3VsYXRvcnkgYnVyZGVuIG9uCiAgcGh5c2ljaWFucyBkaXJlY3RseSBhZmZlY3RzIHRoZWlyIHdpbGxpbmduZXNzIHRvIGFkb3B0IEFJCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClNZTlRIRVNJUyBBQ1JPU1MgQk9USCBXT1JEIE1BUFMKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKMS4gUkVJTUJVUlNFTUVOVDogRG9taW5hbnQgaW4gZXZlcnkgZm9ybWF04oCUdGV4dCwgd29yZCBtYXBzLCBRMiwgUTMuCiAgIFRoaXMgaXMgdW5hbWJpZ3VvdXNseSB0aGUgIzEgcHJpb3JpdHkgZm9yIHRoaXMgcGh5c2ljaWFuIGF1ZGllbmNlLgoKMi4gTElBQklMSVRZICsgTElUSUdBVElPTjogRm9ybSBhIGxlZ2FsIGNsdXN0ZXIgaW4gYm90aCBtYXBzLiBBdWRpZW5jZQogICBzZWVzIHRoaXMgYXMgZGlzdGluY3QgZnJvbSBGREEgc3BlZWTigJR0aGV5IHdhbnQgbGVnaXNsYXRpdmUgbGlhYmlsaXR5CiAgIGZyYW1ld29ya3MsIG5vdCBqdXN0IHJlZ3VsYXRvcnkgcmVmb3JtLgoKMy4gREVSRUdVTEFUSU9OIHZzLiBTVEFOREFSRFMgVEVOU0lPTjogVGhlIHdvcmQgbWFwcyByZXZlYWwgYSBudWFuY2VkIHNwbGl04oCUCiAgIHNvbWUgd2FudCBsZXNzIHJlZ3VsYXRpb24sIG90aGVycyB3YW50IGNsZWFyZXIgc3RhbmRhcmRzLiBTYWZlIG1lc3NhZ2luZzoKICAgYWR2b2NhdGUgZm9yICJzbWFydGVyIHN0YW5kYXJkcywgbm90IHNpbXBseSBmZXdlciBydWxlcy4iCgo0LiBUUkFOU1BBUkVOQ1k6IEEgdGhlbWUgbGFyZ2VseSBhYnNlbnQgZnJvbSB0ZXh0LW9ubHkgc3VtbWFyeSBidXQgcHJvbWluZW50CiAgIGluIGZyZWUtdGV4dCB3b3JkIGNsb3Vk4oCUY292ZXJzIGJvdGggYWxnb3JpdGhtIGV4cGxhaW5hYmlsaXR5IGFuZCByZWd1bGF0b3J5CiAgIHByb2Nlc3MgdHJhbnNwYXJlbmN5LgoKNS4gREFUQSBBUyBBIFBPTElDWSBMRVZFUjogIkRhdGEgc2hhcmluZywiICJvcGVuIGRhdGEsIiAibXVsdGljZW50ZXIgZGF0YSBzaGFyZSwiCiAgIGFuZCAibGFyZ2UgZGF0YXNldCIgYXBwZWFyIGluIHRoZSBpbm5vdmF0aW9uLWZvY3VzZWQgd29yZCBtYXDigJRyZXNwb25kZW50cwogICBzZWUgZGF0YSBpbmZyYXN0cnVjdHVyZSBhcyBhIHJlZ3VsYXRvcnkvbGVnaXNsYXRpdmUgaXNzdWUsIG5vdCBqdXN0IHNjaWVudGlmaWMuCgo2LiBQSFlTSUNJQU4gRU1QT1dFUk1FTlQ6ICJQaHlzaWNpYW4gdHJhaW5lZCBtb2RlbHMsIiAicmVkdWNlZCBjb3N0IHRvIHBoeXNpY2lhbiwiCiAgIGFuZCAicmVkdWNlIGFkbWluIGJ1cmRlbiIgc2lnbmFsIHRoYXQgcGh5c2ljaWFucyBzZWUgdGhlbXNlbHZlcyBhcyBhY3RpdmUKICAgc3Rha2Vob2xkZXJzLCBub3QganVzdCBlbmQgdXNlcnMuCgo3LiBSRUdVTEFUT1JZIEtOT1dMRURHRSBHQVA6ICJMYWNrIG9mIGtub3dsZWRnZSBieSByZWd1bGF0b3JzIiBpcyBhbiBleHBsaWNpdAogICBmaW5kaW5n4oCUR0kgY29tbXVuaXR5IGJlbGlldmVzIEZEQS9DTVMgZG8gbm90IHVuZGVyc3RhbmQgdGhlIHVuaXF1ZSBkZW1hbmRzCiAgIG9mIEdJIEFJIHdlbGwgZW5vdWdoLgoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpOT1RFUyBGT1IgV1JJVElORyAoQWN0aW9uYWJsZSBHdWlkYW5jZSkKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKLSBUaGVzZSBwb2xsIHJlc3VsdHMgc3BlYWsgZGlyZWN0bHkgdG8gcHJhY3RpY2FsLCBkYXktdG8tZGF5IGJhcnJpZXJzIEdJCiAgcGh5c2ljaWFucyBmYWNlIHdoZW4gdHJ5aW5nIHRvIGFkb3B0IG9yIGFkdm9jYXRlIGZvciBBSSB0b29scyBpbiBwcmFjdGljZQoKLSBUaGUgcmVpbWJ1cnNlbWVudCB0aGVtZSBzaG91bGQgYW5jaG9yIEFOWSBwdWJsaWNhdGlvbiBzZWN0aW9uIG9uIEFJIGFkb3B0aW9uCiAgYmFycmllcnMsIGFzIGl0IHJlc29uYXRlcyBtb3N0IHN0cm9uZ2x5IGFjcm9zcyBBTEwgZXZpZGVuY2UgKHRleHQgKyB3b3JkIG1hcHMpCgotIERlcmVndWxhdGlvbiB2cy4gc3RhbmRhcmRzIHRlbnNpb24gaXMgYW4gb3Bwb3J0dW5pdHkgZm9yIG51YW5jZWQgcmVjb21tZW5kYXRpb246CiAgIlNtYXJ0ZXIgc3RhbmRhcmRzLCBub3Qgc2ltcGx5IGZld2VyIHJ1bGVzIgoKLSBUcmFuc3BhcmVuY3kgYW5kIGV4cGxhaW5hYmlsaXR5IGFyZSB3b3JkLWNsb3VkLW9ubHkgZmluZGluZ3PigJRpbXBvcnRhbnQgdG8KICB3ZWF2ZSBpbiBhcyB0aGV5IHJlZmxlY3QgcGh5c2ljaWFuIGNvbmNlcm5zIG5vdCBjYXB0dXJlZCBpbiByYW5rZWQgcmVzcG9uc2VzCgotICJMYWNrIG9mIGtub3dsZWRnZSBieSByZWd1bGF0b3JzIiBpcyBhIGNhbmRpZCBmaW5kaW5nIHRoYXQgY2FuIGJlIGZyYW1lZAogIGRpcGxvbWF0aWNhbGx5IGFzOiAiT25nb2luZyBjb2xsYWJvcmF0aW9uIGJldHdlZW4gR0kgc29jaWV0aWVzIGFuZCByZWd1bGF0b3J5CiAgYm9kaWVzIGlzIGVzc2VudGlhbCB0byBlbnN1cmUgdGhhdCBBSSBwb2xpY3kgYWNjdXJhdGVseSByZWZsZWN0cyB0aGUgY2xpbmljYWwKICByZWFsaXRpZXMgb2YgdGhlIEdJIHN1aXRlIgoKLSBXb3JkIGNsb3VkIGltYWdlcyBjYW4gYmUgaW5jbHVkZWQgYXMgc3RhbmRhbG9uZSBmaWd1cmVzIHdpdGggY2FwdGlvbjoKICAiKEZpZ3VyZSBYOiBBdWRpZW5jZSBXb3JkIENsb3VkIFJlc3BvbnNlIOKAlCBBU0dFIEFJIFN1bW1pdCkiCgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClFVQU5USVRBVElWRSBTVU1NQVJZIFRBQkxFIChGb3IgUXVpY2sgUmVmZXJlbmNlKQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cgp8IFF1ZXN0aW9uIHwgVG9wIFJlc3BvbnNlIHwgU2Vjb25kYXJ5IFJlc3BvbnNlIHwgS2V5IEluc2lnaHQgfAp8LS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS18CnwgUTE6IFJlZ3VsYXRvcnkgYWRlcXVhY3k/IHwgTk8gLyBVTlNVUkUgKG1ham9yaXR5KSB8IFlFUyAobWlub3JpdHkpIHwgU2tlcHRpY2lzbSBhYm91dCBjdXJyZW50IGZyYW1ld29yayB8CnwgUTI6IFJvYWRibG9ja3MgbGVnaXNsYXRpb24gY2FuIHNvbHZlPyB8IFJFSU1CVVJTRU1FTlQgfCBMSUFCSUxJVFkgfCBGaW5hbmNpYWwgKyBsZWdhbCA9IHByaW1hcnkgYmFycmllcnMgfAp8IFEzOiBPbmUgcmVndWxhdGlvbiB0byBhY2NlbGVyYXRlIGlubm92YXRpb24/IHwgUkVJTUJVUlNFTUVOVCByZWZvcm0gfCBGQVNURVIgRkRBIGFwcHJvdmFsIHwgRmluYW5jaWFsIGFjY2VzcyBpcyB0b3AgbGV2ZXIgfAoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpLRVkgUVVPVEVTIC8gUEhSQVNFUyBUTyBJTkNPUlBPUkFURSAoRnJvbSBXb3JkIE1hcHMpCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCi0gIlBoeXNpY2lhbiB0cmFpbmVkIG1vZGVscyIKLSAiQ2FyZSBldmVyeXdoZXJlIGFjY2VzcyIKLSAiUmVkdWNlIGFkbWluIGJ1cmRlbiIKLSAiTGFjayBvZiBrbm93bGVkZ2UgYnkgcmVndWxhdG9ycyIKLSAiRGVmaW5lIGxpYWJpbGl0eSByaXNrIgotICJUcmFuc2xhdGlvbiB0byBjbGluaWNhbCIKLSAiRG9jdW1lbnRhdGlvbiBidXJkZW4iCi0gIlNhbmRib3ggLyBjb2xsYWJvcmF0aW9uIgotICJTaW1wbGUgc3R1ZHkgZGVzaWduIgoKVGhlc2UgcGhyYXNlcyByZXByZXNlbnQgdGhlIGFjdHVhbCBsYW5ndWFnZSB1c2VkIGJ5IHRoZSBhdWRpZW5jZSBhbmQgc2hvdWxkCmJlIGluY29ycG9yYXRlZCBpbnRvIHB1YmxpY2F0aW9uIHRleHQgZm9yIGF1dGhlbnRpY2l0eS4=";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "Optimized Poll Summary: Regulatory Barriers to AI in Gastroenterology..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
