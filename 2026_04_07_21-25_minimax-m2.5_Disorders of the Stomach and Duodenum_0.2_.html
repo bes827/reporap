@@ -1,0 +1,1132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Disorders of the Stomach and Duodenum</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Disorders of the Stomach and Duodenum</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source</strong>: MKSAP 19 - Gastroenterology and Hepatology</li>
+<li style="margin-left: 0px;"><strong>Topic</strong>: Disorders of the Stomach and Duodenum</li>
+<li style="margin-left: 0px;"><strong>Author(s)</strong>: American College of Physicians</li>
+</ul>
+<details><summary><strong>1. Dyspepsia</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1.1. Clinical Features</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><em>Dyspepsia</em> = term describing <strong>epigastric pain</strong></li>
+<li style="margin-left: 0px;">Associated symptoms:</li>
+<li style="margin-left: 20px;"><em>Early satiety</em></li>
+<li style="margin-left: 20px;"><em>Epigastric burning</em></li>
+<li style="margin-left: 20px;"><strong>Nausea</strong></li>
+<li style="margin-left: 20px;">Postprandial symptoms: pain, fullness, bloating, belching</li>
+<li style="margin-left: 0px;">Heartburn may be present → indicates coexisting GERD</li>
+<li style="margin-left: 0px;">Recurrent vomiting → raises concern for other conditions</li>
+</ul>
+</div></details>
+<details><summary><strong>1.2. Organic Causes of Dyspepsia</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common: <strong>Peptic ulcer disease</strong> and <strong>GERD</strong></li>
+<li style="margin-left: 0px;">20% of patients with erosive esophagitis report dyspepsia</li>
+<li style="margin-left: 0px;">If no structural/organic/metabolic cause identified → <em>functional dyspepsia</em></li>
+</ul>
+</div></details>
+<details><summary><strong>1.3. Functional Dyspepsia Categories</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Postprandial distress syndrome</strong>: predominant symptoms are meal-induced</li>
+<li style="margin-left: 0px;"><strong>Epigastric pain syndrome</strong>: predominant symptoms are epigastric pain and/or burning</li>
+</ul>
+</div></details>
+<details><summary><strong>1.4. Evaluation and Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Testing based on: <strong>patient age</strong>, <strong>symptom severity</strong>, <strong>risk for gastric cancer</strong></li>
+<li style="margin-left: 0px;">Upper endoscopy:</li>
+<li style="margin-left: 20px;">Recommended for patients <strong>age ≥60 years</strong> (ACG/CAG guidelines)</li>
+<li style="margin-left: 20px;">NOT recommended for patients <strong>&lt;60 years</strong> even with alarm features</li>
+<li style="margin-left: 20px;">Alarm features: weight loss, anemia, dysphagia, vomiting → poorly predict structural pathology</li>
+</ul>
+<details><summary><strong>1.4.1. Special Considerations for Younger Patients</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Consider endoscopy in younger patients with:</li>
+<li style="margin-left: 20px;">Multiple or severe alarm features</li>
+<li style="margin-left: 20px;">Emigration from high-prevalence areas (Asia, Russia, South America)</li>
+<li style="margin-left: 20px;">Positive family history of gastric malignancy</li>
+</ul>
+</div></details>
+<details><summary><strong>1.4.2. Testing for Patients &lt;60 Years</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Noninvasive testing for <strong>H. pylori</strong> recommended</li>
+<li style="margin-left: 0px;">Other testing (routine labs, celiac screening, abdominal imaging, gastric emptying) → individual basis</li>
+</ul>
+</div></details>
+<details><summary><strong>1.4.3. Treatment Approach</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">H. pylori positive → <strong>eradication therapy</strong></li>
+<li style="margin-left: 0px;">H. pylori negative OR eradication fails → empiric trial of <strong>PPI</strong></li>
+<li style="margin-left: 0px;">Functional dyspepsia → variety of interventions available</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>1.5. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Routine upper endoscopy for malignancy → reserved for <strong>age ≥60 years</strong></li>
+<li style="margin-left: 0px;">Upper endoscopy NOT necessary in most patients <strong>&lt;60 years</strong> even with alarm symptoms</li>
+<li style="margin-left: 0px;">Patients <strong>&lt;60 years</strong> with dyspepsia → test and treat for H. pylori</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Peptic Ulcer Disease (PUD)</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1. Clinical Features</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common symptom: <strong>epigastric pain</strong></li>
+<li style="margin-left: 20px;">Worse during fasting</li>
+<li style="margin-left: 20px;">Improved with eating, antacid, or antisecretory therapy</li>
+<li style="margin-left: 0px;">Associated symptoms: early satiety, abdominal bloating, nausea, belching, heartburn</li>
+<li style="margin-left: 0px;"><strong>Minimal/absent pain</strong> in: elderly patients, immunosuppressed patients, long-term NSAID users</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2. Causes of PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common: <strong>NSAIDs</strong> and <strong>H. pylori infection</strong></li>
+<li style="margin-left: 0px;">Idiopathic PUD (NSAID-negative, H. pylori–negative) → increasingly common as H. pylori incidence falls</li>
+<li style="margin-left: 0px;">Rare causes:</li>
+<li style="margin-left: 20px;"><em>Gastrinoma</em> (Zollinger-Ellison syndrome)</li>
+<li style="margin-left: 20px;">Systemic mastocytosis</li>
+<li style="margin-left: 20px;">α1-antitrypsin deficiency</li>
+<li style="margin-left: 20px;"><strong>COPD</strong>, chronic kidney disease</li>
+<li style="margin-left: 20px;">Gastric cancer, gastric lymphoma</li>
+<li style="margin-left: 20px;">Crohn disease, eosinophilic gastroenteritis</li>
+<li style="margin-left: 20px;">Herpes simplex virus, cytomegalovirus (immunocompromised)</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3. Diagnosis and Complications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most often diagnosed by <strong>upper endoscopy</strong></li>
+<li style="margin-left: 0px;">Complications:</li>
+<li style="margin-left: 20px;"><strong>Bleeding</strong>: overt (melena, hematemesis, hematochezia) or obscure (iron deficiency anemia, occult blood positive)</li>
+<li style="margin-left: 20px;"><strong>Perforation</strong>: sudden severe epigastric pain → generalized + peritoneal findings</li>
+<li style="margin-left: 40px;">CT diagnostic: <strong>sensitivity 98%</strong></li>
+<li style="margin-left: 20px;"><strong>Obstruction</strong>: vomiting, early satiety, abdominal distention, weight loss</li>
+</ul>
+</div></details>
+<details><summary><strong>2.4. Management of Uncomplicated PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Once-daily <strong>PPI</strong> initiation</li>
+<li style="margin-left: 0px;">Discontinue PUD-causing agent (e.g., NSAID)</li>
+<li style="margin-left: 0px;">Treat H. pylori if identified → confirm eradication after treatment</li>
+<li style="margin-left: 0px;">If acute testing negative → repeat after discharge</li>
+</ul>
+</div></details>
+<details><summary><strong>2.5. Management of Bleeding PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Upper endoscopy within <strong>24 hours</strong></li>
+<li style="margin-left: 0px;">Risk factors for recurrent bleeding/death:</li>
+<li style="margin-left: 20px;">Tachycardia, hypotension</li>
+<li style="margin-left: 20px;">Age <strong>&gt;60 years</strong></li>
+<li style="margin-left: 20px;">Hemoglobin <strong>&lt;7 g/dL</strong> (70 g/L) or <strong>&lt;8 g/dL</strong> (80 g/L) with cardiovascular disease</li>
+<li style="margin-left: 20px;">Comorbid illness</li>
+<li style="margin-left: 0px;">Interventions for modifiable risks before endoscopy</li>
+<li style="margin-left: 0px;">Nasogastric tube NOT required before endoscopy</li>
+<li style="margin-left: 0px;">PPI before endoscopy → improves endoscopic appearance, reduces need for therapy</li>
+</ul>
+<details><summary><strong>2.5.1. Aspirin Management in Bleeding PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">For secondary cardiovascular prevention → restart aspirin <strong>1 to 7 days</strong> after PPI initiation + bleeding cessation</li>
+<li style="margin-left: 0px;">Can discontinue PPI after H. pylori eradication confirmed</li>
+</ul>
+</div></details>
+<details><summary><strong>2.5.2. NSAID Management in Bleeding PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Discontinue NSAIDs</li>
+<li style="margin-left: 0px;">If no alternative → <strong>selective COX-2 inhibitor</strong> + once-daily PPI</li>
+</ul>
+</div></details>
+<details><summary><strong>2.5.3. Idiopathic Ulcers</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Once-daily PPI therapy <strong>indefinitely</strong> (substantial rebleeding risk)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2.6. Repeat Endoscopy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Reserved for patients who:</li>
+<li style="margin-left: 20px;">Have persistent symptoms after <strong>8 to 12 weeks</strong> of therapy</li>
+<li style="margin-left: 20px;">Have ulcers of unknown cause</li>
+<li style="margin-left: 20px;">Did NOT undergo gastric ulcer biopsy during initial endoscopy</li>
+</ul>
+</div></details>
+<details><summary><strong>2.7. Perforated PUD</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Surgical emergency</strong></li>
+<li style="margin-left: 0px;">Mortality rate: <strong>up to 30%</strong></li>
+<li style="margin-left: 0px;">Risk factors: older age, comorbidity, delayed surgery</li>
+<li style="margin-left: 0px;">Prompt identification + urgent surgical intervention + sepsis management essential</li>
+<li style="margin-left: 0px;">Address cause (H. pylori, NSAIDs)</li>
+<li style="margin-left: 0px;">Postoperative endoscopy to rule out gastric cancer</li>
+</ul>
+</div></details>
+<details><summary><strong>2.8. Gastric Outlet Obstruction</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Biopsy at diagnosis to exclude malignancy</li>
+<li style="margin-left: 0px;">Mild symptoms → PPI therapy, H. pylori treatment, NSAID cessation</li>
+<li style="margin-left: 0px;">Severe/persistent symptoms → endoscopic dilation</li>
+<li style="margin-left: 0px;">Surgery if obstruction persists after repeated dilation attempts</li>
+</ul>
+</div></details>
+<details><summary><strong>2.9. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common causes: <strong>NSAIDs</strong> and <strong>H. pylori</strong></li>
+<li style="margin-left: 0px;">Aspirin for secondary prevention → restart <strong>1 to 7 days</strong> after PPI + bleeding cessation</li>
+<li style="margin-left: 0px;">NSAID-induced bleeding → discontinue NSAID or use <strong>selective COX-2 inhibitor + PPI</strong></li>
+<li style="margin-left: 0px;">Idiopathic ulcers that bled → once-daily PPI <strong>indefinitely</strong></li>
+<li style="margin-left: 0px;">Repeat endoscopy: persistent symptoms <strong>8-12 weeks</strong>, unknown cause, or no initial biopsy</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Helicobacter pylori Infection</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1. Indications for Testing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Active PUD</strong></li>
+<li style="margin-left: 0px;">History of PUD without documented H. pylori cure</li>
+<li style="margin-left: 0px;">Gastric MALT lymphoma</li>
+<li style="margin-left: 0px;">History of endoscopic resection of early gastric cancer</li>
+</ul>
+<details><summary><strong>3.1.1. Consider Testing For</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Dyspepsia</li>
+<li style="margin-left: 0px;">Before long-term low-dose aspirin or NSAID use</li>
+<li style="margin-left: 0px;">Unexplained iron deficiency anemia</li>
+<li style="margin-left: 0px;">Idiopathic thrombocytopenic purpura in adults</li>
+</ul>
+</div></details>
+<details><summary><strong>3.1.2. NOT Indicated For</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Typical GERD symptoms</li>
+<li style="margin-left: 0px;">Lymphocytic gastritis</li>
+<li style="margin-left: 0px;">Hyperplastic gastric polyps</li>
+<li style="margin-left: 0px;">Hyperemesis gravidarum</li>
+<li style="margin-left: 0px;">Asymptomatic individuals with family history of gastric cancer</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.2. Diagnosis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Invasive</strong>: gastric biopsies during upper endoscopy</li>
+<li style="margin-left: 0px;"><strong>Noninvasive</strong>:</li>
+<li style="margin-left: 20px;"><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">13C-urea breath test</code> → preferred (sensitivity/specificity &gt;95%)</li>
+<li style="margin-left: 20px;"><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">Stool antigen test</code> (monoclonal) → preferred</li>
+<li style="margin-left: 20px;">Serologic testing (IgG): cheapest, convenient, but CANNOT distinguish active vs. previous infection</li>
+</ul>
+<details><summary><strong>3.2.1. Serologic Testing Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Negative serology → reasonably high negative predictive value</li>
+<li style="margin-left: 0px;">Positive serology in low-prevalence population (U.S.) → may require confirmation with breath test, stool antigen, or biopsy</li>
+<li style="margin-left: 0px;">Most useful as <strong>adjunct in bleeding PUD</strong> (decreased biopsy sensitivity in acute bleeding)</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2.2. False-Negative Risk Factors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">PPI use, recent antibiotic use</li>
+<li style="margin-left: 0px;">Atrophic gastritis, intestinal metaplasia</li>
+<li style="margin-left: 0px;">MALT lymphoma</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.3. Treatment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Any patient with positive test → requires treatment for <strong>eradication</strong></li>
+<li style="margin-left: 0px;">First course = best chance of eradication → choose carefully</li>
+<li style="margin-left: 0px;">Duration: <strong>14 days</strong> in most cases</li>
+</ul>
+<details><summary><strong>3.3.1. Regimen Selection</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Based on: resistance patterns, previous antibiotic use, antibiotic allergies</li>
+<li style="margin-left: 0px;">Treatment fails → second-line therapy minimum <strong>14 days</strong></li>
+<li style="margin-left: 0px;">Use different antibiotics from initial treatment</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3.4. Eradication Testing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Timing: <strong>no sooner than 4 weeks</strong> after completion of therapy + PPI cessation (if possible)</li>
+<li style="margin-left: 0px;">Methods: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">13C-urea breath test</code>, fecal antigen test, or gastric biopsy</li>
+<li style="margin-left: 0px;"><strong>Serologic testing NOT used</strong> for confirmation (remains positive after eradication)</li>
+</ul>
+</div></details>
+<details><summary><strong>3.5. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Diagnosis: gastric biopsies OR noninvasive testing (<code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">13C-urea breath</code>, <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">stool antigen</code>)</li>
+<li style="margin-left: 0px;">Treatment: <strong>≥3 agents</strong> (2 antimicrobials + 1 antisecretory), <strong>14 days</strong></li>
+<li style="margin-left: 0px;">Eradication testing: <code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">13C-urea breath</code>, fecal antigen, or biopsy ≥4 weeks post-therapy</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4. Miscellaneous Gastropathy</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1. Erosive Gastropathy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Causes: NSAIDs, iron, alcohol, ischemia, portal hypertension</li>
+<li style="margin-left: 0px;">May cause GI bleeding → rarely clinically significant</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2. Atrophic Gastritis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Environmental metaplastic atrophic gastritis</strong> (multifocal): result of H. pylori infection → lessens after eradication</li>
+<li style="margin-left: 0px;"><strong>Autoimmune atrophic gastritis</strong>: autoantibody to parietal cell antigens → associated with pernicious anemia</li>
+</ul>
+<details><summary><strong>4.2.1. Complications of Autoimmune Atrophic Gastritis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Achlorhydria → leads to:</li>
+<li style="margin-left: 20px;">Iron deficiency</li>
+<li style="margin-left: 20px;">Small intestinal bacterial overgrowth</li>
+<li style="margin-left: 20px;">Enteric infections</li>
+<li style="margin-left: 0px;">Hypergastrinemia → promotes gastric neuroendocrine tumors</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2.2. Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prevention: vitamin B12 supplementation, iron replacement</li>
+<li style="margin-left: 0px;">Surveillance for gastric neoplasm</li>
+<li style="margin-left: 0px;">Screening upper endoscopy with gastric biopsy recommended for pernicious anemia</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4.3. Gastric Intestinal Metaplasia</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Preneoplastic gastropathy → from chronic inflammation (usually H. pylori)</li>
+<li style="margin-left: 0px;">Test for H. pylori → treat if positive</li>
+<li style="margin-left: 0px;">Other causes: other gastric infections, chemical agents, autoimmune disease</li>
+<li style="margin-left: 0px;"><strong>NOT</strong> promoted by long-term PPI use (no conclusive evidence)</li>
+<li style="margin-left: 0px;">Intermediary stage: chronic atrophic gastritis → gastric adenocarcinoma</li>
+</ul>
+<details><summary><strong>4.3.1. Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">If secondary to H. pylori → eradication therapy may decrease progression to cancer</li>
+<li style="margin-left: 0px;"><strong>NOT recommended</strong>: routine surveillance endoscopy (U.S. rarity)</li>
+<li style="margin-left: 0px;">Consider surveillance for increased risk:</li>
+<li style="margin-left: 20px;">Complete or extensive metaplasia on endoscopy</li>
+<li style="margin-left: 20px;">Family history of gastric cancer</li>
+<li style="margin-left: 20px;">Certain racial/ethnic minorities</li>
+<li style="margin-left: 20px;">Emigration from East Asia, Russia, South America</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>4.4. Eosinophilic Gastritis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rare: infiltration of eosinophils in gastric mucosa</li>
+<li style="margin-left: 0px;">Exclude secondary causes first:</li>
+<li style="margin-left: 20px;">Parasitic/bacterial stomach infections</li>
+<li style="margin-left: 20px;">Inflammatory bowel disease</li>
+<li style="margin-left: 20px;">Hypereosinophilic syndrome</li>
+<li style="margin-left: 20px;">Myeloproliferative disorders</li>
+<li style="margin-left: 20px;">Polyarteritis nodosa, allergic vasculitis, scleroderma</li>
+<li style="margin-left: 20px;">Drug injury, drug hypersensitivity</li>
+<li style="margin-left: 0px;">Primary cause unknown → believed allergic</li>
+<li style="margin-left: 0px;">Treatment: food allergen avoidance, elemental diets, glucocorticoids</li>
+</ul>
+</div></details>
+<details><summary><strong>4.5. Lymphocytic Gastritis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Rare: nonspecific dyspeptic symptoms, normal endoscopy appearance</li>
+<li style="margin-left: 0px;">Sometimes: thickened folds with small nodules, aphthous ulceration</li>
+<li style="margin-left: 0px;"><strong>Most common cause</strong>: celiac disease</li>
+<li style="margin-left: 0px;">Other causes: HIV, Crohn disease, common variable immunodeficiency, H. pylori (rare)</li>
+</ul>
+</div></details>
+<details><summary><strong>4.6. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Autoimmune atrophic gastritis → pernicious anemia, iron deficiency, SIBO, gastric carcinoid</li>
+<li style="margin-left: 0px;">Management: vitamin B12 + iron replacement, neoplasm surveillance</li>
+<li style="margin-left: 0px;">H. pylori associated with: environmental metaplastic atrophic gastritis, gastric intestinal metaplasia, lymphocytic gastritis (rare)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Gastrointestinal Complications of NSAIDs</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1. Epidemiology and Risk Factors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Dose-dependent</strong> complications (short or long-term)</li>
+<li style="margin-left: 0px;">Linear increase in incidence over time</li>
+<li style="margin-left: 0px;">Long-term NSAID use: <strong>1-2%</strong> clinically significant upper GI event annually</li>
+<li style="margin-left: 0px;">Elderly users: <strong>14%</strong> rate of upper GI adverse events</li>
+<li style="margin-left: 0px;">Greatest risk factor: <strong>history of gastrointestinal bleeding</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>5.2. Low-Dose Aspirin Complications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>2-4x increased risk</strong> for upper GI complications (bleeding ulcer, perforation, obstruction)</li>
+<li style="margin-left: 0px;">Enteric-coated aspirin → does NOT lower risk</li>
+<li style="margin-left: 0px;">↑ Dosage → ↑ risk</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3. Prevention of NSAID-Induced Injury</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Avoid NSAIDs</li>
+<li style="margin-left: 0px;">Address modifiable risk factors</li>
+<li style="margin-left: 0px;">Coadminister gastroprotective agents: <strong>PPIs</strong>, misoprostol, or H2-blockers</li>
+<li style="margin-left: 0px;">Use selective <strong>COX-2 inhibitor</strong></li>
+</ul>
+<details><summary><strong>5.3.1. PPI as Preferred Agent</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">PPIs preferred for treatment and prophylaxis of NSAID-related (including aspirin-related) complications</li>
+<li style="margin-left: 0px;">Superior to H2-blockers for preventing PUD and bleeding from low-dose aspirin</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3.2. Misoprostol</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Alternative to PPIs if intolerant/unwilling to take PPIs</li>
+<li style="margin-left: 0px;">Side effects: diarrhea, abdominal discomfort, nausea (can be limiting)</li>
+<li style="margin-left: 0px;"><strong>Contraindicated in pregnancy</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>5.3.3. Selective COX-2 Inhibitors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Decreased GI toxicity vs. NSAIDs</li>
+<li style="margin-left: 0px;"><strong>NO advantage</strong> over NSAID when coadministered with aspirin</li>
+<li style="margin-left: 0px;">At-risk individuals need gastroprotective therapy</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3.4. High-Risk Patients</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Best protection: <strong>selective COX-2 inhibitor + PPI</strong> (vs. NSAID + PPI)</li>
+<li style="margin-left: 20px;">Lower risk for perforation, obstruction, bleeding</li>
+<li style="margin-left: 20px;">Lower risk for NSAID/COX-2 withdrawal due to GI adverse events</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5.4. Post-NSAID Bleeding Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Safest: avoid future NSAID use</li>
+<li style="margin-left: 0px;">If must use: <strong>selective COX-2 inhibitor + PPI</strong> = best GI protection to prevent rebleeding</li>
+</ul>
+</div></details>
+<details><summary><strong>5.5. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Upper GI complications common with NSAIDs (short and long-term) and low-dose aspirin</li>
+<li style="margin-left: 0px;"><strong>PPIs preferred</strong> for preventing/treating NSAID-related complications</li>
+<li style="margin-left: 0px;">High-risk patients: <strong>selective COX-2 inhibitor + PPI</strong> if NSAID avoidance not possible</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Gastroparesis</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1. Presentation</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Syndrome: specific symptoms + no mechanical outlet obstruction + objective evidence of delayed gastric emptying</li>
+<li style="margin-left: 0px;">Symptoms (in order of prevalence):</li>
+<li style="margin-left: 20px;"><strong>Nausea</strong> (90%)</li>
+<li style="margin-left: 20px;"><strong>Vomiting</strong> (84%)</li>
+<li style="margin-left: 20px;">Upper abdominal pain (72%)</li>
+<li style="margin-left: 20px;">Early satiety (60%)</li>
+<li style="margin-left: 0px;">Other: abdominal fullness, bloating</li>
+<li style="margin-left: 0px;">May be chronic/persistent or intermittent</li>
+<li style="margin-left: 0px;">Severe cases: weight loss, malnutrition, dehydration</li>
+<li style="margin-left: 0px;">Viral prodrome (gastroenteritis/respiratory infection) → suggests postviral gastroparesis (may resolve over time)</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2. Diagnostic Testing</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>First study</strong>: upper endoscopy → exclude gastric outlet obstruction</li>
+<li style="margin-left: 0px;">After structural cause excluded → objective test for gastric emptying:</li>
+<li style="margin-left: 20px;">Gastric scintigraphy (standard)</li>
+<li style="margin-left: 20px;">Wireless motility capsule</li>
+<li style="margin-left: 20px;">Gastric emptying carbon breath test (<code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">13C-labeled Spirulina platensis</code>)</li>
+</ul>
+<details><summary><strong>6.2.1. Gastric Scintigraphy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Standard test for gastroparesis</li>
+<li style="margin-left: 0px;">Assess solid meal emptying for <strong>≥3 hours</strong></li>
+<li style="margin-left: 0px;">Stop before testing (≥48 hours): opioids, cannabinoids, prokinetics, antiemetics, neuromodulators</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.3. Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Symptom severity does NOT correlate with delayed emptying severity (especially bloating, epigastric pain)</li>
+<li style="margin-left: 0px;">Suggests: gastroparesis = motility disorder + altered sensation</li>
+</ul>
+<details><summary><strong>6.3.1. Initial Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Correct dehydration and electrolyte abnormalities</li>
+<li style="margin-left: 0px;">Nutritional support if needed</li>
+<li style="margin-left: 0px;">Dietary intervention: small, frequent meals, <strong>low in fat and soluble fiber</strong></li>
+<li style="margin-left: 0px;">Referral to dietitian may help</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3.2. Diabetic Gastroparesis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Poor glycemic control (blood glucose <strong>&gt;200 mg/dL</strong> [11.1 mmol/L]) → worsens symptoms and gastric emptying</li>
+<li style="margin-left: 0px;"><strong>Tight glycemic control = most important treatment</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>6.3.3. Prokinetic Therapy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Metoclopramide</strong>: only FDA-approved prokinetic in U.S.</li>
+<li style="margin-left: 20px;">Use lowest effective dose (neurologic side effects risk)</li>
+<li style="margin-left: 20px;">Stop immediately if neurologic side effects develop</li>
+<li style="margin-left: 40px;">Dystonia, parkinsonian movements, tardive dyskinesia</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3.4. Other Treatments</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Erythromycin</strong>: improves gastric emptying</li>
+<li style="margin-left: 20px;">Limit to treatment of flares or short-term use (<strong>2-3 weeks</strong>)</li>
+<li style="margin-left: 20px;">Risk for tachyphylaxis</li>
+<li style="margin-left: 0px;">Antiemetics: relieve symptoms, no effect on gastric emptying</li>
+<li style="margin-left: 0px;">Acupuncture alone or with prokinetic → beneficial in diabetic gastroparesis</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3.5. Pain Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Treat without opioids → use central neuromodulators instead</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3.6. Interventional Therapy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Consider if dietary and pharmacologic therapy fails:</li>
+<li style="margin-left: 20px;">Enteral feeding via jejunostomy</li>
+<li style="margin-left: 20px;">Gastric stimulator placement</li>
+<li style="margin-left: 20px;">Gastric peroral endoscopic myotomy</li>
+<li style="margin-left: 20px;">Pyloroplasty</li>
+<li style="margin-left: 20px;">Subtotal or total gastrectomy</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6.4. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">After gastric outlet obstruction excluded → objective test of gastric emptying (typically scintigraphy)</li>
+<li style="margin-left: 0px;">Initial management: correct dehydration/electrolytes, nutritional support, small frequent meals (low fat/fiber), glycemic control in diabetes</li>
+<li style="margin-left: 0px;">Metoclopramide: improves emptying but risk for dystonia, tardive dyskinesia, parkinsonism</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Gastric Polyps and Subepithelial Lesions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1. Gastric Polyps</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All polyps should be biopsied for histology</li>
+<li style="margin-left: 0px;">Types:</li>
+<li style="margin-left: 20px;"><strong>Fundic gland polyps</strong>: 70-90% of stomach polyps, NO malignant potential, common with PPI use</li>
+<li style="margin-left: 40px;">Multiple fundic gland polyps in <strong>familial adenomatous polyposis</strong></li>
+<li style="margin-left: 20px;"><strong>Hyperplastic polyps</strong>: 5-19% harbor dysplasia/malignancy</li>
+<li style="margin-left: 40px;">Risk factors: size <strong>&gt;1 cm</strong>, pedunculated morphology</li>
+<li style="margin-left: 40px;">Resect if &gt;0.5-1.0 cm</li>
+<li style="margin-left: 20px;"><strong>Adenomas</strong>: sporadic or hereditary (familial adenomatous polyposis, Lynch syndrome)</li>
+<li style="margin-left: 40px;">Resect + surveillance: 1 year after resection, then every <strong>3-5 years</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>7.2. Subepithelial Lesions</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.2.1. Gastrointestinal Stromal Tumors (GISTs)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Most common mesenchymal tumors of stomach</li>
+<li style="margin-left: 0px;">May present with bleeding, abdominal pain, or found incidentally</li>
+<li style="margin-left: 0px;"><strong>Best diagnostic modality</strong>: endoscopic ultrasonography</li>
+</ul>
+<details><summary><strong>High-Risk Features on Endoscopic Ultrasonography</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Size <strong>&gt;2 cm</strong></li>
+<li style="margin-left: 0px;">Lobulated or irregular borders</li>
+<li style="margin-left: 0px;">Invasion into adjacent structures</li>
+<li style="margin-left: 0px;">Heterogeneity</li>
+</ul>
+</div></details>
+<details><summary><strong>Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Biopsy possible, but high-risk features better predictors of malignant potential</li>
+<li style="margin-left: 0px;">Treatment: surgical or endoscopic excision if symptomatic OR high-risk features present</li>
+<li style="margin-left: 0px;">No high-risk features → yearly endoscopic surveillance</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7.2.2. Gastrointestinal Neuroendocrine Tumors (NETs)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Formerly carcinoid tumors</li>
+<li style="margin-left: 0px;">Can occur throughout GI tract including stomach</li>
+<li style="margin-left: 0px;">Usually sporadic, but seen in:</li>
+<li style="margin-left: 20px;">Zollinger-Ellison syndrome</li>
+<li style="margin-left: 20px;">Atrophic gastritis</li>
+<li style="margin-left: 20px;">Rare syndromes: <strong>multiple endocrine neoplasia type 1</strong>, <strong>neurofibromatosis type 1</strong></li>
+</ul>
+<details><summary><strong>Classification</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">By size, number, anatomic distribution</li>
+</ul>
+</div></details>
+<details><summary><strong>Management</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Lesions <strong>&lt;1 cm</strong>: endoscopic surveillance (especially multiple lesions)</li>
+<li style="margin-left: 0px;">High-risk features: solitary lesions NOT in setting of atrophic gastritis or Zollinger-Ellison syndrome → endoscopic or surgical excision</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>7.3. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Polyps: fundic gland (no malignancy risk), hyperplastic/adenomas (resect)</li>
+<li style="margin-left: 0px;">GISTs: evaluate with endoscopic ultrasonography, excise if symptomatic or high-risk features</li>
+<li style="margin-left: 0px;">NETs: usually sporadic, but associated with Zollinger-Ellison, atrophic gastritis, MEN1, NF1</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Gastric Adenocarcinoma</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1. Epidemiology</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Incidence: <strong>6.6 per 100,000</strong></li>
+<li style="margin-left: 0px;">Mortality: <strong>3.1 per 100,000</strong> (U.S.)</li>
+<li style="margin-left: 0px;">Rates decreased since 1990s</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2. Types</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Intestinal-type</strong> (more common)</li>
+<li style="margin-left: 0px;"><strong>Diffuse-type</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>8.3. Risk Factors</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>H. pylori</strong>: primary nongenetic risk factor for both types</li>
+<li style="margin-left: 0px;">Other risk factors (primarily intestinal-type):</li>
+<li style="margin-left: 20px;">Male sex</li>
+<li style="margin-left: 20px;">Ethnicity: highest in Asian/Pacific Island descent</li>
+<li style="margin-left: 20px;">Geography: highest in Asia, Eastern Europe, Central/South America</li>
+<li style="margin-left: 20px;">Diet: high in smoked, salted, pickled foods, nitrates, nitrites</li>
+<li style="margin-left: 20px;">Smoking, obesity</li>
+<li style="margin-left: 0px;">Additional: previous stomach surgery, chronic atrophic gastritis</li>
+<li style="margin-left: 0px;">Hereditary syndromes:</li>
+<li style="margin-left: 20px;"><strong>Hereditary diffuse gastric cancer</strong> (diffuse type)</li>
+<li style="margin-left: 20px;"><strong>Lynch syndrome</strong></li>
+<li style="margin-left: 20px;"><strong>Familial adenomatous polyposis</strong></li>
+<li style="margin-left: 0px;">Gastric intestinal metaplasia and dysplasia</li>
+</ul>
+</div></details>
+<details><summary><strong>8.4. Screening and Surveillance</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>No population-based screening</strong> in low-incidence countries (U.S.)</li>
+<li style="margin-left: 0px;">Intestinal metaplasia with high-grade dysplasia → resect (<strong>25%</strong> progress to adenocarcinoma)</li>
+<li style="margin-left: 0px;">Indicated for: <strong>familial adenomatous polyposis</strong>, <strong>Lynch syndrome</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>8.5. Clinical Manifestations and Diagnosis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Symptoms: poor appetite, weight loss, abdominal pain, early satiety, nausea, vomiting</li>
+<li style="margin-left: 0px;">Signs: iron deficiency anemia</li>
+<li style="margin-left: 0px;">Diagnosis: <strong>upper endoscopy with biopsy</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>8.6. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Primary nongenetic risk factor: <strong>H. pylori</strong></li>
+<li style="margin-left: 0px;">Low-incidence countries (U.S.): screening reserved for genetic cancer syndromes</li>
+<li style="margin-left: 0px;">Diagnostic test: <strong>upper endoscopy with biopsy</strong></li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Gastric Surgery Complications</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1. Post-Gastrectomy Considerations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Extent of resection, reconstruction type, disease nature → affect morbidity/mortality</li>
+<li style="margin-left: 0px;">Malignancy: require <strong>lifelong surveillance</strong> for recurrence in remaining stomach</li>
+<li style="margin-left: 0px;">Benign disease: increased cancer risk in gastric remnant <strong>15-20 years</strong> after surgery (0.8-8.9%)</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2. Dumping Syndrome</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Results from <strong>rapid gastric emptying</strong> after gastric surgery</li>
+</ul>
+<details><summary><strong>9.2.1. Early Dumping Syndrome</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Occurs <strong>within 30 minutes</strong> of eating</li>
+<li style="margin-left: 0px;">Causes: gastrointestinal hormone hypersecretion, autonomic dysregulation, bowel distention</li>
+<li style="margin-left: 0px;">Symptoms:</li>
+<li style="margin-left: 20px;">Palpitations, flushing/pallor, diaphoresis</li>
+<li style="margin-left: 20px;">Light-headedness, hypotension, fatigue</li>
+<li style="margin-left: 20px;">Diarrhea, nausea, abdominal bloating, cramping, borborygmus</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.2. Late Dumping Syndrome</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Occurs <strong>1-3 hours</strong> after meals</li>
+<li style="margin-left: 0px;">Cause: reactive hypoglycemia</li>
+<li style="margin-left: 0px;">Symptoms: decreased concentration, faintness, altered consciousness</li>
+<li style="margin-left: 0px;">Severe cases: protein-wasting malnutrition</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.3. Prevalence</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>25-50%</strong> of post-gastric surgery patients experience some symptoms</li>
+<li style="margin-left: 0px;">Severe, persistent: <strong>~10%</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.4. Diagnosis</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Oral glucose challenge testing</li>
+<li style="margin-left: 0px;">Sensitivity: <strong>~100%</strong></li>
+<li style="margin-left: 0px;">Specificity: <strong>94%</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>9.2.5. Treatment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>First-line</strong>: dietary modification</li>
+<li style="margin-left: 20px;">Smaller, more frequent meals</li>
+<li style="margin-left: 20px;">Ingest liquids AFTER meals</li>
+<li style="margin-left: 20px;">Decrease carbohydrate intake (especially simple)</li>
+<li style="margin-left: 20px;">Increase protein and fiber</li>
+</ul>
+<details><summary><strong>Pharmacologic Therapy</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Acarbose</strong>: α-glycosidase hydrolase inhibitor → helps late symptoms</li>
+<li style="margin-left: 0px;">Anticholinergics: slow gastric emptying</li>
+<li style="margin-left: 0px;">Antispasmodics</li>
+<li style="margin-left: 0px;"><strong>Octreotide</strong>: for severe cases (rare)</li>
+<li style="margin-left: 20px;">If subcutaneous effective → monthly long-acting intramuscular injections</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>9.3. Key Points</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Partial gastrectomy for malignancy → lifelong surveillance</li>
+<li style="margin-left: 0px;">Partial gastrectomy for benign disease → increased cancer risk in remnant</li>
+<li style="margin-left: 0px;">Dumping syndrome: first-line treatment = smaller, more frequent meals + liquids after meals</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "RGlzb3JkZXJzIG9mIHRoZSBTdG9tYWNoIGFuZCBEdW9kZW51bQpEeXNwZXBzaWEKQ2xpbmljYWwgRmVhdHVyZXMKRHlzcGVwc2lhIGlzIGEgdGVybSB0byBkZXNjcmliZSBlcGlnYXN0cmljIHBhaW4uIEFzc29jaWF0ZWQgc3ltcHRvbXMgY2FuIGluY2x1ZGUgZWFybHkgc2F0aWV0eSwgZXBpZ2FzdHJpYyBidXJuaW5nLCBuYXVzZWEsIGFuZCBwb3N0cHJhbmRpYWwgc3ltcHRvbXMgKGUuZy4sIHBhaW4sIGZ1bGxuZXNzLCBibG9hdGluZywgb3IgYmVsY2hpbmcpLiBIZWFydGJ1cm4gbWF5IGJlIHByZXNlbnQgYnV0IGlzIG5vdCBhIHByaW1hcnkgc3ltcHRvbTsgaXQgbWF5IGluZGljYXRlIGNvZXhpc3RpbmcgZ2FzdHJvZXNvcGhhZ2VhbCByZWZsdXguIFJlY3VycmVudCB2b21pdGluZyBzaG91bGQgYWxzbyByYWlzZSBjb25jZXJuIGZvciBvdGhlciBjb25kaXRpb25zLgoKVGhlIGxpc3Qgb2YgcG9zc2libGUgb3JnYW5pYyBjYXVzZXMgb2YgZHlzcGVwc2lhIGlzIGV4dGVuc2l2ZSAoVGFibGUgNSk7IHRoZSBtb3N0IGNvbW1vbiBhcmUgcGVwdGljIHVsY2VyIGRpc2Vhc2UgYW5kIGdhc3Ryb2Vzb3BoYWdlYWwgcmVmbHV4IGRpc2Vhc2UgKDIwJSBvZiBwYXRpZW50cyB3aXRoIGVyb3NpdmUgZXNvcGhhZ2l0aXMgcmVwb3J0IGR5c3BlcHNpYSkuIElmIG5vIHN0cnVjdHVyYWwsIG9yZ2FuaWMsIG9yIG1ldGFib2xpYyBjYXVzZSBvZiBkeXNwZXBzaWEgc3ltcHRvbXMgaXMgaWRlbnRpZmllZCBhZnRlciBldmFsdWF0aW9uLCB0aGUgdGVybSBmdW5jdGlvbmFsIGR5c3BlcHNpYSBhcHBsaWVzLgoKRnVuY3Rpb25hbCBkeXNwZXBzaWEgcmVwcmVzZW50cyBhIGhldGVyb2dlbmVvdXMgZ3JvdXAgb2YgZ2FzdHJvaW50ZXN0aW5hbCBkaXNvcmRlcnMgcHJlZG9taW5hdGVkIGJ5IG9uZSBvciBtb3JlIHVwcGVyIGdhc3Ryb2ludGVzdGluYWwgc3ltcHRvbXMuIERpYWdub3N0aWMgY3JpdGVyaWEgZm9yIGZ1bmN0aW9uYWwgZHlzcGVwc2lhIGFyZSBzaG93biBpbiBUYWJsZSA2LiBGdW5jdGlvbmFsIGR5c3BlcHNpYSBpcyBmdXJ0aGVyIGNhdGVnb3JpemVkIGludG8gcG9zdHByYW5kaWFsIGRpc3RyZXNzIHN5bmRyb21lIGlmIHRoZSBwcmVkb21pbmFudCBzeW1wdG9tcyBhcmUgbWVhbC1pbmR1Y2VkIChUYWJsZSA3KSBvciBlcGlnYXN0cmljIHBhaW4gc3luZHJvbWUgaWYgdGhlIHByZWRvbWluYW50IHN5bXB0b21zIGFyZSBlcGlnYXN0cmljIHBhaW4gYW5kL29yIGJ1cm5pbmcgKFRhYmxlIDgpLgoKRXZhbHVhdGlvbiBhbmQgTWFuYWdlbWVudApSZWxhdGVkIFF1ZXN0aW9uClF1ZXN0aW9uIDg1ClRlc3RpbmcgZm9yIGR5c3BlcHNpYSBzaG91bGQgYmUgYmFzZWQgb24gcGF0aWVudCBhZ2UsIHN5bXB0b20gc2V2ZXJpdHksIGFuZCByaXNrIGZvciBnYXN0cmljIGNhbmNlci4gVXBwZXIgZW5kb3Njb3B5IGlzIGNvbW1vbmx5IHBlcmZvcm1lZCB0byBleGNsdWRlIHVwcGVyIGdhc3Ryb2ludGVzdGluYWwgbmVvcGxhc2lhOyBob3dldmVyLCBpdCBpcyBpbnZhc2l2ZSBhbmQgY29zdGx5LiBHaXZlbiB0aGUgbG93IGluY2lkZW5jZSBvZiBtYWxpZ25hbmN5IGFuZCBjb25zaWRlcmF0aW9uIGZvciBjb3N0IGVmZmVjdGl2ZW5lc3MgaW4gdGhlIGV2YWx1YXRpb24gb2YgZHlzcGVwc2lhIGluIHlvdW5nZXIgYWR1bHRzLCB0aGUgQW1lcmljYW4gQ29sbGVnZSBvZiBHYXN0cm9lbnRlcm9sb2d5IChBQ0cpIGFuZCB0aGUgQ2FuYWRpYW4gQXNzb2NpYXRpb24gb2YgR2FzdHJvZW50ZXJvbG9neSAoQ0FHKSBoYXZlIGpvaW50bHkgcmVjb21tZW5kZWQgcm91dGluZSB1c2Ugb2YgdXBwZXIgZW5kb3Njb3B5IG9ubHkgaW4gcGF0aWVudHMgYWdlIDYwIHllYXJzIGFuZCBvbGRlci4gVGhlIEFDRy9DQUcgZ3VpZGVsaW5lcyByZWNvbW1lbmQgYWdhaW5zdCByb3V0aW5lIHVzZSBvZiB1cHBlciBlbmRvc2NvcHkgaW4gcGF0aWVudHMgeW91bmdlciB0aGFuIDYwIHllYXJzIHdpdGggZHlzcGVwc2lhLCBldmVuIGluIG1vc3QgcGF0aWVudHMgd2l0aCBhbGFybSBmZWF0dXJlcyAod2VpZ2h0IGxvc3MsIGFuZW1pYSwgZHlzcGhhZ2lhLCBhbmQgdm9taXRpbmcpIGJlY2F1c2UgdGhlc2UgZmVhdHVyZXMgcG9vcmx5IHByZWRpY3Qgc3RydWN0dXJhbCBwYXRob2xvZ3ksIHN1Y2ggYXMgbWFsaWduYW5jeSwgcGVwdGljIHVsY2VyIGRpc2Vhc2UsIG9yIGVzb3BoYWdpdGlzLiBFbmRvc2NvcHkgbWF5IGJlIGNvbnNpZGVyZWQgaW4geW91bmdlciBwYXRpZW50cyBhdCBoaWdoZXIgcmlzayBmb3IgbWFsaWduYW5jeSwgc3VjaCBhcyB0aG9zZSB3aXRoIG11bHRpcGxlIG9yIHNldmVyZSBhbGFybSBmZWF0dXJlczsgdGhvc2Ugd2hvIGhhdmUgZW1pZ3JhdGVkIGZyb20gcmVnaW9ucyB3aXRoIGEgaGlnaCBwcmV2YWxlbmNlIG9mIG1hbGlnbmFuY3kgKEFzaWEsIFJ1c3NpYSwgYW5kIFNvdXRoIEFtZXJpY2EpOyBvciB0aG9zZSB3aXRoIGEgcG9zaXRpdmUgZmFtaWx5IGhpc3Rvcnkgb2YgZ2FzdHJpYyBtYWxpZ25hbmN5LgoKRm9yIHBhdGllbnRzIHlvdW5nZXIgdGhhbiA2MCB5ZWFycyB3aXRoIGR5c3BlcHNpYSBzeW1wdG9tcywgdGhlIEFDRy9DQUcgZ3VpZGVsaW5lcyByZWNvbW1lbmQgbm9uaW52YXNpdmUgdGVzdGluZyBmb3IgSGVsaWNvYmFjdGVyIHB5bG9yaS4gT3RoZXIgdGVzdGluZywgc3VjaCBhcyByb3V0aW5lIGxhYm9yYXRvcnkgdGVzdHMsIHNjcmVlbmluZyBmb3IgY2VsaWFjIGRpc2Vhc2UsIGFiZG9taW5hbCBpbWFnaW5nLCBvciBnYXN0cmljIGVtcHR5aW5nLCBzaG91bGQgYmUgY29uc2lkZXJlZCBvbiBhbiBpbmRpdmlkdWFsIGJhc2lzLgoKTWFuYWdlbWVudCBvZiBkeXNwZXBzaWEgaXMgZGlyZWN0ZWQgYXQgdHJlYXRpbmcgdGhlIGNhdXNlLiBQYXRpZW50cyB3aG8gdGVzdCBwb3NpdGl2ZSBmb3IgSC4gcHlsb3JpIHNob3VsZCByZWNlaXZlIGVyYWRpY2F0aW9uIHRoZXJhcHkuIElmIEguIHB5bG9yaSByZXN1bHRzIGFyZSBuZWdhdGl2ZSBvciBILiBweWxvcmkgZXJhZGljYXRpb24gZG9lcyBub3QgcmVsaWV2ZSB0aGUgZHlzcGVwc2lhLCBhbiBlbXBpcmljIHRyaWFsIG9mIGEgcHJvdG9uIHB1bXAgaW5oaWJpdG9yIChQUEkpIHNob3VsZCBiZSBwdXJzdWVkLiBQYXRpZW50cyBkaWFnbm9zZWQgd2l0aCBmdW5jdGlvbmFsIGR5c3BlcHNpYSBjYW4gYmUgdHJlYXRlZCB3aXRoIGEgdmFyaWV0eSBvZiBpbnRlcnZlbnRpb25zIChGaWd1cmUgOCkuCgpLZXkgUG9pbnRzCkZvciBwYXRpZW50cyB3aXRoIGR5c3BlcHNpYSwgcm91dGluZSB1cHBlciBlbmRvc2NvcHkgdG8gZXhjbHVkZSBtYWxpZ25hbmN5IGlzIHJlc2VydmVkIGZvciBwYXRpZW50cyBhZ2UgNjAgeWVhcnMgYW5kIG9sZGVyLgpVcHBlciBlbmRvc2NvcHkgaXMgbm90IG5lY2Vzc2FyeSBpbiBtb3N0IHBhdGllbnRzIHdpdGggZHlzcGVwc2lhIHlvdW5nZXIgdGhhbiA2MCB5ZWFycywgZXZlbiBpbiB0aGUgcHJlc2VuY2Ugb2YgYWxhcm0gc3ltcHRvbXMuClBhdGllbnRzIHlvdW5nZXIgdGhhbiA2MCB5ZWFycyB3aXRoIGR5c3BlcHNpYSBzeW1wdG9tcyBzaG91bGQgYmUgdGVzdGVkIGFuZCwgaWYgcmVzdWx0cyBhcmUgcG9zaXRpdmUsIHRyZWF0ZWQgZm9yIEhlbGljb2JhY3RlciBweWxvcmkgaW5mZWN0aW9uLgpQZXB0aWMgVWxjZXIgRGlzZWFzZQpDbGluaWNhbCBGZWF0dXJlcywgRGlhZ25vc2lzLCBhbmQgQ29tcGxpY2F0aW9ucwpUaGUgbW9zdCBmcmVxdWVudGx5IHJlcG9ydGVkIHN5bXB0b20gb2YgcGVwdGljIHVsY2VyIGRpc2Vhc2UgKFBVRCkgaXMgZXBpZ2FzdHJpYyBwYWluLCBvZnRlbiBkZXNjcmliZWQgYXMgd29yc2UgZHVyaW5nIGZhc3RpbmcgYW5kIGltcHJvdmVkIHdpdGggZWF0aW5nIG9yIHVzZSBvZiBhbnRhY2lkIG9yIGFudGlzZWNyZXRvcnkgdGhlcmFweS4gUGFpbiBtYXkgYmUgYWNjb21wYW5pZWQgYnkgZWFybHkgc2F0aWV0eSwgYWJkb21pbmFsIGJsb2F0aW5nLCBuYXVzZWEsIGJlbGNoaW5nLCBvciBoZWFydGJ1cm4uIEVwaWdhc3RyaWMgcGFpbiBtYXkgYmUgbWluaW1hbCBvciBhYnNlbnQgaW4gZWxkZXJseSBwYXRpZW50cywgaW1tdW5vc3VwcHJlc3NlZCBwYXRpZW50cywgYW5kIHBhdGllbnRzIHJlY2VpdmluZyBsb25nLXRlcm0gTlNBSUQgdGhlcmFweS4KCk5TQUlEcyBhbmQgSC4gcHlsb3JpIGluZmVjdGlvbiBhcmUgdGhlIG1vc3QgY29tbW9uIGNhdXNlcyBvZiBQVUQsIGFsdGhvdWdoIGlkaW9wYXRoaWMgKE5TQUlELW5lZ2F0aXZlLCBILiBweWxvcmnigJNuZWdhdGl2ZSkgUFVEIGlzIGluY3JlYXNpbmdseSB2aXNpYmxlIGFzIGEgY2F1c2UgaW4gdGhlIFVuaXRlZCBTdGF0ZXMgYXMgdGhlIGluY2lkZW5jZSBvZiBILiBweWxvcmkgaW5mZWN0aW9uIGZhbGxzLiBUaGUgY2F1c2VzIG9mIGlkaW9wYXRoaWMgUFVEIHJlbWFpbiB1bmNsZWFyOyBob3dldmVyLCBjb2NhaW5lLCBtZXRoYW1waGV0YW1pbmUsIGJpc3Bob3NwaG9uYXRlcywgc2VsZWN0aXZlIHNlcm90b25pbiByZXVwdGFrZSBpbmhpYml0b3JzLCBzbW9raW5nLCBleGNlc3NpdmUgYWxjb2hvbCBjb25zdW1wdGlvbiwgYW5kIHN0cmVzcyBoYXZlIGJlZW4gaW1wbGljYXRlZC4gUmFyZSBjYXVzZXMgb2YgUFVEIGluY2x1ZGUgZ2FzdHJpbm9tYSAoWm9sbGluZ2VyLUVsbGlzb24gc3luZHJvbWUpLCBzeXN0ZW1pYyBtYXN0b2N5dG9zaXMsIM6xMS1hbnRpdHJ5cHNpbiBkZWZpY2llbmN5LCBDT1BELCBjaHJvbmljIGtpZG5leSBkaXNlYXNlLCBnYXN0cmljIGNhbmNlciwgZ2FzdHJpYyBseW1waG9tYSwgQ3JvaG4gZGlzZWFzZSwgZW9zaW5vcGhpbGljIGdhc3Ryb2VudGVyaXRpcywgaGVycGVzIHNpbXBsZXggdmlydXMsIGFuZCBjeXRvbWVnYWxvdmlydXMgKGluIGltbXVub2NvbXByb21pc2VkIHBhdGllbnRzKS4KClBVRCBpcyBtb3N0IG9mdGVuIGRpYWdub3NlZCBieSB1cHBlciBlbmRvc2NvcHkuCgpDb21wbGljYXRpb25zIG9mIFBVRCBpbmNsdWRlIGJsZWVkaW5nLCBwZXJmb3JhdGlvbiwgYW5kIG9ic3RydWN0aW9uLiBPdmVydCBibGVlZGluZyBwcmVzZW50cyB3aXRoIG1lbGVuYSwgaGVtYXRlbWVzaXMsIGFuZC9vciBoZW1hdG9jaGV6aWEsIHdoZXJlYXMgb2JzY3VyZSBibGVlZGluZyBtYXkgcHJlc2VudCB3aXRoIGlyb24gZGVmaWNpZW5jeSBhbmVtaWEgYW5kL29yIHN0b29sIHRoYXQgaXMgcG9zaXRpdmUgZm9yIG9jY3VsdCBibG9vZC4gUGVyZm9yYXRpb24gdHlwaWNhbGx5IHByZXNlbnRzIHdpdGggc3VkZGVuLCBzZXZlcmUgZXBpZ2FzdHJpYyBwYWluIHRoYXQgY2FuIGJlY29tZSBtb3JlIGdlbmVyYWxpemVkIGFsb25nIHdpdGggcGVyaXRvbmVhbCBmaW5kaW5ncy4gQWJkb21pbmFsIENUIGlzIHRoZSBkaWFnbm9zdGljIHN0dWR5IG9mIGNob2ljZSBmb3Igc3VzcGVjdGVkIHBlcmZvcmF0aW5nIFBVRCAoc2Vuc2l0aXZpdHksIDk4JSkuIFN5bXB0b21zIGFzc29jaWF0ZWQgd2l0aCBvYnN0cnVjdGlvbiBtYXkgaW5jbHVkZSB2b21pdGluZywgZWFybHkgc2F0aWV0eSwgYWJkb21pbmFsIGRpc3RlbnRpb24sIGFuZCB3ZWlnaHQgbG9zcy4KCk1hbmFnZW1lbnQKUmVsYXRlZCBRdWVzdGlvbgpRdWVzdGlvbiA3MwpGb2xsb3dpbmcgY29uZmlybWF0aW9uIG9mIHVuY29tcGxpY2F0ZWQgUFVELCBhIG9uY2UtZGFpbHkgUFBJIHNob3VsZCBiZSBpbml0aWF0ZWQgYW5kIGFueSBhZ2VudCBjYXVzaW5nIFBVRCAoc3VjaCBhcyBhbiBOU0FJRCkgc2hvdWxkIGJlIGRpc2NvbnRpbnVlZC4gSC4gcHlsb3JpIGluZmVjdGlvbiBzaG91bGQgYmUgdHJlYXRlZCBpZiBpZGVudGlmaWVkIGFuZCBlcmFkaWNhdGlvbiBjb25maXJtZWQgYWZ0ZXIgdHJlYXRtZW50LiBXaGVuIHJlc3VsdHMgb2YgdGVzdHMgZm9yIEguIHB5bG9yaSBjb21wbGV0ZWQgaW4gdGhlIGFjdXRlIHNldHRpbmcgYXJlIG5lZ2F0aXZlLCB0ZXN0aW5nIHNob3VsZCBiZSByZXBlYXRlZCBhZnRlciBkaXNjaGFyZ2UuCgpVcHBlciBlbmRvc2NvcHkgc2hvdWxkIGJlIHBlcmZvcm1lZCB3aXRoaW4gMjQgaG91cnMgaW4gcGF0aWVudHMgd2l0aCBhY3V0ZSB1cHBlciBnYXN0cm9pbnRlc3RpbmFsIGJsZWVkaW5nLiBJbiBwYXRpZW50cyB3aXRoIGJsZWVkaW5nIFBVRCwgZmFjdG9ycyB0aGF0IGluY3JlYXNlIHJpc2sgZm9yIHJlY3VycmVudCBibGVlZGluZyBhbmQvb3IgZGVhdGggaW5jbHVkZSB0YWNoeWNhcmRpYSwgaHlwb3RlbnNpb24sIGFnZSBvbGRlciB0aGFuIDYwIHllYXJzLCBoZW1vZ2xvYmluIGxldmVsIGxlc3MgdGhhbiA3IGcvZEwgKDcwIGcvTCkgKDggZy9kTCBbODAgZy9MXSBpbiBwYXRpZW50cyB3aXRoIGNhcmRpb3Zhc2N1bGFyIGRpc2Vhc2UpLCBhbmQgY29tb3JiaWQgaWxsbmVzcy4gSW50ZXJ2ZW50aW9ucyB0byBhZGRyZXNzIG1vZGlmaWFibGUgcmlza3Mgc2hvdWxkIGJlIHB1cnN1ZWQgYmVmb3JlIHVwcGVyIGVuZG9zY29weS4gTmFzb2dhc3RyaWMgdHViZSBwbGFjZW1lbnQgaXMgbm90IHJlcXVpcmVkIGJlZm9yZSB1cHBlciBlbmRvc2NvcHkuIFVzZSBvZiBQUElzIGJlZm9yZSB1cHBlciBlbmRvc2NvcHkgbWF5IGltcHJvdmUgdGhlIGVuZG9zY29waWMgYXBwZWFyYW5jZSBvZiB1bGNlciBhbmQgcmVkdWNlIHRoZSBuZWVkIGZvciBlbmRvc2NvcGljIHRoZXJhcHkuCgpGb3IgYmxlZWRpbmcgUFVEIHJlbGF0ZWQgdG8gYXNwaXJpbiB1c2UgZm9yIHNlY29uZGFyeSBjYXJkaW92YXNjdWxhciBwcmV2ZW50aW9uLCBhc3BpcmluIHNob3VsZCBiZSByZXN0YXJ0ZWQgMSB0byA3IGRheXMgYWZ0ZXIgaW5pdGlhdGlvbiBvZiBQUEkgYW5kIGNlc3NhdGlvbiBvZiBibGVlZGluZy4gUFBJIHRoZXJhcHkgY2FuIGJlIGRpc2NvbnRpbnVlZCBhZnRlciBjb25maXJtYXRpb24gb2YgSC4gcHlsb3JpIGVyYWRpY2F0aW9uIGluIHBhdGllbnRzIHdpdGggSC4gcHlsb3Jp4oCTYXNzb2NpYXRlZCBibGVlZGluZyBQVUQuIE5TQUlEcyBzaG91bGQgYmUgZGlzY29udGludWVkIGluIHBhdGllbnRzIHdpdGggTlNBSUQtaW5kdWNlZCBibGVlZGluZyBQVUQuIElmIHRoZXJlIGlzIG5vIGVmZmVjdGl2ZSBhbHRlcm5hdGl2ZSB0byBOU0FJRHMsIGEgc2VsZWN0aXZlIGN5Y2xvb3h5Z2VuYXNlLTIgaW5oaWJpdG9yIHBsdXMgYSBvbmNlLWRhaWx5IFBQSSBzaG91bGQgYmUgdXNlZC4gUGF0aWVudHMgd2l0aCBpZGlvcGF0aGljIHVsY2VycyB0aGF0IGhhdmUgYmxlZCBzaG91bGQgcmVjZWl2ZSBvbmNlLWRhaWx5IFBQSSB0aGVyYXB5IGluZGVmaW5pdGVseSBiZWNhdXNlIG9mIHRoZSBzdWJzdGFudGlhbCByaXNrIGZvciByZWJsZWVkaW5nLgoKUmVwZWF0IHVwcGVyIGVuZG9zY29weSB0byB2ZXJpZnkgdWxjZXIgcmVzb2x1dGlvbiBzaG91bGQgYmUgcmVzZXJ2ZWQgZm9yIHBhdGllbnRzIHdobyBoYXZlIHBlcnNpc3RlbnQgc3ltcHRvbXMgYWZ0ZXIgOCB0byAxMiB3ZWVrcyBvZiB0aGVyYXB5LCBoYXZlIHVsY2VycyBvZiB1bmtub3duIGNhdXNlLCBvciBkaWQgbm90IHVuZGVyZ28gZ2FzdHJpYyB1bGNlciBiaW9wc3kgZHVyaW5nIGluaXRpYWwgdXBwZXIgZW5kb3Njb3B5LgoKUGVyZm9yYXRlZCBQVUQgaXMgYSBzdXJnaWNhbCBlbWVyZ2VuY3ksIHdpdGggYSBtb3J0YWxpdHkgcmF0ZSBvZiB1cCB0byAzMCU7IG9sZGVyIGFnZSwgY29tb3JiaWRpdHksIGFuZCBkZWxheWVkIHN1cmdlcnkgaW5jcmVhc2Ugcmlzay4gUHJvbXB0IGlkZW50aWZpY2F0aW9uLCB1cmdlbnQgc3VyZ2ljYWwgaW50ZXJ2ZW50aW9uLCBhbmQgcHJvcGVyIHByZW9wZXJhdGl2ZSBhbmQgcG9zdG9wZXJhdGl2ZSBtYW5hZ2VtZW50IG9mIHNlcHNpcyBhcmUgZXNzZW50aWFsLiBUaGUgY2F1c2Ugb2YgUFVEIChILiBweWxvcmkgYW5kL29yIE5TQUlEcykgc2hvdWxkIGJlIGFkZHJlc3NlZCwgYW5kIHBvc3RvcGVyYXRpdmUgdXBwZXIgZW5kb3Njb3B5IHRvIHJ1bGUgb3V0IGdhc3RyaWMgY2FuY2VyIHNob3VsZCBiZSBjb25zaWRlcmVkLgoKUGF0aWVudHMgd2l0aCBnYXN0cmljIG91dGxldCBvYnN0cnVjdGlvbiBmcm9tIGluZmxhbW1hdGlvbiBvciBzY2FycmluZyBhdCB0aGUgcHlsb3J1cyBvciBwcm94aW1hbCBkdW9kZW51bSBzaG91bGQgaGF2ZSBiaW9wc3kgYXQgdGhlIHRpbWUgb2YgZGlhZ25vc2lzIHRvIGV4Y2x1ZGUgbWFsaWduYW5jeS4gRm9yIG1pbGQgc3ltcHRvbXMsIFBQSSB0aGVyYXB5LCB0cmVhdG1lbnQgb2YgSC4gcHlsb3JpIGluZmVjdGlvbiAoaWYgaWRlbnRpZmllZCksIGFuZC9vciBjZXNzYXRpb24gb2YgTlNBSURzIG1heSBiZSBlZmZlY3RpdmUuIEZvciBzZXZlcmUgb3IgcGVyc2lzdGVudCBzeW1wdG9tcywgZW5kb3Njb3BpYyBkaWxhdGlvbiBzaG91bGQgYmUgcHVyc3VlZCwgd2l0aCBzdXJnZXJ5IHJlc2VydmVkIGZvciBwZXJzaXN0ZW50IG9ic3RydWN0aW9uIGZvbGxvd2luZyByZXBlYXRlZCBhdHRlbXB0cyBhdCBlbmRvc2NvcGljIGRpbGF0aW9uLgoKS2V5IFBvaW50cwpOU0FJRHMgYW5kIEhlbGljb2JhY3RlciBweWxvcmkgaW5mZWN0aW9uIGFyZSB0aGUgbW9zdCBjb21tb24gY2F1c2VzIG9mIHBlcHRpYyB1bGNlciBkaXNlYXNlLgpGb3IgYmxlZWRpbmcgcGVwdGljIHVsY2VyIGRpc2Vhc2UgcmVsYXRlZCB0byBhc3BpcmluIHVzZSBmb3Igc2Vjb25kYXJ5IGNhcmRpb3Zhc2N1bGFyIHByZXZlbnRpb24sIGFzcGlyaW4gc2hvdWxkIGJlIHJlc3RhcnRlZCAxIHRvIDcgZGF5cyBhZnRlciBpbml0aWF0aW9uIG9mIFBQSSBhbmQgY2Vzc2F0aW9uIG9mIGJsZWVkaW5nLgpOU0FJRHMgc2hvdWxkIGJlIGRpc2NvbnRpbnVlZCBpbiBwYXRpZW50cyB3aXRoIE5TQUlELWluZHVjZWQgYmxlZWRpbmcgcGVwdGljIHVsY2VyIGRpc2Vhc2U7IGlmIHRoZXJlIGlzIG5vIGVmZmVjdGl2ZSBhbHRlcm5hdGl2ZSB0byBOU0FJRHMsIGEgc2VsZWN0aXZlIGN5Y2xvb3h5Z2VuYXNlLTIgaW5oaWJpdG9yIHBsdXMgYSBvbmNlLWRhaWx5IFBQSSBzaG91bGQgYmUgdXNlZC4KUGF0aWVudHMgd2l0aCBpZGlvcGF0aGljIHVsY2VycyB0aGF0IGhhdmUgYmxlZCBzaG91bGQgcmVjZWl2ZSBvbmNlLWRhaWx5IFBQSSB0aGVyYXB5IGluZGVmaW5pdGVseSBiZWNhdXNlIG9mIHRoZSBzdWJzdGFudGlhbCByaXNrIGZvciByZWJsZWVkaW5nLgpSZXBlYXQgdXBwZXIgZW5kb3Njb3B5IHRvIHZlcmlmeSB1bGNlciByZXNvbHV0aW9uIGlzIHJlc2VydmVkIGZvciBwYXRpZW50cyB3aG8gaGF2ZSBwZXJzaXN0ZW50IHN5bXB0b21zIGFmdGVyIDggdG8gMTIgd2Vla3Mgb2YgdGhlcmFweSwgaGF2ZSB1bGNlcnMgb2YgdW5rbm93biBjYXVzZSwgb3IgZGlkIG5vdCB1bmRlcmdvIGdhc3RyaWMgdWxjZXIgYmlvcHN5IGR1cmluZyB0aGUgaW5pdGlhbCB1cHBlciBlbmRvc2NvcHkuCkhlbGljb2JhY3RlciBweWxvcmkgSW5mZWN0aW9uCkluZGljYXRpb25zIGZvciBUZXN0aW5nCkluZGljYXRpb25zIGZvciBILiBweWxvcmkgdGVzdGluZyBpbmNsdWRlIGFjdGl2ZSBQVUQsIGhpc3Rvcnkgb2YgUFVEIHdpdGhvdXQgZG9jdW1lbnRlZCBjdXJlIG9mIEguIHB5bG9yaSBpbmZlY3Rpb24sIGdhc3RyaWMgbXVjb3Nh4oCTYXNzb2NpYXRlZCBseW1waG9pZCB0aXNzdWUgbHltcGhvbWEsIG9yIGhpc3Rvcnkgb2YgZW5kb3Njb3BpYyByZXNlY3Rpb24gb2YgZWFybHkgZ2FzdHJpYyBjYW5jZXIuIE90aGVyIGNvbmRpdGlvbnMgaW4gd2hpY2ggSC4gcHlsb3JpIHRlc3Rpbmcgc2hvdWxkIGJlIGNvbnNpZGVyZWQgaW5jbHVkZSBkeXNwZXBzaWEsIGJlZm9yZSBsb25nLXRlcm0gbG93LWRvc2UgYXNwaXJpbiBvciBOU0FJRCB1c2UsIHVuZXhwbGFpbmVkIGlyb24gZGVmaWNpZW5jeSBhbmVtaWEsIGFuZCBpZGlvcGF0aGljIHRocm9tYm9jeXRvcGVuaWMgcHVycHVyYSBpbiBhZHVsdHMuIFJvdXRpbmUgdGVzdGluZyBmb3IgSC4gcHlsb3JpIGlzIG5vdCBpbmRpY2F0ZWQgaW4gcGF0aWVudHMgd2l0aCB0eXBpY2FsIGdhc3Ryb2Vzb3BoYWdlYWwgcmVmbHV4IGRpc2Vhc2Ugc3ltcHRvbXMsIGx5bXBob2N5dGljIGdhc3RyaXRpcywgaHlwZXJwbGFzdGljIGdhc3RyaWMgcG9seXBzLCBvciBoeXBlcmVtZXNpcyBncmF2aWRhcnVtIG9yIGluIGFzeW1wdG9tYXRpYyBpbmRpdmlkdWFscyB3aXRoIGEgZmFtaWx5IGhpc3Rvcnkgb2YgZ2FzdHJpYyBjYW5jZXIuCgpEaWFnbm9zaXMKUmVsYXRlZCBRdWVzdGlvbgpRdWVzdGlvbiA3MApILiBweWxvcmkgaW5mZWN0aW9uIGNhbiBiZSBkaWFnbm9zZWQgd2l0aCBnYXN0cmljIGJpb3BzaWVzIGR1cmluZyB1cHBlciBlbmRvc2NvcHkgb3Igbm9uaW52YXNpdmVseSBieSAxM0MtdXJlYSBicmVhdGgsIHN0b29sIGFudGlnZW4sIG9yIHNlcm9sb2dpYyB0ZXN0aW5nLiBUaGUgMTNDLXVyZWEgYnJlYXRoIHRlc3QgYW5kIHRoZSBtb25vY2xvbmFsIHN0b29sIGFudGlnZW4gdGVzdCBhcmUgcHJlZmVycmVkIG5vbmludmFzaXZlIHRlc3RzIGJlY2F1c2Ugc2Vuc2l0aXZpdHkgYW5kIHNwZWNpZmljaXR5IGJvdGggZXhjZWVkIDk1JSBmb3IgYWN0aXZlIGluZmVjdGlvbi4gU2Vyb2xvZ2ljIHRlc3RpbmcgZm9yIElnRyBhbnRpYm9kaWVzIGFnYWluc3QgSC4gcHlsb3JpIGlzIHRoZSBjaGVhcGVzdCBhbmQgbW9zdCBjb252ZW5pZW50IG1ldGhvZDsgaG93ZXZlciwgaXQgY2Fubm90IGRpc3Rpbmd1aXNoIGJldHdlZW4gYWN0aXZlIGFuZCBwcmV2aW91cyBpbmZlY3Rpb24uIEFsdGhvdWdoIHRoZSBuZWdhdGl2ZSBwcmVkaWN0aXZlIHZhbHVlIG9mIHNlcm9sb2dpYyB0ZXN0aW5nIGlzIHJlYXNvbmFibHkgaGlnaCwgYSBwb3NpdGl2ZSBzZXJvbG9naWMgcmVzdWx0IGluIGEgcG9wdWxhdGlvbiB3aXRoIGxvdyBwcmV2YWxlbmNlIG9mIEguIHB5bG9yaSBpbmZlY3Rpb24sIHN1Y2ggYXMgaW4gdGhlIFVuaXRlZCBTdGF0ZXMsIG1heSByZXF1aXJlIGNvbmZpcm1hdGlvbiB3aXRoIHRoZSAxM0MtdXJlYSBicmVhdGggdGVzdCwgc3Rvb2wgYW50aWdlbiB0ZXN0LCBvciBnYXN0cmljIGJpb3BzeS4gU2Vyb2xvZ2ljIHRlc3RpbmcgaXMgbW9zdCB1c2VmdWwgYXMgYW4gYWRqdW5jdCB0ZXN0IGluIHBhdGllbnRzIHdpdGggYmxlZWRpbmcgUFVEIGJlY2F1c2Ugb2YgdGhlIGRlY3JlYXNlZCBzZW5zaXRpdml0eSBvZiBiaW9wc3kgaW4gYWN1dGUgYmxlZWRpbmcuIENvbmRpdGlvbnMgdGhhdCBsb3dlciBILiBweWxvcmkgZGVuc2l0eSwgc3VjaCBhcyBQUEkgdXNlLCByZWNlbnQgYW50aWJpb3RpYyB1c2UsIGF0cm9waGljIGdhc3RyaXRpcywgaW50ZXN0aW5hbCBtZXRhcGxhc2lhLCBvciBtdWNvc2EtYXNzb2NpYXRlZCBseW1waG9pZCB0aXNzdWUgbHltcGhvbWEsIGNhbiByZXN1bHQgaW4gZmFsc2UtbmVnYXRpdmUgcmVzdWx0cyBvbiB0aGUgbm9uaW52YXNpdmUgc3R1ZGllcy4gVXBwZXIgZW5kb3Njb3B5IHRoYXQgaXMgZG9uZSB0byBldmFsdWF0ZSBkeXNwZXBzaWEgc2hvdWxkIGluY2x1ZGUgZ2FzdHJpYyBiaW9wc3kgZm9yIEguIHB5bG9yaSB0ZXN0aW5nLgoKVHJlYXRtZW50ClJlbGF0ZWQgUXVlc3Rpb24KUXVlc3Rpb24gODcKQW55IHBhdGllbnQgd2l0aCBhIHRlc3QgcmVzdWx0IHBvc2l0aXZlIGZvciBhY3RpdmUgaW5mZWN0aW9uIHJlcXVpcmVzIHRyZWF0bWVudCB3aXRoIHRoZSBnb2FsIG9mIEguIHB5bG9yaSBlcmFkaWNhdGlvbi4gVGhlIGZpcnN0IGNvdXJzZSBvZiB0cmVhdG1lbnQgb2ZmZXJzIHRoZSBiZXN0IGNoYW5jZSBvZiBlcmFkaWNhdGlvbiBhbmQgc2hvdWxkIGJlIGNhcmVmdWxseSBjaG9zZW4uIFNldmVyYWwgZmlyc3QtbGluZSB0cmVhdG1lbnRzIGFyZSBhdmFpbGFibGUsIHdpdGggdGhlIGNob2ljZSBiYXNlZCBvbiByZXNpc3RhbmNlIHBhdHRlcm5zIG9mIEguIHB5bG9yaSwgcHJldmlvdXMgYW50aWJpb3RpYyB1c2UgYnkgdGhlIHBhdGllbnQsIGFuZCBhbnRpYmlvdGljIGFsbGVyZ2llcyAoVGFibGUgOSkuIEluIG1vc3QgY2FzZXMsIGR1cmF0aW9uIG9mIHRoZXJhcHkgaXMgMTQgZGF5cy4gV2hlbiB0cmVhdG1lbnQgZmFpbHMsIHNlY29uZC1saW5lIHRoZXJhcHkgc2hvdWxkIGxhc3QgYSBtaW5pbXVtIG9mIDE0IGRheXMsIGlkZWFsbHkgd2l0aCBhbnRpYmlvdGljcyBkaWZmZXJlbnQgZnJvbSB0aG9zZSB1c2VkIGZvciBpbml0aWFsIHRyZWF0bWVudCAoVGFibGUgMTApLgoKRXJhZGljYXRpb24gVGVzdGluZwpObyBzb29uZXIgdGhhbiA0IHdlZWtzIGFmdGVyIGNvbXBsZXRpb24gb2YgZXJhZGljYXRpb24gdGhlcmFweSBhbmQgY2Vzc2F0aW9uIG9mIFBQSSB0aGVyYXB5IChpZiBwb3NzaWJsZSksIGVyYWRpY2F0aW9uIG9mIEguIHB5bG9yaSBzaG91bGQgYmUgdGVzdGVkIGJ5IHVzaW5nIGEgMTNDLXVyZWEgYnJlYXRoIHRlc3QsIGZlY2FsIGFudGlnZW4gdGVzdCwgb3IgZ2FzdHJpYyBiaW9wc3kgcGVyZm9ybWVkIGR1cmluZyB1cHBlciBlbmRvc2NvcHkuIFNlcm9sb2dpYyB0ZXN0aW5nIGlzIG5vdCB1c2VkIHRvIGNvbmZpcm0gSC4gcHlsb3JpIGVyYWRpY2F0aW9uIGJlY2F1c2UgcmVzdWx0cyBjYW4gcmVtYWluIHBvc2l0aXZlIGZvbGxvd2luZyBILiBweWxvcmkgZXJhZGljYXRpb24uCgpLZXkgUG9pbnRzCkdhc3RyaWMgYmlvcHNpZXMgZHVyaW5nIHVwcGVyIGVuZG9zY29weSBvciBub25pbnZhc2l2ZSB0ZXN0aW5nIG1ldGhvZHMsIGluY2x1ZGluZyAxM0MtdXJlYSBicmVhdGggYW5kIHN0b29sIGFudGlnZW4gdGVzdHMsIGNhbiBjb25maXJtIGFjdGl2ZSBILiBweWxvcmkgaW5mZWN0aW9uOyBuZWdhdGl2ZSBzZXJvbG9naWMgcmVzdWx0cyBjYW4gZXhjbHVkZSBpbmZlY3Rpb24sIGJ1dCBhIHBvc2l0aXZlIHNlcm9sb2dpYyByZXN1bHQgbWF5IHJlcXVpcmUgY29uZmlybWF0aW9uLgpUcmVhdG1lbnQgcmVnaW1lbnMgZm9yIEguIHB5bG9yaSBjb25zaXN0IG9mIGEgbWluaW11bSBvZiB0aHJlZSBhZ2VudHMsIGluY2x1ZGluZyB0d28gYW50aW1pY3JvYmlhbCBhZ2VudHMgYW5kIG9uZSBhbnRpc2VjcmV0b3J5IGFnZW50OyB0cmVhdG1lbnQgZHVyYXRpb24gaXMgMTQgZGF5cyBpbiBtb3N0IGNhc2VzLgpFcmFkaWNhdGlvbiBvZiBILiBweWxvcmkgaXMgdGVzdGVkIHdpdGggYSAxM0MtdXJlYSBicmVhdGggdGVzdCwgZmVjYWwgYW50aWdlbiB0ZXN0LCBvciBnYXN0cmljIGJpb3BzeSBwZXJmb3JtZWQgZHVyaW5nIHVwcGVyIGVuZG9zY29weSBubyBzb29uZXIgdGhhbiA0IHdlZWtzIGFmdGVyIGNvbXBsZXRpb24gb2YgZXJhZGljYXRpb24gdGhlcmFweSBhbmQgY2Vzc2F0aW9uIG9mIFBQSSB0aGVyYXB5IChpZiBwb3NzaWJsZSkuCk1pc2NlbGxhbmVvdXMgR2FzdHJvcGF0aHkKRXJvc2l2ZSBHYXN0cm9wYXRoeQpFcm9zaXZlIGdhc3Ryb3BhdGh5IGNhbiByZXN1bHQgZnJvbSBleHBvc3VyZSB0byBtZWRpY2F0aW9ucyBhbmQgdG94aW5zLCBpbmNsdWRpbmcgTlNBSURzLCBpcm9uLCBhbmQgYWxjb2hvbC4gSXNjaGVtaWEgYW5kIHBvcnRhbCBoeXBlcnRlbnNpb24gYXJlIGFkZGl0aW9uYWwgY2F1c2VzLiBBbHRob3VnaCBlcm9zaXZlIGdhc3Ryb3BhdGh5IG1heSByZXN1bHQgaW4gZ2FzdHJvaW50ZXN0aW5hbCBibGVlZGluZywgaXQgcmFyZWx5IGNhdXNlcyBjbGluaWNhbGx5IHNpZ25pZmljYW50IGJsZWVkaW5nLgoKQXRyb3BoaWMgR2FzdHJpdGlzCkNocm9uaWMgYXRyb3BoaWMgZ2FzdHJpdGlzIGNhbiBwcmVzZW50IGFzIGVudmlyb25tZW50YWwgbWV0YXBsYXN0aWMgYXRyb3BoaWMgZ2FzdHJpdGlzLCBhbHNvIGNhbGxlZCBtdWx0aWZvY2FsIGF0cm9waGljIGdhc3RyaXRpcywgb3IgYXMgYXV0b2ltbXVuZSBhdHJvcGhpYyBnYXN0cml0aXMuIEVudmlyb25tZW50YWwgbWV0YXBsYXN0aWMgYXRyb3BoaWMgZ2FzdHJpdGlzIGlzIHRoZSByZXN1bHQgb2YgSC4gcHlsb3JpIGluZmVjdGlvbiBhbmQgdHlwaWNhbGx5IGxlc3NlbnMgYWZ0ZXIgSC4gcHlsb3JpIGVyYWRpY2F0aW9uLiBBdXRvaW1tdW5lIGF0cm9waGljIGdhc3RyaXRpcyBpcyBjYXVzZWQgYnkgZm9ybWF0aW9uIG9mIGF1dG9hbnRpYm9keSB0byBwYXJpZXRhbCBjZWxsIGFudGlnZW5zIGFuZCBpcyBjb21tb25seSBhc3NvY2lhdGVkIHdpdGggcGVybmljaW91cyBhbmVtaWEuIFRoZSBhY2hsb3JoeWRyaWEgZnJvbSBjaHJvbmljIGF0cm9waGljIGdhc3RyaXRpcyBjYW4gbGVhZCB0byBpcm9uIGRlZmljaWVuY3ksIHNtYWxsIGludGVzdGluYWwgYmFjdGVyaWFsIG92ZXJncm93dGgsIGFuZCBlbnRlcmljIGluZmVjdGlvbnMuIFRoZSBoeXBlcmdhc3RyaW5lbWlhIGFzc29jaWF0ZWQgd2l0aCBhdXRvaW1tdW5lIGF0cm9waGljIGdhc3RyaXRpcyBjYW4gcHJvbW90ZSBkZXZlbG9wbWVudCBvZiBnYXN0cmljIG5ldXJvZW5kb2NyaW5lIHR1bW9ycy4gR29hbHMgb2YgdGhlcmFweSBmb3IgYXV0b2ltbXVuZSBhdHJvcGhpYyBnYXN0cml0aXMgaW5jbHVkZSBwcmV2ZW50aW9uIG9mIHBlcm5pY2lvdXMgYW5lbWlhIGFuZCBpcm9uIGRlZmljaWVuY3kgd2l0aCB2aXRhbWluIEIxMiBzdXBwbGVtZW50YXRpb24gYW5kIGlyb24gcmVwbGFjZW1lbnQgYWxvbmcgd2l0aCBzdXJ2ZWlsbGFuY2UgZm9yIGdhc3RyaWMgbmVvcGxhc20uIFNlZSBNS1NBUCAxOSBIZW1hdG9sb2d5IGZvciBmdXJ0aGVyIGRpc2N1c3Npb24gb2YgcGVybmljaW91cyBhbmVtaWEgaW4gdGhlIHNldHRpbmcgb2YgYXV0b2ltbXVuZSBnYXN0cml0aXMuIFNjcmVlbmluZyB1cHBlciBlbmRvc2NvcHkgd2l0aCBnYXN0cmljIGJpb3BzeSBpcyByZWNvbW1lbmRlZCBmb3IgcGF0aWVudHMgd2l0aCBwZXJuaWNpb3VzIGFuZW1pYS4gT3RoZXJ3aXNlLCB0aGVyZSBhcmUgbm8gdW5pdmVyc2FsbHkgYWNjZXB0ZWQgc3VydmVpbGxhbmNlIHByb3RvY29scyBmb3IgZ2FzdHJpYyBuZW9wbGFzbSBpbiBjaHJvbmljIGF0cm9waGljIGdhc3RyaXRpcywgYW5kIGVuZG9zY29waWMgc3VydmVpbGxhbmNlIHNob3VsZCBiZSBjb25zaWRlcmVkIG9uIGFuIGluZGl2aWR1YWwgYmFzaXMuIEFubnVhbCBlbmRvc2NvcHkgaXMgZ2VuZXJhbGx5IG5vdCBuZWNlc3NhcnkuCgpHYXN0cmljIEludGVzdGluYWwgTWV0YXBsYXNpYQpSZWxhdGVkIFF1ZXN0aW9uClF1ZXN0aW9uIDc2Ckdhc3RyaWMgaW50ZXN0aW5hbCBtZXRhcGxhc2lhIGlzIGEgcHJlbmVvcGxhc3RpYyBnYXN0cm9wYXRoeSBmcmVxdWVudGx5IGFyaXNpbmcgZnJvbSBjaHJvbmljIGluZmxhbW1hdGlvbiBhc3NvY2lhdGVkIHdpdGggSC4gcHlsb3JpIGluZmVjdGlvbi4gQXMgc3VjaCwgcGF0aWVudHMgd2l0aCBnYXN0cmljIGludGVzdGluYWwgbWV0YXBsYXNpYSBzaG91bGQgYmUgdGVzdGVkIGZvciBILiBweWxvcmkgYW5kIHRoZW4gdHJlYXRlZCBpZiB0aGUgaW5mZWN0aW9uIGlzIGlkZW50aWZpZWQuIE90aGVyIGNhdXNlcyBvZiBjaHJvbmljIGluZmxhbW1hdGlvbiwgaW5jbHVkaW5nIG90aGVyIGdhc3RyaWMgaW5mZWN0aW9ucywgY2hlbWljYWwgYWdlbnRzLCBhbmQgYXV0b2ltbXVuZSBkaXNlYXNlLCBtYXkgYWxzbyBwcm9tb3RlIHByb2dyZXNzaW9uIHRvIGdhc3RyaWMgaW50ZXN0aW5hbCBtZXRhcGxhc2lhLiBObyBjb25jbHVzaXZlIGV2aWRlbmNlIHNob3dzIHRoYXQgbG9uZy10ZXJtIFBQSSB1c2UgcHJvbW90ZXMgZGV2ZWxvcG1lbnQgb2YgaW50ZXN0aW5hbCBtZXRhcGxhc2lhLiBHYXN0cmljIGludGVzdGluYWwgbWV0YXBsYXNpYSBpcyBiZWxpZXZlZCB0byBiZSBhbiBpbnRlcm1lZGlhcnkgc3RhZ2UgaW4gdGhlIG11bHRpc3RhZ2UgcHJvZ3Jlc3Npb24gZnJvbSBjaHJvbmljIGF0cm9waGljIGdhc3RyaXRpcyB0byBnYXN0cmljIGFkZW5vY2FyY2lub21hLiBJZiBtZXRhcGxhc2lhIGlzIHNlY29uZGFyeSB0byBILiBweWxvcmkgaW5mZWN0aW9uLCBlcmFkaWNhdGlvbiB0aGVyYXB5IG1heSBkZWNyZWFzZSBwcm9ncmVzc2lvbiB0byBnYXN0cmljIGFkZW5vY2FyY2lub21hLiBHaXZlbiB0aGUgcmFyaXR5IG9mIGdhc3RyaWMgYWRlbm9jYXJjaW5vbWEgaW4gdGhlIFVuaXRlZCBTdGF0ZXMsIGN1cnJlbnQgZ3VpZGVsaW5lcyByZWNvbW1lbmQgYWdhaW5zdCB0aGUgcm91dGluZSB1c2Ugb2Ygc3VydmVpbGxhbmNlIGVuZG9zY29weSBpbiBnYXN0cmljIGludGVzdGluYWwgbWV0YXBsYXNpYS4gVGhlIEFtZXJpY2FuIEdhc3Ryb2VudGVyb2xvZ2ljYWwgU29jaWV0eSByZWNvbW1lbmRzIHRoYXQgc3VydmVpbGxhbmNlIGVuZG9zY29weSBiZSBjb25zaWRlcmVkIGluIHBhdGllbnRzIGF0IGluY3JlYXNlZCByaXNrIChzdWNoIGFzIHRob3NlIHdpdGggY29tcGxldGUgb3IgZXh0ZW5zaXZlIGdhc3RyaWMgaW50ZXN0aW5hbCBtZXRhcGxhc2lhIG9uIGVuZG9zY29weTsgdGhvc2Ugd2l0aCBhIGZhbWlseSBoaXN0b3J5IG9mIGdhc3RyaWMgY2FuY2VyOyBjZXJ0YWluIHJhY2lhbC9ldGhuaWMgbWlub3JpdHkgZ3JvdXBzOyBvciB0aG9zZSB3aG8gaGF2ZSBlbWlncmF0ZWQgZnJvbSBFYXN0IEFzaWEsIFJ1c3NpYSwgb3IgU291dGggQW1lcmljYSkuCgpFb3Npbm9waGlsaWMgR2FzdHJpdGlzCkVvc2lub3BoaWxpYyBnYXN0cml0aXMgaXMgYSByYXJlIGdhc3Ryb3BhdGh5IGNoYXJhY3Rlcml6ZWQgYnkgaW5maWx0cmF0aW9uIG9mIGVvc2lub3BoaWxzIGluIHRoZSBnYXN0cmljIG11Y29zYS4gU2Vjb25kYXJ5IGNhdXNlcyBvZiBlb3Npbm9waGlsaWEgc2hvdWxkIGZpcnN0IGJlIGV4Y2x1ZGVkLCBpbmNsdWRpbmcgcGFyYXNpdGljIGFuZCBiYWN0ZXJpYWwgaW5mZWN0aW9ucyBvZiB0aGUgc3RvbWFjaCwgaW5mbGFtbWF0b3J5IGJvd2VsIGRpc2Vhc2UsIGh5cGVyZW9zaW5vcGhpbGljIHN5bmRyb21lLCBteWVsb3Byb2xpZmVyYXRpdmUgZGlzb3JkZXJzLCBwb2x5YXJ0ZXJpdGlzIG5vZG9zYSwgYWxsZXJnaWMgdmFzY3VsaXRpcywgc2NsZXJvZGVybWEsIGRydWcgaW5qdXJ5LCBhbmQgZHJ1ZyBoeXBlcnNlbnNpdGl2aXR5LiBUaGUgY2F1c2Ugb2YgcHJpbWFyeSBlb3Npbm9waGlsaWMgZ2FzdHJpdGlzIGlzIHVua25vd24gYnV0IGlzIGJlbGlldmVkIHRvIGJlIGFuIGFsbGVyZ2ljIHByb2Nlc3MuIFN5bXB0b21zIHZhcnkgd2lkZWx5IGJhc2VkIG9uIGRlcHRoIG9mIGVvc2lub3BoaWxpYSBhbmQgb3RoZXIgZ2FzdHJvaW50ZXN0aW5hbCB0cmFjdCBpbnZvbHZlbWVudC4gVHJlYXRtZW50IGluY2x1ZGVzIGF2b2lkYW5jZSBvZiBmb29kIGFsbGVyZ2VucywgZWxlbWVudGFsIGRpZXRzLCBhbmQvb3IgZ2x1Y29jb3J0aWNvaWRzLgoKTHltcGhvY3l0aWMgR2FzdHJpdGlzCkx5bXBob2N5dGljIGdhc3RyaXRpcyBpcyBhIHJhcmUgZ2FzdHJvcGF0aHkgdHlwaWNhbGx5IHByZXNlbnRpbmcgd2l0aCBub25zcGVjaWZpYyBkeXNwZXB0aWMgc3ltcHRvbXMgYW5kIGEgbm9ybWFsLWFwcGVhcmluZyBzdG9tYWNoIG9uIGVuZG9zY29weS4gT24gb2NjYXNpb24sIHRoZSBzdG9tYWNoIG1heSBoYXZlIHRoaWNrZW5lZCBmb2xkcyBjb3ZlcmVkIGJ5IHNtYWxsIG5vZHVsZXMgYW5kIGFwaHRob3VzIHVsY2VyYXRpb24uIENlbGlhYyBkaXNlYXNlIGlzIHRoZSBtb3N0IGNvbW1vbiBjYXVzZSBvZiBseW1waG9jeXRpYyBnYXN0cml0aXMuIE90aGVyIGNhdXNlcyBpbmNsdWRlIEhJViBpbmZlY3Rpb24sIENyb2huIGRpc2Vhc2UsIGNvbW1vbiB2YXJpYWJsZSBpbW11bm9kZWZpY2llbmN5LCBhbmQsIHJhcmVseSwgSC4gcHlsb3JpIGluZmVjdGlvbi4KCktleSBQb2ludHMKQXV0b2ltbXVuZSBhdHJvcGhpYyBnYXN0cml0aXMgaXMgYXNzb2NpYXRlZCB3aXRoIHBlcm5pY2lvdXMgYW5lbWlhLCBpcm9uIGRlZmljaWVuY3ksIHNtYWxsIGludGVzdGluYWwgYmFjdGVyaWFsIG92ZXJncm93dGgsIGFuZCBnYXN0cmljIGNhcmNpbm9pZC4KTWFuYWdlbWVudCBvZiBhdXRvaW1tdW5lIGF0cm9waGljIGdhc3RyaXRpcyBpbmNsdWRlcyBwcmV2ZW50aW9uIG9mIHBlcm5pY2lvdXMgYW5lbWlhIGFuZCBpcm9uIGRlZmljaWVuY3kgd2l0aCB2aXRhbWluIEIxMiBzdXBwbGVtZW50YXRpb24gYW5kIGlyb24gcmVwbGFjZW1lbnQgYWxvbmcgd2l0aCBzdXJ2ZWlsbGFuY2UgZm9yIGdhc3RyaWMgbmVvcGxhc20uCkhlbGljb2JhY3RlciBweWxvcmkgaXMgYXNzb2NpYXRlZCB3aXRoIHVwcGVyIGdhc3Ryb2ludGVzdGluYWwgY29uZGl0aW9ucyBvdGhlciB0aGFuIHBlcHRpYyB1bGNlciBkaXNlYXNlLCBpbmNsdWRpbmcgZW52aXJvbm1lbnRhbCBtZXRhcGxhc3RpYyBhdHJvcGhpYyBnYXN0cml0aXMsIGdhc3RyaWMgaW50ZXN0aW5hbCBtZXRhcGxhc2lhLCBhbmQsIHJhcmVseSwgbHltcGhvY3l0aWMgZ2FzdHJpdGlzLgpHYXN0cm9pbnRlc3RpbmFsIENvbXBsaWNhdGlvbnMgb2YgTlNBSURzCkVwaWRlbWlvbG9neSBhbmQgUmlzayBGYWN0b3JzClVwcGVyIGdhc3Ryb2ludGVzdGluYWwgY29tcGxpY2F0aW9ucyBjYW4gb2NjdXIgd2l0aCBzaG9ydC0gb3IgbG9uZy10ZXJtIE5TQUlEIHVzZSBhbmQgYXJlIGRvc2UgZGVwZW5kZW50LCB3aXRoIGEgbGluZWFyIGluY3JlYXNlIGluIGluY2lkZW5jZSBvdmVyIHRpbWUuIE5lYXJseSAxJSB0byAyJSBvZiBwYXRpZW50cyB0YWtpbmcgbG9uZy10ZXJtIE5TQUlEIHRoZXJhcHkgZXhwZXJpZW5jZSBhIGNsaW5pY2FsbHkgc2lnbmlmaWNhbnQgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBldmVudCAoYmxlZWRpbmcgdWxjZXIsIHBlcmZvcmF0aW9uLCBvciBvYnN0cnVjdGlvbikgYW5udWFsbHkuIFRoZSByYXRlIG9mIHVwcGVyIGdhc3Ryb2ludGVzdGluYWwgYWR2ZXJzZSBldmVudHMgcmlzZXMgdG8gMTQlIGZvciBlbGRlcmx5IE5TQUlEIHVzZXJzLiBUaGUgZ3JlYXRlc3QgcmlzayBmYWN0b3IgZm9yIE5TQUlELXJlbGF0ZWQgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBjb21wbGljYXRpb24gaXMgYSBoaXN0b3J5IG9mIGdhc3Ryb2ludGVzdGluYWwgYmxlZWRpbmcuIFJpc2sgZmFjdG9ycyBhcmUgbGlzdGVkIGluIFRhYmxlIDExLgoKVXNlIG9mIGxvdy1kb3NlIGFzcGlyaW4gZm9yIGNhcmRpb3Byb3BoeWxheGlzIGlzIGFzc29jaWF0ZWQgd2l0aCBhIHR3b2ZvbGQgdG8gZm91cmZvbGQgaW5jcmVhc2UgaW4gcmlzayBmb3IgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBjb21wbGljYXRpb25zLCBpbmNsdWRpbmcgYmxlZWRpbmcgdWxjZXIsIHBlcmZvcmF0aW9uLCBhbmQgb2JzdHJ1Y3Rpb24uIFVzZSBvZiBlbnRlcmljLWNvYXRlZCBhc3BpcmluIGRvZXMgbm90IGxvd2VyIHRoaXMgcmlzaywgYW5kIGFuIGluY3JlYXNlIGluIGFzcGlyaW4gZG9zYWdlIGlzIGFzc29jaWF0ZWQgd2l0aCBhbiBpbmNyZWFzZWQgcmlzayBmb3IgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBjb21wbGljYXRpb25zLiBTZWUgTUtTQVAgMTkgR2VuZXJhbCBJbnRlcm5hbCBNZWRpY2luZSAyIGZvciBkaXNjdXNzaW9uIG9mIGluZGljYXRpb25zIGZvciBwcmltYXJ5IGFuZCBzZWNvbmRhcnkgcHJldmVudGlvbiBvZiBjYXJkaW92YXNjdWxhciBkaXNlYXNlIHdpdGggYXNwaXJpbi4KClByZXZlbnRpb24gb2YgTlNBSUQtSW5kdWNlZCBJbmp1cnkKUmVsYXRlZCBRdWVzdGlvbgpRdWVzdGlvbiA1MwpQcmV2ZW50aW9uIG9mIE5TQUlELXJlbGF0ZWQgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBhZHZlcnNlIGV2ZW50cyBpbmNsdWRlcyBhdm9pZGluZyBOU0FJRHM7IGFkZHJlc3NpbmcgbW9kaWZpYWJsZSByaXNrIGZhY3RvcnM7IGNvYWRtaW5pc3RlcmluZyBnYXN0cm9wcm90ZWN0aXZlIGFnZW50cywgc3VjaCBhcyBQUElzLCBtaXNvcHJvc3RvbCwgb3IgSDItYmxvY2tlcnM7IG9yIHVzaW5nIGEgc2VsZWN0aXZlIGN5Y2xvb3h5Z2VuYXNlIChDT1gpLTIgaW5oaWJpdG9yLiBQUElzIGFyZSB0aGUgcHJlZmVycmVkIGdhc3Ryb3Byb3RlY3RpdmUgYWdlbnQgZm9yIHRoZSB0cmVhdG1lbnQgYW5kIHByb3BoeWxheGlzIG9mIE5TQUlELXJlbGF0ZWQgKGluY2x1ZGluZyBhc3BpcmluLXJlbGF0ZWQpIHVwcGVyIGdhc3Ryb2ludGVzdGluYWwgY29tcGxpY2F0aW9ucyBhbmQgYXJlIHN1cGVyaW9yIHRvIEgyLWJsb2NrZXJzIGZvciBwcmV2ZW50aW5nIFBVRCBhbmQgYmxlZWRpbmcgcmVsYXRlZCB0byBsb3ctZG9zZSBhc3BpcmluIHVzZS4gTWlzb3Byb3N0b2wgbWF5IGJlIHVzZWQgaW5zdGVhZCBvZiBQUElzIGluIHBhdGllbnRzIGludG9sZXJhbnQgb2Ygb3IgdW53aWxsaW5nIHRvIHRha2UgUFBJcy4gSG93ZXZlciwgc2lkZSBlZmZlY3RzIG9mIG1pc29wcm9zdG9sLCBzdWNoIGFzIGRpYXJyaGVhLCBhYmRvbWluYWwgZGlzY29tZm9ydCwgYW5kIG5hdXNlYSwgY2FuIGJlIGxpbWl0aW5nLCBhbmQgdGhlIGRydWcgaXMgY29udHJhaW5kaWNhdGVkIGluIHByZWduYW5jeS4KClNlbGVjdGl2ZSBDT1gtMiBpbmhpYml0b3JzIGFyZSBhc3NvY2lhdGVkIHdpdGggZGVjcmVhc2VkIHJpc2sgZm9yIGdhc3Ryb2ludGVzdGluYWwgdG94aWNpdHkgY29tcGFyZWQgd2l0aCBOU0FJRHMsIGFsdGhvdWdoIHRoZSByaXNrIGlzIHN0aWxsIGVsZXZhdGVkLiBXaGVuIGNvYWRtaW5pc3RlcmVkIHdpdGggYXNwaXJpbiwgaG93ZXZlciwgYSBzZWxlY3RpdmUgQ09YLTIgaW5oaWJpdG9yIHByb3ZpZGVzIG5vIGFkdmFudGFnZSBvdmVyIGFuIE5TQUlEIGluIHByZXZlbnRpbmcgYW4gdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBhZHZlcnNlIGV2ZW50LiBHaXZlbiB0aGUgaW5jcmVhc2VkIHJpc2sgZm9yIFBVRCB3aXRoIGNvbmNvbWl0YW50IHVzZSBvZiBhbiBOU0FJRCBvciBzZWxlY3RpdmUgQ09YLTIgaW5oaWJpdG9yIHdpdGggbG93LWRvc2UgYXNwaXJpbiwgYXQtcmlzayBpbmRpdmlkdWFscyBzaG91bGQgcmVjZWl2ZSBnYXN0cm9wcm90ZWN0aXZlIHRoZXJhcHkuIENvbXBhcmVkIHRvIGFuIE5TQUlEIHBsdXMgYSBQUEkgaW4gcGF0aWVudHMgYXQgaGlnaCByaXNrLCBhIHNlbGVjdGl2ZSBDT1gtMiBpbmhpYml0b3IgcGx1cyBhIFBQSSBvZmZlcnMgYSBsb3dlciByaXNrIGZvciBwZXJmb3JhdGlvbiwgb2JzdHJ1Y3Rpb24sIGFuZCBibGVlZGluZyBhcyB3ZWxsIGFzIGZvciBOU0FJRCBhbmQgQ09YLTIgd2l0aGRyYXdhbCBkdWUgdG8gZ2FzdHJvaW50ZXN0aW5hbCBhZHZlcnNlIGV2ZW50cy4KCkFmdGVyIGFuIE5TQUlELWluZHVjZWQgYmxlZWRpbmcgcGVwdGljIHVsY2VyLCB0aGUgc2FmZXN0IHN0cmF0ZWd5IGlzIGF2b2lkYW5jZSBvZiBmdXR1cmUgTlNBSUQgdXNlLiBJZiBhbiBOU0FJRCBtdXN0IGJlIHVzZWQsIHRoZSBjb21iaW5hdGlvbiBvZiBhIHNlbGVjdGl2ZSBDT1gtMiBpbmhpYml0b3IgcGx1cyBhIFBQSSBwcm92aWRlcyB0aGUgYmVzdCBnYXN0cm9pbnRlc3RpbmFsIHByb3RlY3Rpb24gdG8gcHJldmVudCByZWJsZWVkaW5nLgoKS2V5IFBvaW50cwpVcHBlciBnYXN0cm9pbnRlc3RpbmFsIGNvbXBsaWNhdGlvbnMsIHN1Y2ggYXMgYmxlZWRpbmcsIGFyZSBjb21tb24gd2l0aCB1c2Ugb2YgTlNBSURzIChib3RoIHNob3J0LSBhbmQgbG9uZy10ZXJtKSBhbmQgbG93LWRvc2UgYXNwaXJpbi4KUHJvdG9uIHB1bXAgaW5oaWJpdG9ycyBhcmUgdGhlIHByZWZlcnJlZCBhZ2VudCBmb3IgcHJldmVudGluZyBhbmQgdHJlYXRpbmcgTlNBSUQtcmVsYXRlZCAoaW5jbHVkaW5nIGFzcGlyaW4tcmVsYXRlZCkgdXBwZXIgZ2FzdHJvaW50ZXN0aW5hbCBjb21wbGljYXRpb25zLgpJbiBpbmRpdmlkdWFscyB3aXRoIGhpZ2ggcmlzayBmb3IgZ2FzdHJvaW50ZXN0aW5hbCBjb21wbGljYXRpb25zLCBpbmNsdWRpbmcgdGhvc2Ugd2l0aCBwcmV2aW91cyBOU0FJRC1pbmR1Y2VkIGdhc3Ryb2ludGVzdGluYWwgYmxlZWRpbmcsIHRoZSBjb21iaW5hdGlvbiBvZiBhIHNlbGVjdGl2ZSBjeWNsb294eWdlbmFzZS0yIGluaGliaXRvciBwbHVzIGEgcHJvdG9uIHB1bXAgaW5oaWJpdG9yIHByb3ZpZGVzIHRoZSBiZXN0IGdhc3Ryb2ludGVzdGluYWwgcHJvdGVjdGlvbiBpZiBhdm9pZGFuY2Ugb2YgTlNBSURzIGlzIG5vdCBwb3NzaWJsZS4KR2FzdHJvcGFyZXNpcwpQcmVzZW50YXRpb24KR2FzdHJvcGFyZXNpcyBpcyBhIGhldGVyb2dlbmVvdXMgY2xpbmljYWwgc3luZHJvbWUgY2hhcmFjdGVyaXplZCBieSB0aGUgcHJlc2VuY2Ugb2Ygc3BlY2lmaWMgc3ltcHRvbXMsIGFic2VuY2Ugb2YgbWVjaGFuaWNhbCBvdXRsZXQgb2JzdHJ1Y3Rpb24sIGFuZCBvYmplY3RpdmUgZXZpZGVuY2Ugb2YgZGVsYXkgaW4gZ2FzdHJpYyBlbXB0eWluZyBpbnRvIHRoZSBkdW9kZW51bS4gVGhlIG1vc3QgY29tbW9uIHN5bXB0b21zLCBpbiBvcmRlciBvZiBwcmV2YWxlbmNlLCBhcmUgbmF1c2VhICg5MCUpLCB2b21pdGluZyAoODQlKSwgdXBwZXIgYWJkb21pbmFsIHBhaW4gKDcyJSksIGFuZCBlYXJseSBzYXRpZXR5ICg2MCUpLiBPdGhlciBzeW1wdG9tcyBtYXkgaW5jbHVkZSBhYmRvbWluYWwgZnVsbG5lc3MgYW5kIGJsb2F0aW5nLiBTeW1wdG9tcyBtYXkgYmUgY2hyb25pYyBvciBwZXJzaXN0ZW50IG9yIG1heSBvY2N1ciBpbnRlcm1pdHRlbnRseS4gTW9yZSBzZXZlcmUgY2FzZXMgbWF5IGludm9sdmUgd2VpZ2h0IGxvc3MgYW5kIGV2aWRlbmNlIG9mIG1hbG51dHJpdGlvbiBhbmQvb3IgZGVoeWRyYXRpb24uIEEgdmlyYWwgcHJvZHJvbWUsIHN1Y2ggYXMgZ2FzdHJvZW50ZXJpdGlzIG9yIHJlc3BpcmF0b3J5IGluZmVjdGlvbiBiZWZvcmUgc3ltcHRvbSBvbnNldCwgbWF5IHN1Z2dlc3QgcG9zdHZpcmFsIGdhc3Ryb3BhcmVzaXMsIGEgY29uZGl0aW9uIHRoYXQgY2FuIHJlc29sdmUgb3ZlciB0aW1lLiBHYXN0cm9wYXJlc2lzIGhhcyBhIHZhcmlldHkgb2YgY2F1c2VzIChUYWJsZSAxMikuCgpEaWFnbm9zdGljIFRlc3RpbmcKUmVsYXRlZCBRdWVzdGlvbgpRdWVzdGlvbiA5MApUaGUgZmlyc3Qgc3R1ZHkgdG8gZXZhbHVhdGUgc3VzcGVjdGVkIGdhc3Ryb3BhcmVzaXMgaXMgdXBwZXIgZW5kb3Njb3B5IHRvIGV4Y2x1ZGUgZ2FzdHJpYyBvdXRsZXQgb2JzdHJ1Y3Rpb24uIE9uY2UgYSBzdHJ1Y3R1cmFsIGNhdXNlIGZvciBzeW1wdG9tcyBoYXMgYmVlbiBleGNsdWRlZCwgYW4gb2JqZWN0aXZlIHRlc3QgdG8gYXNzZXNzIGdhc3RyaWMgZW1wdHlpbmcgaXMgcGVyZm9ybWVkOiBnYXN0cmljIHNjaW50aWdyYXBoeSwgd2lyZWxlc3MgbW90aWxpdHkgY2Fwc3VsZSwgb3IgZ2FzdHJpYyBlbXB0eWluZyBjYXJib24gYnJlYXRoIHRlc3QgdXNpbmcgMTNDLWxhYmVsZWQgU3BpcnVsaW5hIHBsYXRlbnNpcyAoVGFibGUgMTMpLiBHYXN0cmljIHNjaW50aWdyYXBoeSBpcyB0aGUgc3RhbmRhcmQgdGVzdCBmb3IgdGhlIGV2YWx1YXRpb24gb2YgZ2FzdHJvcGFyZXNpcyBhbmQgc2hvdWxkIGFzc2VzcyB0aGUgZW1wdHlpbmcgb2YgYSBzb2xpZCBtZWFsIGZvciBhdCBsZWFzdCAzIGhvdXJzLiBPcGlvaWRzLCBjYW5uYWJpbm9pZHMsIHByb2tpbmV0aWNzLCBhbnRpZW1ldGljcywgYW5kIG5ldXJvbW9kdWxhdG9ycyB0aGF0IGNhbiBwb3RlbnRpYWxseSBpbmZsdWVuY2UgdGhlIHJlc3VsdHMgb2YgdGhlIGdhc3RyaWMgZW1wdHlpbmcgdGVzdCBzaG91bGQgYmUgc3RvcHBlZCBhdCBsZWFzdCA0OCBob3VycyBiZWZvcmUgdGVzdGluZy4gT25jZSBkZWxheWVkIGVtcHR5aW5nIGlzIG9iamVjdGl2ZWx5IGNvbmZpcm1lZCwgYWRkaXRpb25hbCB0ZXN0aW5nIG1heSBiZSByZXF1aXJlZCB0byBkZXRlcm1pbmUgdGhlIGNhdXNlIG9mIHRoZSBnYXN0cm9wYXJlc2lzLgoKTWFuYWdlbWVudApTeW1wdG9tIHNldmVyaXR5IGRvZXMgbm90IGNvcnJlbGF0ZSB3aXRoIHNldmVyaXR5IG9mIGRlbGF5ZWQgZ2FzdHJpYyBlbXB0eWluZywgcGFydGljdWxhcmx5IHdpdGggcmVnYXJkIHRvIGFiZG9taW5hbCBibG9hdGluZyBhbmQgZXBpZ2FzdHJpYyBwYWluLiBUaGlzIHN1Z2dlc3RzIHRoYXQgZ2FzdHJvcGFyZXNpcyBpcyBub3Qgc2ltcGx5IGEgbW90aWxpdHkgZGlzb3JkZXIgYnV0IGFsc28gYSBkaXNvcmRlciBvZiBhbHRlcmVkIHNlbnNhdGlvbi4gSW5pdGlhbCBtYW5hZ2VtZW50IGluY2x1ZGVzIGNvcnJlY3RpbmcgZGVoeWRyYXRpb24gYW5kIGVsZWN0cm9seXRlIGFibm9ybWFsaXRpZXMgYWxvbmcgd2l0aCBudXRyaXRpb25hbCBzdXBwb3J0IGlmIG5lZWRlZC4gSW5pdGlhbCBkaWV0YXJ5IGludGVydmVudGlvbiBzaG91bGQgY29uc2lzdCBvZiBzbWFsbCwgZnJlcXVlbnQgbWVhbHMgdGhhdCBhcmUgbG93IGluIGZhdCBhbmQgc29sdWJsZSBmaWJlci4gUmVmZXJyYWwgdG8gYSBkaWV0aXRpYW4gbWF5IGJlIGJlbmVmaWNpYWwuIEluIGRpYWJldGljIGdhc3Ryb3BhcmVzaXMsIHBvb3IgZ2x5Y2VtaWMgY29udHJvbCAoYmxvb2QgZ2x1Y29zZSBsZXZlbCA+MjAwIG1nL2RMIFsxMS4xIG1tb2wvTF0pIGNhbiB3b3JzZW4gc3ltcHRvbXMgYXMgd2VsbCBhcyBnYXN0cmljIGVtcHR5aW5nLCBhbmQgdGlnaHQgZ2x5Y2VtaWMgY29udHJvbCBpcyB0aGUgbW9zdCBpbXBvcnRhbnQgZWxlbWVudCBvZiB0cmVhdG1lbnQuCgpQcm9raW5ldGljIHRoZXJhcHkgaXMgdXNlZCB0byBpbXByb3ZlIGdhc3RyaWMgZW1wdHlpbmcgYW5kIHRyZWF0IHN5bXB0b21zLiBNZXRvY2xvcHJhbWlkZSBpcyB0aGUgb25seSBwcm9raW5ldGljIGFwcHJvdmVkIGluIHRoZSBVbml0ZWQgU3RhdGVzIGZvciB0cmVhdG1lbnQgb2YgZ2FzdHJvcGFyZXNpcy4gVG8gbWluaW1pemUgdGhlIHNpZ25pZmljYW50IHJpc2sgZm9yIG5ldXJvbG9naWMgc2lkZSBlZmZlY3RzIChkeXN0b25pYSwgcGFya2luc29uaWFuIG1vdmVtZW50cywgdGFyZGl2ZSBkeXNraW5lc2lhKSwgdGhlIGxvd2VzdCBlZmZlY3RpdmUgZG9zZSBzaG91bGQgYmUgdXNlZC4gVGhlcmFweSBtdXN0IGJlIHN0b3BwZWQgaW1tZWRpYXRlbHkgaWYgbmV1cm9sb2dpYyBzaWRlIGVmZmVjdHMgZGV2ZWxvcC4KCkVyeXRocm9teWNpbiBpbXByb3ZlcyBnYXN0cmljIGVtcHR5aW5nLCBidXQgdXNlIHNob3VsZCBiZSBsaW1pdGVkIHRvIHRyZWF0bWVudCBvZiBmbGFyZXMgb3Igc2hvcnQtdGVybSB1c2UgKDIgdG8gMyB3ZWVrcykgYmVjYXVzZSBvZiByaXNrIGZvciB0YWNoeXBoeWxheGlzLgoKQW50aWVtZXRpY3MgY2FuIGFsc28gcmVsaWV2ZSBzeW1wdG9tcyBidXQgaGF2ZSBubyBiZW5lZmljaWFsIGVmZmVjdCBvbiBnYXN0cmljIGVtcHR5aW5nLiBBY3VwdW5jdHVyZSBhbG9uZSBvciBjb21iaW5lZCB3aXRoIGEgcHJva2luZXRpYyBtYXkgaGF2ZSBhIGJlbmVmaWNpYWwgcm9sZSBpbiB0aGUgdHJlYXRtZW50IG9mIGRpYWJldGljIGdhc3Ryb3BhcmVzaXMuCgpUcmVhdG1lbnQgb2YgYWJkb21pbmFsIHBhaW4gc2hvdWxkIGJlIHB1cnN1ZWQgd2l0aG91dCB0aGUgdXNlIG9mIG9waW9pZHMgKGkuZS4sIHVzaW5nIGNlbnRyYWwgbmV1cm9tb2R1bGF0b3JzIGluc3RlYWQpLgoKSW50ZXJ2ZW50aW9uYWwgdGhlcmFweSwgc3VjaCBhcyBlbnRlcmFsIGZlZWRpbmcgdmlhIGplanVub3N0b215LCBnYXN0cmljIHN0aW11bGF0b3IgcGxhY2VtZW50LCBnYXN0cmljIHBlcm9yYWwgZW5kb3Njb3BpYyBteW90b215LCBweWxvcm9wbGFzdHksIGFuZCBzdWJ0b3RhbCBvciB0b3RhbCBnYXN0cmVjdG9teSwgY2FuIGJlIGNvbnNpZGVyZWQgaW4gcGF0aWVudHMgd2hvIGRvIG5vdCByZXNwb25kIHRvIGRpZXRhcnkgYW5kIHBoYXJtYWNvbG9naWMgdGhlcmFweS4KCktleSBQb2ludHMKQWZ0ZXIgZ2FzdHJpYyBvdXRsZXQgb2JzdHJ1Y3Rpb24gaXMgZXhjbHVkZWQgYnkgdXBwZXIgZW5kb3Njb3B5LCBwYXRpZW50cyBzdXNwZWN0ZWQgb2YgZ2FzdHJvcGFyZXNpcyBzaG91bGQgdW5kZXJnbyBhbiBvYmplY3RpdmUgdGVzdCBvZiBnYXN0cmljIGVtcHR5aW5nLCB0eXBpY2FsbHkgZ2FzdHJpYyBzY2ludGlncmFwaHkuCkluaXRpYWwgbWFuYWdlbWVudCBvZiBnYXN0cm9wYXJlc2lzIGluY2x1ZGVzIGNvcnJlY3RpbmcgZGVoeWRyYXRpb24gYW5kIGVsZWN0cm9seXRlIGFibm9ybWFsaXRpZXM7IG51dHJpdGlvbmFsIHN1cHBvcnQ7IHNtYWxsLCBmcmVxdWVudCBtZWFscyB0aGF0IGFyZSBsb3cgaW4gZmF0IGFuZCBzb2x1YmxlIGZpYmVyOyBhbmQsIGluIHBhdGllbnRzIHdpdGggZGlhYmV0ZXMgbWVsbGl0dXMsIGltcHJvdmVkIGdseWNlbWljIGNvbnRyb2wuCk1ldG9jbG9wcmFtaWRlIGlzIGEgcHJva2luZXRpYyBkcnVnIHRoYXQgaW1wcm92ZXMgZ2FzdHJpYyBlbXB0eWluZyBidXQgaXMgYXNzb2NpYXRlZCB3aXRoIGR5c3RvbmlhLCB0YXJkaXZlIGR5c2tpbmVzaWEsIGFuZCBwYXJraW5zb25pc20uCkdhc3RyaWMgUG9seXBzIGFuZCBTdWJlcGl0aGVsaWFsIExlc2lvbnMKR2FzdHJpYyBQb2x5cHMKUmVsYXRlZCBRdWVzdGlvbgpRdWVzdGlvbiA3MgpQb2x5cHMgaW4gdGhlIHN0b21hY2ggaW5jbHVkZSBmdW5kaWMgZ2xhbmQgcG9seXBzLCBoeXBlcnBsYXN0aWMgcG9seXBzLCBhbmQgYWRlbm9tYXMuIEFsbCBnYXN0cmljIHBvbHlwcyBzaG91bGQgYmUgYmlvcHNpZWQgdG8gZGV0ZXJtaW5lIHBvbHlwIGhpc3RvbG9neS4gRnVuZGljIGdsYW5kIHBvbHlwcyBhbmQgaHlwZXJwbGFzdGljIHBvbHlwcyBhY2NvdW50IGZvciA3MCUgdG8gOTAlIG9mIHN0b21hY2ggcG9seXBzLiBGdW5kaWMgZ2xhbmQgcG9seXBzIGhhdmUgbm8gcG90ZW50aWFsIGZvciBtYWxpZ25hbmN5IGFuZCBhcmUgY29tbW9uIHdpdGggUFBJIHVzZS4gTXVsdGlwbGUgZnVuZGljIGdsYW5kIHBvbHlwcyBhcmUgYWxzbyBmb3VuZCBpbiBwYXRpZW50cyB3aXRoIGZhbWlsaWFsIGFkZW5vbWF0b3VzIHBvbHlwb3Npcy4KCkh5cGVycGxhc3RpYyBwb2x5cHMgb2YgdGhlIHN0b21hY2ggYXJlIHRob3VnaHQgdG8gaGF2ZSBtYWxpZ25hbnQgcG90ZW50aWFsLCB3aXRoIDUlIHRvIDE5JSBoYXJib3JpbmcgZHlzcGxhc2lhIG9yIG1hbGlnbmFuY3kuIFJpc2sgZmFjdG9ycyBmb3IgbWFsaWduYW50IHBvdGVudGlhbCBvZiBoeXBlcnBsYXN0aWMgcG9seXBzIGluY2x1ZGUgc2l6ZSBncmVhdGVyIHRoYW4gMSBjbSBhbmQgcGVkdW5jdWxhdGVkIG1vcnBob2xvZ3kuIEFsbCBoeXBlcnBsYXN0aWMgcG9seXBzIGdyZWF0ZXIgdGhhbiAwLjUgdG8gMS4wIGNtIHNob3VsZCBiZSByZXNlY3RlZC4KCkFkZW5vbWFzIGluIHRoZSBzdG9tYWNoIGNhbiBiZSBzcG9yYWRpYyBvciBhc3NvY2lhdGVkIHdpdGggaGVyZWRpdGFyeSBzeW5kcm9tZXMsIGluY2x1ZGluZyBmYW1pbGlhbCBhZGVub21hdG91cyBwb2x5cG9zaXMgYW5kIEx5bmNoIHN5bmRyb21lLiBUaG9zZSBpbiB0aGUgc3RvbWFjaCBzaG91bGQgYmUgcmVzZWN0ZWQgYW5kIGVuZG9zY29waWMgc3VydmVpbGxhbmNlIHNob3VsZCBiZSBwZXJmb3JtZWQgMSB5ZWFyIGFmdGVyIHJlc2VjdGlvbiBhbmQgdGhlbiBldmVyeSAzIHRvIDUgeWVhcnMgdGhlcmVhZnRlci4KCkdhc3RyaWMgU3ViZXBpdGhlbGlhbCBMZXNpb25zCkdhc3Ryb2ludGVzdGluYWwgU3Ryb21hbCBUdW1vcnMKR2FzdHJvaW50ZXN0aW5hbCBzdHJvbWFsIHR1bW9ycyAoR0lTVHMpIGFyZSB0aGUgbW9zdCBjb21tb24gbWVzZW5jaHltYWwgdHVtb3JzIG9mIHRoZSBzdG9tYWNoLiBHSVNUcyBtYXkgcHJlc2VudCB3aXRoIHN5bXB0b21zLCBzdWNoIGFzIGJsZWVkaW5nIG9yIGFiZG9taW5hbCBwYWluLCBidXQgYXJlIGFsc28gZm91bmQgaW5jaWRlbnRhbGx5LiBFbmRvc2NvcGljIHVsdHJhc29ub2dyYXBoeSBpcyB0aGUgYmVzdCBkaWFnbm9zdGljIG1vZGFsaXR5IGZvciBldmFsdWF0aW9uIG9mIGEgR0lTVC4gSGlnaC1yaXNrIGZlYXR1cmVzIG9uIGVuZG9zY29waWMgdWx0cmFzb25vZ3JhcGh5IGluY2x1ZGUgc2l6ZSBncmVhdGVyIHRoYW4gMiBjbSwgbG9idWxhdGVkIG9yIGlycmVndWxhciBib3JkZXJzLCBpbnZhc2lvbiBpbnRvIGFkamFjZW50IHN0cnVjdHVyZXMsIGFuZCBoZXRlcm9nZW5laXR5LiBBIEdJU1QgY2FuIGJlIGJpb3BzaWVkLCBidXQgdGhlIGhpZ2gtcmlzayBlbmRvc2NvcGljIGZlYXR1cmVzIGFyZSBiZXR0ZXIgcHJlZGljdG9ycyBvZiBtYWxpZ25hbnQgcG90ZW50aWFsLiBUcmVhdG1lbnQgY29uc2lzdHMgb2Ygc3VyZ2ljYWwgb3IgZW5kb3Njb3BpYyBleGNpc2lvbiBpZiB0aGUgR0lTVCBpcyBzeW1wdG9tYXRpYyBvciBoaWdoLXJpc2sgZmVhdHVyZXMgYXJlIHByZXNlbnQuIEZvciBHSVNUcyB3aXRob3V0IGhpZ2gtcmlzayBmZWF0dXJlcywgeWVhcmx5IGVuZG9zY29waWMgc3VydmVpbGxhbmNlIGlzIGluZGljYXRlZC4gU2VlIE1LU0FQIDE5IE9uY29sb2d5IGZvciBzdGFnaW5nIGFuZCB0cmVhdG1lbnQgb2YgR0lTVHMuCgpHYXN0cm9pbnRlc3RpbmFsIE5ldXJvZW5kb2NyaW5lIFR1bW9ycwpOZXVyb2VuZG9jcmluZSB0dW1vcnMgKE5FVHM7IGZvcm1lcmx5IGNhbGxlZCBjYXJjaW5vaWQgdHVtb3JzKSBhcmUgd2VsbC1kaWZmZXJlbnRpYXRlZCBsZXNpb25zIG9yaWdpbmF0aW5nIGluIHRoZSBkaWdlc3RpdmUgdHJhY3QsIGx1bmdzLCBvciwgcmFyZWx5LCBraWRuZXlzIG9yIG92YXJpZXMuIE5FVHMgY2FuIGJlIGVuY291bnRlcmVkIHRocm91Z2hvdXQgdGhlIGdhc3Ryb2ludGVzdGluYWwgdHJhY3QsIGluY2x1ZGluZyB0aGUgc3RvbWFjaC4gVGhleSBtYXkgcHJlc2VudCBzeW1wdG9tYXRpY2FsbHkgb3IgbWF5IGJlIGZvdW5kIGluY2lkZW50YWxseS4gVGhlc2UgdHVtb3JzIGFyZSB1c3VhbGx5IHNwb3JhZGljIGJ1dCBjYW4gYmUgc2VlbiBpbiB0aGUgc2V0dGluZyBvZiBab2xsaW5nZXItRWxsaXNvbiBzeW5kcm9tZTsgYXRyb3BoaWMgZ2FzdHJpdGlzOyBhbmQgcmFyZSBzeW5kcm9tZXMsIHN1Y2ggYXMgbXVsdGlwbGUgZW5kb2NyaW5lIG5lb3BsYXNpYSB0eXBlIDEgYW5kIG5ldXJvZmlicm9tYXRvc2lzIHR5cGUgMS4gTkVUcyBhcmUgY2xhc3NpZmllZCBieSBzaXplLCBudW1iZXIsIGFuZCBhbmF0b21pYyBkaXN0cmlidXRpb24uIE1hbmFnZW1lbnQgb2YgZ2FzdHJvaW50ZXN0aW5hbCBORVRzIGluY2x1ZGVzIGVuZG9zY29waWMgc3VydmVpbGxhbmNlIGZvciBsZXNpb25zIHNtYWxsZXIgdGhhbiAxIGNtLCBlc3BlY2lhbGx5IHdoZW4gbXVsdGlwbGUgbGVzaW9ucyBhcmUgcHJlc2VudC4gRW5kb3Njb3BpYyBvciBzdXJnaWNhbCBleGNpc2lvbiBpcyBpbmRpY2F0ZWQgZm9yIGdhc3Ryb2ludGVzdGluYWwgTkVUcyB3aXRoIGhpZ2gtcmlzayBmZWF0dXJlcywgc3VjaCBhcyBzb2xpdGFyeSBsZXNpb25zIG5vdCBmb3VuZCBpbiB0aGUgc2V0dGluZyBvZiBhdHJvcGhpYyBnYXN0cml0aXMgb3IgWm9sbGluZ2VyLUVsbGlzb24gc3luZHJvbWUuIFNlZSBNS1NBUCAxOSBPbmNvbG9neSBmb3IgdHJlYXRtZW50IG9mIGdhc3Ryb2ludGVzdGluYWwgTkVUcy4KCktleSBQb2ludHMKUG9seXBzIGluIHRoZSBzdG9tYWNoIGluY2x1ZGUgZnVuZGljIGdsYW5kIHBvbHlwcywgd2hpY2ggaGF2ZSBubyBtYWxpZ25hbnQgcG90ZW50aWFsOyBwb2x5cHMgd2l0aCBtYWxpZ25hbnQgcG90ZW50aWFsLCBpbmNsdWRpbmcgaHlwZXJwbGFzdGljIHBvbHlwcywgYW5kIGFkZW5vbWFzIHNob3VsZCBiZSByZXNlY3RlZC4KR2FzdHJvaW50ZXN0aW5hbCBzdHJvbWFsIHR1bW9ycyBzaG91bGQgYmUgZXZhbHVhdGVkIHdpdGggZW5kb3Njb3BpYyB1bHRyYXNvbm9ncmFwaHkgYW5kIGV4Y2lzZWQgaWYgc3ltcHRvbXMgb3IgaGlnaC1yaXNrIGZlYXR1cmVzIGFyZSBwcmVzZW50LgpOZXVyb2VuZG9jcmluZSB0dW1vcnMgYXJlIHVzdWFsbHkgc3BvcmFkaWMgYnV0IGNhbiBiZSBzZWVuIGluIHRoZSBzZXR0aW5nIG9mIFpvbGxpbmdlci1FbGxpc29uIHN5bmRyb21lOyBhdHJvcGhpYyBnYXN0cml0aXM7IGFuZCByYXJlIHN5bmRyb21lcywgc3VjaCBhcyBtdWx0aXBsZSBlbmRvY3JpbmUgbmVvcGxhc2lhIHR5cGUgMSBhbmQgbmV1cm9maWJyb21hdG9zaXMgdHlwZSAxLgpHYXN0cmljIEFkZW5vY2FyY2lub21hCkVwaWRlbWlvbG9neSBhbmQgUmlzayBGYWN0b3JzClN0b21hY2ggYWRlbm9jYXJjaW5vbWEgaGFzIGFuIGluY2lkZW5jZSBvZiA2LjYgaW4gMTAwLDAwMCBwZXJzb25zIGFuZCBhIG1vcnRhbGl0eSBvZiAzLjEgcGVyIDEwMCwwMDAgcGVyc29ucyBpbiB0aGUgVW5pdGVkIFN0YXRlcy4gUmF0ZXMgaGF2ZSBzdGVhZGlseSBkZWNyZWFzZWQgc2luY2UgdGhlIDE5OTBzLiBUaGUgdHdvIHR5cGVzIG9mIGdhc3RyaWMgY2FuY2VyIGFyZSBpbnRlc3RpbmFsLXR5cGUsIHdoaWNoIGlzIG1vcmUgY29tbW9uLCBhbmQgZGlmZnVzZS10eXBlLiBILiBweWxvcmkgaXMgYSByZWNvZ25pemVkIHJpc2sgZmFjdG9yIGZvciBib3RoIHR5cGVzIGFuZCBpcyB0aGUgcHJpbWFyeSBub25nZW5ldGljIHJpc2sgZmFjdG9yIGZvciBnYXN0cmljIGNhbmNlci4gT3RoZXIgcmlzayBmYWN0b3JzIHByaW1hcmlseSBhc3NvY2lhdGVkIHdpdGggaW50ZXN0aW5hbC10eXBlIGdhc3RyaWMgYWRlbm9jYXJjaW5vbWEgaW5jbHVkZSBtYWxlIHNleDsgZXRobmljaXR5IChpbmNpZGVuY2UgaXMgaGlnaGVzdCBpbiBwZXJzb25zIG9mIEFzaWFuIGFuZCBQYWNpZmljIElzbGFuZCBkZXNjZW50KTsgZ2VvZ3JhcGh5ICh0aGUgaGlnaGVzdCByYXRlcyB3b3JsZHdpZGUgb2NjdXIgaW4gQXNpYSwgRWFzdGVybiBFdXJvcGUsIGFuZCBDZW50cmFsIGFuZCBTb3V0aCBBbWVyaWNhKTsgYSBkaWV0IGhpZ2ggaW4gc21va2VkLCBzYWx0ZWQsIGFuZCBwaWNrbGVkIGZvb2RzIGFzIHdlbGwgYXMgbml0cmF0ZXMgYW5kIG5pdHJpdGVzOyBzbW9raW5nOyBhbmQgb2Jlc2l0eS4gQWRkaXRpb25hbCByaXNrIGZhY3RvcnMgaW5jbHVkZSBwcmV2aW91cyBzdG9tYWNoIHN1cmdlcnk7IGNocm9uaWMgYXRyb3BoaWMgZ2FzdHJpdGlzOyBhbmQgaGVyZWRpdGFyeSBzeW5kcm9tZXMsIHN1Y2ggYXMgaGVyZWRpdGFyeSBkaWZmdXNlIGdhc3RyaWMgY2FuY2VyIChhc3NvY2lhdGVkIHdpdGggdGhlIGRpZmZ1c2UgdHlwZSksIEx5bmNoIHN5bmRyb21lLCBhbmQgZmFtaWxpYWwgYWRlbm9tYXRvdXMgcG9seXBvc2lzLiBHYXN0cmljIGludGVzdGluYWwgbWV0YXBsYXNpYSBhbmQgZHlzcGxhc2lhIGFyZSBhbHNvIHJpc2sgZmFjdG9ycyBmb3IgZ2FzdHJpYyBhZGVub2NhcmNpbm9tYS4KClNjcmVlbmluZyBhbmQgU3VydmVpbGxhbmNlClRoZXJlIGlzIG5vIHJlY29tbWVuZGF0aW9uIGZvciBwb3B1bGF0aW9uLWJhc2VkIHNjcmVlbmluZyBmb3IgZ2FzdHJpYyBhZGVub2NhcmNpbm9tYSBpbiBjb3VudHJpZXMgd2l0aCBhIGxvdyBpbmNpZGVuY2Ugb2YgZ2FzdHJpYyBjYW5jZXIsIHN1Y2ggYXMgdGhlIFVuaXRlZCBTdGF0ZXMuIEludGVzdGluYWwgbWV0YXBsYXNpYSB3aXRoIGhpZ2gtZ3JhZGUgZHlzcGxhc2lhIHNob3VsZCBiZSByZXNlY3RlZCBiZWNhdXNlIDI1JSBvZiBjYXNlcyBwcm9ncmVzcyB0byBhZGVub2NhcmNpbm9tYS4gU2NyZWVuaW5nIGFuZCBzdXJ2ZWlsbGFuY2UgYXJlIGluZGljYXRlZCBmb3IgcGF0aWVudHMgd2l0aCBmYW1pbGlhbCBhZGVub21hdG91cyBwb2x5cG9zaXMgYW5kIEx5bmNoIHN5bmRyb21lLgoKQ2xpbmljYWwgTWFuaWZlc3RhdGlvbnMgYW5kIERpYWdub3NpcwpTeW1wdG9tcyBvZiBnYXN0cmljIGFkZW5vY2FyY2lub21hIG1heSBiZSB2YWd1ZS4gVGhleSBpbmNsdWRlIHBvb3IgYXBwZXRpdGUsIHdlaWdodCBsb3NzLCBhYmRvbWluYWwgcGFpbiwgZWFybHkgc2F0aWV0eSwgbmF1c2VhLCBhbmQgdm9taXRpbmcuIFNpZ25zIG9mIGdhc3RyaWMgYWRlbm9jYXJjaW5vbWEgaW5jbHVkZSBpcm9uIGRlZmljaWVuY3kgYW5lbWlhLiBEaWFnbm9zaXMgaXMgdHlwaWNhbGx5IG1hZGUgYnkgdXBwZXIgZW5kb3Njb3B5IHdpdGggYmlvcHN5LgoKRm9yIHRyZWF0bWVudCBvZiBnYXN0cmljIGNhbmNlciwgc2VlIE1LU0FQIDE5IE9uY29sb2d5LgoKS2V5IFBvaW50cwpUaGUgcHJpbWFyeSBub25nZW5ldGljIHJpc2sgZmFjdG9yIGZvciBnYXN0cmljIGNhbmNlciBpcyBIZWxpY29iYWN0ZXIgcHlsb3JpIGluZmVjdGlvbi4KSW4gY291bnRyaWVzIHdpdGggYSBsb3cgaW5jaWRlbmNlIG9mIGdhc3RyaWMgY2FuY2VyLCBzdWNoIGFzIHRoZSBVbml0ZWQgU3RhdGVzLCBzY3JlZW5pbmcgZm9yIGdhc3RyaWMgY2FuY2VyIHNob3VsZCBiZSByZXNlcnZlZCBmb3IgcGF0aWVudHMgd2l0aCBnZW5ldGljIGNhbmNlciBzeW5kcm9tZXMuClVwcGVyIGVuZG9zY29weSB3aXRoIGJpb3BzeSBpcyB0aGUgZGlhZ25vc3RpYyB0ZXN0IG9mIGNob2ljZSBmb3IgZ2FzdHJpYyBjYW5jZXIuCkdhc3RyaWMgU3VyZ2VyeSBDb21wbGljYXRpb25zClJlbGF0ZWQgUXVlc3Rpb24KUXVlc3Rpb24gNDIKRm9yIGNvbXBsaWNhdGlvbnMgb2YgYmFyaWF0cmljIHN1cmdlcnksIHNlZSBNS1NBUCAxOSBHZW5lcmFsIEludGVybmFsIE1lZGljaW5lIDIuCgpQYXJ0aWFsIG9yIGNvbXBsZXRlIGdhc3RyaWMgcmVzZWN0aW9ucyBhcmUgcGVyZm9ybWVkIGZvciBiZW5pZ24gYW5kIG1hbGlnbmFudCBkaXNlYXNlLiBUaGUgZXh0ZW50IG9mIHJlc2VjdGlvbiwgdHlwZSBvZiByZWNvbnN0cnVjdGlvbiwgYW5kIG5hdHVyZSBvZiB0aGUgZGlzZWFzZSBhZmZlY3QgcG9zdG9wZXJhdGl2ZSBtb3JiaWRpdHkgYW5kIG1vcnRhbGl0eS4gUGFydGlhbCByZXNlY3Rpb24gYWxsb3dzIHByZXNlcnZhdGlvbiBvZiBzb21lIGZ1bmN0aW9uIG9mIHRoZSBzdG9tYWNoLCBidXQgcGF0aWVudHMgd2l0aCBtYWxpZ25hbmN5IHJlcXVpcmUgbGlmZWxvbmcgc3VydmVpbGxhbmNlIG9mIHRoZSByZW1haW5pbmcgc3RvbWFjaCBmb3IgcmVjdXJyZW5jZS4gUGF0aWVudHMgd2hvIHVuZGVyZ28gcGFydGlhbCBnYXN0cmVjdG9teSBmb3IgYmVuaWduIGRpc2Vhc2UgYWxzbyBoYXZlIGFuIGluY3JlYXNlZCByaXNrIGZvciBjYW5jZXIgaW4gdGhlIGdhc3RyaWMgcmVtbmFudCAxNSB0byAyMCB5ZWFycyBhZnRlciBzdXJnZXJ5LCB3aXRoIHJlcG9ydGVkIGZyZXF1ZW5jeSByYW5naW5nIGZyb20gMC44JSB0byA4LjklLgoKRHVtcGluZyBzeW5kcm9tZSwgd2hpY2ggcmVzdWx0cyBmcm9tIHJhcGlkIGdhc3RyaWMgZW1wdHlpbmcgYWZ0ZXIgZ2FzdHJpYyBzdXJnZXJ5LCBjYW4gY2F1c2Ugc2lnbmlmaWNhbnQgcG9zdHByYW5kaWFsIGdhc3Ryb2ludGVzdGluYWwgYW5kIHZhc29tb3RvciBzeW1wdG9tcy4gQ2xpbmljYWwgZmVhdHVyZXMgb2YgZWFybHkgZHVtcGluZyBzeW5kcm9tZSBvY2N1ciB3aXRoaW4gMzAgbWludXRlcyBvZiBlYXRpbmcgZHVlIHRvIGdhc3Ryb2ludGVzdGluYWwgaG9ybW9uZSBoeXBlcnNlY3JldGlvbiwgYXV0b25vbWljIGR5c3JlZ3VsYXRpb24sIGFuZCBib3dlbCBkaXN0ZW50aW9uLiBTeW1wdG9tcyBpbmNsdWRlIHBhbHBpdGF0aW9ucywgZmx1c2hpbmcgb3IgcGFsbG9yLCBkaWFwaG9yZXNpcywgbGlnaHQtaGVhZGVkbmVzcywgaHlwb3RlbnNpb24sIGFuZCBmYXRpZ3VlLCBmb2xsb3dlZCBieSBkaWFycmhlYSwgbmF1c2VhLCBhYmRvbWluYWwgYmxvYXRpbmcsIGNyYW1waW5nLCBhbmQgYm9yYm9yeWdtdXMuIFN5bXB0b21zIG9mIGxhdGUgZHVtcGluZyBzeW5kcm9tZSBvY2N1ciAxIHRvIDMgaG91cnMgYWZ0ZXIgbWVhbHMgYmVjYXVzZSBvZiByZWFjdGl2ZSBoeXBvZ2x5Y2VtaWEgYW5kIGNhbiBpbmNsdWRlIGRlY3JlYXNlZCBjb25jZW50cmF0aW9uLCBmYWludG5lc3MsIGFuZCBhbHRlcmVkIGNvbnNjaW91c25lc3MuIEluIHNldmVyZSBjYXNlcywgcHJvdGVpbi13YXN0aW5nIG1hbG51dHJpdGlvbiBjYW4gb2NjdXIuCgpSb3VnaGx5IDI1JSB0byA1MCUgb2YgYWxsIHBhdGllbnRzIHdobyBoYXZlIHVuZGVyZ29uZSBnYXN0cmljIHN1cmdlcnkgZXhwZXJpZW5jZSBzb21lIHN5bXB0b21zIG9mIGR1bXBpbmcgc3luZHJvbWUsIGJ1dCBzZXZlcmUsIHBlcnNpc3RlbnQgc3ltcHRvbXMgb2NjdXIgaW4gb25seSBhYm91dCAxMCUuIE9yYWwgZ2x1Y29zZSBjaGFsbGVuZ2UgdGVzdGluZyBoZWxwcyBtYWtlIHRoZSBkaWFnbm9zaXMsIHdpdGggYSBzZW5zaXRpdml0eSBvZiBuZWFybHkgMTAwJSBhbmQgYSBzcGVjaWZpY2l0eSBvZiA5NCUuCgpGaXJzdC1saW5lIHRyZWF0bWVudCBmb3IgZHVtcGluZyBzeW5kcm9tZSBpcyBkaWV0YXJ5LCB3aXRoIHNtYWxsZXIsIG1vcmUgZnJlcXVlbnQgbWVhbHMgYW5kIGluZ2VzdGlvbiBvZiBsaXF1aWRzIGFmdGVyIG1lYWxzLiBEZWNyZWFzaW5nIGNhcmJvaHlkcmF0ZSBpbnRha2UsIGVzcGVjaWFsbHkgc2ltcGxlIGNhcmJvaHlkcmF0ZXMsIGFuZCBpbmNyZWFzaW5nIHByb3RlaW4gYW5kIGZpYmVyIGludGFrZSBtYXkgYWxzbyBhbGxldmlhdGUgc3ltcHRvbXMuCgpBY2FyYm9zZSwgYW4gzrEtZ2x5Y29zaWRhc2UgaHlkcm9sYXNlIGluaGliaXRvciB0aGF0IGludGVyZmVyZXMgd2l0aCBkaWdlc3Rpb24gb2YgcG9seXNhY2NoYXJpZGVzIHRvIG1vbm9zYWNjaGFyaWRlcywgY2FuIGJlIHVzZWQgZm9yIGxhdGUgc3ltcHRvbXMgb2YgZHVtcGluZyBzeW5kcm9tZS4gT3RoZXIgcGhhcm1hY29sb2dpYyB0aGVyYXBpZXMgaW5jbHVkZSBhbnRpY2hvbGluZXJnaWNzIHRvIHNsb3cgZ2FzdHJpYyBlbXB0eWluZyBhbmQgYW50aXNwYXNtb2RpY3MuIFNldmVyZSBjYXNlcyBvZiBkdW1waW5nIHJhcmVseSByZXF1aXJlIG9jdHJlb3RpZGUuIElmIGEgdHJpYWwgb2Ygc3ViY3V0YW5lb3VzIGluamVjdGlvbnMgaXMgZWZmZWN0aXZlLCBtb250aGx5IGludHJhbXVzY3VsYXIgaW5qZWN0aW9ucyBvZiBsb25nLWFjdGluZyBvY3RyZW90aWRlIGNhbiBiZSB1c2VkLgoKS2V5IFBvaW50cwpQYXRpZW50cyB3aG8gdW5kZXJnbyBwYXJ0aWFsIGdhc3RyZWN0b215IGZvciBtYWxpZ25hbmN5IHJlcXVpcmUgbGlmZWxvbmcgc3VydmVpbGxhbmNlIGZvciBjYW5jZXIgcmVjdXJyZW5jZTsgcGF0aWVudHMgd2hvIGhhdmUgdW5kZXJnb25lIHBhcnRpYWwgZ2FzdHJlY3RvbXkgZm9yIGJlbmlnbiBkaXNlYXNlIGFsc28gaGF2ZSBhbiBpbmNyZWFzZWQgcmlzayBmb3IgZ2FzdHJpYyBjYW5jZXIuCkR1bXBpbmcgc3luZHJvbWUgcmVzdWx0cyBmcm9tIHJhcGlkIGdhc3RyaWMgZW1wdHlpbmcgYWZ0ZXIgZ2FzdHJpYyBzdXJnZXJ5OyBmaXJzdC1saW5lIHRyZWF0bWVudCBpcyBzbWFsbGVyLCBtb3JlIGZyZXF1ZW50IG1lYWxzIHdpdGggbGlxdWlkcyB0YWtlbiBmb2xsb3dpbmcgbWVhbHMuCg==";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "Disorders of the Stomach and Duodenum..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
