@@ -1,0 +1,872 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Integrating Progressive Cervical Stabilization with Vestibular Rehabilitation for Vestibular Migraine: A Randomized Controlled Trial</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Integrating Progressive Cervical Stabilization with Vestibular Rehabilitation for Vestibular Migraine: A Randomized Controlled Trial</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source</strong>: Research Grant Proposal (R21 Application)</li>
+<li style="margin-left: 0px;"><strong>Topic</strong>: Vestibular Migraine Rehabilitation - Combining Vestibular Therapy with Cervical Stabilization</li>
+<li style="margin-left: 0px;"><strong>Author(s)</strong>: Research Team (Principal Investigator and collaborators)</li>
+</ul>
+<details><summary><strong>1. Background &amp; Problem</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>1.1. Migraine as a Public Health Issue</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Migraine</strong> = one of the leading causes of neurological disability worldwide</li>
+<li style="margin-left: 0px;">US annual lost workplace productivity: <strong>&gt;$13 billion</strong> due to absenteeism and impaired performance</li>
+<li style="margin-left: 0px;">Prevalence in developed countries: <strong>8–14%</strong></li>
+<li style="margin-left: 0px;">Women bear disproportionate burden → greater pain severity, higher disability, more frequent attacks</li>
+<li style="margin-left: 0px;">Annual healthcare costs: <strong>&gt;$1 billion</strong>, with ~80% from female patients</li>
+</ul>
+</div></details>
+<details><summary><strong>1.2. Vestibular Migraine (VM)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Common migraine subtype combining headache with recurrent <strong>vertigo</strong>, <strong>dizziness</strong>, and <strong>balance impairment</strong></li>
+<li style="margin-left: 0px;">Symptoms limit mobility, independence, and social participation</li>
+<li style="margin-left: 0px;">Pathophysiology involves abnormal integration of <strong>vestibular</strong>, <strong>visual</strong>, and <strong>somatosensory</strong> inputs</li>
+<li style="margin-left: 0px;">Many patients continue experiencing persistent dizziness despite pharmacologic therapy</li>
+</ul>
+</div></details>
+<details><summary><strong>1.3. Neck Pain &amp; Cervical Dysfunction in Migraine</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Up to <strong>90%</strong> of migraine sufferers report neck pain</li>
+<li style="margin-left: 0px;">Neck pain linked to: ↑ headache severity, ↑ disability, ↑ psychological distress</li>
+<li style="margin-left: 0px;">Objective impairments in migraine populations:</li>
+<li style="margin-left: 20px;">↓ cervical muscle endurance</li>
+<li style="margin-left: 20px;">impaired neuromuscular control</li>
+<li style="margin-left: 20px;">altered proprioceptive function</li>
+<li style="margin-left: 0px;">Mechanism: <strong>trigeminocervical complex</strong> → cervical and trigeminal afferents interact → central sensitization</li>
+<li style="margin-left: 0px;">Disrupted cervical proprioception interferes with postural control and gaze stability</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>2. Study Aims &amp; Hypotheses</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>2.1. Primary Aim</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Determine whether <strong>adding progressive cervical stabilization training (CST)</strong> to standard vestibular rehabilitation (VR) results in greater improvement in <strong>dizziness at 8 weeks</strong> compared with VR alone</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2. Secondary Aim</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Examine whether combined intervention (VR + CST) produces greater improvements in <strong>balance at 8 weeks</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>2.3. Exploratory Aim</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Evaluate whether combined intervention leads to greater reductions in:</li>
+<li style="margin-left: 20px;"><strong>Headache frequency</strong></li>
+<li style="margin-left: 20px;"><strong>Headache intensity</strong></li>
+<li style="margin-left: 20px;"><strong>Migraine-related disability</strong> at 8 weeks</li>
+</ul>
+</div></details>
+<details><summary><strong>2.4. Hypotheses</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>H1</strong>: VR + CST will demonstrate greater improvement in Dizziness Handicap Inventory (DHI) at 8 weeks vs VR alone</li>
+<li style="margin-left: 0px;"><strong>H2</strong>: Combined intervention will show greater improvement in Mini-BESTest (balance) at 8 weeks vs VR alone</li>
+<li style="margin-left: 0px;"><strong>H3</strong>: Combined intervention will exhibit greater reductions in monthly headache frequency, VAS intensity, and MIDAS at 8 weeks vs VR alone</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>3. Study Design Overview</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>3.1. Trial Type</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Prospective, randomized controlled exploratory trial</strong></li>
+<li style="margin-left: 0px;">Randomization: <strong>1:1</strong> to VR alone or VR + CST</li>
+<li style="margin-left: 0px;">Stratification by migraine subtype: <strong>chronic vs episodic</strong></li>
+<li style="margin-left: 0px;">Masking: outcome assessors and data analysts masked to allocation</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2. Intervention Duration</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>8 weeks</strong> of supervised treatment</li>
+<li style="margin-left: 0px;">Sessions: <strong>twice weekly in-person</strong> + daily home program</li>
+<li style="margin-left: 0px;">Follow-up: <strong>3 months post-randomization</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>3.3. Participant Groups</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>VR Alone (Control Group)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Standardized vestibular rehabilitation program</li>
+<li style="margin-left: 0px;">Includes: gaze stabilization exercises, habituation exercises, progressive balance training</li>
+<li style="margin-left: 0px;">Individualized and progressed based on symptom tolerance</li>
+</ul>
+</div></details>
+<details><summary><strong>VR + CST (Intervention Group)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Same vestibular rehabilitation <strong>plus</strong> progressive cervical stabilization training</li>
+<li style="margin-left: 0px;">Cervical components:</li>
+<li style="margin-left: 20px;">Deep neck flexor activation</li>
+<li style="margin-left: 20px;">Cervical extensor endurance training</li>
+<li style="margin-left: 20px;">Cervical motor control retraining with progressive loading</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+<details><summary><strong>4. Participant Criteria</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>4.1. Inclusion Criteria</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Adults <strong>≥18 years old</strong></li>
+<li style="margin-left: 0px;">Diagnosis of vestibular migraine per <strong>ICHD-3 criteria</strong></li>
+<li style="margin-left: 0px;">At least <strong>3 headache days per month</strong></li>
+<li style="margin-left: 0px;">Medically cleared to participate in supervised rehabilitation</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2. Exclusion Criteria</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Other primary vestibular disorders</li>
+<li style="margin-left: 0px;">Cervical radiculopathy or myelopathy</li>
+<li style="margin-left: 0px;">Recent cervical spine surgery</li>
+<li style="margin-left: 0px;">Uncontrolled neurological or cardiovascular conditions</li>
+<li style="margin-left: 0px;">Concurrent rehabilitation targeting cervical or vestibular dysfunction</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3. Recruitment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Sources: neurology clinics, vestibular specialty clinics, community referrals</li>
+<li style="margin-left: 0px;">Diagnosis verification by neurologist using ICHD-3 criteria when possible</li>
+<li style="margin-left: 0px;">Target: demographically diverse sample</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>5. Outcome Measures</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>5.1. Primary Outcome</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Dizziness Handicap Inventory (DHI)</strong> → change at 8 weeks</li>
+<li style="margin-left: 0px;">MCID (Minimal Clinically Important Difference): <strong>18 points</strong></li>
+<li style="margin-left: 0px;">Assessment timepoints: baseline, 8 weeks, 3 months</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2. Secondary Outcomes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Balance</strong>: Mini-BESTest</li>
+<li style="margin-left: 0px;"><strong>Headache frequency &amp; intensity</strong>: daily headache diaries + visual analog scales (VAS)</li>
+<li style="margin-left: 0px;"><strong>Migraine disability</strong>: MIDAS (Migraine Disability Assessment)</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3. Exploratory Subgroups</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Baseline migraine subtype (chronic vs episodic)</li>
+<li style="margin-left: 0px;">Presence of neck pain</li>
+<li style="margin-left: 0px;">Sex</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>6. Sample Size &amp; Power</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>6.1. Calculations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">MCID for DHI: <strong>18 points</strong></li>
+<li style="margin-left: 0px;">Expected effect size: <strong>Cohen&#x27;s d ≈ 0.54–0.75</strong> (based on pilot data and prior trials)</li>
+<li style="margin-left: 0px;">Parameters: α = 0.05, power = 80%</li>
+<li style="margin-left: 0px;">Required sample per group: <strong>~29 participants</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>6.2. Target Enrollment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Total: <strong>64 participants</strong> (32 per group)</li>
+<li style="margin-left: 0px;">Accounts for potential attrition</li>
+<li style="margin-left: 0px;">Recruitment rate: ~5–6 participants/month over 12 months</li>
+</ul>
+</div></details>
+<details><summary><strong>6.3. Retention Strategies</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Financial compensation: <strong>$50/week + $50 completion bonus</strong> (max $450)</li>
+<li style="margin-left: 0px;">Free supervised rehabilitation (no insurance/copayment barriers)</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>7. Pilot Study Findings</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>7.1. Pilot Design</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>20 consecutive patients</strong> with vestibular migraine</li>
+<li style="margin-left: 0px;">Alternately assigned to VR alone (n=10) or VR + CST (n=10)</li>
+<li style="margin-left: 0px;">Treatment period: <strong>12 weeks</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>7.2. Results Summary</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Outcome</th>
+<th>VR Alone (n=10) Mean ± SD</th>
+<th>VR + CST (n=10) Mean ± SD</th>
+<th>Cohen&#x27;s d</th>
+<th>p-value</th>
+<th>95% CI</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>DHI</td>
+<td>−18.3 ± 15.7</td>
+<td>−27.1 ± 17.9</td>
+<td>0.54</td>
+<td>0.21</td>
+<td>−22.4 to 4.8</td>
+</tr>
+<tr>
+<td>Mini-BESTest</td>
+<td>+2.6 ± 2.5</td>
+<td>+4.3 ± 3.1</td>
+<td>0.61</td>
+<td>0.18</td>
+<td>−3.9 to 0.7</td>
+</tr>
+<tr>
+<td>MIDAS</td>
+<td>−7.1 ± 13.6</td>
+<td>−12.4 ± 14.2</td>
+<td>0.39</td>
+<td>0.36</td>
+<td>−16.7 to 6.1</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>7.3. Key Findings</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Both groups showed clinically meaningful improvements in dizziness-related disability</li>
+<li style="margin-left: 0px;">Combined intervention group exceeded MCID for DHI</li>
+<li style="margin-left: 0px;">Between-group difference favored VR + CST but not statistically significant (p=0.21) → likely due to small sample size</li>
+<li style="margin-left: 0px;">Moderate effect sizes observed</li>
+<li style="margin-left: 0px;"><strong>Adherence &gt;85%</strong> for supervised and home exercise programs</li>
+<li style="margin-left: 0px;"><strong>No adverse events</strong> occurred</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>8. Statistical Analysis Plan</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>8.1. Analysis Framework</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Intention-to-treat</strong> analysis</li>
+<li style="margin-left: 0px;">Mixed-effects repeated measures models for primary and secondary outcomes</li>
+<li style="margin-left: 0px;">Allows inclusion of participants with incomplete follow-up → reduces bias from missing data</li>
+</ul>
+</div></details>
+<details><summary><strong>8.2. Feasibility Benchmarks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">≥85% completion of 8-week primary endpoint</li>
+<li style="margin-left: 0px;">≥80% completion of 3-month follow-up</li>
+<li style="margin-left: 0px;">≥75% attendance at supervised sessions</li>
+<li style="margin-left: 0px;">≥70% adherence to home exercise</li>
+<li style="margin-left: 0px;">No serious intervention-related adverse events</li>
+<li style="margin-left: 0px;">&lt;10% discontinuation due to symptom exacerbation</li>
+</ul>
+</div></details>
+<details><summary><strong>8.3. Effect Size Reporting</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cohen&#x27;s d and <strong>95% confidence intervals</strong> calculated</li>
+<li style="margin-left: 0px;">Informs future power calculations for fully powered trial</li>
+</ul>
+</div></details>
+<details><summary><strong>8.4. Sensitivity Analyses</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Per-protocol analyses conducted if attrition exceeds expectations</li>
+</ul>
+</div></details>
+<details><summary><strong>8.5. Exploratory Analyses</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Subgroup differences based on:</li>
+<li style="margin-left: 20px;">Migraine subtype (chronic vs episodic)</li>
+<li style="margin-left: 20px;">Neck pain status</li>
+<li style="margin-left: 20px;">Sex</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>9. Significance &amp; Rationale</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>9.1. Clinical Need</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Current treatments often leave patients with persistent dizziness and balance dysfunction</li>
+<li style="margin-left: 0px;"><strong>Critical need</strong> for effective non-pharmacologic interventions targeting functional disability</li>
+</ul>
+</div></details>
+<details><summary><strong>9.2. Mechanism-Based Approach</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cervical dysfunction is linked to migraine pathophysiology via trigeminocervical convergence</li>
+<li style="margin-left: 0px;">These musculoskeletal impairments are <strong>modifiable</strong> through targeted rehabilitation</li>
+<li style="margin-left: 0px;">Standard vestibular protocols rarely include cervical stabilization despite neurophysiological links</li>
+</ul>
+</div></details>
+<details><summary><strong>9.3. Supporting Evidence</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Cervical strengthening trials show: ↓ headache intensity, ↓ migraine-related disability, ↑ physical function</li>
+<li style="margin-left: 0px;">Resistance exercise in VM reduces dizziness handicap and vertigo severity</li>
+<li style="margin-left: 0px;">Exercise at moderate doses ↓ migraine frequency and intensity</li>
+</ul>
+</div></details>
+<details><summary><strong>9.4. NCCIH Alignment</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Supports non-pharmacologic, integrative approaches for chronic pain/neurological dysfunction</li>
+<li style="margin-left: 0px;">Prioritizes accessible, low-risk interventions that improve function</li>
+<li style="margin-left: 0px;">Reduces long-term medication reliance</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>10. Innovation</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>10.1. Integrated Rehabilitation Model</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">First randomized trial to test whether <strong>progressive cervical stabilization enhances vestibular rehabilitation</strong> in VM</li>
+<li style="margin-left: 0px;">Targets neurophysiological convergence between cervical and vestibular systems</li>
+</ul>
+</div></details>
+<details><summary><strong>10.2. Patient-Centered Outcomes</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Prioritizes <strong>dizziness-related disability</strong> and <strong>balance performance</strong> over just headache metrics</li>
+<li style="margin-left: 0px;">Expands treatment focus from pain reduction to restoration of sensorimotor function and participation</li>
+</ul>
+</div></details>
+<details><summary><strong>10.3. Scalable Intervention</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Uses low-cost, widely available rehabilitation techniques</li>
+<li style="margin-left: 0px;">No specialized equipment required</li>
+<li style="margin-left: 0px;">Can be implemented in standard physical therapy settings</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>11. Potential Limitations &amp; Mitigation</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>11.1. Limitation: Participant Masking</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Not feasible due to rehabilitation intervention nature</li>
+<li style="margin-left: 0px;"><strong>Mitigation</strong>: Both groups receive active therapy with equal therapist contact; outcome assessors and analysts remain masked</li>
+</ul>
+</div></details>
+<details><summary><strong>11.2. Limitation: Symptom Heterogeneity</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Mitigation</strong>: Stratified randomization + exploratory subgroup analyses</li>
+</ul>
+</div></details>
+<details><summary><strong>11.3. Limitation: Exacerbation Risk</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Mitigation</strong>: Graded exercise progression + therapist monitoring</li>
+</ul>
+</div></details>
+<details><summary><strong>11.4. Limitation: Short Follow-Up</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Limited to <strong>3 months</strong></li>
+<li style="margin-left: 0px;"><strong>Mitigation</strong>: Enables assessment of short-term durability; informs future longer-term trials</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>12. Project Timeline</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Phase</th>
+<th>Months</th>
+<th>Key Activities</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Start-Up &amp; Preparation</td>
+<td>1–3</td>
+<td>Finalize procedures; train therapists/assessors; establish REDCap systems; regulatory approvals</td>
+</tr>
+<tr>
+<td>Recruitment &amp; Enrollment</td>
+<td>4–15</td>
+<td>Enroll ~5–6 participants/month to reach 64 total</td>
+</tr>
+<tr>
+<td>Intervention Delivery</td>
+<td>4–18</td>
+<td>8-week supervised rehabilitation (rolling basis)</td>
+</tr>
+<tr>
+<td>Outcome Assessments</td>
+<td>4–21</td>
+<td>Post-intervention + 3-month follow-up assessments</td>
+</tr>
+<tr>
+<td>Analysis &amp; Dissemination</td>
+<td>18–24</td>
+<td>Data cleaning; statistical analysis; conference presentations; manuscript preparation</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>13. Rigor &amp; Transparency</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>13.1. Scientific Premise Support</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Evidence of cervical musculoskeletal impairments in migraine</li>
+<li style="margin-left: 0px;">Trigeminocervical convergence mechanisms</li>
+<li style="margin-left: 0px;">Preliminary data suggesting cervical stabilization may reduce migraine disability</li>
+</ul>
+</div></details>
+<details><summary><strong>13.2. Bias Minimization</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Standardized intervention manuals</li>
+<li style="margin-left: 0px;">Therapist training and fidelity monitoring</li>
+<li style="margin-left: 0px;">Masked outcome assessment</li>
+<li style="margin-left: 0px;">Validated outcomes (DHI, Mini-BESTest, MIDAS, headache diary)</li>
+</ul>
+</div></details>
+<details><summary><strong>13.3. Reporting</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Procedures and reporting follow <strong>CONSORT guidelines</strong></li>
+<li style="margin-left: 0px;">Predefined statistical analysis plan with masked group coding</li>
+<li style="margin-left: 0px;">Exploratory analyses examine biological variables: sex, migraine chronicity, neck pain</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>14. Expected Impact</strong></summary><div style="padding-left: 20px;">
+<details><summary><strong>14.1. Clinical Applications</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Refine rehabilitation strategies for vestibular migraine</li>
+<li style="margin-left: 0px;">Inform evidence-based physical therapy practice</li>
+<li style="margin-left: 0px;">Lead to more comprehensive treatment approaches</li>
+</ul>
+</div></details>
+<details><summary><strong>14.2. Future Research</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Generate preliminary efficacy data for fully powered trial</li>
+<li style="margin-left: 0px;">Build specific recommendations for strength training in migraine patient population</li>
+</ul>
+</div></details>
+<details><summary><strong>14.3. Translational Potential</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Provides evidence-based framework for addressing both headache and dizziness disability</li>
+<li style="margin-left: 0px;">Advances integrative neuromusculoskeletal rehabilitation model consistent with NCCIH priorities</li>
+<li style="margin-left: 0px;">Non-invasive, scalable strategy targeting musculoskeletal and sensorimotor contributors to migraine disability</li>
+</ul>
+</div></details>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "QS4JU1BFQ0lGSUMgQUlNUwpBcyBhIGNvbW1vbiBhbmQgZGlzYWJsaW5nIG5ldXJvbG9naWNhbCBjb25kaXRpb24sIG1pZ3JhaW5lIGFjY291bnRzIGZvciBvdmVyICQxMyBiaWxsaW9uIGluIGFubnVhbCBsb3N0IHJldmVudWUgaW4gdGhlIFVTIGR1ZSB0byBpbXBhaXJlZCB3b3JrIGZ1bmN0aW9uIGFuZCBtaXNzZWQgd29ya2RheXMsMSB3aXRoIHRoZSB2ZXN0aWJ1bGFyIG1pZ3JhaW5lIHN1YnR5cGUgZnVydGhlciBkaW1pbmlzaGluZyBsaWZlIHBhcnRpY2lwYXRpb24gdGhyb3VnaCBzeW1wdG9tcyBsaWtlIHZlcnRpZ28sIGRpenppbmVzcywgYW5kIGJhbGFuY2UgZGlzdHVyYmFuY2VzLjIgTWlncmFpbmUgcGF0aG9waHlzaW9sb2d5IGludm9sdmVzIGNvbXBsZXggbmV1cm92YXNjdWxhciBtZWNoYW5pc21zLCBhbmQgaW4gdmVzdGlidWxhciBtaWdyYWluZSwgYWx0ZXJlZCBjZW50cmFsIGludGVncmF0aW9uIG9mIHZlc3RpYnVsYXIsIHZpc3VhbCwgYW5kIHNvbWF0b3NlbnNvcnkgaW5wdXRzIGNvbnRyaWJ1dGVzIHRvIGRpenppbmVzcyBhbmQgcG9zdHVyYWwgaW5zdGFiaWxpdHkuMyBPZnRlbiBjby1tb3JiaWQgd2l0aCBtaWdyYWluZXMsIG5lY2sgcGFpbiBhbmQgbXVzY3Vsb3NrZWxldGFsIGR5c2Z1bmN0aW9uIGFyZSBsaW5rZWQgdG8gaW5jcmVhc2VkIGhlYWRhY2hlIHNldmVyaXR5IGFuZCBkaXNhYmlsaXR5LCBsaWtlbHkgZHVlIHRvIGFsdGVyZWQgY2VydmljYWwgcHJvcHJpb2NlcHRpdmUgaW5wdXQgYW5kIHNlbnNvcmltb3RvciBpbnRlZ3JhdGlvbiB0aGF0IGNvbnRyaWJ1dGUgdG8gYm90aCBoZWFkYWNoZXMgYW5kIGRpenppbmVzcy40LCA1IEFsdGhvdWdoIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gaXMgY29uc2lkZXJlZCBzdGFuZGFyZCBvZiBjYXJlIGFuZCBjZXJ2aWNhbC1mb2N1c2VkIHN0cmVuZ3RoZW5pbmcgaGFzIHNob3duIHBvdGVudGlhbCBmb3IgaGVhZGFjaGUtcmVsYXRlZCBvdXRjb21lcyw2LCA3IHRoZSBpbXBhY3Qgb2YgYWRkaW5nIHByb2dyZXNzaXZlIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gdHJhaW5pbmcgdG8gdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiBvbiBkaXp6aW5lc3MgYW5kIGJhbGFuY2UgaW4gdmVzdGlidWxhciBtaWdyYWluZSByZW1haW5zIHVuY2xlYXIsIHJlcHJlc2VudGluZyBhIGNyaXRpY2FsIGdhcCB0aGlzIHN0dWR5IGFpbXMgdG8gYWRkcmVzcy4KUHJpbWFyeSBBaW06IERldGVybWluZSB3aGV0aGVyIGFkZGluZyBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIHRyYWluaW5nIHRvIGEgc3RhbmRhcmQgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiBwcm9ncmFtIHJlc3VsdHMgaW4gZ3JlYXRlciBpbXByb3ZlbWVudCBpbiBkaXp6aW5lc3MgYXQgOCB3ZWVrcyBjb21wYXJlZCB3aXRoIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gYWxvbmUuClNlY29uZGFyeSBBaW06IEV4YW1pbmUgd2hldGhlciB0aGUgY29tYmluZWQgaW50ZXJ2ZW50aW9uIHByb2R1Y2VzIGdyZWF0ZXIgaW1wcm92ZW1lbnRzIGluIGJhbGFuY2UgYXQgOCB3ZWVrcy4KRXhwbG9yYXRvcnkgQWltOiBFdmFsdWF0ZSB3aGV0aGVyIHRoZSBjb21iaW5lZCBpbnRlcnZlbnRpb24gbGVhZHMgdG8gZ3JlYXRlciByZWR1Y3Rpb25zIGluIGhlYWRhY2hlIGZyZXF1ZW5jeSwgaGVhZGFjaGUgaW50ZW5zaXR5LCBhbmQgbWlncmFpbmUtcmVsYXRlZCBkaXNhYmlsaXR5IGF0IDggd2Vla3MuCgpUaGlzIHN0dWR5IHdpbGwgY29uZHVjdCBhIHJhbmRvbWl6ZWQgY29udHJvbGxlZCB0cmlhbCBpbiBhZHVsdHMgd2l0aCB2ZXN0aWJ1bGFyIG1pZ3JhaW5lIGRpYWdub3NlZCBhY2NvcmRpbmcgdG8gSUNIRCBjcml0ZXJpYSwgY29tcGFyaW5nIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gYWxvbmUgKFZSKSB3aXRoIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gcGx1cyBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIHRyYWluaW5nIChWUiArIENTVCkuIFBhcnRpY2lwYW50cyB3aWxsIGJlIHJhbmRvbWl6ZWQgYW5kIHN0cmF0aWZpZWQgYnkgY2hyb25pYyB2ZXJzdXMgYWN1dGUgbWlncmFpbmUgc3RhdHVzLiBCb3RoIGdyb3VwcyB3aWxsIHJlY2VpdmUgYSBzdGFuZGFyZGl6ZWQgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiBwcm9ncmFtOyB0aGUgaW50ZXJ2ZW50aW9uIGdyb3VwIHdpbGwgYWRkaXRpb25hbGx5IHJlY2VpdmUgYSBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIHByb2dyYW0uIEJvdGggZ3JvdXBzIHdpbGwgYmUgc2VlbiBpbiBwZXJzb24gdHdpY2Ugd2Vla2x5IHdpdGggYSBkYWlseSBob21lIHByb2dyYW0gb3ZlciA4IHdlZWtzIHRvIGNvbnRyb2wgZm9yIGNvbnRhY3QgYW5kIGludGVuc2l0eS4gVGhlIHByaW1hcnkgb3V0Y29tZSBpcyBkaXp6aW5lc3MtcmVsYXRlZCBkaXNhYmlsaXR5IG1lYXN1cmVkIGJ5IHRoZSBEaXp6aW5lc3MgSGFuZGljYXAgSW52ZW50b3J5IChESEkpIGF0IDggd2Vla3MuIFNlY29uZGFyeSBvdXRjb21lcyBpbmNsdWRlIGJhbGFuY2UgKHZpYSBNaW5pLUJFU1Rlc3QpLCBoZWFkYWNoZSBmcmVxdWVuY3kgYW5kIGludGVuc2l0eSAodmlhIGEgZGFpbHkgZGlhcnkpLCBhbmQgbWlncmFpbmUtcmVsYXRlZCBkaXNhYmlsaXR5IChNSURBUyksIGFzc2Vzc2VkIGF0IGJhc2VsaW5lLCBwb3N0LWludGVydmVudGlvbiwgYW5kIDMgbW9udGhzIHBvc3QtcmFuZG9taXphdGlvbiB0byBldmFsdWF0ZSBzaG9ydC10ZXJtIG1haW50ZW5hbmNlLiAKCkgxOiBQYXJ0aWNpcGFudHMgcmVjZWl2aW5nIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gcGx1cyBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIHRyYWluaW5nIHdpbGwgZGVtb25zdHJhdGUgZ3JlYXRlciBpbXByb3ZlbWVudCBpbiBkaXp6aW5lc3MsIGFzIG1lYXN1cmVkIGJ5IHRoZSBEaXp6aW5lc3MgSGFuZGljYXAgSW52ZW50b3J5LCBhdCA4IHdlZWtzIHRoYW4gcGFydGljaXBhbnRzIHJlY2VpdmluZyB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGFsb25lLgpIMjogUGFydGljaXBhbnRzIHJlY2VpdmluZyB0aGUgY29tYmluZWQgaW50ZXJ2ZW50aW9uIHdpbGwgc2hvdyBncmVhdGVyIGltcHJvdmVtZW50IGluIGJhbGFuY2UsIGFzIG1lYXN1cmVkIGJ5IHRoZSBNaW5pLUJFU1Rlc3QsIGF0IDggd2Vla3MgY29tcGFyZWQgd2l0aCBwYXJ0aWNpcGFudHMgcmVjZWl2aW5nIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gYWxvbmUuCkgzOiBQYXJ0aWNpcGFudHMgcmVjZWl2aW5nIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gcGx1cyBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIHRyYWluaW5nIHdpbGwgZXhoaWJpdCBncmVhdGVyIHJlZHVjdGlvbnMgaW4gbW9udGhseSBoZWFkYWNoZSBmcmVxdWVuY3ksIGhlYWRhY2hlIGludGVuc2l0eSAoVkFTKSwgYW5kIG1pZ3JhaW5lLXJlbGF0ZWQgZGlzYWJpbGl0eSAoTUlEQVMpIGF0IDggd2Vla3MgY29tcGFyZWQgd2l0aCBwYXJ0aWNpcGFudHMgcmVjZWl2aW5nIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gYWxvbmUuCgpCeSBkaXJlY3RseSB0ZXN0aW5nIHdoZXRoZXIgcHJvZ3Jlc3NpdmUgY2VydmljYWwgc3RhYmlsaXphdGlvbiB0cmFpbmluZyBlbmhhbmNlcyBkaXp6aW5lc3MsIGJhbGFuY2UsIGFuZCBtaWdyYWluZS1yZWxhdGVkIG91dGNvbWVzIGJleW9uZCB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGFsb25lLCB0aGlzIHN0dWR5IGhhcyB0aGUgcG90ZW50aWFsIHRvIHJlZmluZSByZWhhYmlsaXRhdGlvbiBzdHJhdGVnaWVzIGFuZCBpbXByb3ZlIGNsaW5pY2FsIG91dGNvbWVzIGZvciBhIGhpZ2hseSBidXJkZW5lZCBwb3B1bGF0aW9uLiBUaGUgZmluZGluZ3Mgd2lsbCBpbmZvcm0gZXZpZGVuY2UtYmFzZWQgcGh5c2ljYWwgdGhlcmFweSBwcmFjdGljZSBhbmQgbWF5IGxlYWQgdG8gbW9yZSBjb21wcmVoZW5zaXZlIHRyZWF0bWVudCBhcHByb2FjaGVzIGZvciB2ZXN0aWJ1bGFyIG1pZ3JhaW5lIGFzIHdlbGwgYXMgZnV0dXJlIHN0dWRpZXMgYnVpbGRpbmcgc3BlY2lmaWMgcmVjb21tZW5kYXRpb25zIGZvciBzdHJlbmd0aCB0cmFpbmluZyBpbiB0aGUgbWlncmFpbmUgcGF0aWVudCBwb3B1bGF0aW9uLiAKQi4gU0lHTklGSUNBTkNFOiAKQjEuIE1pZ3JhaW5lIGFzIFB1YmxpYyBIZWFsdGggUHJvYmxlbTogTWlncmFpbmUgaXMgb25lIG9mIHRoZSBsZWFkaW5nIGNhdXNlcyBvZiBuZXVyb2xvZ2ljYWwgZGlzYWJpbGl0eSB3b3JsZHdpZGUgYW5kIGEgbWFqb3IgY29udHJpYnV0b3IgdG8gbG9zdCBwcm9kdWN0aXZpdHksIGhlYWx0aGNhcmUgdXRpbGl6YXRpb24sIGFuZCByZWR1Y2VkIHF1YWxpdHkgb2YgbGlmZS44IEhlYWRhY2hlIGhhcyBhIHN1YnN0YW50aWFsIGltcGFjdCBvbiB0aGUgaW5kaXZpZHVhbCBhbmQgc29jaWV0eS4gSW5kaXZpZHVhbHMgd2l0aCBtaWdyYWluZSBpbmN1cnJlZCBzaWduaWZpY2FudGx5IGhpZ2hlciBkaXJlY3QgbWVkaWNhbCBjb3N0cyBvdmVyIHNpeCBtb250aHMgdGhhbiBjb21wYXJpc29uIHBhcnRpY2lwYW50cywgZHJpdmVuIGxhcmdlbHkgYnkgbW9yZSBmcmVxdWVudCBwaHlzaWNpYW4gYW5kIGVtZXJnZW5jeSBkZXBhcnRtZW50IHZpc2l0cywgd2l0aCBjb3N0cyByaXNpbmcgc3Vic3RhbnRpYWxseSBhbW9uZyB0aG9zZSB3aXRoIG1vcmUgc2V2ZXJlIG1pZ3JhaW5lLjkgUG9wdWxhdGlvbi1iYXNlZCBlcGlkZW1pb2xvZ2ljIHN0dWRpZXMgYXBwbHlpbmcgSW50ZXJuYXRpb25hbCBIZWFkYWNoZSBTb2NpZXR5IGRpYWdub3N0aWMgY3JpdGVyaWEgZXN0aW1hdGUgdGhlIHByZXZhbGVuY2Ugb2YgbWlncmFpbmUgaW4gZGV2ZWxvcGVkIGNvdW50cmllcyB0byByYW5nZSBmcm9tIDglIHRvIDE0JS4xMCBXb21lbiBiZWFyIGEgZGlzcHJvcG9ydGlvbmF0ZSBidXJkZW4gb2YgaGVhZGFjaGUgZGlzb3JkZXJzIGNvbXBhcmVkIHdpdGggbWVuLCByZXBvcnRpbmcgZ3JlYXRlciBwYWluIHNldmVyaXR5LCBoaWdoZXIgbGV2ZWxzIG9mIGRpc2FiaWxpdHksIGFuZCBtb3JlIGZyZXF1ZW50IGFuZCBwcm9sb25nZWQgYXR0YWNrczsgYSBkaXNwYXJpdHkgcmVmbGVjdGVkIGluIHRoZSBlY29ub21pYyBpbXBhY3Qgb2YgbWlncmFpbmUsIHdpdGggYW5udWFsIGhlYWx0aCBjYXJlIGNvc3RzIGV4Y2VlZGluZyAkMSBiaWxsaW9uLCBhcHByb3hpbWF0ZWx5IDgwJSBhdHRyaWJ1dGFibGUgdG8gZmVtYWxlIHBhdGllbnRzLjExIEluIHRoZSBVbml0ZWQgU3RhdGVzIGFsb25lLCBtaWdyYWluZSBpcyBlc3RpbWF0ZWQgdG8gYWNjb3VudCBmb3IgbW9yZSB0aGFuICQxMyBiaWxsaW9uIGFubnVhbGx5IGluIGxvc3Qgd29ya3BsYWNlIHByb2R1Y3Rpdml0eSBkdWUgdG8gYWJzZW50ZWVpc20gYW5kIGltcGFpcmVkIHBlcmZvcm1hbmNlLjEgVmVzdGlidWxhciBtaWdyYWluZSwgYSBjb21tb24gbWlncmFpbmUgc3VidHlwZSwgaXMgcGFydGljdWxhcmx5IGRpc2FibGluZyBiZWNhdXNlIGl0IGNvbWJpbmVzIGhlYWRhY2hlIHdpdGggcmVjdXJyZW50IHZlcnRpZ28sIGRpenppbmVzcywgYW5kIGJhbGFuY2UgaW1wYWlybWVudCB0aGF0IGxpbWl0IG1vYmlsaXR5LCBpbmRlcGVuZGVuY2UsIGFuZCBzb2NpYWwgcGFydGljaXBhdGlvbi4xMiBUaGVzZSBzeW1wdG9tcyByZWZsZWN0IGFibm9ybWFsIGludGVncmF0aW9uIG9mIHZlc3RpYnVsYXIsIHZpc3VhbCwgYW5kIHNvbWF0b3NlbnNvcnkgaW5wdXRzIHdpdGhpbiBuZXVyYWwgbmV0d29ya3MgaW1wbGljYXRlZCBpbiBtaWdyYWluZSBwYXRob3BoeXNpb2xvZ3kuMyBBbHRob3VnaCBwaGFybWFjb2xvZ2ljIHRoZXJhcGllcyBjYW4gcmVkdWNlIGhlYWRhY2hlIGZyZXF1ZW5jeSBmb3Igc29tZSBpbmRpdmlkdWFscywgbWFueSBwYXRpZW50cyBjb250aW51ZSB0byBleHBlcmllbmNlIHBlcnNpc3RlbnQgZGl6emluZXNzIGFuZCBiYWxhbmNlIGR5c2Z1bmN0aW9uLjEzIEFzIGEgcmVzdWx0LCB0aGVyZSBpcyBhIGNyaXRpY2FsIG5lZWQgZm9yIGVmZmVjdGl2ZSBub24tcGhhcm1hY29sb2dpYyBpbnRlcnZlbnRpb25zIHRoYXQgZGlyZWN0bHkgdGFyZ2V0IGZ1bmN0aW9uYWwgZGlzYWJpbGl0eSBpbiB2ZXN0aWJ1bGFyIG1pZ3JhaW5lLgpCMi4gTWlncmFpbmUgYW5kIENlcnZpY2FsIEludGVyZGVwZW5kZW5jZTogTmVjayBwYWluIGFuZCBjZXJ2aWNhbCBtdXNjdWxvc2tlbGV0YWwgZHlzZnVuY3Rpb24gYXJlIGhpZ2hseSBwcmV2YWxlbnQgaW4gbWlncmFpbmUgYW5kIHJlcHJlc2VudCBhbiBpbXBvcnRhbnQgY29udHJpYnV0b3IgdG8gc3ltcHRvbSBidXJkZW4uIFVwIHRvIDkwJSBvZiBpbmRpdmlkdWFscyB3aXRoIG1pZ3JhaW5lIHJlcG9ydCBuZWNrIHBhaW4sIHdoaWNoIGlzIGFzc29jaWF0ZWQgd2l0aCBncmVhdGVyIGhlYWRhY2hlIHNldmVyaXR5LCBpbmNyZWFzZWQgZGlzYWJpbGl0eSwgYW5kIHBzeWNob2xvZ2ljYWwgZGlzdHJlc3MuNCwgNSBPYmplY3RpdmUgc3R1ZGllcyBkZW1vbnN0cmF0ZSByZWR1Y2VkIGNlcnZpY2FsIG11c2NsZSBlbmR1cmFuY2UsIGltcGFpcmVkIG5ldXJvbXVzY3VsYXIgY29udHJvbCwgYW5kIGFsdGVyZWQgcHJvcHJpb2NlcHRpdmUgZnVuY3Rpb24gaW4gbWlncmFpbmUgcG9wdWxhdGlvbnMuMTQsIDE1IFRoZXNlIGltcGFpcm1lbnRzIGFyZSBsaW5rZWQgdG8gbmV1cmFsIGNvbnZlcmdlbmNlIHdpdGhpbiB0aGUgdHJpZ2VtaW5vY2VydmljYWwgY29tcGxleCwgd2hlcmUgY2VydmljYWwgYW5kIHRyaWdlbWluYWwgYWZmZXJlbnRzIGludGVyYWN0IGFuZCBjb250cmlidXRlIHRvIGNlbnRyYWwgc2Vuc2l0aXphdGlvbi4xNiwgMTcgRGlzcnVwdGVkIGNlcnZpY2FsIHByb3ByaW9jZXB0aXZlIGlucHV0IG1heSBpbnRlcmZlcmUgd2l0aCBzZW5zb3JpbW90b3IgaW50ZWdyYXRpb24gbmVjZXNzYXJ5IGZvciBwb3N0dXJhbCBjb250cm9sIGFuZCBnYXplIHN0YWJpbGl0eSwgcHJvdmlkaW5nIGEgcGxhdXNpYmxlIG1lY2hhbmlzdGljIHBhdGh3YXkgY29ubmVjdGluZyBjZXJ2aWNhbCBkeXNmdW5jdGlvbiB0byBkaXp6aW5lc3MgYW5kIGltYmFsYW5jZS4xOC0yMCBJbXBvcnRhbnRseSwgdGhlc2UgbXVzY3Vsb3NrZWxldGFsIGltcGFpcm1lbnRzIGFyZSBtb2RpZmlhYmxlIHRocm91Z2ggdGFyZ2V0ZWQgcmVoYWJpbGl0YXRpb24sIG1ha2luZyB0aGVtIGEgY2xpbmljYWxseSBhY3Rpb25hYmxlIHRyZWF0bWVudCB0YXJnZXQuMjEgCkIzLiBSZWhhYmlsaXRhdGlvbiBFdmlkZW5jZTogRW1lcmdpbmcgcmVoYWJpbGl0YXRpb24gcmVzZWFyY2ggc3VwcG9ydHMgdGhlIHBvdGVudGlhbCByb2xlIG9mIGNlcnZpY2FsIHN0cmVuZ3RoZW5pbmcgYW5kIHN0YWJpbGl6YXRpb24gZXhlcmNpc2UgaW4gbWlncmFpbmUgbWFuYWdlbWVudC4gUmFuZG9taXplZCB0cmlhbHMgb2YgY2VydmljYWwgb3IgdXBwZXItYm9keSBzdHJlbmd0aGVuaW5nIGludGVydmVudGlvbnMgaGF2ZSByZXBvcnRlZCByZWR1Y3Rpb25zIGluIGhlYWRhY2hlIGludGVuc2l0eSBhbmQgbWlncmFpbmUtcmVsYXRlZCBkaXNhYmlsaXR5LCBhbG9uZyB3aXRoIGltcHJvdmVtZW50cyBpbiBwaHlzaWNhbCBmdW5jdGlvbi4yMi0yNSBQcmVsaW1pbmFyeSB3b3JrIGluIHZlc3RpYnVsYXIgbWlncmFpbmUgcG9wdWxhdGlvbnMgc3VnZ2VzdHMgdGhhdCByZXNpc3RhbmNlIGV4ZXJjaXNlIG1heSByZWR1Y2UgZGl6emluZXNzLXJlbGF0ZWQgZGlzYWJpbGl0eSwgYWx0aG91Z2ggdGhlIG9ubHkgZXhpc3Rpbmcgc3R1ZHkgaXMgc21hbGwgYW5kIG1ldGhvZG9sb2dpY2FsbHkgaGV0ZXJvZ2VuZW91cy4yNiBWZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGlzIGFuIGVzdGFibGlzaGVkIG5vbi1waGFybWFjb2xvZ2ljIHRyZWF0bWVudCBmb3IgZGl6emluZXNzIGFuZCBiYWxhbmNlIGRpc29yZGVycyBhbmQgaXMgaW5jcmVhc2luZ2x5IHVzZWQgaW4gdmVzdGlidWxhciBtaWdyYWluZTsgaG93ZXZlciwgc3RhbmRhcmQgdmVzdGlidWxhciBwcm90b2NvbHMgcmFyZWx5IGluY2x1ZGUgdGFyZ2V0ZWQgY2VydmljYWwgc3RhYmlsaXphdGlvbiBkZXNwaXRlIG5ldXJvcGh5c2lvbG9naWNhbCBsaW5rcyBiZXR3ZWVuIGNlcnZpY2FsIGFuZCB2ZXN0aWJ1bGFyIHN5c3RlbXMuMjcsIDI4IFRoaXMgc2VwYXJhdGlvbiBvZiB0cmVhdG1lbnQgZG9tYWlucyBtYXkgbGltaXQgY2xpbmljYWwgZWZmZWN0aXZlbmVzcyBieSBmYWlsaW5nIHRvIGFkZHJlc3MgaW50ZXJhY3RpbmcgbXVzY3Vsb3NrZWxldGFsIGFuZCBzZW5zb3JpbW90b3IgbWVjaGFuaXNtcy4gQ2VydmljYWwgc3RhYmlsaXphdGlvbiB0cmFpbmluZyBpbiBwaHlzaWNhbCB0aGVyYXB5IG1heSByZWR1Y2UgZXhlcmNpc2UgcmVsYXRlZCBtaWdyYWluZSBhZ2dyYXZhdGlvbiBpbiBwYXRpZW50cyB3aXRoIGNvIG1vcmJpZCBuZWNrIHBhaW7igJR0aGVyZWJ5IGxvd2VyaW5nIGJhcnJpZXJzIHRvIGVuZ2FnaW5nIGluIGFlcm9iaWMgZXhlcmNpc2UsIHdoaWNoIGl0c2VsZiBoYXMgYmVlbiBzaG93biBpbiBzeXN0ZW1hdGljIHJldmlld3MgYW5kIG1ldGEgYW5hbHlzZXMgdG8gZGVjcmVhc2UgbWlncmFpbmUgZnJlcXVlbmN5IGFuZCBpbnRlbnNpdHkgd2hlbiBwZXJmb3JtZWQgcmVndWxhcmx5IGF0IG1vZGVyYXRlIGRvc2VzLjcgCkI0LiBHb2FscyBBbGlnbm1lbnQ6ClRoaXMgcmVzZWFyY2ggYWxpZ25zIHdpdGggdGhlIG1pc3Npb24gYW5kIHByaW9yaXRpZXMgb2YgdGhlIE5hdGlvbmFsIENlbnRlciBmb3IgQ29tcGxlbWVudGFyeSBhbmQgSW50ZWdyYXRpdmUgSGVhbHRoIChOQ0NJSCksIHdoaWNoIHN1cHBvcnRzIHJpZ29yb3VzIGludmVzdGlnYXRpb24gb2Ygbm9uLXBoYXJtYWNvbG9naWMsIGludGVncmF0aXZlIGFwcHJvYWNoZXMgZm9yIGNocm9uaWMgcGFpbiBhbmQgbmV1cm9sb2dpY2FsIGR5c2Z1bmN0aW9uLiBOQ0NJSCBwcmlvcml0aXplcyBhY2Nlc3NpYmxlLCBsb3ctcmlzayBpbnRlcnZlbnRpb25zIHRoYXQgaW1wcm92ZSBmdW5jdGlvbiBhbmQgcmVkdWNlIGxvbmctdGVybSBtZWRpY2F0aW9uIHJlbGlhbmNlLiBDZXJ2aWNhbCBzdGFiaWxpemF0aW9uIGNvbWJpbmVkIHdpdGggdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiByZXByZXNlbnRzIGEgbm9uLWludmFzaXZlLCBzY2FsYWJsZSBzdHJhdGVneSB0YXJnZXRpbmcgbXVzY3Vsb3NrZWxldGFsIGFuZCBzZW5zb3JpbW90b3IgY29udHJpYnV0b3JzIHRvIG1pZ3JhaW5lIGRpc2FiaWxpdHkuIEdlbmVyYXRpbmcgZXZpZGVuY2UgZm9yIHRoaXMgYXBwcm9hY2ggc3VwcG9ydHMgTkNDSUjigJlzIGdvYWwgb2YgZXhwYW5kaW5nIHNhZmUsIGVmZmVjdGl2ZSBub24tZHJ1ZyB0cmVhdG1lbnRzIGZvciBjaHJvbmljIG5ldXJvbG9naWNhbCBjb25kaXRpb25zLgpCNS4gQ3JpdGljYWwgR2FwOgpBbHRob3VnaCBjZXJ2aWNhbCBkeXNmdW5jdGlvbiBpcyBsaW5rZWQgdG8gbWlncmFpbmUgYW5kIG1heSBjb250cmlidXRlIHRvIGRpenppbmVzcyBhbmQgYmFsYW5jZSBkaXN0dXJiYW5jZSwgbm8gcmFuZG9taXplZCBjb250cm9sbGVkIHRyaWFsIGhhcyB0ZXN0ZWQgd2hldGhlciBhZGRpbmcgcHJvZ3Jlc3NpdmUgY2VydmljYWwgc3RhYmlsaXphdGlvbiB0byB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGltcHJvdmVzIG91dGNvbWVzIGluIHZlc3RpYnVsYXIgbWlncmFpbmUuIEV4aXN0aW5nIHN0dWRpZXMgZXhhbWluZSBleGVyY2lzZSBhbG9uZeKAlHByaW1hcmlseSBmb2N1c2luZyBvbiBoZWFkYWNoZSBtZXRyaWNz4oCUb3IgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiBhbG9uZSB1c2luZyB2ZXN0aWJ1bGFyIG1lYXN1cmVzLCB3aXRoIGhldGVyb2dlbmVvdXMgcHJvdG9jb2xzIGFuZCBsaW1pdGVkIHVzZSBvZiB2YWxpZGF0ZWQgZGl6emluZXNzIGRpc2FiaWxpdHkgb3V0Y29tZXMuMjgsIDI5IEFzIGEgcmVzdWx0LCBjbGluaWNpYW5zIGxhY2sgZXZpZGVuY2Ugb24gd2hldGhlciBjZXJ2aWNhbCByZWhhYmlsaXRhdGlvbiBzaG91bGQgYmUgaW5jb3Jwb3JhdGVkIGludG8gdmVzdGlidWxhciBtaWdyYWluZSBjYXJlLiBUaGlzIGdhcCBpcyBjbGluaWNhbGx5IGltcG9ydGFudCBiZWNhdXNlIGRpenppbmVzcyBhbmQgaW1iYWxhbmNlIGZyZXF1ZW50bHkgZHJpdmUgZGlzYWJpbGl0eSwgbGltaXRpbmcgcGFydGljaXBhdGlvbiBhbmQgcXVhbGl0eSBvZiBsaWZlLiBBIGNvbnRyb2xsZWQgdHJpYWwgaW50ZWdyYXRpbmcgbWVjaGFuaXNtLWluZm9ybWVkIHJlaGFiaWxpdGF0aW9uIHdpdGggcGF0aWVudC1jZW50ZXJlZCBmdW5jdGlvbmFsIG91dGNvbWVzIGlzIHRoZXJlZm9yZSBuZWVkZWQuIFRoZSBwcm9wb3NlZCBzdHVkeSBwcm92aWRlcyB0aGUgZmlyc3Qgc3lzdGVtYXRpYyBldmFsdWF0aW9uIHRvIG91ciBrbm93bGVkZ2Ugb2YgdGhpcyBjb21iaW5lZCBhcHByb2FjaCBhbmQgYWRkcmVzc2VzIGFuIHVubWV0IG5lZWQgaW4gbWlncmFpbmUgcmVoYWJpbGl0YXRpb24uCkI2LiBUcmFuc2xhdGlvbmFsIEltcGFjdDoKVGhlIGludGVydmVudGlvbiB1c2VzIHJlaGFiaWxpdGF0aW9uIHRlY2huaXF1ZXMgYWxyZWFkeSBjb21tb24gaW4gcGh5c2ljYWwgdGhlcmFweSBhbmQgcmVxdWlyZXMgbm8gc3BlY2lhbGl6ZWQgZXF1aXBtZW50LCBzdXBwb3J0aW5nIGZlYXNpYmlsaXR5IGFjcm9zcyBjbGluaWNhbCBzZXR0aW5ncy4gQWx0aG91Z2ggdGhlIG1lY2hhbmlzbXMgbGlua2luZyBjZXJ2aWNhbCBkeXNmdW5jdGlvbiBhbmQgdmVzdGlidWxhciBzeW1wdG9tcyBpbiBtaWdyYWluZSByZW1haW4gdGhlb3JldGljYWwsIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gYW5kIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gYXJlIGFscmVhZHkgY29tYmluZWQgaW4gcHJhY3RpY2Ugd2hlbiBwYXRpZW50cyBwcmVzZW50IHdpdGggb3ZlcmxhcHBpbmcgc3ltcHRvbXMgYW5kIGxpbWl0ZWQgcmVzcG9uc2UgdG8gcGhhcm1hY290aGVyYXB5LiBFdmFsdWF0aW5nIHRoaXMgc3ltcHRvbS1kcml2ZW4gaW50ZWdyYXRpb24gaXMgbmVjZXNzYXJ5IHRvIGRldGVybWluZSB3aGV0aGVyIGl0IGlzIGJlbmVmaWNpYWwsIG5ldXRyYWwsIG9yIHVud2FycmFudGVkIGFuZCBhbGlnbnMgd2l0aCB0aGUgZXhwbG9yYXRvcnkgcHVycG9zZSBvZiBhbiBSMjEuIERlbW9uc3RyYXRpbmcgZmVhc2liaWxpdHkgYW5kIHByZWxpbWluYXJ5IGVmZmljYWN5IHdpbGwgaW5mb3JtIGEgZnVsbHkgcG93ZXJlZCB0cmlhbCBhbmQgYWNjZWxlcmF0ZSB0cmFuc2xhdGlvbiBpbnRvIGNsaW5pY2FsIGNhcmUuIEludGVncmF0aW5nIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gd2l0aCB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGNvdWxkIHByb3ZpZGUgYW4gZXZpZGVuY2UtYmFzZWQgZnJhbWV3b3JrIGZvciBhZGRyZXNzaW5nIGJvdGggaGVhZGFjaGUgYW5kIGRpenppbmVzcyBkaXNhYmlsaXR5IGluIHZlc3RpYnVsYXIgbWlncmFpbmUgYW5kIGFkdmFuY2UgYW4gaW50ZWdyYXRpdmUgbmV1cm9tdXNjdWxvc2tlbGV0YWwgcmVoYWJpbGl0YXRpb24gbW9kZWwgY29uc2lzdGVudCB3aXRoIE5DQ0lIIHByaW9yaXRpZXMuCkMuIElubm92YXRpb24KVGhpcyBwcm9qZWN0IGlzIGlubm92YXRpdmUgYmVjYXVzZSBpdCBjaGFsbGVuZ2VzIHRoZSBjb252ZW50aW9uYWwgc2VwYXJhdGlvbiBvZiBoZWFkYWNoZSBtYW5hZ2VtZW50IGFuZCB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGJ5IGludHJvZHVjaW5nIGFuIGludGVncmF0aXZlIHJlaGFiaWxpdGF0aW9uIG1vZGVsIGZvciB2ZXN0aWJ1bGFyIG1pZ3JhaW5lLiBUaGUgc3R1ZHkgYnVpbGRzIG9uIHByaW9yIHdvcmsgaW4gdGhlIGZvbGxvd2luZyB3YXlzOgpDMS4gSW50ZWdyYXRlcyBjZXJ2aWNhbCBhbmQgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiB3aXRoaW4gYSBzaW5nbGUgbWVjaGFuaXN0aWMgZnJhbWV3b3JrLgpNaWdyYWluZSBleGVyY2lzZSB0cmlhbHMgdHlwaWNhbGx5IGZvY3VzIG9uIHBhaW4sIHdoaWxlIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gc3R1ZGllcyB0YXJnZXQgZGl6emluZXNzIHdpdGhvdXQgYWRkcmVzc2luZyBjZXJ2aWNhbCBtb3RvciBjb250cm9sLiBUaGlzIHN0dWR5IGlzIHRoZSBmaXJzdCByYW5kb21pemVkIHRyaWFsIHRvIHRlc3Qgd2hldGhlciBwcm9ncmVzc2l2ZSBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIGVuaGFuY2VzIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gb3V0Y29tZXMgaW4gdmVzdGlidWxhciBtaWdyYWluZSBieSB0YXJnZXRpbmcgbmV1cm9waHlzaW9sb2dpY2FsIGNvbnZlcmdlbmNlIGJldHdlZW4gY2VydmljYWwgYW5kIHZlc3RpYnVsYXIgc3lzdGVtcy4KQzIuIFNoaWZ0cyBtaWdyYWluZSByZWhhYmlsaXRhdGlvbiB0b3dhcmQgZnVuY3Rpb25hbCwgcGF0aWVudC1jZW50ZXJlZCBvdXRjb21lcy4KUmF0aGVyIHRoYW4gZW1waGFzaXppbmcgaGVhZGFjaGUgZnJlcXVlbmN5LCB0aGUgc3R1ZHkgcHJpb3JpdGl6ZXMgdmFsaWRhdGVkIG1lYXN1cmVzIG9mIGRpenppbmVzcy1yZWxhdGVkIGRpc2FiaWxpdHkgYW5kIGJhbGFuY2UgcGVyZm9ybWFuY2UsIGV4cGFuZGluZyB0aGUgdHJlYXRtZW50IGZvY3VzIGZyb20gcGFpbiByZWR1Y3Rpb24gdG8gcmVzdG9yYXRpb24gb2Ygc2Vuc29yaW1vdG9yIGZ1bmN0aW9uIGFuZCBwYXJ0aWNpcGF0aW9uLgpDMy4gQXBwbGllcyBhIHNjYWxhYmxlLCBub24tcGhhcm1hY29sb2dpYyBpbnRlcnZlbnRpb24gd2l0aCBpbW1lZGlhdGUgY2xpbmljYWwgcmVsZXZhbmNlLgpUaGUgaW50ZXJ2ZW50aW9uIHVzZXMgbG93LWNvc3QsIHdpZGVseSBhdmFpbGFibGUgcmVoYWJpbGl0YXRpb24gdGVjaG5pcXVlcyB0aGF0IGNhbiBiZSBpbXBsZW1lbnRlZCBpbiBzdGFuZGFyZCBwaHlzaWNhbCB0aGVyYXB5IHNldHRpbmdzIHdpdGhvdXQgc3BlY2lhbGl6ZWQgZXF1aXBtZW50LCBzdXBwb3J0aW5nIHJhcGlkIHRyYW5zbGF0aW9uIGludG8gY2xpbmljYWwgY2FyZS4gCkQuIEFwcHJvYWNoCkQxLiBPdmVydmlldyBhbmQgU3R1ZHkgRGVzaWduOiAKVGhpcyBwcm9zcGVjdGl2ZSwgcmFuZG9taXplZCBjb250cm9sbGVkIGV4cGxvcmF0b3J5IHRyaWFsIGV2YWx1YXRlcyB0aGUgZmVhc2liaWxpdHkgYW5kIGVmZmljYWN5IG9mIGludGVncmF0aW5nIHByb2dyZXNzaXZlIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gdHJhaW5pbmcgKENTVCkgd2l0aCB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIChWUikgaW4gYWR1bHRzIHdpdGggdmVzdGlidWxhciBtaWdyYWluZS4gUGFydGljaXBhbnRzIHdpbGwgYmUgcmFuZG9taXplZCAxOjEgdG8gVlIgYWxvbmUgb3IgVlIgKyBDU1QsIHdpdGggc3RyYXRpZmljYXRpb24gYnkgbWlncmFpbmUgc3VidHlwZSAoY2hyb25pYyB2cyBlcGlzb2RpYykgdG8gYWNjb3VudCBmb3Igc3ltcHRvbSBoZXRlcm9nZW5laXR5IGFuZCBwb3RlbnRpYWwgdHJlYXRtZW50IHJlc3BvbnNlIGRpZmZlcmVuY2VzLiBPdXRjb21lIGFzc2Vzc29ycyBhbmQgZGF0YSBhbmFseXN0cyB3aWxsIHJlbWFpbiBtYXNrZWQgdG8gYWxsb2NhdGlvbi4gVGhlIGludGVydmVudGlvbiBsYXN0cyA4IHdlZWtzIHdpdGggYSAzLW1vbnRoIGZvbGxvdy11cCB0byBhc3Nlc3Mgc2hvcnQtdGVybSBkdXJhYmlsaXR5LiBUaGUgcHJpbWFyeSBlbmRwb2ludCBpcyBjaGFuZ2UgaW4gZGl6emluZXNzLXJlbGF0ZWQgZGlzYWJpbGl0eSBtZWFzdXJlZCBieSB0aGUgRGl6emluZXNzIEhhbmRpY2FwIEludmVudG9yeSAoREhJKSBhdCA4IHdlZWtzLiBCYXNlZCBvbiBwaWxvdCBkYXRhIGFuZCBwcmlvciB0cmlhbHMgc2hvd2luZyBjbGluaWNhbGx5IG1lYW5pbmdmdWwgaW1wcm92ZW1lbnRzIGluIGRpenppbmVzcyBhbmQgbWlncmFpbmUgZGlzYWJpbGl0eSB3aXRoIHN0cmVuZ3RoZW5pbmcgaW50ZXJ2ZW50aW9ucywgd2UgaHlwb3RoZXNpemUgdGhhdCBWUiArIENTVCB3aWxsIHByb2R1Y2UgZ3JlYXRlciBESEkgaW1wcm92ZW1lbnQgdGhhbiBWUiBhbG9uZS4gU2Vjb25kYXJ5IG91dGNvbWVzIGluY2x1ZGUgYmFsYW5jZSAoTWluaS1CRVNUZXN0KSwgaGVhZGFjaGUgZnJlcXVlbmN5IGFuZCBpbnRlbnNpdHkgKGRhaWx5IGRpYXJ5KSwgYW5kIG1pZ3JhaW5lIGRpc2FiaWxpdHkgKE1JREFTKS4gQSBzaW11bGF0ZWQgQ09OU09SVCBGbG93IERpYWdyYW0gKEZpZ3VyZSAxKSBpbGx1c3RyYXRlcyB0aGUgc3R1ZHkgZGVzaWduIGFuZCBwcm9jZXNzZXMuCkQyLiBQcmVsaW1pbmFyeSBTdHVkaWVzClRvIGFzc2VzcyBmZWFzaWJpbGl0eSBhbmQgZXN0aW1hdGUgcHJlbGltaW5hcnkgZWZmZWN0IHNpemVzLCB3ZSBjb25kdWN0ZWQgYW4gdW5wdWJsaXNoZWQgcGlsb3Qgc3R1ZHkgb2YgMjAgY29uc2VjdXRpdmUgcGF0aWVudHMgd2l0aCB2ZXN0aWJ1bGFyIG1pZ3JhaW5lIHJlZmVycmVkIHRvIG91ciBjbGluaWMgZm9yIHBoeXNpY2FsIHRoZXJhcHkgd2hvIGNvbnNlbnRlZCB0byBwYXJ0aWNpcGF0ZS4gT3ZlciB0aGUgcGFzdCB5ZWFyLCB0aGUgbWVhbiBudW1iZXIgb2YgcmVmZXJyYWxzIGZvciB0aGlzIGRpYWdub3NpcyB3YXMgOS4yIHBlciBtb250aC4gUGFydGljaXBhbnRzIHdlcmUgYWx0ZXJuYXRlbHkgYXNzaWduZWQgdG8gcmVjZWl2ZSB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIChWUikgYWxvbmUgKG4gPSAxMCkgb3IgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbiB3aXRoIGludGVncmF0ZWQgY2VydmljYWwgc3RhYmlsaXphdGlvbiB0cmFpbmluZyAoVlIrQ1NUKSAobiA9IDEwKSBvdmVyIGEgMTItd2VlayB0cmVhdG1lbnQgcGVyaW9kLiBPdXRjb21lcyBpbmNsdWRpbmcgdGhlIERpenppbmVzcyBIYW5kaWNhcCBJbnZlbnRvcnkgKERISSksIE1pbmktQkVTVGVzdCwgYW5kIE1pZ3JhaW5lIERpc2FiaWxpdHkgQXNzZXNzbWVudCAoTUlEQVMpIHdlcmUgY29sbGVjdGVkIGF0IGluaXRpYWwgZXZhbHVhdGlvbiBhbmQgZGlzY2hhcmdlLiBCb3RoIGdyb3VwcyBkZW1vbnN0cmF0ZWQgY2xpbmljYWxseSBtZWFuaW5nZnVsIGltcHJvdmVtZW50cyBpbiBkaXp6aW5lc3MtcmVsYXRlZCBkaXNhYmlsaXR5IChUYWJsZSAxLiksIGV4Y2VlZGluZyB0aGUgbWluaW1hbCBjbGluaWNhbGx5IGltcG9ydGFudCBkaWZmZXJlbmNlIGluIHRoZSBjb21iaW5lZCBpbnRlcnZlbnRpb24gZ3JvdXAuIFRoZSBiZXR3ZWVuLWdyb3VwIGRpZmZlcmVuY2UgZmF2b3JlZCBWUitDU1QgYnV0IGRpZCBub3QgcmVhY2ggc3RhdGlzdGljYWwgc2lnbmlmaWNhbmNlIChwID0gMC4yMSkgbGlrZWx5IGR1ZSB0byBzYW1wbGUgc2l6ZSwgd2l0aCBhIG1vZGVyYXRlIGVmZmVjdCBzaXplIChDb2hlbuKAmXMgZCA9IDAuNTQpLiBJbXByb3ZlbWVudHMgaW4gYmFsYW5jZSBhbmQgbWlncmFpbmUgZGlzYWJpbGl0eSB3ZXJlIGFsc28gb2JzZXJ2ZWQgaW4gYm90aCBncm91cHMsIHdpdGggbGFyZ2VyIG1lYW4gaW1wcm92ZW1lbnRzIGluIHRoZSBWUitDU1QgZ3JvdXAuIE5vIGFkdmVyc2UgZXZlbnRzIG9jY3VycmVkLCBhbmQgYWRoZXJlbmNlIHRvIHN1cGVydmlzZWQgYW5kIGhvbWUgZXhlcmNpc2UgcHJvZ3JhbXMgZXhjZWVkZWQgODUlLiBUaGVzZSBmaW5kaW5ncyBkZW1vbnN0cmF0ZSBmZWFzaWJpbGl0eSBhbmQgc3VnZ2VzdCBhIHBvdGVudGlhbCBhZGRpdGl2ZSBiZW5lZml0IG9mIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gd2hlbiBpbnRlZ3JhdGVkIHdpdGggdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbi4KCgpUYWJsZSAxLiBIeXBvdGhldGljYWwgUGlsb3QgRGF0YQpPdXRjb21lCVZSIEFsb25lIChuPTEwKQpNZWFuIMKxIFNECVZSICsgQ1NUIChuPTEwKQpNZWFuIMKxIFNECUJldHdlZW4tR3JvdXAgRWZmZWN0IFNpemUKKENvaGVu4oCZcyBkKQlCZXR3ZWVuLUdyb3VwIHAtdmFsdWUJOTUlIENvbmZpZGVuY2UgSW50ZXJ2YWwKCkRpenppbmVzcyBIYW5kaWNhcCBJbnZlbnRvcnkgCeKIkjE4LjMgwrEgMTUuNwniiJIyNy4xIMKxIDE3LjkJMC41NAkwLjIxCeKIkjIyLjQgdG8gNC44Ck1pbmktQkVTVGVzdCwgCSsyLjYgwrEgMi41CSs0LjMgwrEgMy4xCTAuNjEJMC4xOAniiJIzLjkgdG8gMC43Ck1pZ3JhaW5lIERpc2FiaWxpdHkgQXNzZXNzbWVudCAJ4oiSNy4xIMKxIDEzLjYJ4oiSMTIuNCDCsSAxNC4yCTAuMzkJMC4zNgniiJIxNi43IHRvIDYuMQoKUHVibGlzaGVkIHN0dWRpZXMgZnVydGhlciBzdXBwb3J0IHRoZSBzYWZldHkgYW5kIHBvdGVudGlhbCBlZmZpY2FjeSBvZiBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIGludGVydmVudGlvbnMgaW4gbWlncmFpbmUgcG9wdWxhdGlvbnMuIEEgZmVhc2liaWxpdHkgc3R1ZHkgb2YgY3JhbmlvLWNlcnZpY2FsIGV4ZXJjaXNlIHRyYWluaW5nIGRlbW9uc3RyYXRlZCBoaWdoIGFkaGVyZW5jZSwgbm8gYWR2ZXJzZSBldmVudHMsIGFuZCBpbXByb3ZlbWVudHMgaW4gY2VydmljYWwgbW90b3IgY29udHJvbCBhbmQgbWlncmFpbmUtcmVsYXRlZCBkaXNhYmlsaXR5LjI0IFJhbmRvbWl6ZWQgdHJpYWxzIGhhdmUgc2hvd24gdGhhdCBjZXJ2aWNhbCBzdGFiaWxpemF0aW9uIGFuZCBzdHJlbmd0aGVuaW5nIGludGVydmVudGlvbnMgcmVkdWNlIGhlYWRhY2hlIGZyZXF1ZW5jeSwgaW50ZW5zaXR5LCBhbmQgZGlzYWJpbGl0eSBjb21wYXJlZCB0byBzdGFuZGFyZCBjYXJlMjMsIDI1LCAzMCBpbmRpY2F0aW5nIHRoYXQgY2VydmljYWwgbmV1cm9tdXNjdWxhciBpbXBhaXJtZW50cyBhcmUgbW9kaWZpYWJsZSBjb250cmlidXRvcnMgdG8gbWlncmFpbmUgYnVyZGVuLiBFeGVyY2lzZSBpbnRlcnZlbnRpb25zIGhhdmUgYWxzbyBkZW1vbnN0cmF0ZWQgZWZmaWNhY3kgaW4gdmVzdGlidWxhciBtaWdyYWluZSBzcGVjaWZpY2FsbHksIHdpdGggcmVzaXN0YW5jZSB0cmFpbmluZyBzaWduaWZpY2FudGx5IHJlZHVjaW5nIGRpenppbmVzcyBoYW5kaWNhcCBhbmQgdmVydGlnbyBzZXZlcml0eSBjb21wYXJlZCB0byBjb250cm9sIGNvbmRpdGlvbnMuMjYgSG93ZXZlciwgbm8gcmFuZG9taXplZCB0cmlhbCBoYXMgZXZhbHVhdGVkIHdoZXRoZXIgcHJvZ3Jlc3NpdmUgY2VydmljYWwgc3RhYmlsaXphdGlvbiBlbmhhbmNlcyBkaXp6aW5lc3MgYW5kIGJhbGFuY2Ugb3V0Y29tZXMgd2hlbiBpbnRlZ3JhdGVkIHdpdGggc3RhbmRhcmQgdmVzdGlidWxhciByZWhhYmlsaXRhdGlvbi4gVG9nZXRoZXIsIHRoZXNlIGZpbmRpbmdzIHN1cHBvcnQgdGhlIGZlYXNpYmlsaXR5IGFuZCBwbGF1c2liaWxpdHkgb2YgdGhlIHByb3Bvc2VkIHN0dWR5IGFuZCBqdXN0aWZ5IHRoZSBuZWVkIGZvciBhIHJhbmRvbWl6ZWQgdHJpYWwgZXZhbHVhdGluZyBpbnRlZ3JhdGVkIGNlcnZpY2FsIGFuZCB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGluIHZlc3RpYnVsYXIgbWlncmFpbmUuCkQzLiBQYXJ0aWNpcGFudHMKRDMuMS4gSW5jbHVzaW9uIENyaXRlcmlhOiBQYXJ0aWNpcGFudHMgbXVzdCBiZSBhZHVsdHMg4omlMTggeWVhcnMgb2xkIHdpdGggYSBkaWFnbm9zaXMgb2YgdmVzdGlidWxhciBtaWdyYWluZSBhY2NvcmRpbmcgdG8gSW50ZXJuYXRpb25hbCBDbGFzc2lmaWNhdGlvbiBvZiBIZWFkYWNoZSBEaXNvcmRlcnMgKElDSEQtMykgY3JpdGVyaWEsIGV4cGVyaWVuY2UgYXQgbGVhc3QgdGhyZWUgaGVhZGFjaGUgZGF5cyBwZXIgbW9udGgsIGFuZCBiZSBtZWRpY2FsbHkgY2xlYXJlZCB0byBwYXJ0aWNpcGF0ZSBpbiBzdXBlcnZpc2VkIHJlaGFiaWxpdGF0aW9uLgpEMy4yLiBFeGNsdXNpb24gQ3JpdGVyaWE6IFBhcnRpY2lwYW50cyB3aWxsIGJlIGV4Y2x1ZGVkIGZvciBvdGhlciBwcmltYXJ5IHZlc3RpYnVsYXIgZGlzb3JkZXJzLCBjZXJ2aWNhbCByYWRpY3Vsb3BhdGh5IG9yIG15ZWxvcGF0aHksIHJlY2VudCBjZXJ2aWNhbCBzcGluZSBzdXJnZXJ5LCB1bmNvbnRyb2xsZWQgbmV1cm9sb2dpY2FsIG9yIGNhcmRpb3Zhc2N1bGFyIGNvbmRpdGlvbnMsIG9yIGNvbmN1cnJlbnQgcmVoYWJpbGl0YXRpb24gdGFyZ2V0aW5nIGNlcnZpY2FsIG9yIHZlc3RpYnVsYXIgZHlzZnVuY3Rpb24uCkQzLjMuIFJlY3J1aXRtZW50IGFuZCBTZXR0aW5nOiBQYXJ0aWNpcGFudHMgd2lsbCBiZSByZWNydWl0ZWQgZnJvbSBuZXVyb2xvZ3kgY2xpbmljcywgdmVzdGlidWxhciBzcGVjaWFsdHkgY2xpbmljcywgYW5kIGNvbW11bml0eSByZWZlcnJhbHMgd2l0aGluIHRoZSBsb2NhbCBjYXRjaG1lbnQgYXJlYS4gV2hlbmV2ZXIgcG9zc2libGUsIHZlc3RpYnVsYXIgbWlncmFpbmUgZGlhZ25vc2lzIHdpbGwgYmUgdmVyaWZpZWQgYnkgYSBuZXVyb2xvZ2lzdCB1c2luZyBJQ0hELTMgY3JpdGVyaWEuIFdlIHdpbGwgZW5yb2xsIGEgZGVtb2dyYXBoaWNhbGx5IGRpdmVyc2Ugc2FtcGxlIHJlZmxlY3RpbmcgdGhlIGxvY2FsIHBvcHVsYXRpb24gYW5kIHdpbGwgY29sbGVjdCBkZXRhaWxlZCBkZW1vZ3JhcGhpYyBhbmQgY2xpbmljYWwgZGF0YSwgaW5jbHVkaW5nIG1pZ3JhaW5lIHN1YnR5cGUsIG5lY2sgcGFpbiBzdGF0dXMsIG1lZGljYXRpb24gdXNlLCBhbmQgYmFzZWxpbmUgZGlzYWJpbGl0eS4KRDMuNC4gU2FtcGxlIFNpemUgYW5kIFBvd2VyOiBUaGUgbWluaW1hbCBjbGluaWNhbGx5IGltcG9ydGFudCBkaWZmZXJlbmNlIChNQ0lEKSBmb3IgREhJIGlzIDE4IHBvaW50cy4gQmFzZWQgb24gcHJpb3IgdmVzdGlidWxhciBtaWdyYWluZSBleGVyY2lzZSB0cmlhbDI2IGFuZCBwaWxvdCBkYXRhIGRlbW9uc3RyYXRpbmcgYSBtb2RlcmF0ZSBlZmZlY3Qgc2l6ZSAoZCDiiYggMC41NOKAkzAuNzUpLCBhIHR3by1zYW1wbGUgY29tcGFyaXNvbiB3aXRoIM6xID0gMC4wNSBhbmQgODAlIHBvd2VyIHJlcXVpcmVzIGFwcHJveGltYXRlbHkgMjkgcGFydGljaXBhbnRzIHBlciBncm91cC4gVG8gYWNjb3VudCBmb3IgcG90ZW50aWFsIGF0dHJpdGlvbiwgd2Ugd2lsbCBlbnJvbGwgNjQgcGFydGljaXBhbnRzICgzMiBwZXIgZ3JvdXApLgpEMy41LiBSZXRlbnRpb24gU3RyYXRlZ2llczogUGFydGljaXBhbnRzIHdpbGwgcmVjZWl2ZSBmaW5hbmNpYWwgY29tcGVuc2F0aW9uIHRvIHN1cHBvcnQgcmV0ZW50aW9uICgkNTAgcGVyIHdlZWsgb2YgcGFydGljaXBhdGlvbiBwbHVzIGEgJDUwIGNvbXBsZXRpb24gYm9udXMgYXQgZm9sbG93LXVwOyBtYXhpbXVtICQ0NTApLiBQYXJ0aWNpcGFudHMgd2lsbCBhbHNvIHJlY2VpdmUgc3VwZXJ2aXNlZCByZWhhYmlsaXRhdGlvbiBhdCBubyBwZXJzb25hbCBjb3N0LCBlbGltaW5hdGluZyBpbnN1cmFuY2UgYW5kIGNvcGF5bWVudCBiYXJyaWVycy4KRDQuIFByb2NlZHVyZXMKRDQuMS4gUmFuZG9taXphdGlvbiBhbmQgTWFza2luZzogUmFuZG9taXphdGlvbiB3aWxsIGJlIHBlcmZvcm1lZCB1c2luZyBhIGNvbXB1dGVyLWdlbmVyYXRlZCBzZXF1ZW5jZSB3aXRoaW4gUkVEQ2FwLCB3aXRoIGNvbmNlYWxlZCBhbGxvY2F0aW9uIGFuZCBzdHJhdGlmaWNhdGlvbiBieSBtaWdyYWluZSBzdWJ0eXBlIChjaHJvbmljIHZzIGVwaXNvZGljKS4gUGFydGljaXBhbnRzIHdpbGwgYmUgaW5mb3JtZWQgdGhleSBhcmUgcmVjZWl2aW5nIG9uZSBvZiB0d28gYWN0aXZlIHJlaGFiaWxpdGF0aW9uIHByb2dyYW1zIGJ1dCB3aWxsIG5vdCBiZSBpbmZvcm1lZCBvZiBzdHVkeSBoeXBvdGhlc2VzLiBUcmVhdGluZyB0aGVyYXBpc3RzIGNhbm5vdCBiZSBtYXNrZWQgZHVlIHRvIGludGVydmVudGlvbiBkZWxpdmVyeSByZXF1aXJlbWVudHM7IGhvd2V2ZXIsIG91dGNvbWUgYXNzZXNzb3JzIGFuZCBkYXRhIGFuYWx5c3RzIHdpbGwgcmVtYWluIG1hc2tlZCB0byBncm91cCBhbGxvY2F0aW9uLiBJbnRlcnZlbnRpb24gZmlkZWxpdHkgd2lsbCBiZSBlbnN1cmVkIHRocm91Z2ggc3RhbmRhcmRpemVkIHRyZWF0bWVudCBtYW51YWxzLCB0aGVyYXBpc3QgdHJhaW5pbmcsIGFuZCBkb2N1bWVudGF0aW9uIHByb3RvY29scy4gRXF1YWwgdGhlcmFwaXN0IGNvbnRhY3QgdGltZSB3aWxsIGJlIG1haW50YWluZWQgYWNyb3NzIGdyb3Vwcy4KRDQuMi4gSW50ZXJ2ZW50aW9ucwpELjQuMi4xLiBWZXN0aWJ1bGFyIFJlaGFiaWxpdGF0aW9uIChCb3RoIEdyb3VwcykKQWxsIHBhcnRpY2lwYW50cyB3aWxsIHJlY2VpdmUgc3RhbmRhcmRpemVkIHZlc3RpYnVsYXIgcmVoYWJpbGl0YXRpb24gdHdpY2Ugd2Vla2x5IGZvciA4IHdlZWtzLiBJbnRlcnZlbnRpb24gY29tcG9uZW50cyB3aWxsIGluY2x1ZGUgZ2F6ZSBzdGFiaWxpemF0aW9uIGV4ZXJjaXNlcywgaGFiaXR1YXRpb24gZXhlcmNpc2VzIHRhcmdldGluZyBzeW1wdG9tLXByb3Zva2luZyBtb3ZlbWVudHMsIGFuZCBwcm9ncmVzc2l2ZSBiYWxhbmNlIHRyYWluaW5nLiBFeGVyY2lzZXMgd2lsbCBiZSBpbmRpdmlkdWFsaXplZCBhbmQgcHJvZ3Jlc3NlZCBiYXNlZCBvbiBzeW1wdG9tIHRvbGVyYW5jZSBhbmQgdGhlcmFwaXN0IGNsaW5pY2FsIGp1ZGdtZW50IHRvIHJlZmxlY3QgcmVhbC13b3JsZCByZWhhYmlsaXRhdGlvbiBwcmFjdGljZS4gUGFydGljaXBhbnRzIHdpbGwgY29tcGxldGUgYSBkYWlseSBob21lIGV4ZXJjaXNlIHByb2dyYW0gbWlycm9yaW5nIHN1cGVydmlzZWQgZXhlcmNpc2UuIEFkaGVyZW5jZSBhbmQgc2FmZXR5IHdpbGwgYmUgbW9uaXRvcmVkIHRocm91Z2ggcGFydGljaXBhbnQgbG9ncyBhbmQgdGhlcmFwaXN0IGRvY3VtZW50YXRpb24gZm9yIGJvdGggZ3JvdXBzLiAKRDQuMi4yLiBDZXJ2aWNhbCBTdGFiaWxpemF0aW9uIFRyYWluaW5nIChJbnRlcnZlbnRpb24gQXJtIE9ubHkpClBhcnRpY2lwYW50cyByYW5kb21pemVkIHRvIHRoZSBpbnRlcnZlbnRpb24gYXJtIHdpbGwgYWRkaXRpb25hbGx5IHBlcmZvcm0gcHJvZ3Jlc3NpdmUgY2VydmljYWwgc3RhYmlsaXphdGlvbiB0cmFpbmluZyBpbnRlZ3JhdGVkIGludG8gc3VwZXJ2aXNlZCBzZXNzaW9ucy4gRXhlcmNpc2VzIHdpbGwgaW5jbHVkZSBkZWVwIG5lY2sgZmxleG9yIGFjdGl2YXRpb24sIGNlcnZpY2FsIGV4dGVuc29yIGVuZHVyYW5jZSB0cmFpbmluZywgYW5kIGNlcnZpY2FsIG1vdG9yIGNvbnRyb2wgcmV0cmFpbmluZyB1c2luZyBwcm9ncmVzc2l2ZSBsb2FkaW5nIHByaW5jaXBsZXMuIFByb2dyZXNzaW9uIHdpbGwgZm9sbG93IHN0cnVjdHVyZWQgY3JpdGVyaWEgYmFzZWQgb24gc3ltcHRvbSB0b2xlcmFuY2UgYW5kIG1vdG9yIHBlcmZvcm1hbmNlLiAKRDQuMy4gT3V0Y29tZXMgYW5kIE1lYXN1cmVzCkQ0LjMuMS4gUHJpbWFyeSBPdXRjb21lOiBUaGUgcHJpbWFyeSBvdXRjb21lIGlzIGNoYW5nZSBpbiBkaXp6aW5lc3MtcmVsYXRlZCBkaXNhYmlsaXR5IG1lYXN1cmVkIGJ5IHRoZSBEaXp6aW5lc3MgSGFuZGljYXAgSW52ZW50b3J5IChESEkpIGF0IGJhc2VsaW5lLCA4IHdlZWtzLCBhbmQgMyBtb250aHMuIFRoZSBESEkgaXMgYSB2YWxpZGF0ZWQsIHBhdGllbnQtcmVwb3J0ZWQgb3V0Y29tZSB3aXRoIGFuIE1DSUQgb2YgMTggcG9pbnRzLgpENC4zLjIuIFNlY29uZGFyeSBPdXRjb21lczogU2Vjb25kYXJ5IG91dGNvbWVzIGluY2x1ZGU6CuKAoglCYWxhbmNlIHBlcmZvcm1hbmNlIG1lYXN1cmVkIGJ5IHRoZSBNaW5pLUJFU1Rlc3QuCuKAoglIZWFkYWNoZSBmcmVxdWVuY3kgYW5kIGludGVuc2l0eSBtZWFzdXJlZCB1c2luZyBkYWlseSBoZWFkYWNoZSBkaWFyaWVzIGFuZCB2aXN1YWwgYW5hbG9nIHNjYWxlcy4K4oCiCU1pZ3JhaW5lIGRpc2FiaWxpdHkgbWVhc3VyZWQgYnkgdGhlIE1pZ3JhaW5lIERpc2FiaWxpdHkgQXNzZXNzbWVudCAoTUlEQVMpLgoKQmFzZWxpbmUgbWlncmFpbmUgc3VidHlwZSwgcHJlc2VuY2Ugb2YgbmVjayBwYWluLCBhbmQgc2V4IHdpbGwgYmUgcmVjb3JkZWQgdG8gYWxsb3cgZXhwbG9yYXRvcnkgc3ViZ3JvdXAgYW5hbHlzZXMuCkQ0LjMuMy4gRmVhc2liaWxpdHkgT3V0Y29tZXM6IEZlYXNpYmlsaXR5IG1ldHJpY3Mgd2lsbCBpbmNsdWRlIHJldGVudGlvbiByYXRlLCBpbnRlcnZlbnRpb24gYWRoZXJlbmNlLCBhbmQgYWR2ZXJzZSBldmVudHMuIFBhcnRpY2lwYW50IGZlZWRiYWNrIHJlZ2FyZGluZyBpbnRlcnZlbnRpb24gYWNjZXB0YWJpbGl0eSB3aWxsIGJlIGNvbGxlY3RlZCB0byBpbmZvcm0gZnV0dXJlIHRyaWFsIGRlc2lnbi4KRDUuIFRpbWVsaW5lOiBTZWUgVGFibGUgMi4gCgoKCgpUYWJsZSAyLiBQcm9wb3NlZCBQcm9qZWN0IFRpbWVsaW5lLiAKUHJvamVjdCBNb250aHMJUGhhc2UJS2V5IEFjdGl2aXRpZXMKTW9udGhzIDHigJMzCVN0YXJ0LVVwICYgUHJlcGFyYXRpb24JRmluYWxpemUgc3R1ZHkgcHJvY2VkdXJlczsgdHJhaW4gdGhlcmFwaXN0cyBhbmQgbWFza2VkIGFzc2Vzc29yczsgZXN0YWJsaXNoIFJFRENhcCByYW5kb21pemF0aW9uIGFuZCBkYXRhIGNhcHR1cmUgc3lzdGVtczsgY29tcGxldGUgcmVndWxhdG9yeSBhcHByb3ZhbHMuCk1vbnRocyA04oCTMTUJUmVjcnVpdG1lbnQgJiBFbnJvbGxtZW50CVJlY3J1aXQgYW5kIGVucm9sbCBwYXJ0aWNpcGFudHMgYXQgfjXigJM2IHBhcnRpY2lwYW50cyBwZXIgbW9udGggdG8gcmVhY2ggdGFyZ2V0IHNhbXBsZSBzaXplIG9mIDY0LgpNb250aHMgNOKAkzE4CUludGVydmVudGlvbiBEZWxpdmVyeQk4LXdlZWsgc3VwZXJ2aXNlZCByZWhhYmlsaXRhdGlvbiBwcm9ncmFtIGRlbGl2ZXJlZCBvbiBhIHJvbGxpbmcgYmFzaXMuCk1vbnRocyA04oCTMjEJT3V0Y29tZSBBc3Nlc3NtZW50cwlQcmltYXJ5IGVuZHBvaW50IGFzc2Vzc21lbnRzIGltbWVkaWF0ZWx5IHBvc3QtaW50ZXJ2ZW50aW9uOyAzLW1vbnRoIGZvbGxvdy11cCBhc3Nlc3NtZW50cyB0aHJvdWdoIE1vbnRoIDIxLgpNb250aHMgMTjigJMyNAlEYXRhIEFuYWx5c2lzICYgRGlzc2VtaW5hdGlvbglEYXRhIGNsZWFuaW5nOyBzdGF0aXN0aWNhbCBhbmFseXNpczsgZmVhc2liaWxpdHkgZXZhbHVhdGlvbjsgY29uZmVyZW5jZSBwcmVzZW50YXRpb25zOyBtYW51c2NyaXB0IHByZXBhcmF0aW9uLgoKRDYuIFN0YXRpc3RpY2FsIEFuYWx5c2lzIFBsYW4KQW5hbHlzZXMgd2lsbCBmb2xsb3cgYW4gaW50ZW50aW9uLXRvLXRyZWF0IGZyYW1ld29yay4gRGVzY3JpcHRpdmUgc3RhdGlzdGljcyB3aWxsIHN1bW1hcml6ZSBmZWFzaWJpbGl0eSBvdXRjb21lcy4gRmVhc2liaWxpdHkgYmVuY2htYXJrcyBpbmNsdWRlIGFjaGlldmluZyDiiaU4NSUgY29tcGxldGlvbiBvZiB0aGUgOC13ZWVrIHByaW1hcnkgZW5kcG9pbnQgYW5kIOKJpTgwJSAzLW1vbnRoIGZvbGxvdy11cCwg4omlNzUlIGF0dGVuZGFuY2UgYXQgc3VwZXJ2aXNlZCBzZXNzaW9ucyB3aXRoIOKJpTcwJSBhZGhlcmVuY2UgdG8gaG9tZSBleGVyY2lzZSBhbmQgbWFpbnRhaW5pbmcgc2FmZXR5IHdpdGggbm8gc2VyaW91cyBpbnRlcnZlbnRpb24tcmVsYXRlZCBhZHZlcnNlIGV2ZW50cyBhbmQgPDEwJSBkaXNjb250aW51YXRpb24gZHVlIHRvIHN5bXB0b20gZXhhY2VyYmF0aW9uLiBUaGUgcHJpbWFyeSBhbmFseXNpcyB3aWxsIGNvbXBhcmUgYmV0d2Vlbi1ncm91cCBjaGFuZ2UgaW4gREhJIGF0IDggd2Vla3MgdXNpbmcgbWl4ZWQtZWZmZWN0cyByZXBlYXRlZCBtZWFzdXJlcyBtb2RlbHMuIFNlY29uZGFyeSBvdXRjb21lcyB3aWxsIGJlIGFuYWx5emVkIHVzaW5nIHNpbWlsYXIgbW9kZWxzLiBFZmZlY3Qgc2l6ZXMgKENvaGVu4oCZcyBkKSBhbmQgOTUlIGNvbmZpZGVuY2UgaW50ZXJ2YWxzIHdpbGwgYmUgY2FsY3VsYXRlZCB0byBpbmZvcm0gZnV0dXJlIHBvd2VyIGNhbGN1bGF0aW9ucy4gRXhwbG9yYXRvcnkgc3ViZ3JvdXAgYW5hbHlzZXMgd2lsbCBleGFtaW5lIHBvdGVudGlhbCBkaWZmZXJlbmNlcyBiYXNlZCBvbiBtaWdyYWluZSBzdWJ0eXBlIGFuZCBuZWNrIHBhaW4gc3RhdHVzLiBNaXhlZC1lZmZlY3RzIG1vZGVscyB3aWxsIGFsbG93IGluY2x1c2lvbiBvZiBwYXJ0aWNpcGFudHMgd2l0aCBpbmNvbXBsZXRlIGZvbGxvdy11cCwgcmVkdWNpbmcgYmlhcyBhc3NvY2lhdGVkIHdpdGggbWlzc2luZyBkYXRhLiBTZW5zaXRpdml0eSBhbmFseXNlcyBpbmNsdWRpbmcgcGVyLXByb3RvY29sIGFuYWx5c2VzIHdpbGwgYmUgY29uZHVjdGVkIGlmIGF0dHJpdGlvbiBleGNlZWRzIGV4cGVjdGVkIGxldmVscy4KCkQ3LiBQb3RlbnRpYWwgTGltaXRhdGlvbnMgYW5kIE1pdGlnYXRpb24gU3RyYXRlZ2llcwpQYXJ0aWNpcGFudCBtYXNraW5nIGlzIG5vdCBmZWFzaWJsZSBkdWUgdG8gdGhlIG5hdHVyZSBvZiByZWhhYmlsaXRhdGlvbiBpbnRlcnZlbnRpb25zOyBob3dldmVyLCBib3RoIGdyb3VwcyByZWNlaXZlIGFjdGl2ZSB0aGVyYXB5IHdpdGggZXF1aXZhbGVudCB0aGVyYXBpc3QgY29udGFjdCwgYW5kIG91dGNvbWUgYXNzZXNzb3JzIGFuZCBhbmFseXN0cyByZW1haW4gbWFza2VkLiBTeW1wdG9tIGhldGVyb2dlbmVpdHkgd2lsbCBiZSBhZGRyZXNzZWQgdGhyb3VnaCBzdHJhdGlmaWVkIHJhbmRvbWl6YXRpb24gYW5kIGV4cGxvcmF0b3J5IHN1Ymdyb3VwIGFuYWx5c2VzLiBFeGFjZXJiYXRpb24gcmlzayB3aWxsIGJlIG1pbmltaXplZCB0aHJvdWdoIGdyYWRlZCBleGVyY2lzZSBwcm9ncmVzc2lvbiBhbmQgdGhlcmFwaXN0IG1vbml0b3JpbmcuIEFsdGhvdWdoIGZvbGxvdy11cCBpcyBsaW1pdGVkIHRvIDMgbW9udGhzLCBpdCBlbmFibGVzIGFzc2Vzc21lbnQgb2Ygc2hvcnQtdGVybSBkdXJhYmlsaXR5IGFuZCBpbmZvcm1zIGZ1dHVyZSBsb25nZXItdGVybSB0cmlhbHMuCkQ4LiBSaWdvciBhbmQgVHJhbnNwYXJlbmN5ClRoZSBwcm9wb3NlZCBzdHVkeSBmb2xsb3dzIE5JSCBzdGFuZGFyZHMgZm9yIHJpZ29yIGFuZCB0cmFuc3BhcmVuY3kgaW4gc2NpZW50aWZpYyBwcmVtaXNlLCBzdHVkeSBkZXNpZ24sIGFuZCBjb25zaWRlcmF0aW9uIG9mIGJpb2xvZ2ljYWwgdmFyaWFibGVzLiBUaGUgcHJlbWlzZSBpcyBzdXBwb3J0ZWQgYnkgZXZpZGVuY2Ugb2YgY2VydmljYWwgbXVzY3Vsb3NrZWxldGFsIGltcGFpcm1lbnRzIGluIG1pZ3JhaW5lLCB0cmlnZW1pbm9jZXJ2aWNhbCBjb252ZXJnZW5jZSBtZWNoYW5pc21zLCBhbmQgcHJlbGltaW5hcnkgZGF0YSBzdWdnZXN0aW5nIGNlcnZpY2FsIHN0YWJpbGl6YXRpb24gbWF5IHJlZHVjZSBtaWdyYWluZSBkaXNhYmlsaXR5OyBob3dldmVyLCBpdHMgYWRkaXRpdmUgZWZmZWN0cyBvbiBkaXp6aW5lc3MgYW5kIGJhbGFuY2UgaW4gdmVzdGlidWxhciBtaWdyYWluZSByZW1haW4gdW50ZXN0ZWQuIEJpYXMgd2lsbCBiZSBtaW5pbWl6ZWQgdGhyb3VnaCBzdGFuZGFyZGl6ZWQgaW50ZXJ2ZW50aW9uIG1hbnVhbHMsIHRoZXJhcGlzdCB0cmFpbmluZywgZmlkZWxpdHkgbW9uaXRvcmluZywgYW5kIG1hc2tlZCBvdXRjb21lIGFzc2Vzc21lbnQuIFZhbGlkYXRlZCBvdXRjb21lcyAoREhJLCBNaW5pLUJFU1Rlc3QsIE1JREFTLCBoZWFkYWNoZSBkaWFyeSkgd2lsbCBiZSBjb2xsZWN0ZWQgYXQgcHJlc3BlY2lmaWVkIHRpbWUgcG9pbnRzIGFuZCBhbmFseXplZCB1c2luZyBhIHByZWRlZmluZWQgc3RhdGlzdGljYWwgcGxhbiB3aXRoIG1hc2tlZCBncm91cCBjb2RpbmcuIEV4cGxvcmF0b3J5IGFuYWx5c2VzIHdpbGwgZXhhbWluZSBiaW9sb2dpY2FsIHZhcmlhYmxlcyBpbmNsdWRpbmcgc2V4LCBtaWdyYWluZSBjaHJvbmljaXR5LCBhbmQgbmVjayBwYWluIHdpdGggbWlncmFpbmUuIFByb2NlZHVyZXMgYW5kIHJlcG9ydGluZyB3aWxsIGZvbGxvdyBDT05TT1JUIGd1aWRlbGluZXMgdG8gZW5zdXJlIHJlcHJvZHVjaWJpbGl0eSBhbmQgdHJhbnNwYXJlbmN5LiAKUmVmZXJlbmNlcyAKMS4JSHUgWEgsIE1hcmtzb24gTEUsIExpcHRvbiBSQiwgZXQgYWwuIEJ1cmRlbiBvZiBtaWdyYWluZSBpbiB0aGUgVW5pdGVkIFN0YXRlczogZGlzYWJpbGl0eSBhbmQgZWNvbm9taWMgY29zdHMuIEFyY2ggSW50ZXJuIE1lZCAxOTk5OyAxNTk6IDgxMy04MTguIERPSTogMTAuMTAwMS9hcmNoaW50ZS4xNTkuOC44MTMuCjIuCVZldHZpayBLRyBhbmQgTWFjR3JlZ29yIEVBLiBTZXggZGlmZmVyZW5jZXMgaW4gdGhlIGVwaWRlbWlvbG9neSwgY2xpbmljYWwgZmVhdHVyZXMsIGFuZCBwYXRob3BoeXNpb2xvZ3kgb2YgbWlncmFpbmUuIExhbmNldCBOZXVyb2wgMjAxNzsgMTY6IDc2LTg3LiAyMDE2MTEwOS4gRE9JOiAxMC4xMDE2L3MxNDc0LTQ0MjIoMTYpMzAyOTMtOS4KMy4JQ2hhcmxlcyBBLiBUaGUgcGF0aG9waHlzaW9sb2d5IG9mIG1pZ3JhaW5lOiBpbXBsaWNhdGlvbnMgZm9yIGNsaW5pY2FsIG1hbmFnZW1lbnQuIExhbmNldCBOZXVyb2wgMjAxODsgMTc6IDE3NC0xODIuIDIwMTcxMjA4LiBET0k6IDEwLjEwMTYvczE0NzQtNDQyMigxNykzMDQzNS0wLgo0LglBbC1LaGF6YWxpIEhNLCBLcsO4bGwgTFMsIEFzaGluYSBILCBldCBhbC4gTmVjayBwYWluIGFuZCBoZWFkYWNoZTogUGF0aG9waHlzaW9sb2d5LCB0cmVhdG1lbnRzIGFuZCBmdXR1cmUgZGlyZWN0aW9ucy4gTXVzY3Vsb3NrZWxldCBTY2kgUHJhY3QgMjAyMzsgNjY6IDEwMjgwNC4gMjAyMzA2MTYuIERPSTogMTAuMTAxNi9qLm1za3NwLjIwMjMuMTAyODA0Lgo1LglBbC1LaGF6YWxpIEhNLCBZb3VuaXMgUywgQWwtU2F5ZWdoIFosIGV0IGFsLiBQcmV2YWxlbmNlIG9mIG5lY2sgcGFpbiBpbiBtaWdyYWluZTogQSBzeXN0ZW1hdGljIHJldmlldyBhbmQgbWV0YS1hbmFseXNpcy4gQ2VwaGFsYWxnaWEgMjAyMjsgNDI6IDY2My02NzMuIDIwMjIwMjE1LiBET0k6IDEwLjExNzcvMDMzMzEwMjQyMTEwNjgwNzMuCjYuCVNpdmVybGluZyBTIGFuZCBTY2h1bHR6IFAuIEEgTXVsdGltb2RhbCBDb25zZXJ2YXRpdmUgQXBwcm9hY2ggdG8gVHJlYXRpbmcgTWlncmFpbmU6IEEgUGh5c2ljYWwgVGhlcmFwaXN0J3MgUGVyc3BlY3RpdmUuIEN1cnIgUGFpbiBIZWFkYWNoZSBSZXAgMjAyMzsgMjc6IDMyOS0zMzcuIDIwMjMwNzI5LiBET0k6IDEwLjEwMDcvczExOTE2LTAyMy0wMTE0MC0zLgo3LglMYSBUb3VjaGUgUiwgRmllcnJvLU1hcnJlcm8gSiwgU8OhbmNoZXotUnXDrXogSSwgZXQgYWwuIFByZXNjcmlwdGlvbiBvZiB0aGVyYXBldXRpYyBleGVyY2lzZSBpbiBtaWdyYWluZSwgYW4gZXZpZGVuY2UtYmFzZWQgY2xpbmljYWwgcHJhY3RpY2UgZ3VpZGVsaW5lLiBKIEhlYWRhY2hlIFBhaW4gMjAyMzsgMjQ6IDY4LiAyMDIzMDYwNy4gRE9JOiAxMC4xMTg2L3MxMDE5NC0wMjMtMDE1NzEtOC4KOC4JRG9uZyBMLCBEb25nIFcsIEppbiBZLCBldCBhbC4gVGhlIEdsb2JhbCBCdXJkZW4gb2YgTWlncmFpbmU6IEEgMzAtWWVhciBUcmVuZCBSZXZpZXcgYW5kIEZ1dHVyZSBQcm9qZWN0aW9ucyBieSBBZ2UsIFNleCwgQ291bnRyeSwgYW5kIFJlZ2lvbi4gUGFpbiBUaGVyIDIwMjU7IDE0OiAyOTctMzE1LiAyMDI0MTIxMS4gRE9JOiAxMC4xMDA3L3M0MDEyMi0wMjQtMDA2OTAtNy4KOS4JRWRtZWFkcyBKIGFuZCBNYWNrZWxsIEpBLiBUaGUgZWNvbm9taWMgaW1wYWN0IG9mIG1pZ3JhaW5lOiBhbiBhbmFseXNpcyBvZiBkaXJlY3QgYW5kIGluZGlyZWN0IGNvc3RzLiBIZWFkYWNoZSAyMDAyOyA0MjogNTAxLTUwOS4gRE9JOiAxMC4xMDQ2L2ouMTUyNi00NjEwLjIwMDIuMDQyNjIueC4KMTAuCVNvbG9tb24gR0QgYW5kIFByaWNlIEtMLiBCdXJkZW4gb2YgbWlncmFpbmUuIEEgcmV2aWV3IG9mIGl0cyBzb2Npb2Vjb25vbWljIGltcGFjdC4gUGhhcm1hY29lY29ub21pY3MgMTk5NzsgMTEgU3VwcGwgMTogMS0xMC4gRE9JOiAxMC4yMTY1LzAwMDE5MDUzLTE5OTcwMDExMS0wMDAwMy4KMTEuCUNlbiBKLCBXYW5nIFEsIENoZW5nIEwsIGV0IGFsLiBHbG9iYWwsIHJlZ2lvbmFsLCBhbmQgbmF0aW9uYWwgYnVyZGVuIGFuZCB0cmVuZHMgb2YgbWlncmFpbmUgYW1vbmcgd29tZW4gb2YgY2hpbGRiZWFyaW5nIGFnZSBmcm9tIDE5OTAgdG8gMjAyMTogaW5zaWdodHMgZnJvbSB0aGUgR2xvYmFsIEJ1cmRlbiBvZiBEaXNlYXNlIFN0dWR5IDIwMjEuIEogSGVhZGFjaGUgUGFpbiAyMDI0OyAyNTogOTYuIDIwMjQwNjA3LiBET0k6IDEwLjExODYvczEwMTk0LTAyNC0wMTc5OC16LgoxMi4JRnVybWFuIEpNLCBNYXJjdXMgREEgYW5kIEJhbGFiYW4gQ0QuIFZlc3RpYnVsYXIgbWlncmFpbmU6IGNsaW5pY2FsIGFzcGVjdHMgYW5kIHBhdGhvcGh5c2lvbG9neS4gTGFuY2V0IE5ldXJvbCAyMDEzOyAxMjogNzA2LTcxNS4gRE9JOiAxMC4xMDE2L3MxNDc0LTQ0MjIoMTMpNzAxMDctOC4KMTMuCUNhbGFuZHJlIEVQLCBCYXNzaWxhIEMsIFNsaW0gTSwgZXQgYWwuIEFuIG92ZXJ2aWV3IG9mIHRoZSBjdXJyZW50IGFuZCBlbWVyZ2luZyB0cmVhdG1lbnQgb3B0aW9ucyBmb3IgdmVzdGlidWxhciBtaWdyYWluZS4gRXhwZXJ0IFJldmlldyBvZiBOZXVyb3RoZXJhcGV1dGljcyAyMDI0OyAyNDogMTE1Ny0xMTc5LiBET0k6IDEwLjEwODAvMTQ3MzcxNzUuMjAyNC4yNDA1NzM5LgoxNC4JRmVycmFjaW5pIEdOLCBGbG9yZW5jaW8gTEwsIERhY2ggRiwgZXQgYWwuIE11c2N1bG9za2VsZXRhbCBkaXNvcmRlcnMgb2YgdGhlIHVwcGVyIGNlcnZpY2FsIHNwaW5lIGluIHdvbWVuIHdpdGggZXBpc29kaWMgb3IgY2hyb25pYyBtaWdyYWluZS4gRXVyIEogUGh5cyBSZWhhYmlsIE1lZCAyMDE3OyA1MzogMzQyLTM1MC4gMjAxNzAxMjQuIERPSTogMTAuMjM3MzYvczE5NzMtOTA4Ny4xNy4wNDM5My0zLgoxNS4JRmxvcmVuY2lvIExMLCBkZSBPbGl2ZWlyYSBJViwgTG9kb3ZpY2hpIFNTLCBldCBhbC4gQ2VydmljYWwgTXVzY3VsYXIgRW5kdXJhbmNlIFBlcmZvcm1hbmNlIGluIFdvbWVuIFdpdGggYW5kIFdpdGhvdXQgTWlncmFpbmUuIEogT3J0aG9wIFNwb3J0cyBQaHlzIFRoZXIgMjAxOTsgNDk6IDMzMC0zMzYuIDIwMTkwMzI2LiBET0k6IDEwLjI1MTkvam9zcHQuMjAxOS44ODE2LgoxNi4JUGlvdmVzYW4gRUosIEtvd2FjcyBQQSBhbmQgT3NoaW5za3kgTUwuIENvbnZlcmdlbmNlIG9mIGNlcnZpY2FsIGFuZCB0cmlnZW1pbmFsIHNlbnNvcnkgYWZmZXJlbnRzLiBDdXJyIFBhaW4gSGVhZGFjaGUgUmVwIDIwMDM7IDc6IDM3Ny0zODMuIERPSTogMTAuMTAwNy9zMTE5MTYtMDAzLTAwMzcteC4KMTcuCVJvYmVydHNvbiBDRSBhbmQgQmVuYXJyb2NoIEVFLiBUaGUgYW5hdG9teSBvZiBoZWFkIHBhaW4uIEhhbmRiIENsaW4gTmV1cm9sIDIwMjM7IDE5ODogNDEtNjAuIERPSTogMTAuMTAxNi9iOTc4LTAtMTItODIzMzU2LTYuMDAwMDEtOS4KMTguCUtuYXBzdGFkIE1LLCBOb3JkYWhsIFNIRywgU2tvdWVuIEpTLCBldCBhbC4gTmVjayBwYWluIGFzc29jaWF0ZWQgd2l0aCBjbGluaWNhbCBzeW1wdG9tcyBpbiBkaXp6eSBwYXRpZW50cy1BIGNyb3NzLXNlY3Rpb25hbCBzdHVkeS4gUGh5c2lvdGhlciBSZXMgSW50IDIwMjA7IDI1OiBlMTgxNS4gMjAxOTEyMDguIERPSTogMTAuMTAwMi9wcmkuMTgxNS4KMTkuCURpIEFudG9uaW8gUywgQXJlbmR0LU5pZWxzZW4gTCwgUG9uemFubyBNLCBldCBhbC4gQ2VydmljYWwgbXVzY3Vsb3NrZWxldGFsIGltcGFpcm1lbnRzIGluIHRoZSA0IHBoYXNlcyBvZiB0aGUgbWlncmFpbmUgY3ljbGUgaW4gZXBpc29kaWMgbWlncmFpbmUgcGF0aWVudHMuIENlcGhhbGFsZ2lhIDIwMjI7IDQyOiA4MjctODQ1LiAyMDIyMDMyNS4gRE9JOiAxMC4xMTc3LzAzMzMxMDI0MjIxMDgyNTA2LgoyMC4JRGkgQW50b25pbyBTLCBBcmVuZHQtTmllbHNlbiBMLCBQb256YW5vIE0sIGV0IGFsLiBNaWdyYWluZSBwYXRpZW50cyB3aXRoIGFuZCB3aXRob3V0IG5lY2sgcGFpbjogRGlmZmVyZW5jZXMgaW4gY2xpbmljYWwgY2hhcmFjdGVyaXN0aWNzLCBzZW5zaXRpemF0aW9uLCBtdXNjdWxvc2tlbGV0YWwgaW1wYWlybWVudHMsIGFuZCBwc3ljaG9sb2dpY2FsIGJ1cmRlbi4gTXVzY3Vsb3NrZWxldCBTY2kgUHJhY3QgMjAyMzsgNjY6IDEwMjgwMC4gMjAyMzA2MTQuIERPSTogMTAuMTAxNi9qLm1za3NwLjIwMjMuMTAyODAwLgoyMS4JUGVuZyBCLCBZYW5nIEwsIExpIFksIGV0IGFsLiBDZXJ2aWNhbCBQcm9wcmlvY2VwdGlvbiBJbXBhaXJtZW50IGluIE5lY2sgUGFpbi1QYXRob3BoeXNpb2xvZ3ksIENsaW5pY2FsIEV2YWx1YXRpb24sIGFuZCBNYW5hZ2VtZW50OiBBIE5hcnJhdGl2ZSBSZXZpZXcuIFBhaW4gVGhlciAyMDIxOyAxMDogMTQzLTE2NC4gMjAyMTAxMTIuIERPSTogMTAuMTAwNy9zNDAxMjItMDIwLTAwMjMwLXouCjIyLglCZW5hdHRvIE1ULCBGbG9yZW5jaW8gTEwsIEJyYWdhdHRvIE1NLCBldCBhbC4gTmVjay1zcGVjaWZpYyBzdHJlbmd0aGVuaW5nIGV4ZXJjaXNlIGNvbXBhcmVkIHdpdGggcGxhY2VibyBzaGFtIHVsdHJhc291bmQgaW4gcGF0aWVudHMgd2l0aCBtaWdyYWluZTogYSByYW5kb21pemVkIGNvbnRyb2xsZWQgdHJpYWwuIEJNQyBOZXVyb2wgMjAyMjsgMjI6IDEyNi4gMjAyMjA0MDIuIERPSTogMTAuMTE4Ni9zMTI4ODMtMDIyLTAyNjUwLTAuCjIzLglBc2xhbmkgUCwgSGFzc2FucG91ciBNLCBSYXppIE8sIGV0IGFsLiBSZXNpc3RhbmNlIHRyYWluaW5nIHJlZHVjZXMgcGFpbiBpbmRpY2VzIGFuZCBpbXByb3ZlcyBxdWFsaXR5IG9mIGxpZmUgYW5kIGJvZHkgc3RyZW5ndGggaW4gd29tZW4gd2l0aCBtaWdyYWluZSBkaXNvcmRlcnMuIFNwb3J0IFNjaWVuY2VzIGZvciBIZWFsdGggMjAyMjsgMTg6IDEtMTEuIERPSTogMTAuMTAwNy9zMTEzMzItMDIxLTAwODIyLXkuCjI0LglCZW5hdHRvIE1ULCBGbG9yZW5jaW8gTEwsIEJyYWdhdHRvIE1NLCBldCBhbC4gTXVzY2xlIGFuZCBjbGluaWNhbCByZXNwb25zZXMgdG8gYSBjcmFuaW9jZXJ2aWNhbCBleGVyY2lzZSBwcm90b2NvbCBpbiBwYXRpZW50cyB3aXRoIG1pZ3JhaW5lOiBBIGZlYXNpYmlsaXR5IHN0dWR5LiBKIEJvZHl3IE1vdiBUaGVyIDIwMjU7IDQyOiAxNjctMTc0LiAyMDI0MTIxMi4gRE9JOiAxMC4xMDE2L2ouamJtdC4yMDI0LjEyLjAxMS4KMjUuCUR1c2d1biBFUywgS2FyYWhhbiBOIGFuZCBDZWxlbmF5IFNULiBBIFJhbmRvbWl6ZWQgVHJpYWwgb2YgQ2VydmljYWwgU3RhYmlsaXphdGlvbiBFeGVyY2lzZSBUcmFpbmluZyBWaWEgVGVsZXJlaGFiaWxpdGF0aW9uIGZvciBNaWdyYWluZS4gUGFpbiBNYW5hZyBOdXJzIDIwMjUgMjAyNTA5MDUuIERPSTogMTAuMTAxNi9qLnBtbi4yMDI1LjA4LjAwMS4KMjYuCVN1biBMLCBMaSBHLCBMaXUgRiwgZXQgYWwuIFJlc2lzdGFuY2UgZXhlcmNpc2UgcmVsaWV2ZXMgc3ltcHRvbXMgb2YgdmVzdGlidWxhciBtaWdyYWluZSBwYXRpZW50cyB3aXRoIE1SSSBkaWFnbm9zaXM6IEEgcmFuZG9taXplZCBwYXJhbGxlbC1jb250cm9sbGVkIHNpbmdsZS1ibGluZCBjbGluaWNhbCB0cmlhbC4gUmV2IE5ldXJvbCAoUGFyaXMpIDIwMjI7IDE3ODogMzcwLTM3Ni4gMjAyMTA5MjguIERPSTogMTAuMTAxNi9qLm5ldXJvbC4yMDIxLjA2LjAwOC4KMjcuCUJ5dW4gWUosIExldnkgREEsIE5ndXllbiBTQSwgZXQgYWwuIFRyZWF0bWVudCBvZiBWZXN0aWJ1bGFyIE1pZ3JhaW5lOiBBIFN5c3RlbWF0aWMgUmV2aWV3IGFuZCBNZXRhLWFuYWx5c2lzLiBMYXJ5bmdvc2NvcGUgMjAyMTsgMTMxOiAxODYtMTk0LiAyMDIwMDIyMS4gRE9JOiAxMC4xMDAyL2xhcnkuMjg1NDYuCjI4LglFbCBBaGRhYiBKLCBWaWxhcmRvIE0sIE9uZyBCLCBldCBhbC4gVGhlIGVmZmVjdCBvZiB2ZXN0aWJ1bGFyIHJlaGFiaWxpdGF0aW9uIGluIHRoZSBtYW5hZ2VtZW50IG9mIHZlc3RpYnVsYXIgbWlncmFpbmUgaW4gYWR1bHRzOiBBIHN5c3RlbWF0aWMgcmV2aWV3IGFuZCBtZXRhLWFuYWx5c2lzLiBIZWFkYWNoZSAyMDI2OyA2NjogNzctODcuIDIwMjUxMTI1LiBET0k6IDEwLjExMTEvaGVhZC43MDAwMi4KMjkuCVdvbGRlYW1hbnVlbCBZVyBhbmQgT2xpdmVpcmEgQUJELiBXaGF0IGlzIHRoZSBlZmZpY2FjeSBvZiBhZXJvYmljIGV4ZXJjaXNlIHZlcnN1cyBzdHJlbmd0aCB0cmFpbmluZyBpbiB0aGUgdHJlYXRtZW50IG9mIG1pZ3JhaW5lPyBBIHN5c3RlbWF0aWMgcmV2aWV3IGFuZCBuZXR3b3JrIG1ldGEtYW5hbHlzaXMgb2YgY2xpbmljYWwgdHJpYWxzLiBKIEhlYWRhY2hlIFBhaW4gMjAyMjsgMjM6IDEzNC4gMjAyMjEwMTMuIERPSTogMTAuMTE4Ni9zMTAxOTQtMDIyLTAxNTAzLXkuCjMwLglQcml5YSBTLCBBYmhpbGFzaCBQIGFuZCBTaXZhc2Fua2FyYW4gTS4gRWZmZWN0aXZlbmVzcyBvZiBuZWNrIGZsZXhvcnMgYW5kIGV4dGVuc29ycyBtdXNjbGUgc3RyZW5ndGhlbmluZyBleGVyY2lzZXMgb24gcGFpbiBhbmQgZnVuY3Rpb24gaW4gbWlncmFpbmUgcGF0aWVudHMuIFBoeXNpb3RoZXJhcHkgLSBUaGUgSm91cm5hbCBvZiBJbmRpYW4gQXNzb2NpYXRpb24gb2YgUGh5c2lvdGhlcmFwaXN0cyAyMDIyOyAxNjogMjMuIERPSTogMTAuNDEwMy9wamlhcC5wamlhcF8zNF8yMS4KCg==";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "Integrating Progressive Cervical Stabilization with Vestibular Rehabilitation for Vestibular Migraine: A Randomized Controlled Trial..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
