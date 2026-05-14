@@ -1,0 +1,774 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Five Levels of Intelligent Textbooks</title>
+<style>
+
+<style>
+/* ===== GENERAL LAYOUT ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #fafafa);
+    color: #2c2c2c;
+    padding: 30px;
+    margin: 0;
+}
+
+/* Centered mindmap container */
+.mindmap {
+    max-width: 800px;
+    margin: auto;
+    font-size: 20px;
+    line-height: 1.7;
+}
+
+/* ===== LISTS ===== */
+.mindmap ul {
+    margin: 0.6em 0 1em 1.5em;
+    padding-left: 1.4em;
+    list-style: disc;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.mindmap li::marker {
+    color: #8b5cf6; /* accent bullet color */
+}
+
+.mindmap li {
+    margin-bottom: 6px;
+    padding-left: 4px;
+}
+
+/* ===== COLLAPSIBLE SECTIONS ===== */
+.mindmap details {
+    /* FIX: Increased border width and used a darker color */
+    border-left: 5px solid #7c3aed; 
+    background: #ffffff;
+    margin: 8px 0;
+    /* FIX: Corrected typo "20x" to "20px" */
+    padding: 9px 25px; 
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Subsection (nested details) */
+.mindmap details > div > details {
+    margin-left: -8px;
+    /* FIX: Used a darker, more saturated color for the nested border */
+    border-color: #9333ea; 
+    background: #faf7ff;
+}
+
+/* Subtle hover feedback */
+.mindmap details:hover {
+    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.18);
+    background: linear-gradient(135deg, #ffffff, #f5f0ff);
+}
+
+/* ===== SUMMARY HEADERS ===== */
+.mindmap summary {
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+    /* FIX: Increased padding slightly to prevent text from touching the arrow icon */
+    padding-left: 24px; 
+    color: #4c1d95;
+    outline: none;
+}
+
+/* Custom arrow icon */
+.mindmap summary::before {
+    content: "▶";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #7c3aed;
+}
+
+/* Rotated arrow when open */
+.mindmap details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+/* Section title emphasis */
+.mindmap summary strong {
+    display: block;
+    font-size: 1.25em;
+    color: #4c1d95;
+}
+
+.mindmap summary em {
+    font-style: normal;
+    color: #6b21a8;
+    font-size: 0.95em;
+}
+
+/* Open section highlighting */
+.mindmap details[open] > summary {
+    background: #f3e8ff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+/* Smooth fade for expanded content */
+.mindmap details[open] > div {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== DESCRIPTION BOXES ===== */
+.mindmap .desc-box {
+    background: #fdfcff;
+    border: 2px solid #e5d9fb;
+    border-left: 4px solid #c084fc;
+    padding: 6px 10px;
+    margin: 12px 0 18px 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(160, 104, 255, 0.05);
+    transition: background 0.3s ease;
+}
+.mindmap .desc-box:hover {
+    background: #f8f4ff;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BUTTONS ===== */
+button {
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 0 6px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+    background-color: #6b21a8;
+    transform: scale(1.05);
+}
+
+/* ===== FLOATING CONTROL PANEL ===== */
+#level-controls {
+    position: fixed;
+    bottom: 30px;
+    left: 85%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    backdrop-filter: blur(6px);
+    cursor: move;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Buttons inside the panel */
+#level-controls button {
+    background-color: rgba(124, 58, 237, 0.85);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 2em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+#level-controls button:hover {
+    background-color: rgba(107, 33, 168, 0.95);
+    transform: scale(1.05);
+}
+
+/* Search input inside panel */
+#level-controls input {
+    border: 1px solid #d5c4ff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 0.95em;
+    outline: none;
+    width: 150px;
+    transition: border-color 0.2s ease;
+}
+#level-controls input:focus {
+    border-color: #8b5cf6;
+}
+
+/* Search count text */
+#searchCount {
+    margin-left: 8px;
+    font-style: italic;
+    color: #4c1d95;
+    font-size: 0.9em;
+}
+
+/* ===== SEARCH HIGHLIGHT ===== */
+mark.search-highlight {
+    background-color: #fff59d;
+    color: #000;
+    border-radius: 3px;
+    padding: 1px 3px;
+}
+
+
+
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style ===== */
+.mindmap q {
+    cursor: pointer;
+    color: transparent;
+    /* Apply a text-shadow with the same color as the text to create the blur effect */
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease;
+}
+
+.mindmap q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* Style for the revealed text */
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+
+
+/*for full control button*/
+/* ===== CLICK-TO-REVEAL: Spoiler Blur Style (with Read Mode) ===== */
+
+/* This rule applies the blur ONLY when the mindmap is NOT in read-mode. */
+.mindmap:not(.read-mode) q {
+    cursor: pointer;
+    color: transparent;
+    text-shadow: 0 0 8px #2c2c2c; 
+    user-select: none;
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.mindmap:not(.read-mode) q:hover {
+    text-shadow: 0 0 4px #2c2c2c; /* Reduce blur on hover */
+}
+
+/* This combined rule handles BOTH cases for revealing text:
+   1. The entire mindmap is in read-mode.
+   2. An individual <q> has been clicked (in quiz mode).
+*/
+.mindmap.read-mode q,
+.mindmap q.is-revealed {
+    color: inherit;
+    text-shadow: none;
+    cursor: default;
+    user-select: text;
+}
+
+
+</style>
+
+</style>
+</head>
+<body>
+
+<!-- Updated Controls -->
+<div id="level-controls" onmousedown="dragElement(this)">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">-</button>
+    <button onclick="resetView()">=</button>
+    <button type="button" onclick="downloadPdf()">[⇓]</button>
+    <button onclick="toggleReadMode()">Q/R</button>
+
+</div>
+
+<div class="mindmap">
+<div class="mindmap">
+<details><summary><strong>Five Levels of Intelligent Textbooks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Source</strong>: Dan McCreary, Medium.com (2024-11-19)</li>
+<li style="margin-left: 0px;"><strong>Topic</strong>: A Proposed Scale for AI-Powered Textbooks</li>
+<li style="margin-left: 0px;"><strong>Author(s)</strong>: Dan McCreary</li>
+</ul>
+<details><summary><strong>Overview of Intelligent Textbook Levels</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">5 levels exist from static to fully autonomous AI</li>
+<li style="margin-left: 0px;">Higher levels require <strong>more investment</strong> but offer proportional rewards</li>
+<li style="margin-left: 0px;">Generative AI is <strong><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">↓</code> costs</strong> of generating smart content</li>
+<li style="margin-left: 0px;">Model inspired by <strong>SAE autonomous driving levels</strong></li>
+</ul>
+</div></details>
+<details><summary><strong>Level 1 — Static Textbooks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Traditional printed or digital textbooks</li>
+<li style="margin-left: 0px;"><strong>No interactive elements</strong></li>
+<li style="margin-left: 0px;">Content: text, static images, figures, tables, charts</li>
+<li style="margin-left: 0px;">No dynamic content generation</li>
+<li style="margin-left: 0px;"><strong>No internal/external links</strong> to resources like MicroSims</li>
+<li style="margin-left: 0px;">Best for: simple, short, straightforward content delivery</li>
+<li style="margin-left: 0px;">Over <strong>90%</strong> of college textbooks today are Level 1</li>
+</ul>
+</div></details>
+<details><summary><strong>Level 2 — Interactive Content Textbooks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Essential interactive elements added</li>
+<li style="margin-left: 0px;">Keyword <strong>search</strong> functionality</li>
+<li style="margin-left: 0px;">Clickable links to internal content</li>
+<li style="margin-left: 0px;">External resource links (e.g., Wikipedia)</li>
+<li style="margin-left: 0px;">Embedded <strong>videos</strong></li>
+<li style="margin-left: 0px;">Simple <strong>quizzes</strong> embedded in text</li>
+<li style="margin-left: 0px;">Users engage with multimedia directly</li>
+</ul>
+<details><summary><strong>2.1. Tools Used for Level 2</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Uses <strong>mkdocs-material</strong> (free, open-source)</li>
+<li style="margin-left: 0px;">Built with <strong>Visual Studio Code</strong></li>
+<li style="margin-left: 0px;">Easy to configure and maintain</li>
+</ul>
+</div></details>
+<details><summary><strong>2.2. Features Enabled by Level 2</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Search function: single config file element</li>
+<li style="margin-left: 0px;"><strong>Deep links</strong> to each page section</li>
+<li style="margin-left: 0px;">Social media preview cards (Open Graph Protocol)</li>
+<li style="margin-left: 0px;">Google Analytics for <strong>usage monitoring</strong></li>
+<li style="margin-left: 0px;">Feedback forms on every page footer</li>
+<li style="margin-left: 0px;">Glossary linking with <strong>auto-completion</strong> in markdown</li>
+</ul>
+</div></details>
+<details><summary><strong>2.3. MicroSims in Level 2</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Interactive simulations running in browser</li>
+<li style="margin-left: 0px;">Generated by AI tools like <strong>ChatGPT o1-preview</strong></li>
+<li style="margin-left: 0px;">One of easiest ways to add interactivity</li>
+<li style="margin-left: 0px;">Cost-effective for any interactive textbook</li>
+</ul>
+</div></details>
+<details><summary><strong>2.4. Self-Assessment Quizzes in Level 2</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Questions embedded directly in text</li>
+<li style="margin-left: 0px;">&quot;Show Answer&quot; button reveals responses</li>
+<li style="margin-left: 0px;">Students click to reveal answers</li>
+</ul>
+</div></details>
+<details><summary><strong>2.5. Limitations of Level 2</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Content <strong>does not change</strong> based on student background</li>
+<li style="margin-left: 0px;">One-size-fits-all solution</li>
+<li style="margin-left: 0px;">Everyone gets same content regardless of prior knowledge</li>
+<li style="margin-left: 0px;">No personalization based on individual needs</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Level 2.9 — Getting Ready for Level 3</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Transition stage between Level 2 and Level 3</li>
+<li style="margin-left: 0px;">Requires integration with student needs</li>
+<li style="margin-left: 0px;">Free public hosting may <strong>not be sufficient</strong></li>
+<li style="margin-left: 0px;">Process is difficult and time-consuming</li>
+<li style="margin-left: 0px;">Requires continual feedback and testing</li>
+</ul>
+</div></details>
+<details><summary><strong>Level 3 — Adaptive Textbooks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Content adjusts based on <strong>user input/performance</strong></li>
+<li style="margin-left: 0px;">Adapts difficulty levels</li>
+<li style="margin-left: 0px;">Provides additional resources when needed</li>
+<li style="margin-left: 0px;">Uses deterministic rules for personalization</li>
+</ul>
+<details><summary><strong>3.1. How Level 3 Works</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;"><strong>Concept graph traversal algorithms</strong> personalize paths</li>
+<li style="margin-left: 0px;">Selects from fixed levels of curated content</li>
+<li style="margin-left: 0px;">Based on simple assessment scores</li>
+<li style="margin-left: 0px;">Delay-time-based rules for content delivery</li>
+<li style="margin-left: 0px;">Can skip content if users show <strong>high proficiency</strong></li>
+<li style="margin-left: 0px;">Review quiz failure --&gt; content reviewed before new material</li>
+</ul>
+</div></details>
+<details><summary><strong>3.2. Personal Learning Graphs</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Records concepts each student has mastered</li>
+<li style="margin-left: 0px;">Stored on learning graph for each student</li>
+<li style="margin-left: 0px;">Creates <strong>personalized learning path</strong></li>
+<li style="margin-left: 0px;">Each student needs their own unique graph</li>
+</ul>
+</div></details>
+<details><summary><strong>3.3. Limitations of Level 3</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">May lack <strong>real-time responsiveness</strong></li>
+<li style="margin-left: 0px;">No LLM-generated custom lesson plans</li>
+<li style="margin-left: 0px;">No dynamic MicroSim generation at runtime</li>
+<li style="margin-left: 0px;">Still uses pre-designed content</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Privacy and Legal Concerns (Level 3+)</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Personal data requires careful protection</li>
+<li style="margin-left: 0px;">Must comply with <strong>GDPR</strong> in EU</li>
+<li style="margin-left: 0px;">Must comply with <strong>FERPA</strong> in US</li>
+<li style="margin-left: 0px;">Regulations impact web cookies stored in browsers</li>
+<li style="margin-left: 0px;">Regulatory compliance <strong><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">↑</code> hosting costs significantly</strong></li>
+<li style="margin-left: 0px;">Outside auditors must certify compliance</li>
+<li style="margin-left: 0px;">Creates opportunity for startups providing infrastructure</li>
+</ul>
+</div></details>
+<details><summary><strong>Level 4 — Textbooks with Chatbots</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Combines concept graph algorithms with <strong>LLMs</strong></li>
+<li style="margin-left: 0px;">Builds chatbot to answer student questions</li>
+<li style="margin-left: 0px;">Uses <strong>GraphRAG architecture</strong> for intelligent responses</li>
+</ul>
+<details><summary><strong>4.1. GraphRAG Components</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">NLP pipelines</li>
+<li style="margin-left: 0px;">LLMs</li>
+<li style="margin-left: 0px;">Embeddings</li>
+<li style="margin-left: 0px;">Vector stores</li>
+<li style="margin-left: 0px;">Converts documents into graphs</li>
+</ul>
+</div></details>
+<details><summary><strong>4.2. How Level 4 Functions</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Learning Graph becomes <strong>&quot;ground truth&quot;</strong></li>
+<li style="margin-left: 0px;">Intelligent agents ride on curated graphs</li>
+<li style="margin-left: 0px;">Real-time feedback from chatbot</li>
+<li style="margin-left: 0px;">Adjusts content recommendations dynamically</li>
+<li style="margin-left: 0px;">Responsive question-answering systems</li>
+</ul>
+</div></details>
+<details><summary><strong>4.3. Features of Level 4</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Knows <strong>user context</strong></li>
+<li style="margin-left: 0px;">Provides tailored responses</li>
+<li style="margin-left: 0px;">Recommendations based on student progress</li>
+<li style="margin-left: 0px;">Protects sensitive data</li>
+<li style="margin-left: 0px;">Minimizes cost of using large LLMs</li>
+<li style="margin-left: 0px;">Smaller LLMs (e.g., <strong>Ollama</strong> on local GPUs) may suffice</li>
+</ul>
+</div></details>
+<details><summary><strong>4.4. Timeline and Adoption</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Expected in learning institutions <strong>next year</strong> (2025)</li>
+<li style="margin-left: 0px;">Forward-thinking thought leaders first</li>
+<li style="margin-left: 0px;">Commercial organizations like <strong>Khan Academy</strong> already working on these features</li>
+</ul>
+</div></details>
+<details><summary><strong>4.5. Limitations of Level 4</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Still has limitations</li>
+<li style="margin-left: 0px;">Teachers and instructors will remain necessary</li>
+<li style="margin-left: 0px;">Not fully autonomous learning</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Level 5 — Autonomous AI Textbooks</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Fully AI-driven adaptive intelligent textbooks</li>
+<li style="margin-left: 0px;">Imagined in Neal Stephenson&#x27;s <em>The Diamond Age</em> (1995)</li>
+<li style="margin-left: 0px;">Cyberpunk novel: AI tablet generating animated stories in real-time</li>
+</ul>
+<details><summary><strong>5.1. Vision of Level 5</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Deep understanding of individual student&#x27;s knowledge</li>
+<li style="margin-left: 0px;">Knows each student&#x27;s learning goals</li>
+<li style="margin-left: 0px;">Answers complex questions through <strong>NLP</strong></li>
+<li style="margin-left: 0px;">Generates customized lessons in real-time</li>
+</ul>
+</div></details>
+<details><summary><strong>5.2. Current Limitations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Like self-driving cars in heavy snowstorm at night</li>
+<li style="margin-left: 0px;">Requires specialized hardware (graph-traversal chips)</li>
+<li style="margin-left: 0px;">Current CPU hardware <strong>not sufficient</strong></li>
+<li style="margin-left: 0px;">LLMs still unreliable for full autonomy</li>
+<li style="margin-left: 0px;">Not happening in near term</li>
+</ul>
+</div></details>
+<details><summary><strong>5.3. Future Expectations</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Grandchildren will have comprehensive teaching assistants</li>
+<li style="margin-left: 0px;">Mimics <strong>one-on-one tutor experience</strong></li>
+<li style="margin-left: 0px;">Goes beyond single textbook</li>
+<li style="margin-left: 0px;">Always supports learning objectives</li>
+<li style="margin-left: 0px;">Protects learning graph privacy</li>
+<li style="margin-left: 0px;">Fully autonomous and interactive learning agents</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Breaking Through the Layers</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">5 levels are just a model to help evaluate progress</li>
+<li style="margin-left: 0px;">Model is easy to change and customize</li>
+<li style="margin-left: 0px;">Can <strong>skip layers</strong> if needed</li>
+<li style="margin-left: 0px;">Example: Level 2 --&gt; directly to Level 4 features using LLMs</li>
+<li style="margin-left: 0px;">Skipping avoids regulatory compliance burdens</li>
+<li style="margin-left: 0px;">Prompts may contain student data but <strong>never stored</strong> on website</li>
+</ul>
+</div></details>
+<details><summary><strong>Conclusion and Future Outlook</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Scale provides framework for evaluating textbooks</li>
+<li style="margin-left: 0px;">Guides educators, developers, publishers in development journey</li>
+<li style="margin-left: 0px;">Many unknowns remain in the field</li>
+<li style="margin-left: 0px;">LLM quality will <strong><code style="background-color: #fff5b1; padding: 2px 4px; border-radius: 3px; font-family: monospace; border-bottom: 1px solid #ffe082;">↑</code></strong> (confident prediction)</li>
+<li style="margin-left: 0px;">Standards for exchanging textbooks between systems <strong>not yet available</strong></li>
+<li style="margin-left: 0px;">Depends on standard graph databases to execute agents</li>
+</ul>
+<details><summary><strong>6.1. Student Preferences</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">Students prefer <strong>hands-on interaction</strong> over static textbooks</li>
+<li style="margin-left: 0px;">Demand for interactive content growing</li>
+</ul>
+</div></details>
+<details><summary><strong>6.2. Author&#x27;s Hope</strong></summary><div style="padding-left: 20px;">
+<ul style="list-style-type: disc;">
+<li style="margin-left: 0px;">All children on Earth should have <strong>equal learning opportunities</strong></li>
+<li style="margin-left: 0px;">Regardless of country, race, gender, socioeconomic background</li>
+<li style="margin-left: 0px;">Intelligent textbooks can help bridge gaps</li>
+</ul>
+</div></details>
+</div></details>
+<details><summary><strong>Key Terms and Definitions</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Term</th>
+<th>Definition</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Learning Graph</strong></td>
+<td>Concept dependency graphs for customized learning paths</td>
+</tr>
+<tr>
+<td><strong>MicroSims</strong></td>
+<td>Interactive simulations running in browser</td>
+</tr>
+<tr>
+<td><strong>GraphRAG</strong></td>
+<td>Graph retrieval-augmented generation architecture</td>
+</tr>
+<tr>
+<td><strong>LLM</strong></td>
+<td>Large Language Model (AI system)</td>
+</tr>
+<tr>
+<td><strong>LMS</strong></td>
+<td>Learning Management System</td>
+</tr>
+<tr>
+<td><strong>GDPR</strong></td>
+<td>EU data protection regulation</td>
+</tr>
+<tr>
+<td><strong>FERPA</strong></td>
+<td>US student privacy law</td>
+</tr>
+<tr>
+<td><strong>Open Graph Protocol</strong></td>
+<td>Social media metadata standard for link previews</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<details><summary><strong>Quick Reference: Level Comparison</strong></summary><div style="padding-left: 20px;">
+<table border="1" cellspacing="0" cellpadding="4">
+<thead><tr>
+<th>Level</th>
+<th>Name</th>
+<th>Key Feature</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Static</td>
+<td>Text and images only</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Interactive</td>
+<td>Search, links, quizzes, MicroSims</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Adaptive</td>
+<td>Content adjusts based on performance</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Chatbot</td>
+<td>LLMs + graph algorithms for Q&amp;A</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Autonomous</td>
+<td>Full AI-driven personalized learning</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+</div></details>
+</div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+// --- State Management for Expansion Level ---
+let currentLevel = 1; 
+const maxLevel = 10;
+const minLevel = 1;
+
+// --- Core Function to Set Mindmap Expansion ---
+function setMindmapLevel(level) {
+    const allDetails = document.querySelectorAll('.mindmap details');
+    allDetails.forEach(detail => detail.removeAttribute('open'));
+    allDetails.forEach(detail => {
+        let depth = 0;
+        let parent = detail.parentElement;
+        while (parent && parent.tagName !== 'BODY') {
+            if (parent.tagName === 'DETAILS') {
+                depth++;
+            }
+            parent = parent.parentElement;
+        }
+        if (depth < level) {
+            detail.setAttribute('open', '');
+        }
+    });
+}
+
+// --- Control Functions ---
+function zoomIn() {
+    if (currentLevel < maxLevel) {
+        currentLevel++;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function zoomOut() {
+    if (currentLevel > minLevel) {
+        currentLevel--;
+        setMindmapLevel(currentLevel);
+    }
+}
+
+function resetView() {
+    currentLevel = minLevel;
+    setMindmapLevel(currentLevel);
+}
+
+
+// --- NEW: Function to Toggle Read/Quiz Mode ---
+function toggleReadMode() {
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.classList.toggle('read-mode');
+    }
+}
+
+// --- Draggable Controls ---
+function dragElement(elmnt) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    const onMouseDown = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    };
+    const elementDrag = (e) => {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        elmnt.style.transform = "none";
+        elmnt.style.bottom = "auto";
+    };
+    const closeDragElement = () => {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    };
+    if (document.getElementById(elmnt.id)) {
+        document.getElementById(elmnt.id).onmousedown = onMouseDown;
+    } else {
+        elmnt.onmousedown = onMouseDown;
+    }
+}
+
+
+
+
+// --- Initial Setup ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Set the initial mindmap view
+    setMindmapLevel(currentLevel);
+
+    // Get the draggable controls element
+    const controls = document.getElementById('level-controls');
+    if (controls) {
+        dragElement(controls);
+    }
+
+    // --- CORRECTED & IMPROVED: Setup for Click-to-Reveal ---
+    const mindmapContainer = document.querySelector('.mindmap');
+    if (mindmapContainer) {
+        mindmapContainer.addEventListener('click', function(event) {
+            // Use .closest() to find the nearest parent <q> tag.
+            // This is more robust than checking event.target.tagName.
+            const quoteElement = event.target.closest('q');
+            
+            if (quoteElement) {
+                // Add the 'is-revealed' class to show the text
+                quoteElement.classList.add('is-revealed');
+            }
+        });
+    }
+});
+</script>
+
+
+<!-- PDF download script -->
+<script>
+  const pdfBase64 = "LS0tCnRpdGxlOiAiRml2ZSBMZXZlbHMgb2YgSW50ZWxsaWdlbnQgVGV4dGJvb2tzIgpzb3VyY2U6ICJodHRwczovL2RtY2NyZWFyeS5tZWRpdW0uY29tL2ZpdmUtbGV2ZWxzLW9mLWludGVsbGlnZW50LXRleHRib29rcy1iODFhNGMxNTI1YTAiCmF1dGhvcjoKICAtICJbW0RhbiBNY0NyZWFyeV1dIgpwdWJsaXNoZWQ6IDIwMjQtMTEtMTkKY3JlYXRlZDogMjAyNi0wNS0xNApkZXNjcmlwdGlvbjogIkEgUHJvcG9zZWQgU2NhbGUgZm9yIEFJLVBvd2VyZWQgVGV4dGJvb2tzIgp0YWdzOgogIC0gImNsaXBwaW5ncyIKLS0tCiMjIEEgUHJvcG9zZWQgU2NhbGUgZm9yIEFJLVBvd2VyZWQgVGV4dGJvb2tzCgohW10oaHR0cHM6Ly9taXJvLm1lZGl1bS5jb20vdjIvcmVzaXplOmZpdDoxNDAwL2Zvcm1hdDp3ZWJwLzEqZVJkVjJDdGJ6ZmVTUFF2VG5XRS1EUS5wbmcpCgpGaXZlIGxldmVscyBvZiBpbnRlbGxpZ2VudCB0ZXh0Ym9va3MgZnJvbSBzdGF0aWMgdG8gZnVsbHkgQUkgcG93ZXJlZCBhdXRvbm9tb3VzIGxlYXJuaW5nLiBJbWFnZSBieSB0aGUgYXV0aG9yIHVzaW5nIENoYXRncHQuCgpJIGhhdmUgYmVlbiBbd29ya2luZ10oaHR0cHM6Ly9tZWRpdW0uY29tL0BkbWNjcmVhcnkvdXNpbmctZ2VuYWktdG8tY3JlYXRlLWxlYXJuaW5nLWdyYXBocy1mYmZlOGJjZjFlYjEpIG9uIGRldmVsb3BpbmcgdG9vbHMgYW5kIHN0YW5kYXJkcyBmb3IgbGVhcm5pbmcgZ3JhcGhzIGZvciBzZXZlcmFsIG1vbnRocy4gV2hlbiBDaGF0R1BUIG8xLXByZXZpZXcgY2FtZSBvdXQsIHRoZSBpbmNyZWFzZSBpbiBxdWFsaXR5IG9mIGNyZWF0aW5nIGNvbmNlcHQgZ3JhcGhzIGJsZXcgbWUgYXdheS4gSSBnYWluZWQgbWFzc2l2ZSBzcGVlZHVwcyB1c2luZyB0aGUgbzEtcHJldmlldyBtb2RlbCAocmVhbGx5IGEgd29ya2Zsb3cpIHRvIGdlbmVyYXRlIGxlYXJuaW5nIGdyYXBocy4gSSBzdGFydGVkIGdlbmVyYXRpbmcgbW9yZSBsZWFybmluZyBncmFwaHMgZm9yIG5ldyB0b3BpY3MgdGhhdCBmcmllbmRzIHdlcmUgaW50ZXJlc3RlZCBpbi4gQnV0IGl0IGdvdCBtZSB0aGlua2luZyBhYm91dCBob3cgdG8gaGVscCBteSByZWFkZXJzIHNlZSBob3cgbWF0dXJlIHRoZXNlIGNvdXJzZXMgd2VyZSBhbmQgcHJlcGFyZSB0aGVtIHRvIGxvYWQgaW50byBhIGNvbW1lcmNpYWwgbGVhcm5pbmcgbWFuYWdlbWVudCBzeXN0ZW0gKExNUykuCgpJbnNwaXJlZCBieSB0aGUgW2ZpdmUgbGV2ZWxzIG9mIGF1dG9ub21vdXMgZHJpdmluZ10oaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU2VsZi1kcml2aW5nX2NhciNTQUVfY2xhc3NpZmljYXRpb24pLCBJIGNyZWF0ZWQgbXkgb3duIOKAnGZpdmUgbGV2ZWxzIG9mIGludGVsbGlnZW50IHRleHRib29rcy7igJ0gVGhpcyBibG9nIHdpbGwgcmV2aWV3IHRoZXNlIGZpdmUgbGV2ZWxzIGFuZCBob3cgdGhleSBjYW4gYmUgdXNlZCB0byBndWlkZSBhbnkgbGVhcm5pbmcgb3JnYW5pemF0aW9uJ3MgaW50ZWxsaWdlbnQgdGV4dGJvb2sgc3RyYXRlZ3kuIEkgd2lsbCBjb25jbHVkZSB3aXRoIGEgbG9vayBhdCB3aGF0IGlzIGNvbWluZyBuZXh0LgoKIyMgQmFja2dyb3VuZCBvbiBMZWFybmluZyBHcmFwaHMKCipSZXByZXNlbnRhdGlvbiBpcyB0aGUgaGFyZGVzdCBwYXJ0IG9mIEFJLiog4oCUIEplZmYgSGF3a2lucwoKIVtdKGh0dHBzOi8vbWlyby5tZWRpdW0uY29tL3YyL3Jlc2l6ZTpmaXQ6MTQwMC9mb3JtYXQ6d2VicC8xKnRPRmNmWEZuUWhjY3hzWmJsM0liZ2cucG5nKQoKQSBzYW1wbGUgbGVhcm5pbmcgZ3JhcGggZm9yIGNhbGN1bHVzLiBFYWNoIGNvbmNlcHQgaXMgYSB2ZXJ0ZXggb24gYSBncmFwaCB3aXRoIGFycm93cyB0byBkZXBlbmRlbnQgY29uY2VwdHMgKHByZXJlcXVpc2l0ZXMgZm9yIGxlYXJuaW5nKS4gSW1hZ2UgYnkgdGhlIGF1dGhvci4KCkxlYXJuaW5nIGdyYXBocyBhcmUgY29uY2VwdCBkZXBlbmRlbmN5IGdyYXBocyB0aGF0IGhlbHAgZ3VpZGUgaW50ZWxsaWdlbnQgYWdlbnRzIGluIGJ1aWxkaW5nIGN1c3RvbWl6ZWQgbGVhcm5pbmcgcGF0aHMgZm9yIGVhY2ggc3R1ZGVudC4gSSByZXZpZXdlZCB0aGVtIGluIG15IHByaW9yIGJsb2csIGJ1dCBoZXJlIGlzIGEgcXVpY2sgcmVjYXAuCgpMZWFybmluZyBncmFwaHMgYXJlIG9mdGVuIGFib3V0IGEgc3BlY2lmaWMgc3ViamVjdCwgc3VjaCBhcyBjaXJjdWl0cywgc2lnbmFsIHByb2Nlc3NpbmcsIFN5c3RlbXMgVGhpbmtpbmcsIE1pY3JvUHl0aG9uLCBHcmFwaCBBbGdvcml0aG1zLCBTVEVNIHJvYm90cywgb3IgRGF0YSBTY2llbmNlLiBJIHVzdWFsbHkgYXNrIGEgZ2VuZXJhdGl2ZSBBSSB0b29sIHRvIGhlbHAgbWUgd3JpdGUgYSBjb3Vyc2UgZGVzY3JpcHRpb24gb3Igb3V0bGluZSBmb3IgYSBjb3Vyc2UuIE11Y2ggb2YgdGhpcyBpcyBvcmdhbml6ZWQgYnkgZmlyc3QgZm9jdXNpbmcgb24gZGVmaW5pbmcgY29yZSBjb25jZXB0cyB3aXRoIHByZWNpc2UgZGVmaW5pdGlvbnMgYW5kIGV4YW1wbGVzIGFuZCBwcm9jZWVkaW5nIHRvIG1vcmUgY29tcGxleCBjb25jZXB0cyB0aGF0IGJ1aWxkIG9uIHRoZXNlIGZvdW5kYXRpb25hbCBjb25jZXB0cy4KCk9uZSBvZiB0aGUgY3JpdGljYWwgc3RlcHMgdG8gYnVpbGRpbmcgd2Vic2l0ZXMgZm9yIHRoZXNlIGNvdXJzZXMgaXMgdG8gYW5jaG9yIG91ciB1bmRlcnN0YW5kaW5nIG9mIGludGVsbGlnZW50IGNvbnRlbnQgZ2VuZXJhdGlvbiB3aXRoIE1pY3JvU2ltcyBhbmQgaW50ZXJhY3RpdmUgZXhlcmNpc2VzIHdoZXJlIHN0dWRlbnRzIHVzZSBidXR0b25zIGFuZCBzbGlkZXJzIHRvIGNvbnRyb2wgaW50ZXJhY3RpdmUgZWxlbWVudHMuCgpXZSB0aGVuIHJldmlldyB0aGlzIG91dGxpbmUsIGRvIHNvbWUgY2xlYW51cCwgYW5kIGNyZWF0ZSBhIGNvbXBsZXRlIGxlYXJuaW5nIGdyYXBoIGZvciB0aGUgY291cnNlIHRoYXQgaW50ZWxsaWdlbnQgYWdlbnRzIGNhbiB1c2UuIFRvZGF5LCB0aGVyZSBhcmUgb25seSBhIGZldyBodW5kcmVkIE1pY3JvU2ltcyBvbiB0aGVzZSB3ZWJzaXRlcywgYnV0IGluIHRoZSBmdXR1cmUsIHRoZXJlIHdpbGwgYmUgdGVucyBvZiB0aG91c2FuZHMgb3IgbWlsbGlvbnMgb2YgdGhlbSB0aGF0IEFJIGFnZW50cyBjYW4gcmVjb21tZW5kIGFuZCBjdXN0b21pemUuCgpJIGhhdmUgbGVhcm5lZCB0aGF0IG1hbnkgaW5kaXZpZHVhbHMgYW5kIG9yZ2FuaXphdGlvbnMgYXJlIGRpc2N1c3Npbmcg4oCcaW50ZWxsaWdlbnQgdGV4dGJvb2tz4oCdIHdpdGhvdXQgYSBwcmVjaXNlIHNjYWxlIHRvIHJhbmsgdGhlc2UgdGV4dGJvb2tzLiBNb3ZpbmcgYSB0ZXh0Ym9vayBmcm9tIHByaW50IHRvIHRoZSB3ZWIgaXMgYW4gZXhjZWxsZW50IGZpcnN0IHN0ZXAuIEJ1dCB0aGF0IGlzIGp1c3QgdGhlIGJlZ2lubmluZy4gSGVyZSBpcyBteSBhdHRlbXB0IHRvIGNyZWF0ZSBhIGZpdmUtbGV2ZWwgbW9kZWwgb2YgaW50ZWxsaWdlbnQgdGV4dGJvb2tzIHNpbWlsYXIgdG8gdGhlIGZpdmUtbGV2ZWwgc2NhbGUgZm9yIGF1dG9ub21vdXMgY2Fycy4gRWFjaCBsZXZlbCByZXF1aXJlcyBpbmNyZWFzaW5nIGludmVzdG1lbnQgYW5kIGhhcyBwcm9wb3J0aW9uYWwgcmlza3MgYW5kIHJld2FyZHMuCgohW10oaHR0cHM6Ly9taXJvLm1lZGl1bS5jb20vdjIvcmVzaXplOmZpdDoxNDAwL2Zvcm1hdDp3ZWJwLzEqZ3ZObkFiaE9ESk9LVmtNOFRKUlB6US5wbmcpCgpGaXZlIGxldmVscyBvZiBpbnRlbGxpZ2VudCB0ZXh0Ym9va3MsIGZyb20gc3RhdGljIHByaW50ZWQgdG8gZnVsbCBBSS4gRWFjaCBsZXZlbCByZXF1aXJlcyBtb3JlIGludmVzdG1lbnQsIGJ1dCB0aGUgZ2VuZXJhdGl2ZSBBSSBpcyBsb3dlcmluZyB0aGUgY29zdCBvZiBnZW5lcmF0aW5nIHNtYXJ0IGNvbnRlbnQuIEltYWdlIGJ5IHRoZSBhdXRob3IuCgojIyBMZXZlbCAxIOKAlCBTdGF0aWMgVGV4dGJvb2tzCgpUaGVzZSB0ZXh0Ym9va3MgaW5jbHVkZSBhbnkgdHJhZGl0aW9uYWwgcHJpbnRlZCBvciBkaWdpdGFsIHRleHRib29rcyB3aXRob3V0IGFueSBpbnRlcmFjdGl2ZSBlbGVtZW50cy4gVGhleSBjb25zaXN0IG9mIHB1cmVseSB0ZXh0IGFuZCBzdGF0aWMgaW1hZ2VzLiBObyBkeW5hbWljIGNvbnRlbnQgaXMgZ2VuZXJhdGVkLCBhbmQgbm8gaW50ZXJuYWwgb3IgZXh0ZXJuYWwgbGlua3MgdG8gZXh0ZXJuYWwgcmVzb3VyY2VzIHN1Y2ggYXMgW01pY3JvU2ltc10oaHR0cHM6Ly9kbWNjcmVhcnkuZ2l0aHViLmlvL21pY3Jvc2ltcy8pIGV4aXN0LgoKU3RhdGljIHRleHRib29rcyBhcmUgc3VpdGVkIGZvciBzaW1wbGUsIHNob3J0LCBhbmQgc3RyYWlnaHRmb3J3YXJkIGNvbnRlbnQgZGVsaXZlcnkgd2hlcmUgbm8gaW50ZXJhY3Rpb24gaXMgcmVxdWlyZWQuIFN0YXRpYyB0ZXh0Ym9va3MgY2FuIHN0aWxsIHByb3ZpZGUgbWFueSBpbGx1c3RyYXRpb25zLCBmaWd1cmVzLCB0YWJsZXMsIGNoYXJ0cywgYW5kIGEgZGV0YWlsZWQgY29uY2VwdCBpbmRleCBhdCB0aGUgYmFjayBvZiB0aGUgdGV4dGJvb2suCgpPdmVyIDkwJSBvZiB0ZXh0Ym9va3MgdXNlZCBieSBjb2xsZWdlIHN0dWRlbnRzIHRvZGF5IGFyZSByZXF1aXJlZCB0byB1c2UgTGV2ZWwgMSBzdGF0aWMgdGV4dGJvb2tzLiBIb3dldmVyLCB0aGlzIGlzIHN0YXJ0aW5nIHRvIGNoYW5nZS4KCiMjIExldmVsIDIg4oCUIEludGVyYWN0aXZlIENvbnRlbnQgVGV4dGJvb2tzCgohW10oaHR0cHM6Ly9taXJvLm1lZGl1bS5jb20vdjIvcmVzaXplOmZpdDoxNDAwL2Zvcm1hdDp3ZWJwLzEqcEV3UERWQkpRTmRKc0J4VlNITEljUS5wbmcpCgpBIHdvcmQgY2xvdWQgb2Yga2V5IGZlYXR1cmVzIG9mIGludGVyYWN0aXZlIHRleHRib29rcy4gVGhlIGF1dGhvciBnZW5lcmF0ZWQgdGhlIHNlZWQgdGV4dCwgYW5kIHRoZSByZW1haW5pbmcgd29yZHMgYW5kIHRoZSB3b3JkY2xvdWQyIGNvZGUgd2VyZSBnZW5lcmF0ZWQgYnkgQ2hhdEdQVC4KCkEgTGV2ZWwgMiB0ZXh0Ym9vayBpbmNvcnBvcmF0ZXMgZXNzZW50aWFsIGludGVyYWN0aXZlIGVsZW1lbnRzIHN1Y2ggYXMga2V5d29yZCBzZWFyY2gsIGNsaWNrYWJsZSBsaW5rcyB0byBpbnRlcm5hbCBjb250ZW50LCBhbmQgZXh0ZXJuYWwgcmVzb3VyY2VzIHN1Y2ggYXMgV2lraXBlZGlhIFBhZ2VzLiBMZXZlbCAyIHRleHRib29rcyBjYW4gdXNlIGVtYmVkZGVkIHZpZGVvcyBvciBzaW1wbGUgcXVpenplcy4gVXNlcnMgY2FuIGVuZ2FnZSB3aXRoIG11bHRpbWVkaWEgb3IgY29tcGxldGUgYmFzaWMgYXNzZXNzbWVudHMgZGlyZWN0bHkgaW4gdGhlIHRleHRib29rLgoKSSB1c2UgdGhlIGV4Y2VsbGVudCBmcmVlLCBvcGVuLXNvdXJjZSBbbWtkb2NzLW1hdGVyaWFsXShodHRwczovL3NxdWlkZnVuay5naXRodWIuaW8vbWtkb2NzLW1hdGVyaWFsLykgc3lzdGVtIHdpdGggVmlzdWFsIFN0dWRpbyBDb2RlIHRvIGNyZWF0ZSBteSBvbmxpbmUgdGV4dGJvb2sgZXhhbXBsZXMuIEl0IGlzIGVhc3kgdG8gZG8gdGhlIGZvbGxvd2luZzoKCjEuIEFkZCBhIFtzZWFyY2ggZnVuY3Rpb25dKGh0dHBzOi8vc3F1aWRmdW5rLmdpdGh1Yi5pby9ta2RvY3MtbWF0ZXJpYWwvc2V0dXAvc2V0dGluZy11cC1zaXRlLXNlYXJjaC8pIGJ5IGFkZGluZyBhIHNpbmdsZSBlbGVtZW50IHRvIGEgY29uZmlndXJhdGlvbiBmaWxlCjIuIFByb3ZpZGUgZGVlcCBsaW5rcyB0byBlYWNoIHBhZ2Ugc2VjdGlvbiBzbyB5b3UgY2FuIHB1dCBhIGxpbmsgaW50byBhIGNoYXQgdGhhdCBtb3ZlcyB0aGUgdXNlciBkaXJlY3Rpb24gdG8gdGhlIGNvcnJlY3QgY2hhcHRlciBzZWN0aW9uLgozLiBDb25maWd1cmluZyBbc29jaWFsIG1lZGlhIHByZXZpZXdzXShodHRwczovL3NxdWlkZnVuay5naXRodWIuaW8vbWtkb2NzLW1hdGVyaWFsL3NldHVwL3NldHRpbmctdXAtc29jaWFsLWNhcmRzLykgc28geW91ciBsaW5rcyB0byBzYW1wbGUgcGFnZXMgb24gc29jaWFsIG1lZGlhIHdpbGwgbG9vayBncmVhdAo0LiBNb25pdG9yaW5nIHVzYWdlIHdpdGggW0dvb2dsZSBBbmFseXRpY3NdKGh0dHBzOi8vc3F1aWRmdW5rLmdpdGh1Yi5pby9ta2RvY3MtbWF0ZXJpYWwvc2V0dXAvc2V0dGluZy11cC1zaXRlLWFuYWx5dGljcy8/aD1nb29nbGUjZ29vZ2xlLWFuYWx5dGljcykgc28geW91IGNhbiBzZWUgaG93IG9mdGVuIGVhY2ggcGFnZSBpcyBiZWluZyB1c2VkIHRvIGNoZWNrIHN0dWRlbnQgcHJvZ3Jlc3MKNS4gRXZlcnkgcGFnZSBmb290ZXIgY2FuIGNvbnRhaW4gYSBsaW5rIHRvIGEgY291cnNlIGZlZWRiYWNrIGZvcm0sIHN1Y2ggYXMgYSBHb29nbGUgZm9ybSBob3N0ZWQgb24gYW5vdGhlciBzZXJ2ZXIgdG8ga2VlcCBzdHVkZW50IGZlZWRiYWNrIGNvbmZpZGVudGlhbC4KCk15IGV4YW1wbGUgdGV4dGJvb2tzIHVzZSBwb3dlcmZ1bCBBSS1nZW5lcmF0ZWQgW01pY3JvU2ltc10oaHR0cHM6Ly9kbWNjcmVhcnkuZ2l0aHViLmlvL21pY3Jvc2ltcy8pIHRvIGRlbW9uc3RyYXRlIGhvdyB0b29scyBsaWtlIENoYXRHUFQgbzEtcHJldmlldyBjYW4gZ2VuZXJhdGUgZnVsbHkgaW50ZXJhY3RpdmUgc2ltdWxhdGlvbnMgdGhhdCBydW4gZGlyZWN0bHkgaW4geW91ciBicm93c2VyLiBJIGJlbGlldmUgdGhhdCBNaWNyb1NpbXMgYXJlIG9uZSBvZiB0aGUgZWFzaWVzdCBhbmQgbW9zdCBjb3N0LWVmZmVjdGl2ZSB3YXlzIHRvIGFkZCBpbnRlcmFjdGl2aXR5IHRvIGFueSBpbnRlcmFjdGl2ZSB0ZXh0Ym9vay4KCk15IGV4YW1wbGVzIGFsc28gaGF2ZSBhIGRldGFpbGVkIGdsb3NzYXJ5IG9mIHRlcm1zIHNvIHRoYXQgdGhlIGZpcnN0IHRpbWUgYSBjb25jZXB0IGlzIGludHJvZHVjZWQgb24gYSBwYWdlLCB0aGUgYXV0aG9yIGNhbiB1c2UgYSBtYXJrZG93biBlZGl0b3IgdG8gbGluayB0byB0aGF0IGNvbmNlcHQgaW4gdGhlIGdsb3NzYXJ5LiBNYXJrZG93biBlZGl0b3JzIGJ1aWx0IGludG8gVlMgQ29kZSBkbyBhdXRvLWNvbXBsZXRpb24gdG8gdGhlc2UgcmVzb3VyY2VzLgoKIVtdKGh0dHBzOi8vbWlyby5tZWRpdW0uY29tL3YyL3Jlc2l6ZTpmaXQ6MTQwMC9mb3JtYXQ6d2VicC8xKjhPZjdCbGtWaDk5VjJxZi1CQ2lDTlEucG5nKQoKQW4gZXhhbXBsZSBvZiB1c2luZyB0aGUgYXV0b2NvbXBsZXRlIGZlYXR1cmUgaW4gVlMgY29kZSB0byBxdWlja2x5IGxpbmsgdG8gYSBnbG9zc2FyeSB0ZXJtLiBJbWFnZSBieSB0aGUgYXV0aG9yLgoKSSBoYXZlIGFsc28gdXNlZCB0aGUgbWtkb2NzLW1hdGVyaWFsIG1kXF9pblxfaHRtbCBleHRlbnNpb24gdG8gZW1iZWQgcmV2aWV3IHF1ZXN0aW9ucyBpbiB0aGUgdGV4dCBzbyB0aGF0IHN0dWRlbnRzIGNhbiBjbGljayBvbiBhIHVzZXIgaW50ZXJmYWNlIGVsZW1lbnQgdG8gcmV2ZWFsIHRoZSBhbnN3ZXIgdG8gYSBxdWVzdGlvbi4KCiFbXShodHRwczovL21pcm8ubWVkaXVtLmNvbS92Mi9yZXNpemU6Zml0OjE0MDAvZm9ybWF0OndlYnAvMSo1b0trbEhmcXREYzc2bHlQdGhxZHpnLnBuZykKCkFuIGV4YW1wbGUgb2YgYWRkaW5nIHNlbGYtYXNzZXNzbWVudCBxdWl6emVzIGRpcmVjdGx5IHRvIGEgTGV2ZWwgMiB0ZXh0Ym9vay4gVGhlIGFuc3dlciBpcyBvbmx5IHNob3duIGFmdGVyIHRoZSBzdHVkZW50IGNsaWNrcyB0aGUg4oCcU2hvdyBBbnN3ZXLigJ0gY29udHJvbOKAlGltYWdlIGJ5IHRoZSBhdXRob3IuCgpHb29kIGludGVyYWN0aXZlIHNpdGVzIGhhdmUgZmVhdHVyZXMgdGhhdCBhcmUgZGVzaWduZWQgdG8gaGVscCBmYWNpbGl0YXRlIGRpc3RyaWJ1dGVkIGxlYXJuaW5nLiBGb3IgZXhhbXBsZSwgaW5zdHJ1Y3RvcnMgY2FuIGNvcHkgYSBkZWVwIGxpbmsgdG8gYSBzcGVjaWZpYyBwYWdlLCBleGFtcGxlLCBleGVyY2lzZSwgb3IgcXVpeiBkaXJlY3RseSBpbnRvIHRoZSBjaGF0IG9mIGEgWm9vbSBjYWxsLCBhbmQgdGhlIGNoYXQgd2lsbCBkaXNwbGF5IGEgZGVzY3JpcHRpdmUgYW5kIGF0dHJhY3RpdmUgcHJldmlldyBvZiBhIGNoYXJ0IG9yIHNpbXVsYXRpb24gdXNpbmcgdGhlIHNvY2lhbCBtZWRpYSBtZXRhZGF0YSBzdGFuZGFyZCBbT3BlbiBHcmFwaCBQcm90b2NvbC5dKGh0dHBzOi8vb2dwLm1lLykgT3BlbiBHcmFwaCBtZXRhZGF0YSBhbHNvIGhhcyBsaW1pdGVkIHN1cHBvcnQgZm9yIHRoZSBmcmVlIFtta2RvY3MtbWF0ZXJpYWxdKGh0dHBzOi8vc3F1aWRmdW5rLmdpdGh1Yi5pby9ta2RvY3MtbWF0ZXJpYWwvdHV0b3JpYWxzL3NvY2lhbC9iYXNpYy8pIHRvb2xzLiBQYWlkIHVzZXJzIG9mIG1rZG9jcy1tYXRlcmlhbCBnZXQgZnVsbCBzdXBwb3J0IGZvciBjdXN0b21pemluZyB0aGUgcHJldmlld3MuIFRoZSBwYWlkIG9wdGlvbiBpcyBhIGdvb2QgY2hvaWNlIGlmIHlvdSBhcmUgc2VyaW91cyBhYm91dCBoYXZpbmcgY3VzdG9tIGltYWdlcyBpbiB5b3VyIGxpbmsgcHJldmlld3MuCgpMZXZlbCAyIHRleHRib29rcyBjYW4gYWxzbyBwcm92aWRlIHByZWNpc2UgZmVlZGJhY2sgdG9vbHMsIHdpdGggZXZlcnkgcGFnZSBoYXZpbmcgYSBsaW5rIHRvIGEgZmVlZGJhY2sgZm9ybSB3aGVyZSBjb250ZW50IGRldmVsb3BlcnMgYW5kIGluc3RydWN0b3JzIGNhbiBzZWUgd2hlcmUgc3R1ZGVudHMgYXJlIHZpc2l0aW5nIG1vc3Qgb2Z0ZW4gYW5kIGhvdyBsb25nIHRoZXkgcmVtYWluIG9uIGEgY29udGVudCBwYWdlIG9yIGFuaW1hdGlvbi4KCiMjIExldmVsIDIuOSDigJQgR2V0dGluZyBSZWFkeSBmb3IgdGhlIExlYXAgdG8gTGV2ZWwgMwoKWW91IHdpbGwgbm90ZSB0aGF0IExldmVsIDIgdGV4dGJvb2tzIGRvbuKAmXQgY2hhbmdlIHRoZWlyIGNvbnRlbnQgYmFzZWQgb24gdGhlIGJhY2tncm91bmQgb3IgbmVlZHMgb2YgdGhlIHN0dWRlbnQuIFRoZXkgYXJlIGEgb25lLXNpemUtZml0cy1hbGwgc29sdXRpb24uIFN0dWRlbnRzIGNhbuKAmXQgcXVpY2tseSBwdXQgaW4gdGhlaXIgcGVyc29uYWwgYmFja2dyb3VuZCBhbmQgcGVyc29uYWwgbGVhcm5pbmcgZ29hbHMgYW5kIGhhdmUgY29udGVudCBjaGFuZ2UgYmFzZWQgb24gdGhlaXIgcHJpb3IgdW5kZXJzdGFuZGluZyBvZiBjb25jZXB0cy4gRXZlcnlvbmUgZ2V0cyB0aGUgc2FtZSBjb250ZW50IHJlZ2FyZGxlc3Mgb2YgdGhlaXIgYmFja2dyb3VuZC4gSWYgeW91IGFyZSB0YWtpbmcgYSBjbGFzcyBvbiBtYWNoaW5lIGxlYXJuaW5nLCB0aGVyZSBpcyBqdXN0IGEgc2luZ2xlIHBhdGggdGhhdCBuZWVkcyB0byBiZSB3b3JrZWQgb24sIGV2ZW4gaWYgeW91ciBzdHVkZW50cyBoYXZlIGxpdHRsZSBvciBubyBiYWNrZ3JvdW5kIGluIGxpbmVhciBhbGdlYnJhLgoKIyMgR2V0IERhbiBNY0NyZWFyeeKAmXMgc3RvcmllcyBpbiB5b3VyIGluYm94CgpKb2luIE1lZGl1bSBmb3IgZnJlZSB0byBnZXQgdXBkYXRlcyBmcm9tIHRoaXMgd3JpdGVyLgoKQWR2YW5jZW1lbnQgdG8gYSBMZXZlbCAzIHRleHRib29rIHJlcXVpcmVzIGdldHRpbmcgcmVhZHkgdG8gaW50ZWdyYXRlIHdpdGggc3R1ZGVudHPigJkgbmVlZHMsIHdoaWNoIG1lYW5zIHRoYXQgZnJlZSBwdWJsaWMgaG9zdGluZyBtYXkgbm90IGJlIHN1ZmZpY2llbnQuIEhvd2V2ZXIsIGJlY29taW5nIOKAnExldmVsIDMgUmVhZHnigJ0gaXMgc3RpbGwgYSBkaWZmaWN1bHQgYW5kIHRpbWUtY29uc3VtaW5nIHByb2Nlc3MgdGhhdCByZXF1aXJlcyBjb250aW51YWwgZmVlZGJhY2sgYW5kIHRlc3RpbmcuCgojIyBMZXZlbCAzIOKAlCBBZGFwdGl2ZSBUZXh0Ym9va3MKCiFbXShodHRwczovL21pcm8ubWVkaXVtLmNvbS92Mi9yZXNpemU6Zml0OjE0MDAvZm9ybWF0OndlYnAvMSppWWNscUZNMFJQMVpybF9aTHcwbHZnLnBuZykKClRoZSBhZGFwdGl2ZSB0ZXh0Ym9vayBxdWlja2x5IGNoYW5nZXMgaXRzIGNvbnRlbnQgYmFzZWQgb24gdGhlIG5lZWRzIG9mIHRoZSBzdHVkZW50LiBJbWFnZSBieSBhdXRob3IgYW5kIENoYXRHUFQuCgpMZXZlbCAzIGludGVsbGlnZW50IHRleHRib29rcyBhZGp1c3QgY29udGVudCBiYXNlZCBvbiBhbmFseXNpcyBvZiB1c2VyIGlucHV0IG9yIHBlcmZvcm1hbmNlIChlLmcuLCBhZGFwdGluZyBkaWZmaWN1bHR5IGxldmVscywgcHJvdmlkaW5nIGFkZGl0aW9uYWwgcmVzb3VyY2VzKS4gVGhleSBpbmNvcnBvcmF0ZSBzaW1wbGUgZGV0ZXJtaW5pc3RpYyBydWxlcyBsaWtlIGNvbmNlcHQgZ3JhcGggdHJhdmVyc2FsIGFsZ29yaXRobXMgdG8gcGVyc29uYWxpemUgbGVhcm5pbmcgcGF0aHdheXMuCgpMZXZlbCAzIGludGVsbGlnZW50IHRleHRib29rcyBzZWxlY3QgZnJvbSBmaXhlZCBsZXZlbHMgb2YgY3VyYXRlZCBjb250ZW50IGJhc2VkIG9uIHNpbXBsZSBhc3Nlc3NtZW50IHNjb3JlcyBhbmQgZGVsYXktdGltZS1iYXNlZCBydWxlcy4gSWYgYSB1c2VyIGRpZG7igJl0IGRvIHdlbGwgb24gbGFzdCB3ZWVr4oCZcyByZXZpZXcgcXVpeiwgdGhlIGNvbnRlbnQgY2FuIGJlIHJldmlld2VkIGJlZm9yZSBnZW5lcmF0aW5nIG5ldyBtYXRlcmlhbC4gVGhleSBjYW4gc2tpcCBjb250ZW50IGlmIHVzZXJzIHNob3cgaGlnaCBwcm9maWNpZW5jeS4KCkxldmVsIDMgaW50ZWxsaWdlbnQgdGV4dGJvb2tzIGNvbnRpbnVvdXNseSByZWNvcmQgdGhlIGNvbmNlcHRzIGVhY2ggc3R1ZGVudCBoYXMgbWFzdGVyZWQgb24gdGhlIGxlYXJuaW5nIGdyYXBoLiBXaGVuIHdlIGFkZCBwZXJzb25hbGl6ZWQgY29uY2VwdCBwcm9maWNpZW5jeSBkYXRhIHRvIGEgbGVhcm5pbmcgZ3JhcGgsIHdlIGNhbGwgaXQgYSBwZXJzb25hbCBsZWFybmluZyBncmFwaC4gRWFjaCBzdHVkZW50IG5lZWRzIHRoZWlyIG93biBwZXJzb25hbCBsZWFybmluZyBncmFwaC4gQmVjYXVzZSB0aGlzIGlzIGluZm9ybWF0aW9uIHRpZWQgdG8gYW4gaW5kaXZpZHVhbCwgaXQgbmVlZHMgdG8gYmUgY2FyZWZ1bGx5IHByb3RlY3RlZCB0byBiZSBjb25zaXN0ZW50IHdpdGggcmVndWxhdG9yeSByZXF1aXJlbWVudHMgc3VjaCBhcyBbR0RQUl0oaHR0cHM6Ly93d3cuZ2Rwci5jby51ay9ibG9nL2EtcXVpY2stZ3VpZGUtdG8tZ2Rwci1mb3Itc2Nob29scy1hbmQtY29sbGVnZXMpIGluIHRoZSBFVSBhbmQgW0ZFUlBBXShodHRwczovL3N0dWRlbnRwcml2YWN5LmVkLmdvdi8pLiBUaGVzZSByZWd1bGF0aW9ucyBldmVuIGltcGFjdCB1c2luZyBzaW1wbGUgd2ViIFtjb29raWVzXShodHRwczovL2dkcHIuZXUvY29va2llcy8pIHN0b3JlZCBpbiBhIHN0dWRlbnTigJlzIHdlYiBicm93c2VyLgoKIyMgSG9zdGluZyBQZXJzb25hbCBMZWFybmluZyBHcmFwaHMKCiFbXShodHRwczovL21pcm8ubWVkaXVtLmNvbS92Mi9yZXNpemU6Zml0OjE0MDAvZm9ybWF0OndlYnAvMSo4ZUV3R3RwU1dpdm5sa2VwVUx4bHNBLnBuZykKClByaXZhY3ksIEV0aGljcywgYW5kIExlZ2FsIGNvbmNlcm5zIGJlY29tZSBlc3NlbnRpYWwgd2hlbiBhbiBpbnRlbGxpZ2VudCB0ZXh0Ym9vayBtdXN0IGludGVncmF0ZSBwZXJzb25hbCBzdHVkZW50IGluZm9ybWF0aW9u4oCUaW1hZ2UgYnkgdGhlIGF1dGhvciBhbmQgQ2hhdEdQVC4KClJlZ3VsYXRvcnkgY29tcGxpYW5jZSBzaWduaWZpY2FudGx5IG5lZ2F0aXZlbHkgaW1wYWN0cyB0aGUgY29zdCBvZiBob3N0aW5nIGludGVsbGlnZW50IHRleHRib29rcy4gSXQgaXMgbm90IGp1c3QgYSBxdWVzdGlvbiBvZiB1c2luZyBBSSB0byBnZW5lcmF0ZSBoaWdoLXF1YWxpdHkgTWljcm9TaW1zIHF1aWNrbHkuIEEgdGVhbSBvZiBvdXRzaWRlIGF1ZGl0b3JzIG11c3QgYmUgZW5nYWdlZCB0byBjZXJ0aWZ5IGNvbXBsaWFuY2Ugd2l0aCB0aGUgYXBwcm9wcmlhdGUgcmVndWxhdGlvbnMuIFRoZSBuZWVkIGZvciBhdWRpdGluZyBpcyBhIHNpZ25pZmljYW50IG9wcG9ydHVuaXR5IGZvciBuZXcgc3RhcnR1cHMgdGhhdCBjYW4gcHJvdmlkZSB0aGUgaW5mcmFzdHJ1Y3R1cmUgdG8gc3VwcG9ydCB0aGUgaG9zdGluZyBhbmQgYXVkaXRpbmcgb2YgcGVyc29uYWwgbGVhcm5pbmcgZ3JhcGhzIGZvciBhIGNvdXJzZS4KCkhvd2V2ZXIsIHRoZXNlIGxldmVsLTMgc3lzdGVtcyBtYXkgc3RpbGwgbGFjayByZWFsLXRpbWUgcmVzcG9uc2l2ZW5lc3MgYW5kIHRoZSBhYmlsaXR5IHRvIGxldmVyYWdlIExMTSB0byBnZW5lcmF0ZSBjdXN0b20gbGVzc29uIHBsYW5zIGFuZCBNaWNyb1NpbXMuIE5vIG1sIGlzIHVzZWQuCgpMZXZlbC0zIGFkYXB0aXZlIHRleHRib29rcyBicmlkZ2UgdGhlIGdhcCBiZXR3ZWVuIG1hdHVyZSBvbmxpbmUgdGV4dGJvb2tzIGFuZCBmdWxseSBkeW5hbWljYWxseSBzdHVkZW50LXJlc3BvbnNpdmUgdGV4dGJvb2tzLiBBbHRob3VnaCB0aGV5IGFsbG93IHVzIHRvIGxldmVyYWdlIGdlbmVyYXRpdmUgQUkgdG8gZ2VuZXJhdGUgZmFudGFzdGljIE1pY3JvU2ltcyBhdCBjb3Vyc2UgZGVzaWduIHRpbWUsIExldmVsLTMgdGV4dGJvb2tzIGNhbiB1c2Ugc2ltcGxlIGdyYXBoIGFsZ29yaXRobXMgdG8gcGVyc29uYWxpemUgY29udGVudC4gVGhleSBjYW4gdXNlIGEgdmVjdG9yIHN0b3JlIGFuZCBncmFwaCBlbWJlZGRpbmdzIHRvIGZpbmQgc2ltaWxhciBjb250ZW50IHdpdGggcG9zaXRpdmUgYXBwcm92YWwgYnkgc2ltaWxhciBzdHVkZW50cy4gVGhlc2UgYXJlIHRoZSBzYW1lIHRlY2huaXF1ZXMgdGhhdCByZWFsLXRpbWUgcHJvZHVjdCByZWNvbW1lbmRhdGlvbiBlbmdpbmVzIGhhdmUgdXNlZCBmb3Igc2V2ZXJhbCB5ZWFycy4gTExNcyBhbmQgb3Blbi1zb3VyY2UgdmVjdG9yIHN0b3JlcyBtYWtlIGJ1aWxkaW5nIHRoZXNlIHNvbHV0aW9ucyBtb3JlIGFjY2Vzc2libGUgYW5kIGNvc3QtZWZmZWN0aXZlIG9uIGFuIGFjYWRlbWljIGJ1ZGdldC4KCkhvd2V2ZXIsIHRvIHRydWx5IGludGVncmF0ZSBnZW5lcmF0aXZlIEFJIGVuZ2luZXMgYXQgY291cnNlIHJ1bnRpbWUsIHdlIG11c3QgbW92ZSB0byBsZXZlbCA0OiBnZW5lcmF0aXZlIEFJLXBvd2VyZWQgdGV4dGJvb2tzIHdpdGggY2hhdGJvdCBpbnRlcmZhY2VzLgoKIyMgTGV2ZWwgNCDigJQgVGV4dGJvb2tzIHdpdGggQ2hhdGJvdHMKCiFbXShodHRwczovL21pcm8ubWVkaXVtLmNvbS92Mi9yZXNpemU6Zml0OjE0MDAvZm9ybWF0OndlYnAvMSpEdmVoMmUxVGIyZUlqSG11QzJZZDV3LnBuZykKCkluIHRoZSBuZWFyIGZ1dHVyZSwgbW9zdCB0ZXh0Ym9va3Mgd2lsbCBpbmNsdWRlIGFuIGludGVsbGlnZW50IGNoYXRib3QgdGhhdCBjYW4gZ3VpZGUgeW91IHRvIHRoZSByaWdodCBhbnN3ZXJzLiBJbWFnZSBieSB0aGUgYXV0aG9yIGFuZCBDaGF0R1BULgoKU28sIGxldOKAmXMgYXNzdW1lIHlvdSBoYXZlIGEgZmFudGFzdGljIG9ubGluZSBjb3Vyc2Ugd2l0aCBodW5kcmVkcyBvZiBHZW5BSS1jcmVhdGVkIGludGVyYWN0aXZlIE1pY3JvU2ltcy4gWW91IHVzZSBzaW1wbGUgZ3JhcGggYWxnb3JpdGhtcyB0byBzdWdnZXN0IGxlYXJuaW5nIGNvbnRlbnQgYmFzZWQgb24gdGhlIG5lZWRzIG9mIGVhY2ggc3R1ZGVudCBkcml2ZW4gYnkgdGhlaXIgbWFzdGVyeSBvZiB0aGUgY29uY2VwdHMgb24gdGhlIHNoZWxmLiBZb3UgYXJlIGFscmVhZHkgdXNpbmcgb2ZmLXRoZS1zaGVsZiBncmFwaCBhbGdvcml0aG1zIHN1Y2ggYXMgc2ltaWxhcml0eSBvZiBzdHVkZW50cyBhbmQgcmVjb21tZW5kYXRpb24gZW5naW5lcy4KCkJ1dCB3aGVyZSBkbyB5b3UgZ28gbmV4dD8gVGhlIGFuc3dlciBpcyB0byBjb21iaW5lIHRoZSBwb3dlciBvZiBjb25jZXB0IGdyYXBoIGFsZ29yaXRobXMgd2l0aCBMTE1zIHRvIGJ1aWxkIGEgY2hhdGJvdCB0aGF0IGNhbiBxdWlja2x5IGFuc3dlciBxdWVzdGlvbnMgZnJvbSBzdHVkZW50cy4gVGhpcyBjb21iaW5hdGlvbiB1c2VzIHRoZSBbR3JhcGhSQUddKGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL1Byb21wdF9lbmdpbmVlcmluZyNHcmFwaF9yZXRyaWV2YWwtYXVnbWVudGVkX2dlbmVyYXRpb24pIGFyY2hpdGVjdHVyZSBpbiB0aGUgY29udGV4dCBvZiBhbiBpbnRlbGxpZ2VudCB0ZXh0Ym9vay4gR3JhcGhSQUcgY29tYmluZXMgTkxQIHBpcGVsaW5lcywgTExNcywgZW1iZWRkaW5ncywgYW5kIHZlY3RvciBzdG9yZXMgdG8gY29udmVydCBkb2N1bWVudHMgaW50byBncmFwaHMuIFRoZXNlIGdyYXBocyBjYW4gdGhlbiBiZSB0aGUgYmFzaXMgZm9yIGEgY3VyYXRlZCBMZWFybmluZyBHcmFwaC4gVGhlIExlYXJuaW5nIEdyYXBoIGJlY29tZXMgdGhlIOKAnGdyb3VuZCB0cnV0aOKAnSB1cG9uIHdoaWNoIGludGVsbGlnZW50IGFnZW50cyByaWRlLgoKTGV2ZWwgNCBpbmNsdWRlcyB1c2luZyBtYW55IEdlbkFJIGFuZCBjbGFzc2ljIG1hY2hpbmUtbGVhcm5pbmctcG93ZXJlZCBmZWF0dXJlcyBsaWtlIHJlYWwtdGltZSBmZWVkYmFjayBmcm9tIGEgY2hhdGJvdCB0byBhZGp1c3QgY29udGVudCByZWNvbW1lbmRhdGlvbnMuIEl0IHJlcXVpcmVzIGNhcmVmdWwgbG9nZ2luZyBvZiBlYWNoIHN0dWRlbnTigJlzIHByb2dyZXNzIHRyYWNraW5nIGFuZCByZXNwb25zaXZlIHF1ZXN0aW9uLWFuc3dlcmluZyBzeXN0ZW1zLiBXZSB3aWxsIHNlZSB0aGVzZSB0eXBlcyBvZiB0ZXh0Ym9va3MgYXMgZWFybHkgYXMgbmV4dCB5ZWFyIGluIGxlYXJuaW5nIGluc3RpdHV0aW9ucyB0aGF0IGFyZSBmb3J3YXJkLXRoaW5raW5nIHRob3VnaHQgbGVhZGVycy4gQ29tbWVyY2lhbCBvcmdhbml6YXRpb25zIGxpa2UgW0thaG4gQWNhZGVteV0oaHR0cHM6Ly93d3cua2hhbmFjYWRlbXkub3JnLykgYXJlIGFscmVhZHkgd29ya2luZyBvbiB0aGVzZSBmZWF0dXJlcy4KCkxldmVsIDQgSW50ZWxsaWdlbnQgVGV4dGJvb2tzIGtub3cgdXNlciBjb250ZXh0IGFuZCBwcm92aWRlIHRhaWxvcmVkIHJlc3BvbnNlcyBhbmQgcmVjb21tZW5kYXRpb25zIGJhc2VkIG9uIHN0dWRlbnQgcHJvZ3Jlc3MuIFRoZXkgbXVzdCBiZSBkZXNpZ25lZCBjYXJlZnVsbHkgdG8gcHJvdGVjdCBzZW5zaXRpdmUgZGF0YSBhbmQgbWluaW1pemUgdGhlIGNvc3Qgb2YgZXhjZXNzaXZlbHkgdXNpbmcgbGFyZ2VyIExMTXMgd2hlbiBzbWFsbGVyIExMTXMsIHN1Y2ggYXMgT2xsYW1hIHJ1bm5pbmcgb24gbG9jYWwgR1BVcywgbWF5IGJlIHN1ZmZpY2llbnQuCgpJbiBzdW1tYXJ5LCBMZXZlbCA0IGludGVsbGlnZW50IHRleHRib29rcyBlbmFibGUgYSBwZXJzb25hbGl6ZWQgbGVhcm5pbmcgZXhwZXJpZW5jZSB0aGF0IGFkYXB0cyB0byB0aGUgbGVhcm5lcuKAmXMgbmVlZHMgaW4gcmVhbC10aW1lLiBIb3dldmVyLCB0aGV5IHN0aWxsIGhhdmUgbGltaXRhdGlvbnMsIGFuZCBiZWNhdXNlIG9mIHRoaXMsIHRlYWNoZXJzIGFuZCBpbnN0cnVjdG9ycyB3aWxsIHN0aWxsIGJlIGFyb3VuZCBmb3IgbWFueSB5ZWFycy4KCkZpbmFsbHksIGxldOKAmXMgbG9vayBhdCB0aGUgZmVhdHVyZXMgb2YgdGhlIGZ1bGwgTGV2ZWwtNSBBSSBUZXh0Ym9va3MgdGhhdCBhcmUgaW1hZ2luZWQgaW4gc2NpZW5jZSBmaWN0aW9uLgoKIyMgTGV2ZWwgNSDigJQgQXV0b25vbW91cyBBSSBUZXh0Ym9va3MKCiFbXShodHRwczovL21pcm8ubWVkaXVtLmNvbS92Mi9yZXNpemU6Zml0OjE0MDAvZm9ybWF0OndlYnAvMSpKOUR4QlRCNVF1U0lCRUNXekh5R0lBLnBuZykKClRoZSBpbnRlZ3JhdGVkIHJvYm90IHR1dG9yIHdpbGwgZ28gYmV5b25kIGEgc2luZ2xlIGludGVsbGlnZW50IHRleHRib29rLiBJbWFnZSBieSB0aGUgYXV0aG9yIGFuZCBDaGF0R1BULgoKRnVsbHkgQUktZHJpdmVuIGFkYXB0aXZlIGludGVsbGlnZW50IHRleHRib29rcyBoYXZlIGJlZW4gaW1hZ2luZWQgc2luY2UgTmVhbCBTdGV2ZW5zb24gd3JvdGUgKlRoZSBEaWFtb25kIEFnZTogT3IsIEEgWW91bmcgTGFkeeKAmXMgSWxsdXN0cmF0ZWQgUHJpbWVyKiBpbiAxOTk1LiBUaGlzIGN5YmVycHVuayBub3ZlbCBpbWFnaW5lZCBhbiBBSS1wb3dlcmVkIHRhYmxldCBjYXBhYmxlIG9mIGdlbmVyYXRpbmcgYW5pbWF0ZWQgc3RvcmllcyBhbmQgbGVzc29ucyBpbiByZWFsLXRpbWUgYWRhcHRlZCB0byB0aGUgY29udGV4dCBvZiBlYWNoIHN0dWRlbnTigJlzIGdvYWxzLiBMZXZlbCA1IHRleHRib29rcyBkZWVwbHkgdW5kZXJzdGFuZCBpbmRpdmlkdWFsIHN0dWRlbnRz4oCZIGN1cnJlbnQga25vd2xlZGdlIHN0YXR1cyBhbmQgbGVhcm5pbmcgZ29hbHMsIGFuc3dlcmluZyBjb21wbGV4IHF1ZXN0aW9ucyB0aHJvdWdoIG5hdHVyYWwgbGFuZ3VhZ2UgcHJvY2Vzc2luZyBhbmQgZ2VuZXJhdGluZyBjdXN0b21pemVkIGxlc3NvbnMuCgpMZXZlbCA1IHRleHRib29rcyBhcmUganVzdCBsaWtlIGNhcnMgdGhhdCBkcml2ZSB0aGVtc2VsdmVzIHVuZGVyIGFsbCBjb25kaXRpb25zOiBkdXJpbmcgYSBoZWF2eSBzbm93c3Rvcm0gYXQgbmlnaHQgb24gcm9hZHMgdW5kZXIgaGVhdnkgY29uc3RydWN0aW9u4oCUaW4gb3RoZXIgd29yZHMsIG5vdCBoYXBwZW5pbmcgaW4gdGhlIG5lYXIgdGVybS4gQnV0IGFuIGV4Y2l0aW5nIHZpc2lvbiBvZiB0aGUgZnV0dXJlLgoKTGV2ZWwgNSB0ZXh0Ym9va3MgYXJlIHNvbWV0aGluZyB3ZSBjYW4gYWxsIGRyZWFtIGFib3V0LCBidXQgbWFraW5nIHRoZW0gaGFwcGVuIHdpdGggdG9kYXnigJlzIENQVSBoYXJkd2FyZSBhbmQgdW5yZWxpYWJsZSBMTE1zIHdpbGwgdGFrZSB3b3JrLiBXZSBuZWVkIGhhcmR3YXJlIHZlbmRvcnMgdG8gZm9jdXMgb24gY29zdC1lZmZlY3RpdmUgW2NoaXBzIGN1c3RvbWl6ZWQgZm9yIGdyYXBoIHRyYXZlcnNhbF0oaHR0cHM6Ly90b3dhcmRzZGF0YXNjaWVuY2UuY29tL2Zyb20tZmxhdGxhbmQtdG8taG9nLWhlYXZlbi10aGUtZm91ci1sYW5kcy1vZi1la2ctYWRvcHRpb24tOTQ1NTcxYzA5YjY3KSB0byBidWlsZCB0cnVseSBzbWFydCB0ZXh0Ym9va3Mgc3VjY2Vzc2Z1bGx5LgoKQnV0IGl0IHdpbGwgaGFwcGVuLiBNeSBncmFuZGNoaWxkcmVuIHdpbGwgcHJvYmFibHkgaGF2ZSBjb21wcmVoZW5zaXZlIHRlYWNoaW5nIGFzc2lzdGFudHMsIG1pbWlja2luZyBhIG9uZS1vbi1vbmUgdHV0b3IgZXhwZXJpZW5jZS4gVGhlc2UgaW50ZWdyYXRlZCBBSSB0dXRvcnMgd2lsbCBnbyB3YXkgYmV5b25kIGEgc2luZ2xlIHRleHRib29rLiBUaGV5IHdpbGwgYWx3YXlzIHN1cHBvcnQgeW91ciBsZWFybmluZyBvYmplY3RpdmVzIGFuZCBwcm90ZWN0IHlvdXIgbGVhcm5pbmcgZ3JhcGggcHJpdmFjeS4gV2Ugd2lsbCBldmVudHVhbGx5IHNlZSBmdWxseSBhdXRvbm9tb3VzIGFuZCBpbnRlcmFjdGl2ZSBsZWFybmluZyBhZ2VudHMgd2l0aCBhZHZhbmNlZCBhbmFseXRpY3MgdG8gZHluYW1pY2FsbHkgcHJlZGljdCBhbmQgcmVzcG9uZCB0byBzdHVkZW50IG5lZWRzLgoKIyMgQnJlYWtpbmcgVGhyb3VnaCBUaGUgTGF5ZXJzCgoqQWxsIG1vZGVscyBhcmUgd3JvbmcsIGJ1dCBzb21lIGFyZSB1c2VmdWwgLSBHZW9yZ2UgQm94KgoKT25lIG9mIHRoZSByZWFzb25zIHRoYXQgSSBjcmVhdGVkIHRoZXNlIGxheWVycyBpcyB0byBleHBvc2UgdGhlbSBhcyBhcHBsaWNhYmxlIG1vZGVscywgYnV0IEkgaG9wZSB5b3UgcmVjb2duaXplIHRoZW0gYXMganVzdCBhIHNpbXBsZSBtb2RlbCB0aGF0IGlzIGVhc3kgdG8gY2hhbmdlLiBObyByZWd1bGF0aW9uIHNheXMgeW91IGNhbuKAmXQgYnVpbGQgYSBzaW1wbGUgd2Vic2l0ZSB0aGF0IGluY2x1ZGVzIGNvbXBsZXggZm9ybXMgd2hlcmUgdGVhY2hlcnMgb3Igc3R1ZGVudHMgcmVzcG9uZCB0byBhIHF1aXogb3Igc3VydmV5LCBhbmQgdGhlIHJlc3VsdHMgb2YgdGhpcyBwcm9jZXNzIGdlbmVyYXRlIHRleHQgdGhhdCBjYW4gYmUgY29waWVkIGRpcmVjdGx5IGFzIGEgcHJvbXB0IGZvciBhIHRvb2wgbGlrZSBDaGF0R1BULiBNYW55IG9mIG15IHdlYnNpdGVzIGZlYXR1cmUgc2FtcGxlIHByb21wdHMgdGhhdCB1c2UgdGVtcGxhdGVzIHlvdSBjYW4gZWFzaWx5IGN1c3RvbWl6ZS4KClNraXBwaW5nIGxheWVycyBtZWFucyB3ZSBjYW4gZ28gZnJvbSBhIHN0YXRpYyBMZXZlbCAyIGRpcmVjdGx5IHRvIHRha2UgYWR2YW50YWdlIG9mIExMTXMgdXNlZCBpbiBMZXZlbCA0LCBza2lwcGluZyBhbGwgdGhlIGJ1cmRlbiBvZiByZWd1bGF0b3J5IGNvbXBsaWFuY2UuIFRoZSBwcm9tcHRzIHN0aWxsIG1heSBjb250YWluIHN0dWRlbnQtc3BlY2lmaWMgZGF0YSwgYnV0IHRoaXMgZGF0YSBuZXZlciBuZWVkcyB0byBiZSBzdG9yZWQgb24geW91ciB3ZWJzaXRlLiBUaGUgbGF5ZXJzIGFyZSBqdXN0IGEgbW9kZWwgdG8gaGVscCB1cyBjcmVhdGUgb2JqZWN0aXZlIHJhdGluZ3MgZm9yIG91ciB3b3JrIGFuZCBndWlkZSB1cyBvbiB0aGUgbmV4dCBzdGVwcy4KCiMjIENvbmNsdXNpb24KCipOZXZlciBtaXN0YWtlIGEgY2xlYXIgdmlldyBmb3IgYSBzaG9ydCBkaXN0YW5jZS4qIOKAlCBQYXVsIFNhZmZvCgpJIGhvcGUgdGhpcyBzY2FsZSBwcm92aWRlcyBhIGNsZWFyIGZyYW1ld29yayBmb3IgZXZhbHVhdGluZyBhbmQgaW1wcm92aW5nIHRleHRib29rcyBhbG9uZyB0aGUgc3BlY3RydW0gb2YgaW50ZXJhY3Rpdml0eSBhbmQgYWRhcHRhYmlsaXR5LCBndWlkaW5nIGVkdWNhdG9ycywgc29mdHdhcmUgZGV2ZWxvcGVycywgYW5kIHB1Ymxpc2hlcnMgaW4gdGhlaXIgZGV2ZWxvcG1lbnQgam91cm5leS4gVW5mb3J0dW5hdGVseSwgdGhlcmUgYXJlIG1hbnkgdW5rbm93bnMuIEFsdGhvdWdoIEkgYW0gY29uZmlkZW50IHRoYXQgdGhlIHF1YWxpdHkgb2YgTExNcyB3aWxsIGluY3JlYXNlLCBJIGNhbuKAmXQgcHJlZGljdCB3aGVuIHRoZXJlIHdpbGwgYmUgc3RhbmRhcmRzIGZvciBleGNoYW5naW5nIGludGVsbGlnZW50IHRleHRib29rcyBiZXR3ZWVuIGF1dGhvcmluZywgaG9zdGluZywgYW5kIExNUyBzeXN0ZW1zLiBTbyBtdWNoIG9mIHRoaXMgZGVwZW5kcyBvbiBzdGFuZGFyZCBncmFwaCBkYXRhYmFzZXMgdG8gZXhlY3V0ZSBhZ2VudHMuCgpJIGNhbiB0ZWxsIHlvdSB3aXRoIGEgaGlnaCBkZWdyZWUgb2YgY2VydGFpbnR5IHRoYXQgbXkgc3R1ZGVudHMgcHJlZmVyIGhhbmRzLW9uIGludGVyYWN0aW9uIHRvIHN0YXRpYyB0ZXh0Ym9va3MgYW5kIGxlY3R1cmVzLiBJIGVuY291cmFnZSBldmVyeW9uZSB0byB0cnkgdG8gaW5jcmVhc2UgdGhlIGxldmVscyBvZiB0aGVpciB0ZXh0Ym9va3MgdG8gbWVldCB0aGUgbmVlZHMgb2YgYSBkaXZlcnNlIHBvcHVsYXRpb24gb2Ygc3R1ZGVudHMuIEkgaG9wZSBhbGwgY2hpbGRyZW4gb24gcGxhbmV0IEVhcnRoIGhhdmUgZXF1YWwgbGVhcm5pbmcgb3Bwb3J0dW5pdGllcywgcmVnYXJkbGVzcyBvZiBjb3VudHJ5LCByYWNlLCBnZW5kZXIsIGFuZCBzb2Npb2Vjb25vbWljIGJhY2tncm91bmQu";  // injected from Python
+
+  function downloadPdf() {
+    const linkSource = `data:application/pdf;base64,${pdfBase64}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = "Five Levels of Intelligent Textbooks..txt";  // you can change the filename here
+    downloadLink.click();
+  }
+</script>
+
+</body>
+</html>
