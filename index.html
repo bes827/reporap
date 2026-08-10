@@ -14,13 +14,31 @@
 
           const data = await response.json();
 
-          // Ensure response is an array before sorting
           if (!Array.isArray(data)) {
             throw new Error("Unexpected response structure from GitHub API.");
           }
 
-          // Sort directly by file name in descending order (Newest timestamp on top)
-          data.sort((a, b) => b.name.localeCompare(a.name));
+          // Custom sort: Dated files first (newest to oldest), non-dated files at the bottom
+          const dateRegex = /^\d{4}_\d{2}_\d{2}/;
+
+          data.sort((a, b) => {
+            const aHasDate = dateRegex.test(a.name);
+            const bHasDate = dateRegex.test(b.name);
+
+            if (aHasDate && bHasDate) {
+              // Both have dates: Sort newest first (descending)
+              return b.name.localeCompare(a.name);
+            } else if (aHasDate && !bHasDate) {
+              // 'a' has a date, 'b' does not -> 'a' comes first
+              return -1;
+            } else if (!aHasDate && bHasDate) {
+              // 'b' has a date, 'a' does not -> 'b' comes first
+              return 1;
+            } else {
+              // Neither has a date: Sort alphabetically (A to Z)
+              return a.name.localeCompare(b.name);
+            }
+          });
 
           let tableString = '<table><tbody>';
 
